@@ -9,14 +9,20 @@
 /* Begin PBXBuildFile section */
 		045B44A82D2150AF00514A27 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44982D2150AF00514A27 /* Model.swift */; };
 		045B44A92D2150AF00514A27 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B449C2D2150AF00514A27 /* Service.swift */; };
-		045B44AA2D2150AF00514A27 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B449E2D2150AF00514A27 /* Utility.swift */; };
 		045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A02D2150AF00514A27 /* ViewModel.swift */; };
-		045B44AC2D2150AF00514A27 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A22D2150AF00514A27 /* View.swift */; };
 		045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A52D2150AF00514A27 /* ContentView.swift */; };
 		045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A62D2150AF00514A27 /* WhereApp.swift */; };
 		045B44AF2D2150AF00514A27 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 045B449A2D2150AF00514A27 /* Preview Assets.xcassets */; };
 		045B44B02D2150AF00514A27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 045B44A42D2150AF00514A27 /* Assets.xcassets */; };
 		045B44B22D21517D00514A27 /* Splash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 045B44B12D21517D00514A27 /* Splash.storyboard */; };
+		045B44BA2D21650200514A27 /* Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44B92D2164FA00514A27 /* Pretendard.swift */; };
+		045B44C02D21657600514A27 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 045B44BD2D21657600514A27 /* Pretendard-Medium.otf */; };
+		045B44C12D21657600514A27 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 045B44BC2D21657600514A27 /* Pretendard-Bold.otf */; };
+		045B44C22D21657600514A27 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 045B44BE2D21657600514A27 /* Pretendard-Regular.otf */; };
+		045B44C32D21657600514A27 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 045B44BF2D21657600514A27 /* Pretendard-SemiBold.otf */; };
+		045B44C62D2166D000514A27 /* WhereFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44C52D2166D000514A27 /* WhereFont.swift */; };
+		045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44C82D216A3E00514A27 /* Font+Pretendard.swift */; };
+		045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44CA2D216AA200514A27 /* View+Pretendard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,13 +30,20 @@
 		045B44982D2150AF00514A27 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		045B449A2D2150AF00514A27 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		045B449C2D2150AF00514A27 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
-		045B449E2D2150AF00514A27 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		045B44A02D2150AF00514A27 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
-		045B44A22D2150AF00514A27 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		045B44A42D2150AF00514A27 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		045B44A52D2150AF00514A27 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		045B44A62D2150AF00514A27 /* WhereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereApp.swift; sourceTree = "<group>"; };
 		045B44B12D21517D00514A27 /* Splash.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Splash.storyboard; sourceTree = "<group>"; };
+		045B44B92D2164FA00514A27 /* Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pretendard.swift; sourceTree = "<group>"; };
+		045B44BC2D21657600514A27 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
+		045B44BD2D21657600514A27 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		045B44BE2D21657600514A27 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
+		045B44BF2D21657600514A27 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		045B44C42D21659700514A27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		045B44C52D2166D000514A27 /* WhereFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereFont.swift; sourceTree = "<group>"; };
+		045B44C82D216A3E00514A27 /* Font+Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Pretendard.swift"; sourceTree = "<group>"; };
+		045B44CA2D216AA200514A27 /* View+Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Pretendard.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +85,8 @@
 			isa = PBXGroup;
 			children = (
 				045B449A2D2150AF00514A27 /* Preview Assets.xcassets */,
+				045B44A42D2150AF00514A27 /* Assets.xcassets */,
+				045B44BB2D21655400514A27 /* PretendardFont */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -87,7 +102,7 @@
 		045B449F2D2150AF00514A27 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				045B449E2D2150AF00514A27 /* Utility.swift */,
+				045B44B72D2164E800514A27 /* DesignSystem */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -103,7 +118,6 @@
 		045B44A32D2150AF00514A27 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				045B44A22D2150AF00514A27 /* View.swift */,
 				045B44B12D21517D00514A27 /* Splash.storyboard */,
 			);
 			path = Views;
@@ -112,17 +126,55 @@
 		045B44A72D2150AF00514A27 /* Where */ = {
 			isa = PBXGroup;
 			children = (
+				045B44C42D21659700514A27 /* Info.plist */,
 				045B44992D2150AF00514A27 /* Models */,
 				045B449B2D2150AF00514A27 /* Preview Content */,
 				045B449D2D2150AF00514A27 /* Service */,
 				045B449F2D2150AF00514A27 /* Utility */,
 				045B44A12D2150AF00514A27 /* ViewModels */,
 				045B44A32D2150AF00514A27 /* Views */,
-				045B44A42D2150AF00514A27 /* Assets.xcassets */,
 				045B44A52D2150AF00514A27 /* ContentView.swift */,
 				045B44A62D2150AF00514A27 /* WhereApp.swift */,
 			);
 			path = Where;
+			sourceTree = "<group>";
+		};
+		045B44B72D2164E800514A27 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				045B44B82D2164F400514A27 /* Font */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		045B44B82D2164F400514A27 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				045B44C72D216A2000514A27 /* Extensions */,
+				045B44B92D2164FA00514A27 /* Pretendard.swift */,
+				045B44C52D2166D000514A27 /* WhereFont.swift */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
+		045B44BB2D21655400514A27 /* PretendardFont */ = {
+			isa = PBXGroup;
+			children = (
+				045B44BC2D21657600514A27 /* Pretendard-Bold.otf */,
+				045B44BD2D21657600514A27 /* Pretendard-Medium.otf */,
+				045B44BE2D21657600514A27 /* Pretendard-Regular.otf */,
+				045B44BF2D21657600514A27 /* Pretendard-SemiBold.otf */,
+			);
+			path = PretendardFont;
+			sourceTree = "<group>";
+		};
+		045B44C72D216A2000514A27 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				045B44C82D216A3E00514A27 /* Font+Pretendard.swift */,
+				045B44CA2D216AA200514A27 /* View+Pretendard.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +238,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				045B44C02D21657600514A27 /* Pretendard-Medium.otf in Resources */,
+				045B44C12D21657600514A27 /* Pretendard-Bold.otf in Resources */,
+				045B44C22D21657600514A27 /* Pretendard-Regular.otf in Resources */,
+				045B44C32D21657600514A27 /* Pretendard-SemiBold.otf in Resources */,
 				045B44AF2D2150AF00514A27 /* Preview Assets.xcassets in Resources */,
 				045B44B02D2150AF00514A27 /* Assets.xcassets in Resources */,
 				045B44B22D21517D00514A27 /* Splash.storyboard in Resources */,
@@ -200,12 +256,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				045B44A82D2150AF00514A27 /* Model.swift in Sources */,
+				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
-				045B44AA2D2150AF00514A27 /* Utility.swift in Sources */,
+				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */,
-				045B44AC2D2150AF00514A27 /* View.swift in Sources */,
+				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
 				045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
+				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +400,7 @@
 				DEVELOPMENT_TEAM = P85DW78LYM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Where/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -371,6 +430,7 @@
 				DEVELOPMENT_TEAM = P85DW78LYM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Where/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
