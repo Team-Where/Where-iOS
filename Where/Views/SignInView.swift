@@ -29,6 +29,7 @@ struct SignInView: View {
                         color: Color(hex: 0xE5E7EB)
                     )
                     .focused($textFieldFocus, equals: .emailTextField)
+                    .keyboardType(.emailAddress)
                 }
                 
                 VStack(alignment: .leading, spacing: 10) {
