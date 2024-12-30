@@ -17,13 +17,7 @@ struct OnboardingView: View {
     private var title: String { steps[currentStepIndex].title }
     
     var body: some View {
-        VStack {
-            Text(title)
-                .whereFont(.title24semibold)
-                .foregroundStyle(Color(hex: 0x1F2937))
-                .padding(.top)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
+        BasedFormView(header: Text(title)) {
             TabView(selection: $currentStepIndex) {
                 ForEach(steps.indices, id: \.self) { index in
                     // TODO: 단계별 이미지 삽입 필요
@@ -33,24 +27,17 @@ struct OnboardingView: View {
             }
             .disabled(true) // 건너뛰기 버튼을 통해서만 단계 이동
             .tabViewStyle(.page(indexDisplayMode: .never))
-            .border(.red)
             .overlay(alignment: .bottom) {
                 PageControl(currentPageIndex: $currentStepIndex, pageCountLimit: steps.count)
                     .alignmentGuide(.bottom) { dimension in
                         dimension.height * 6
                     }
             }
-            
+        } footer: {
             if currentStepIndex == steps.count - 1 {
                 completeOnboardingButton
             } else {
                 skipToNextStepButton
-            }
-        }
-        .padding()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                backButton
             }
         }
     }
@@ -77,16 +64,6 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
                 .foregroundStyle(.white)
                 .background(RoundedRectangle(cornerRadius: 10))
-        }
-    }
-    
-    private var backButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Image(systemName: "arrow.backward")
-                .frame(width: 14, height: 12)
-                .foregroundStyle(.black)
         }
     }
 }

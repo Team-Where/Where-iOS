@@ -15,11 +15,11 @@ struct BasedFormView<Content: View, Footer: View>: View {
     private let footer: () -> Footer
     
     init(
+        header: Text,
         @ViewBuilder content: @escaping () -> Content,
-        header: @autoclosure () -> Text,
         @ViewBuilder footer: @escaping () -> Footer
     ) {
-        self.header = header()
+        self.header = header
         self.content = content
         self.footer = footer
     }
@@ -29,14 +29,16 @@ struct BasedFormView<Content: View, Footer: View>: View {
         @ViewBuilder content: @escaping () -> Content,
         @ViewBuilder footer: @escaping () -> Footer
     ) {
-        self.init(content: content, header: Text(header), footer: footer)
+        self.init(header: Text(header), content: content, footer: footer)
     }
     
     var body: some View {
         VStack {
             header
                 .whereFont(.title24semibold)
+                .foregroundStyle(Color(hex: 0x1F2937))
                 .multilineTextAlignment(.leading)
+//                .padding(.top)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             content()
