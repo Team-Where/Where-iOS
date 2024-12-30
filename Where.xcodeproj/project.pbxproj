@@ -19,6 +19,7 @@
 		9155D25C2D219993001D8901 /* Color Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9155D25B2D219993001D8901 /* Color Extension.swift */; };
 		9155D25E2D219A1D001D8901 /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9155D25D2D219A1D001D8901 /* ProfileCreationView.swift */; };
 		9155D2642D21A9F6001D8901 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9155D2632D21A9F4001D8901 /* String.swift */; };
+		F7B30B0B2D226A89001829C4 /* ProfilePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B30B0A2D226A89001829C4 /* ProfilePopupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		9155D25B2D219993001D8901 /* Color Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color Extension.swift"; sourceTree = "<group>"; };
 		9155D25D2D219A1D001D8901 /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
 		9155D2632D21A9F4001D8901 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		F7B30B0A2D226A89001829C4 /* ProfilePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePopupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				9155D25D2D219A1D001D8901 /* ProfileCreationView.swift */,
+				F7B30B0A2D226A89001829C4 /* ProfilePopupView.swift */,
 				045B44A22D2150AF00514A27 /* View.swift */,
 				045B44B12D21517D00514A27 /* Splash.storyboard */,
 			);
@@ -209,6 +212,7 @@
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */,
 				9155D2642D21A9F6001D8901 /* String.swift in Sources */,
+				F7B30B0B2D226A89001829C4 /* ProfilePopupView.swift in Sources */,
 				9155D25C2D219993001D8901 /* Color Extension.swift in Sources */,
 				045B44AC2D2150AF00514A27 /* View.swift in Sources */,
 				9155D25E2D219A1D001D8901 /* ProfileCreationView.swift in Sources */,
