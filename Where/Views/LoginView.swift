@@ -66,8 +66,8 @@ struct LoginView: View {
                     Text("이미 계정 있나요?")
                         .whereFont(.body14medium)
                     
-                    Button {
-                        
+                    NavigationLink {
+                        SignInView()
                     } label: {
                         Text("여기에 로그인하세요")
                             .whereFont(.body14medium)
