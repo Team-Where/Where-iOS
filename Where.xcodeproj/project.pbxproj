@@ -27,6 +27,10 @@
 		045B44EE2D224D5C00514A27 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44ED2D224D5C00514A27 /* OnboardingView.swift */; };
 		045B44F42D22889000514A27 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44F32D22889000514A27 /* LoginView.swift */; };
 		045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44F52D228DC000514A27 /* RoundedProminentButtonStyle.swift */; };
+		04832B292D22A6D7003FFE3B /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B282D22A6D7003FFE3B /* SignInView.swift */; };
+		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
+		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
+		049345142D229E10003D1129 /* BasedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049345132D229E10003D1129 /* BasedFormView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +56,10 @@
 		045B44ED2D224D5C00514A27 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		045B44F32D22889000514A27 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		045B44F52D228DC000514A27 /* RoundedProminentButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedProminentButtonStyle.swift; sourceTree = "<group>"; };
+		04832B282D22A6D7003FFE3B /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
+		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
+		049345132D229E10003D1129 /* BasedFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasedFormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +138,7 @@
 				045B44B12D21517D00514A27 /* Splash.storyboard */,
 				045B44ED2D224D5C00514A27 /* OnboardingView.swift */,
 				045B44F32D22889000514A27 /* LoginView.swift */,
+				04832B282D22A6D7003FFE3B /* SignInView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -193,6 +202,9 @@
 			isa = PBXGroup;
 			children = (
 				045B44F52D228DC000514A27 /* RoundedProminentButtonStyle.swift */,
+				049345132D229E10003D1129 /* BasedFormView.swift */,
+				04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */,
+				04832B2C2D22B52F003FFE3B /* Popup.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -276,17 +288,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				045B44A82D2150AF00514A27 /* Model.swift in Sources */,
+				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */,
+				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045B44F42D22889000514A27 /* LoginView.swift in Sources */,
 				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
+				04832B292D22A6D7003FFE3B /* SignInView.swift in Sources */,
 				045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
+				049345142D229E10003D1129 /* BasedFormView.swift in Sources */,
 				045B44EE2D224D5C00514A27 /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
