@@ -31,6 +31,9 @@
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
 		04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */; };
+		04832B312D23D63D003FFE3B /* AthentificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B302D23D63D003FFE3B /* AthentificationView.swift */; };
+		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
+		04832B352D23F765003FFE3B /* FloaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B342D23F765003FFE3B /* FloaterView.swift */; };
 		049345142D229E10003D1129 /* BasedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049345132D229E10003D1129 /* BasedFormView.swift */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +64,9 @@
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationTermView.swift; sourceTree = "<group>"; };
+		04832B302D23D63D003FFE3B /* AthentificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthentificationView.swift; sourceTree = "<group>"; };
+		04832B322D23EB93003FFE3B /* Floater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Floater.swift; sourceTree = "<group>"; };
+		04832B342D23F765003FFE3B /* FloaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloaterView.swift; sourceTree = "<group>"; };
 		049345132D229E10003D1129 /* BasedFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasedFormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -142,6 +148,8 @@
 				045B44F32D22889000514A27 /* LoginView.swift */,
 				04832B282D22A6D7003FFE3B /* SignInView.swift */,
 				04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */,
+				04832B302D23D63D003FFE3B /* AthentificationView.swift */,
+				04832B342D23F765003FFE3B /* FloaterView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -208,6 +216,7 @@
 				049345132D229E10003D1129 /* BasedFormView.swift */,
 				04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */,
 				04832B2C2D22B52F003FFE3B /* Popup.swift */,
+				04832B322D23EB93003FFE3B /* Floater.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -295,6 +304,7 @@
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
+				04832B352D23F765003FFE3B /* FloaterView.swift in Sources */,
 				04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
@@ -302,10 +312,12 @@
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045B44F42D22889000514A27 /* LoginView.swift in Sources */,
 				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
+				04832B312D23D63D003FFE3B /* AthentificationView.swift in Sources */,
 				04832B292D22A6D7003FFE3B /* SignInView.swift in Sources */,
 				045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
+				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
 				049345142D229E10003D1129 /* BasedFormView.swift in Sources */,
 				045B44EE2D224D5C00514A27 /* OnboardingView.swift in Sources */,
 			);
