@@ -30,6 +30,7 @@
 		04832B292D22A6D7003FFE3B /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B282D22A6D7003FFE3B /* SignInView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
+		04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */; };
 		049345142D229E10003D1129 /* BasedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049345132D229E10003D1129 /* BasedFormView.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 		04832B282D22A6D7003FFE3B /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
+		04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationTermView.swift; sourceTree = "<group>"; };
 		049345132D229E10003D1129 /* BasedFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasedFormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -139,6 +141,7 @@
 				045B44ED2D224D5C00514A27 /* OnboardingView.swift */,
 				045B44F32D22889000514A27 /* LoginView.swift */,
 				04832B282D22A6D7003FFE3B /* SignInView.swift */,
+				04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
+				04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */,
