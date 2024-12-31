@@ -52,8 +52,8 @@ struct RegistrationTermView: View {
             }
             .padding(.top)
         } footer: {
-            Button {
-                // TODO: 이메일 제출, 인증 화면으로 이동
+            NavigationLink {
+                AthentificationView()
             } label: {
                 Text("다음")
                     .whereFont(.body16semibold)
