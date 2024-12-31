@@ -14,7 +14,7 @@ struct RoundedTextFieldStyle: TextFieldStyle {
     
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
-            .padding()
+            .padding(16)
             .whereFont(font ?? .body16regular)
             .overlay(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
