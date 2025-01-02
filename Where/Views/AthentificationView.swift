@@ -139,12 +139,12 @@ struct AthentificationView: View {
                 )
                 .focused($textFieldFocus, equals: .passwordTextField)
                 
-                Text("영문+숫자+특수문자(!,~,@) 조합 8~32자")
+                Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자")
                     .whereFont(.body14regular)
                     .foregroundStyle(Color(hex: 0x374151))
                 
                 // TODO: Password Validation Check
-                Text("영문+숫자+특수문자(!,~,@) 조합 8~32자에 부합하지 않습니다.")
+                Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자에 부합하지 않습니다.")
                     .whereFont(.body14regular)
                     .foregroundStyle(Color(hex: 0xEF4444))
             }
