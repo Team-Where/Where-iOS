@@ -11,7 +11,7 @@ import SwiftUI
 struct WhereApp: App {
     var body: some Scene {
         WindowGroup {
-            ProfileCreationView()
+            LoginView()
         }
     }
 }
