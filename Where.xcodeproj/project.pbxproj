@@ -168,8 +168,7 @@
 		045B44A32D2150AF00514A27 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */,
-				91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */,
+				91A9EAB52D26EF53005F09D2 /* ProfileSetting */,
 				045B44ED2D224D5C00514A27 /* OnboardingView.swift */,
 				045B44F32D22889000514A27 /* LoginView.swift */,
 				04832B282D22A6D7003FFE3B /* SignInView.swift */,
@@ -267,6 +266,15 @@
 				91A9EAAD2D26EE45005F09D2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		91A9EAB52D26EF53005F09D2 /* ProfileSetting */ = {
+			isa = PBXGroup;
+			children = (
+				91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */,
+				91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */,
+			);
+			path = ProfileSetting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
