@@ -10,6 +10,9 @@ import SwiftUI
 struct AthentificationView: View {
     @State private var isToastPresented: Bool = false
     @State private var emailFieldText: String = String()
+    @State private var authorizationCodeFieldText: String = String()
+    @State private var passwordFieldText: String = String()
+    @State private var reInputPasswordFieldText: String = String()
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
     var body: some View {
@@ -17,7 +20,9 @@ struct AthentificationView: View {
             VStack(spacing: 20) {
                 emailCell
                 
-                authorizationCodeCell
+//                authorizationCodeCell
+                
+                passwordCell
                 
                 Spacer()
             }
@@ -97,7 +102,7 @@ struct AthentificationView: View {
             HStack {
                 RoundedTextField(
                     "코드 6자리 입력해주세요",
-                    text: $emailFieldText,
+                    text: $authorizationCodeFieldText,
                     color: /*Color(hex: 0xE5E7EB)*/ .red
                 )
                 .focused($textFieldFocus, equals: .authorizationCodeTextField)
@@ -118,12 +123,75 @@ struct AthentificationView: View {
                 .foregroundStyle(Color(hex: 0xEF4444))
         }
     }
+    
+    private var passwordCell: some View {
+        VStack {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("비밀번호")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0x374151))
+                
+                RoundedTextField(
+                    "비밀번호를 입력해주세요",
+                    text: $passwordFieldText,
+                    color: /*Color(hex: 0xE5E7EB)*/ .red,
+                    isSecured: true
+                )
+                .focused($textFieldFocus, equals: .passwordTextField)
+                
+                Text("영문+숫자+특수문자(!,~,@) 조합 8~32자")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0x374151))
+                
+                // TODO: Password Validation Check
+                Text("영문+숫자+특수문자(!,~,@) 조합 8~32자에 부합하지 않습니다.")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0xEF4444))
+            }
+            
+            VStack(alignment: .leading, spacing: 10) {
+                Text("비밀번호")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0x374151))
+                
+                RoundedTextField(
+                    "비밀번호를 입력해주세요",
+                    text: $reInputPasswordFieldText,
+                    color: Color(hex: 0xE5E7EB),
+                    isSecured: true
+                )
+                .focused($textFieldFocus, equals: .reInputPasswordTextField)
+                
+                Text("비밀번호를 한 번 더 입력해주세요.")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0x374151))
+                
+                // TODO: Password Validation Check
+                Text("비밀번호가 올바르지 않습니다.")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0xEF4444))
+            }
+        }
+    }
+    
+    private func isPasswordValid(_ password: String) -> Bool {
+        // 8~32자
+        guard (8...32).contains(password.count) else { return false }
+        
+        // 영문, 숫자, 특수문자("!", "~", "@") 포함
+        let hasUppercase = password.rangeOfCharacter(from: .uppercaseLetters) != nil
+        let hasLowercase = password.rangeOfCharacter(from: .lowercaseLetters) != nil
+        let hasDigits = password.rangeOfCharacter(from: .decimalDigits) != nil
+        let hasSpecialCharacters = password.rangeOfCharacter(from: CharacterSet(charactersIn: "!~@")) != nil
+        
+        return hasUppercase && hasLowercase && hasDigits && hasSpecialCharacters
+    }
 }
 
 // MARK: Nested Types
 extension AthentificationView {
     enum KeyboardFocusState: Hashable {
-        case emailTextField, authorizationCodeTextField, passwordTextField, anotherPasswordTextField
+        case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField
     }
 }
 
