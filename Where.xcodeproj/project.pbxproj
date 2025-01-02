@@ -124,7 +124,8 @@
 		045B446C2D2146B000514A27 = {
 			isa = PBXGroup;
 			children = (
-				9155D2202D218E4E001D8901 /* Where */,
+				045B44A72D2150AF00514A27 /* Where */,
+				04832B452D266819003FFE3B /* WhereTests */,
 				045B44762D2146B000514A27 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -149,7 +150,9 @@
 		9155D2132D218E4E001D8901 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				9155D2122D218E4E001D8901 /* Preview Assets.xcassets */,
+				045B449A2D2150AF00514A27 /* Preview Assets.xcassets */,
+				045B44A42D2150AF00514A27 /* Assets.xcassets */,
+				045B44BB2D21655400514A27 /* PretendardFont */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -373,9 +376,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9155D2282D218E4E001D8901 /* Preview Assets.xcassets in Resources */,
-				9155D2292D218E4E001D8901 /* Splash.storyboard in Resources */,
-				9155D22A2D218E4E001D8901 /* Assets.xcassets in Resources */,
+				045B44C02D21657600514A27 /* Pretendard-Medium.otf in Resources */,
+				045B44C12D21657600514A27 /* Pretendard-Bold.otf in Resources */,
+				045B44C22D21657600514A27 /* Pretendard-Regular.otf in Resources */,
+				045B44C32D21657600514A27 /* Pretendard-SemiBold.otf in Resources */,
+				045B44AF2D2150AF00514A27 /* Preview Assets.xcassets in Resources */,
+				045B44B02D2150AF00514A27 /* Assets.xcassets in Resources */,
+				045B44B22D21517D00514A27 /* Splash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
