@@ -118,6 +118,7 @@
 			children = (
 				045B44A72D2150AF00514A27 /* Where */,
 				04832B452D266819003FFE3B /* WhereTests */,
+				045B449B2D2150AF00514A27 /* Preview Content */,
 				045B44762D2146B000514A27 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -197,7 +198,6 @@
 			children = (
 				045B44C42D21659700514A27 /* Info.plist */,
 				045B44992D2150AF00514A27 /* Models */,
-				045B449B2D2150AF00514A27 /* Preview Content */,
 				045B449D2D2150AF00514A27 /* Service */,
 				045B449F2D2150AF00514A27 /* Utility */,
 				045B44A12D2150AF00514A27 /* ViewModels */,

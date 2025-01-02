@@ -20,8 +20,7 @@ struct ProfileCreationView: View {
                 VStack {
                     HStack {
                         Text("프로필을 설정해주세요")
-                            .font(.system(size: 24.0))
-                            .fontWeight(.bold)
+                            .whereFont(.title24semibold)
                         Spacer()
                     }
                     .padding(.top, 40)
@@ -51,6 +50,7 @@ struct ProfileCreationView: View {
                     
                     HStack {
                         Text("닉네임")
+                            .whereFont(.body16regular)
                         Spacer()
                     }
                     .padding(.top, 38)
@@ -97,7 +97,7 @@ struct ProfileCreationView: View {
                     
                     HStack {
                         Text(isValid ? "사용 가능한 닉네임입니다" : "8자 내, 이모지, 특수문자(-,_제외)를 사용할 수 없습니다.")
-                            .font(.system(size: 14))
+                            .whereFont(.body14regular)
                             .foregroundColor(isValid ? .green : .black)  // 유효성에 따라 색상 변경
                             .padding(.horizontal)
                         
