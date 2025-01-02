@@ -16,6 +16,8 @@ struct WhereTabView: View {
             
             Spacer()
             
+            Divider()
+            
             ZStack {
                 HStack {
                     Spacer()
@@ -63,6 +65,7 @@ struct WhereTabView: View {
             .whereFont(.caption12medium)
             .foregroundStyle(isSelected ? Color(hex: 0x111827) : Color(hex: 0x9CA3AF))
         }
+        .padding(.vertical, 8)
     }
 }
 
