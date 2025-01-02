@@ -35,6 +35,9 @@
 		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
 		04832B352D23F765003FFE3B /* FloaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B342D23F765003FFE3B /* FloaterView.swift */; };
 		04832B462D266819003FFE3B /* WhereTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B442D266819003FFE3B /* WhereTests.swift */; };
+		04832B482D266F55003FFE3B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B472D266F55003FFE3B /* SearchBar.swift */; };
+		04832B4C2D2675EF003FFE3B /* FriendsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B4B2D2675EF003FFE3B /* FriendsListView.swift */; };
+		04832B522D26A55B003FFE3B /* WhereTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B512D26A55B003FFE3B /* WhereTabView.swift */; };
 		049345142D229E10003D1129 /* BasedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049345132D229E10003D1129 /* BasedFormView.swift */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +83,9 @@
 		04832B342D23F765003FFE3B /* FloaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloaterView.swift; sourceTree = "<group>"; };
 		04832B3B2D266813003FFE3B /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04832B442D266819003FFE3B /* WhereTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereTests.swift; sourceTree = "<group>"; };
+		04832B472D266F55003FFE3B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		04832B4B2D2675EF003FFE3B /* FriendsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsListView.swift; sourceTree = "<group>"; };
+		04832B512D26A55B003FFE3B /* WhereTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereTabView.swift; sourceTree = "<group>"; };
 		049345132D229E10003D1129 /* BasedFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasedFormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -171,6 +177,7 @@
 				04832B282D22A6D7003FFE3B /* SignInView.swift */,
 				04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */,
 				04832B302D23D63D003FFE3B /* AthentificationView.swift */,
+				04832B4B2D2675EF003FFE3B /* FriendsListView.swift */,
 				04832B342D23F765003FFE3B /* FloaterView.swift */,
 			);
 			path = Views;
@@ -239,6 +246,8 @@
 				04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */,
 				04832B2C2D22B52F003FFE3B /* Popup.swift */,
 				04832B322D23EB93003FFE3B /* Floater.swift */,
+				04832B472D266F55003FFE3B /* SearchBar.swift */,
+				04832B512D26A55B003FFE3B /* WhereTabView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -364,12 +373,15 @@
 				045B44A82D2150AF00514A27 /* Model.swift in Sources */,
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
+				04832B4C2D2675EF003FFE3B /* FriendsListView.swift in Sources */,
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
 				04832B352D23F765003FFE3B /* FloaterView.swift in Sources */,
 				04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
+				04832B522D26A55B003FFE3B /* WhereTabView.swift in Sources */,
+				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
 				045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */,
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045B44F42D22889000514A27 /* LoginView.swift in Sources */,
