@@ -15,24 +15,29 @@ struct User: Identifiable {
 }
 
 struct FriendsListView: View {
-    @State private var searchingText: String = String()
-    @State private var friends: [User] = [
-        .init(nickname: "Swain", isFavorite: false),
-        .init(nickname: "즐겨찾기한 친구", isFavorite: true),
-        .init(nickname: "삭제될 친구", isFavorite: true),
-    ]
-    @State private var isSearching: Bool = false
     @State private var sheetItem: SheetType?
     @FocusState private var isFocused: Bool
+    
+    @ObservedObject private var viewModel = FriendsListViewModel()
+    
+    private var friends: [User] { viewModel.friends }
+    private var searchedFriends: [User] { viewModel.searchedFriends }
+    private var isEditing: Bool { viewModel.isEditing }
     
     var body: some View {
         VStack {
             header
             
-            SearchBar("친구를 검색하세요.", text: $searchingText, $isFocused)
+            SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
             
             if friends.isEmpty {
                 unavailableView
+            } else if viewModel.isSearching {
+                ScrollView(.vertical) {
+                    ForEach(searchedFriends) { friend in
+                        Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
+                    }
+                }
             } else {
                 ScrollView(.vertical) {
                     section(.favorite, friends.filter { $0.isFavorite })
@@ -48,10 +53,10 @@ struct FriendsListView: View {
     
     private var header: some View {
         HStack {
-            if isSearching {
+            if isEditing {
                 Button {
                     withAnimation {
-                        isSearching.toggle()
+                        viewModel.toggleEditMode()
                     }
                 } label: {
                     HStack {
@@ -75,10 +80,10 @@ struct FriendsListView: View {
             
             Button {
                 withAnimation {
-                    isSearching.toggle()
+                    viewModel.toggleEditMode()
                 }
             } label: {
-                Text(isSearching ? "완료" : "편집")
+                Text(isEditing ? "완료" : "편집")
                     .whereFont(.body16medium)
             }
         }
@@ -116,40 +121,7 @@ struct FriendsListView: View {
         if friends.isEmpty == false {
             Section {
                 ForEach(friends) { friend in
-                    HStack {
-                        AsyncImage(url: friend.imageURL)
-                            .scaledToFit()
-                            .frame(width: 50, height: 50)
-                            .clipShape(.circle)
-                        
-                        Text(friend.nickname)
-                            .whereFont(.body16medium)
-                        
-                        Spacer()
-                        
-                        if isSearching {
-                            Button {
-                                sheetItem = .deleteFriend(friend: friend)
-                            } label: {
-                                Image(systemName: "trash")
-                                    .foregroundStyle(Color(hex: 0x6B7280))
-                            }
-                            .transition(.move(edge: .trailing))
-                        } else {
-                            Button {
-                                // TODO: 즐겨찾기 토글
-                            } label: {
-                                let isFavorite = friend.isFavorite
-                                Image(systemName: isFavorite ? "star.fill" : "star")
-                                    .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
-                            }
-                            .transition(.move(edge: .trailing))
-                        }
-                    }
-                    .contentShape(.rect)
-                    .onTapGesture {
-                        sheetItem = .historyWithFriend(friend: friend)
-                    }
+                    Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
                 }
             } header: {
                 HStack {
@@ -166,9 +138,7 @@ struct FriendsListView: View {
         switch type {
         case .deleteFriend(let friend):
             Button {
-                // TODO: 친구 삭제
-                guard let index = friends.firstIndex(where: { friend.id == $0.id }) else { return }
-                friends.remove(at: index)
+                viewModel.deleteFriend(by: friend.id)
             } label: {
                 Text("친구 삭제")
                     .whereFont(.body16medium)
@@ -274,6 +244,60 @@ extension FriendsListView {
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
+        }
+    }
+    
+    struct Cell: View {
+        @Binding var sheetItem: SheetType?
+        
+        private let friend: User
+        private var isEditing: Bool
+        
+        init(
+            sheetItem: Binding<SheetType?>,
+            isEditing: Bool,
+            _ friend: User
+        ) {
+            self._sheetItem = sheetItem
+            self.isEditing = isEditing
+            self.friend = friend
+        }
+        
+        var body: some View {
+            HStack {
+                AsyncImage(url: friend.imageURL)
+                    .scaledToFit()
+                    .frame(width: 50, height: 50)
+                    .clipShape(.circle)
+                
+                Text(friend.nickname)
+                    .whereFont(.body16medium)
+                
+                Spacer()
+                
+                if isEditing {
+                    Button {
+                        sheetItem = .deleteFriend(friend: friend)
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundStyle(Color(hex: 0x6B7280))
+                    }
+                    .transition(.move(edge: .trailing))
+                } else {
+                    Button {
+                        // TODO: 즐겨찾기 토글
+                    } label: {
+                        let isFavorite = friend.isFavorite
+                        Image(systemName: isFavorite ? "star.fill" : "star")
+                            .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
+                    }
+                    .transition(.move(edge: .trailing))
+                }
+            }
+            .contentShape(.rect)
+            .onTapGesture {
+                sheetItem = .historyWithFriend(friend: friend)
+            }
         }
     }
 }

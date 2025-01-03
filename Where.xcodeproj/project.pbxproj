@@ -28,6 +28,7 @@
 		045B44F42D22889000514A27 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44F32D22889000514A27 /* LoginView.swift */; };
 		045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44F52D228DC000514A27 /* RoundedProminentButtonStyle.swift */; };
 		045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CA15B2D27BC96001B5CEE /* AppStorageKey.swift */; };
+		045CA15F2D27BEFB001B5CEE /* FriendsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CA15E2D27BEFB001B5CEE /* FriendsListViewModel.swift */; };
 		04832B292D22A6D7003FFE3B /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B282D22A6D7003FFE3B /* SignInView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -79,6 +80,7 @@
 		045B44F32D22889000514A27 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		045B44F52D228DC000514A27 /* RoundedProminentButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedProminentButtonStyle.swift; sourceTree = "<group>"; };
 		045CA15B2D27BC96001B5CEE /* AppStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStorageKey.swift; sourceTree = "<group>"; };
+		045CA15E2D27BEFB001B5CEE /* FriendsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsListViewModel.swift; sourceTree = "<group>"; };
 		04832B282D22A6D7003FFE3B /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 		045B44A12D2150AF00514A27 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				045CA15D2D27BEE7001B5CEE /* FriendsList */,
 				045B44A02D2150AF00514A27 /* ViewModel.swift */,
 			);
 			path = ViewModels;
@@ -284,6 +287,14 @@
 			isa = PBXGroup;
 			children = (
 				04832B4B2D2675EF003FFE3B /* FriendsListView.swift */,
+			);
+			path = FriendsList;
+			sourceTree = "<group>";
+		};
+		045CA15D2D27BEE7001B5CEE /* FriendsList */ = {
+			isa = PBXGroup;
+			children = (
+				045CA15E2D27BEFB001B5CEE /* FriendsListViewModel.swift */,
 			);
 			path = FriendsList;
 			sourceTree = "<group>";
@@ -413,6 +424,7 @@
 				04832B4C2D2675EF003FFE3B /* FriendsListView.swift in Sources */,
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
+				045CA15F2D27BEFB001B5CEE /* FriendsListViewModel.swift in Sources */,
 				04832B352D23F765003FFE3B /* FloaterView.swift in Sources */,
 				04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
