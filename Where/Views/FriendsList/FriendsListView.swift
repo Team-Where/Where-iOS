@@ -26,8 +26,6 @@ struct FriendsListView: View {
     
     var body: some View {
         VStack {
-            header
-            
             SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
             
             if friends.isEmpty {
@@ -46,46 +44,51 @@ struct FriendsListView: View {
             }
         }
         .padding()
-        .sheet(item: $sheetItem) { item in
-            sheet(item)
-        }
-    }
-    
-    private var header: some View {
-        HStack {
-            if isEditing {
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if isEditing {
+                    Button {
+                        withAnimation {
+                            viewModel.toggleEditMode()
+                        }
+                    } label: {
+                        Image(systemName: "arrow.backward")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 12)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 6)
+                            .foregroundStyle(.black)
+                    }
+                }
+            }
+            
+            ToolbarItem(placement: .navigation) {
+                if isEditing {
+                    Text("목록편집")
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                        .padding(.leading)
+                } else {
+                    Text("친구목록")
+                        .whereFont(.title24semibold)
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     withAnimation {
                         viewModel.toggleEditMode()
                     }
                 } label: {
-                    HStack {
-                        Image(systemName: "arrow.backward")
-                            .padding(.leading, 14)
-                            .frame(width: 24, height: 24)
-                            .foregroundStyle(.black)
-                        
-                        Text("목록편집")
-                            .whereFont(.subtitle18semibold)
-                            .foregroundStyle(Color(hex: 0x1F2937))
-                            .padding(.leading)
-                    }
+                    Text(isEditing ? "완료" : "편집")
+                        .whereFont(.body16medium)
                 }
-            } else {
-                Text("친구목록")
-                    .whereFont(.title24semibold)
             }
-            
-            Spacer()
-            
-            Button {
-                withAnimation {
-                    viewModel.toggleEditMode()
-                }
-            } label: {
-                Text(isEditing ? "완료" : "편집")
-                    .whereFont(.body16medium)
-            }
+        }
+        .sheet(item: $sheetItem) { item in
+            sheet(item)
         }
     }
     
@@ -303,5 +306,7 @@ extension FriendsListView {
 }
 
 #Preview {
-    FriendsListView()
+    NavigationStack {
+        FriendsListView()
+    }
 }
