@@ -9,8 +9,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Environment(\.dismiss) private var dismiss
-    // TODO: AppStorageKey를 네임스페이스화 해서 하드코딩 줄이기
-    @AppStorage("isOnboardingNeeded") private var isOnboardingNeeded: Bool = true
+    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     @State private var currentStepIndex: Int = .zero
     
     private let steps: [OnboardingStep] = OnboardingStep.allCases
@@ -20,8 +19,7 @@ struct OnboardingView: View {
         BasedFormView(header: Text(title)) {
             TabView(selection: $currentStepIndex) {
                 ForEach(steps.indices, id: \.self) { index in
-                    // TODO: 단계별 이미지 삽입 필요
-                    Text("Images here")
+                    steps[index].image
                         .tag(index)
                 }
             }
@@ -44,7 +42,9 @@ struct OnboardingView: View {
     
     private var skipToNextStepButton: some View {
         Button {
-            currentStepIndex += 1
+            withAnimation {
+                currentStepIndex += 1
+            }
         } label: {
             Text("건너뛰기")
                 .whereFont(.body16medium)
@@ -89,9 +89,16 @@ extension OnboardingView {
             }
         }
         
-//        var image: Image {
-//            
-//        }
+        var image: Image {
+            switch self {
+            case .meetingSelection:
+                return Image(.onboardingCharacter1)
+            case .checkPlace:
+                return Image(.onboardingCharacter2)
+            case .checkLocation:
+                return Image(.onboardingCharacter3)
+            }
+        }
     }
     
     struct PageControl: View {
