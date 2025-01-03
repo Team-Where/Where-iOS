@@ -7,13 +7,6 @@
 
 import SwiftUI
 
-struct User: Identifiable {
-    let id: UUID = UUID()
-    let imageURL: URL? = nil
-    let nickname: String
-    let isFavorite: Bool
-}
-
 struct FriendsListView: View {
     @State private var sheetItem: SheetType?
     @FocusState private var isFocused: Bool
