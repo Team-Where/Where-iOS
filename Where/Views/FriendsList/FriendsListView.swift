@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FriendsListView: View {
     @State private var sheetItem: SheetType?
+    @State private var route: Route?
     @FocusState private var isFocused: Bool
     
     @ObservedObject private var viewModel = FriendsListViewModel()
@@ -82,6 +83,12 @@ struct FriendsListView: View {
         }
         .sheet(item: $sheetItem) { item in
             sheet(item)
+        }
+        .navigationDestination(item: $route) { route in
+            switch route {
+            case .historyReminder(let friend):
+                HistoryReminderView()
+            }
         }
     }
     
@@ -190,8 +197,9 @@ struct FriendsListView: View {
                     }
                 }
                 
-                NavigationLink {
-                    // TODO: 모임활동 화면으로 이동
+                Button {
+                    sheetItem = .none
+                    route = .historyReminder(friend: friend)
                 } label: {
                     Text("나와의 모임활동 보기")
                         .whereFont(.body16medium)
@@ -226,16 +234,24 @@ extension FriendsListView {
     }
     
     /// 친구목록 내에서 라우팅 가능한 시트의 종류
-    enum SheetType: Identifiable, Hashable {
+    enum SheetType: Identifiable {
         /// 친구삭제
         case deleteFriend(friend: User)
         /// 나와의 모임활동 보기
         case historyWithFriend(friend: User)
         
         var id: String { String(describing: self) }
+    }
+    
+    /// 친구목록 내에서 라우팅 가능한 Path의 종류
+    enum Route: Identifiable, Hashable {
+        /// 나와의 모임활동 상세 보기
+        case historyReminder(friend: User)
         
-        static func == (lhs: FriendsListView.SheetType, rhs: FriendsListView.SheetType) -> Bool {
-            return lhs.id == rhs.id
+        var id: String { String(describing: self) }
+        
+        static func == (lhs: Route, rhs: Route) -> Bool {
+            lhs.id == rhs.id
         }
         
         func hash(into hasher: inout Hasher) {
