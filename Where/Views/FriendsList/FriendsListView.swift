@@ -153,6 +153,7 @@ struct FriendsListView: View {
             }
             .padding(.horizontal)
             .presentationDetents([.height(150)])
+            .presentationCornerRadius(16)
         case .historyWithFriend(let friend):
             VStack {
                 HStack {
@@ -212,6 +213,7 @@ struct FriendsListView: View {
             }
             .padding()
             .presentationDetents([.fraction(0.45)])
+            .presentationCornerRadius(16)
         }
     }
 }
