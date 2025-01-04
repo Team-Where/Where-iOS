@@ -39,6 +39,8 @@
 		91A9EAB22D26EE45005F09D2 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */; };
 		91A9EAB32D26EE45005F09D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAAC2D26EE45005F09D2 /* Assets.xcassets */; };
 		91A9EAB42D26EE45005F09D2 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAAA2D26EE45005F09D2 /* Pretendard-SemiBold.otf */; };
+		91A9EAB72D299D4B005F09D2 /* SignUpCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EAB62D299D4B005F09D2 /* SignUpCompleteView.swift */; };
+		91A9EABA2D29AFD7005F09D2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EAB92D29AFD7005F09D2 /* HomeView.swift */; };
 		91B7A16F2D26DFC2003932B4 /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */; };
 		91B7A1702D26DFC2003932B4 /* ProfilePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */; };
 		91B7A1722D26DFDE003932B4 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A1712D26DFDE003932B4 /* String.swift */; };
@@ -90,6 +92,8 @@
 		91A9EAAA2D26EE45005F09D2 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
 		91A9EAAC2D26EE45005F09D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91A9EAAD2D26EE45005F09D2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		91A9EAB62D299D4B005F09D2 /* SignUpCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpCompleteView.swift; sourceTree = "<group>"; };
+		91A9EAB92D29AFD7005F09D2 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
 		91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePopupView.swift; sourceTree = "<group>"; };
 		91B7A1712D26DFDE003932B4 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -168,6 +172,7 @@
 		045B44A32D2150AF00514A27 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				91A9EAB82D29AFC9005F09D2 /* Home */,
 				91A9EAB52D26EF53005F09D2 /* ProfileSetting */,
 				045B44ED2D224D5C00514A27 /* OnboardingView.swift */,
 				045B44F32D22889000514A27 /* LoginView.swift */,
@@ -273,8 +278,17 @@
 			children = (
 				91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */,
 				91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */,
+				91A9EAB62D299D4B005F09D2 /* SignUpCompleteView.swift */,
 			);
 			path = ProfileSetting;
+			sourceTree = "<group>";
+		};
+		91A9EAB82D29AFC9005F09D2 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				91A9EAB92D29AFD7005F09D2 /* HomeView.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -399,10 +413,12 @@
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				04832B522D26A55B003FFE3B /* WhereTabView.swift in Sources */,
+				91A9EABA2D29AFD7005F09D2 /* HomeView.swift in Sources */,
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
 				045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */,
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045B44F42D22889000514A27 /* LoginView.swift in Sources */,
+				91A9EAB72D299D4B005F09D2 /* SignUpCompleteView.swift in Sources */,
 				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
 				04832B312D23D63D003FFE3B /* AthentificationView.swift in Sources */,
 				04832B292D22A6D7003FFE3B /* SignInView.swift in Sources */,

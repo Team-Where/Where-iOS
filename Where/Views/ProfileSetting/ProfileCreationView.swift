@@ -13,6 +13,7 @@ struct ProfileCreationView: View {
     @State private var isValid: Bool = false
     @State private var showPopup = false
     @State private var profileImage: UIImage? = UIImage(named: "person")
+    @State private var shouldNavigate = false
     
     var body: some View {
         NavigationStack {
@@ -56,49 +57,50 @@ struct ProfileCreationView: View {
                     .padding(.top, 38)
                     .padding(.horizontal)
                     
-                    ZStack(alignment: .trailing) {
-                        // 팝업창
-                        TextField("",
-                                  text: $username,
-                                  prompt: Text("닉네임을 입력해주세요").foregroundStyle(Color(hex: 0x6B7280))
-                        )
-                        .frame(height: 56)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .padding([.horizontal], 15)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(isValid ? Color.green : Color(hex: 0xE5E7EB)))
-                        .padding(.horizontal)
-                        .onChange(of: username) { newValue in
-                            // 텍스트 필드가 비어 있으면 isValid를 false로 설정
-                            if newValue.isEmpty {
-                                isValid = false
-                            } else {
-                                // 8자 이상 입력 제한
-                                let maxLength = 8
-                                let filteredValue = newValue.filter { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }
+                    // 텍스트필드
+                    TextField("",
+                              text: $username,
+                              prompt: Text("닉네임을 입력해주세요").foregroundStyle(Color(hex: 0x6B7280))
+                    )
+                    .whereFont(.body16regular)
+                    .frame(height: 56)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .padding(.horizontal, 15)
+                    .background(
+                        ZStack(alignment: .trailing) {
+                            HStack {
+                                Spacer()
                                 
-                                // 8자 이상일 경우 8자까지만 잘라내기
-                                username = String(filteredValue.prefix(maxLength))
-                                
-                                // 유효성 검사: 특수문자, 이모지 제외
-                                isValid = username.count <= maxLength && !username.containsEmoji && username.allSatisfy {
-                                    $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_"
+                                if isValid {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.green)
+                                        .padding(.trailing, 30)
                                 }
                             }
                         }
-                        
-                        // 체크 아이콘
-                        if isValid {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.green)
-                                .padding(.trailing, 30)
+                    )
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(!username.isEmpty && !isValid ? Color.red : (isValid ? Color.green : Color(hex: 0xE5E7EB))))
+                    .padding(.horizontal)
+                    .onChange(of: username) { newValue in
+                        // onChange 로직은 동일하게 유지
+                        if newValue.isEmpty {
+                            isValid = false
+                        } else {
+                            let maxLength = 8
+                            let filteredValue = newValue.filter { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }
+                            username = String(filteredValue.prefix(maxLength))
+                            
+                            // 최소 2글자 이상, 최대 8글자 이하, 특수문자와 이모지 제외 조건 추가
+                            isValid = username.count >= 2 && username.count <= maxLength &&
+                            !username.containsEmoji &&
+                            username.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }
                         }
                     }
                     
-                    
                     HStack {
-                        Text(isValid ? "사용 가능한 닉네임입니다" : "8자 내, 이모지, 특수문자(-,_제외)를 사용할 수 없습니다.")
+                        Text(isValid ? "사용 가능한 닉네임입니다" : "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다.")
                             .whereFont(.body14regular)
-                            .foregroundColor(isValid ? .green : .black)  // 유효성에 따라 색상 변경
+                            .foregroundColor(isValid ? .green : (username.isEmpty ? .black : .red))  // 유효성에 따라 색상 변경
                             .padding(.horizontal)
                         
                         Spacer()
@@ -107,17 +109,21 @@ struct ProfileCreationView: View {
                     Spacer()
                     
                     Button {
-                        // 버튼 클릭 시 동작할 코드
+                        shouldNavigate = true
                     } label: {
                         Text("다음")
                             .frame(maxWidth: .infinity)
                             .padding()  // 버튼 내부 여백
-                            .background(Color(hex: 0x4F46E5))  // 배경색 설정
-                            .foregroundStyle(.white)  // 텍스트 색을 흰색으로 설정
+                            .background(isValid ? Color(hex: 0x4F46E5) : Color(.systemGray3))  // 유효성 검사에 따라 배경색 변경
+                            .foregroundStyle(.white)
                             .bold()
                             .cornerRadius(10)  // 둥근 모서리
                     }
                     .padding()
+                    .disabled(!isValid)  // 유효성 검사 통과 시에만 활성화
+                    .navigationDestination(isPresented: $shouldNavigate) {
+                        SignUpCompleteView(username: username)
+                    }
                 }
                 
                 if showPopup {
@@ -136,6 +142,7 @@ struct ProfileCreationView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 
