@@ -57,7 +57,7 @@ struct MeetingInformationDetailView: View {
     
     private var summaryArea: some View {
         VStack(spacing: 8) {
-            SummaryType.date(date: .now).view()
+            SummaryType.date(date: nil).view()
             
             SummaryType.sharedPlace(count: 6).view()
             
@@ -130,7 +130,7 @@ extension MeetingInformationDetailView {
     enum SummaryType: Identifiable {
         typealias Content = (primaryIcon: Image, secondaryIcon: Image, buttonLabel: String)
         
-        case date(date: Date)
+        case date(date: Date?)
         case sharedPlace(count: UInt)
         case invitedFriends(count: UInt)
         
@@ -166,6 +166,8 @@ extension MeetingInformationDetailView {
                 switch self {
                 case .date(let date):
                     AsyncDateView(date: date, format: .yyyyMMddah, prompt: "아직 정해진 일정이 없어요")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(date == .none ? Color(hex: 0x868E96) : Color(hex: 0x212529))
                 case .sharedPlace(let count):
                     HStack {
                         Text("공유된 장소")
