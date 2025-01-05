@@ -56,16 +56,8 @@ struct MeetingInformationView: View {
     }
 }
 
-// MARK: Nested Types
+// MARK: Nested Types - CustomTabbar
 extension MeetingInformationView {
-    /// 모임정보 화면에서 라우팅 가능한 시트의 종류
-    enum SheetType: Identifiable {
-        /// 모임정보 편집
-        case editMeetingInfo
-        
-        var id: String { String(describing: self) }
-    }
-    
     enum TabViewItem {
         case meetingInfo
         case placeInfo
@@ -123,6 +115,17 @@ extension MeetingInformationView {
             }
         }
     }
+}
+
+// MARK: Nested Types - Sheet
+extension MeetingInformationView {
+    /// 모임정보 화면에서 라우팅 가능한 시트의 종류
+    enum SheetType: Identifiable {
+        /// 모임정보 편집
+        case editMeetingInfo
+        
+        var id: String { String(describing: self) }
+    }
     
     struct EditMeetingInfoSheet: View {
         /// 모임정보 편집 간 단계
@@ -161,178 +164,187 @@ extension MeetingInformationView {
         
         @ViewBuilder private func content() -> some View {
             switch editStep {
-            case .entry:
-                VStack {
-                    HStack {
-                        Spacer()
-                        
-                        Button {
-                            sheetType = .none
-                        } label: {
-                            Image(systemName: "xmark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 12, height: 12)
-                                .foregroundStyle(Color(hex: 0x030712))
-                        }
+            case .entry: entry
+            case .title: title
+            case .memo: memo
+            }
+        }
+        
+        var entry: some View {
+            VStack {
+                HStack {
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                
+                HStack {
+                    Text("2024 연말파티")
+                        .whereFont(.title20semibold)
+                        .foregroundStyle(Color(hex: 0x111827))
+                    
+                    Button {
+                        detentSelection = .medium
+                        editStep = .title
+                    } label: {
+                        Image(.pencilIcon)
+                            .frame(width: 16, height: 16)
+                            .foregroundStyle(.black)
                     }
                     
-                    HStack {
-                        Text("2024 연말파티")
-                            .whereFont(.title20semibold)
-                            .foregroundStyle(Color(hex: 0x111827))
-                        
-                        Button {
-                            detentSelection = .medium
-                            editStep = .title
-                        } label: {
-                            Image(.pencilIcon)
-                                .frame(width: 16, height: 16)
-                                .foregroundStyle(.black)
-                        }
-                        
-                        Spacer()
-                    }
-                    
-                    HStack {
-                        Text("벌써 연말이다 신나게 놀아보장~~")
-                            .whereFont(.body14regular)
+                    Spacer()
+                }
+                
+                HStack {
+                    Text("벌써 연말이다 신나게 놀아보장~~")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x6B7280))
+                    Button {
+                        detentSelection = .medium
+                        editStep = .memo
+                    } label: {
+                        Image(.pencilIcon)
+                            .frame(width: 12, height: 12)
                             .foregroundStyle(Color(hex: 0x6B7280))
-                        Button {
-                            detentSelection = .medium
-                            editStep = .memo
-                        } label: {
-                            Image(.pencilIcon)
-                                .frame(width: 12, height: 12)
-                                .foregroundStyle(Color(hex: 0x6B7280))
-                        }
-                        
-                        Spacer()
                     }
+                    
+                    Spacer()
+                }
+                
+                Spacer()
+                
+                Button {
+                    // TODO: 모임 삭제(또는 나가기) 기능 연결
+                } label: {
+                    Text("모임에서 나가기")
+                        .whereFont(.body16medium)
+                        .foregroundColor(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: 0xF3F4F6))
+                        .clipShape(.rect(cornerRadius: 16))
+                }
+            }
+        }
+        
+        var title: some View {
+            VStack {
+                HStack {
+                    Text("모임 이름")
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
                     
                     Spacer()
                     
                     Button {
-                        // TODO: 모임 삭제(또는 나가기) 기능 연결
+                        sheetType = .none
                     } label: {
-                        Text("모임에서 나가기")
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                
+                TextField("모임 이름 입력", text: $titleText)
+                    .whereFont(.body16regular)
+                    .foregroundStyle(Color(hex: 0x1F2937))
+                
+                Spacer()
+                
+                HStack {
+                    Button {
+                        editStep = .entry
+                        detentSelection = .fraction(0.3)
+                    } label: {
+                        Text("취소")
                             .whereFont(.body16medium)
-                            .foregroundColor(.red)
+                            .foregroundColor(Color(hex: 0x4B5563))
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color(hex: 0xF3F4F6))
                             .clipShape(.rect(cornerRadius: 16))
                     }
-                }
-            case .title:
-                VStack {
-                    HStack {
-                        Text("모임 이름")
-                            .whereFont(.subtitle18semibold)
-                            .foregroundStyle(Color(hex: 0x1F2937))
-                        
-                        Spacer()
-                        
-                        Button {
-                            sheetType = .none
-                        } label: {
-                            Image(systemName: "xmark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 12, height: 12)
-                                .foregroundStyle(Color(hex: 0x030712))
-                        }
-                    }
                     
-                    TextField("모임 이름 입력", text: $titleText)
-                        .whereFont(.body16regular)
+                    Button {
+                        // TODO: 모임명 업데이트 기능 연결
+                        editStep = .entry
+                        detentSelection = .fraction(0.3)
+                    } label: {
+                        Text("확인")
+                            .whereFont(.body16medium)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(.accent)
+                            .clipShape(.rect(cornerRadius: 16))
+                    }
+                    .disabled(titleText.isEmpty) // 모임명은 필수 입력
+                }
+            }
+        }
+        
+        var memo: some View {
+            VStack {
+                HStack {
+                    Text("메모")
+                        .whereFont(.subtitle18semibold)
                         .foregroundStyle(Color(hex: 0x1F2937))
                     
                     Spacer()
                     
-                    HStack {
-                        Button {
-                            editStep = .entry
-                            detentSelection = .fraction(0.3)
-                        } label: {
-                            Text("취소")
-                                .whereFont(.body16medium)
-                                .foregroundColor(Color(hex: 0x4B5563))
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color(hex: 0xF3F4F6))
-                                .clipShape(.rect(cornerRadius: 16))
-                        }
-                        
-                        Button {
-                            // TODO: 모임명 업데이트 기능 연결
-                            editStep = .entry
-                            detentSelection = .fraction(0.3)
-                        } label: {
-                            Text("확인")
-                                .whereFont(.body16medium)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(.accent)
-                                .clipShape(.rect(cornerRadius: 16))
-                        }
-                        .disabled(titleText.isEmpty) // 모임명은 필수 입력
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
                     }
                 }
-            case .memo:
-                VStack {
-                    HStack {
-                        Text("메모")
-                            .whereFont(.subtitle18semibold)
-                            .foregroundStyle(Color(hex: 0x1F2937))
-                        
-                        Spacer()
-                        
-                        Button {
-                            sheetType = .none
-                        } label: {
-                            Image(systemName: "xmark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 12, height: 12)
-                                .foregroundStyle(Color(hex: 0x030712))
-                        }
+                
+                TextField("메모 입력", text: $memoText)
+                    .whereFont(.body16regular)
+                    .foregroundStyle(Color(hex: 0x1F2937))
+                
+                Spacer()
+                
+                HStack {
+                    Button {
+                        editStep = .entry
+                        detentSelection = .fraction(0.3)
+                    } label: {
+                        Text("취소")
+                            .whereFont(.body16medium)
+                            .foregroundColor(Color(hex: 0x4B5563))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(hex: 0xF3F4F6))
+                            .clipShape(.rect(cornerRadius: 16))
                     }
                     
-                    TextField("메모 입력", text: $memoText)
-                        .whereFont(.body16regular)
-                        .foregroundStyle(Color(hex: 0x1F2937))
-                    
-                    Spacer()
-                    
-                    HStack {
-                        Button {
-                            editStep = .entry
-                            detentSelection = .fraction(0.3)
-                        } label: {
-                            Text("취소")
-                                .whereFont(.body16medium)
-                                .foregroundColor(Color(hex: 0x4B5563))
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color(hex: 0xF3F4F6))
-                                .clipShape(.rect(cornerRadius: 16))
-                        }
-                        
-                        Button {
-                            // TODO: 메모 업데이트 기능 연결
-                            editStep = .entry
-                            detentSelection = .fraction(0.3)
-                        } label: {
-                            Text("확인")
-                                .whereFont(.body16medium)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(.accent)
-                                .clipShape(.rect(cornerRadius: 16))
-                        }
+                    Button {
+                        // TODO: 메모 업데이트 기능 연결
+                        editStep = .entry
+                        detentSelection = .fraction(0.3)
+                    } label: {
+                        Text("확인")
+                            .whereFont(.body16medium)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(.accent)
+                            .clipShape(.rect(cornerRadius: 16))
                     }
                 }
             }
