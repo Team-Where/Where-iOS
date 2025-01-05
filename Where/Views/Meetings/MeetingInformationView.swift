@@ -138,13 +138,17 @@ extension MeetingInformationView {
             case memo
         }
         
+        enum EditMeetingFocusState {
+            case title, memo
+        }
+        
         @State private var editStep: EditStep = .entry
         @State private var titleText: String = "2024 연말파티"
         @State private var memoText: String = "메모 입력"
         @State private var detentSelection: PresentationDetent = .fraction(0.3)
+        @State private var detents: Set<PresentationDetent> = [.fraction(0.2), .fraction(0.3), .medium]
         @Binding var sheetType: SheetType?
-        
-        private let detents: Set<PresentationDetent> = [.fraction(0.3), .medium]
+        @FocusState private var textFieldFocused: EditMeetingFocusState?
         
         init(
             _ present: Binding<SheetType?>
@@ -245,6 +249,7 @@ extension MeetingInformationView {
                     Spacer()
                     
                     Button {
+                        textFieldFocused = .none
                         sheetType = .none
                     } label: {
                         Image(systemName: "xmark")
@@ -258,11 +263,13 @@ extension MeetingInformationView {
                 TextField("모임 이름 입력", text: $titleText)
                     .whereFont(.body16regular)
                     .foregroundStyle(Color(hex: 0x1F2937))
+                    .focused($textFieldFocused, equals: .title)
                 
                 Spacer()
                 
                 HStack {
                     Button {
+                        textFieldFocused = .none
                         editStep = .entry
                         detentSelection = .fraction(0.3)
                     } label: {
@@ -277,6 +284,7 @@ extension MeetingInformationView {
                     
                     Button {
                         // TODO: 모임명 업데이트 기능 연결
+                        textFieldFocused = .none
                         editStep = .entry
                         detentSelection = .fraction(0.3)
                     } label: {
@@ -303,6 +311,7 @@ extension MeetingInformationView {
                     Spacer()
                     
                     Button {
+                        textFieldFocused = .none
                         sheetType = .none
                     } label: {
                         Image(systemName: "xmark")
@@ -316,11 +325,13 @@ extension MeetingInformationView {
                 TextField("메모 입력", text: $memoText)
                     .whereFont(.body16regular)
                     .foregroundStyle(Color(hex: 0x1F2937))
+                    .focused($textFieldFocused, equals: .memo)
                 
                 Spacer()
                 
                 HStack {
                     Button {
+                        textFieldFocused = .none
                         editStep = .entry
                         detentSelection = .fraction(0.3)
                     } label: {
@@ -335,6 +346,7 @@ extension MeetingInformationView {
                     
                     Button {
                         // TODO: 메모 업데이트 기능 연결
+                        textFieldFocused = .none
                         editStep = .entry
                         detentSelection = .fraction(0.3)
                     } label: {
