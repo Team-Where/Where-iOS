@@ -33,8 +33,17 @@ enum DateFormat: String {
     /// 년.월
     case yyyyMM = "yyyy.MM"
     
+    /// 한국어 년월 (yyyy년 MM월)
+    case yyyyMMKorean = "yyyy년 MM월"
+    
     /// 월.일
     case MMdd = "MM.dd"
+    
+    /// 한국어 월일 요일 (MM월 dd일(EE))
+    case MMddEEKorean = "MM월 dd일(EE)"
+    
+    /// 일
+    case d = "d"
     
     /// 년.월.일 시:분:초
     case dateTime = "yyyy.MM.dd HH:mm:ss"
