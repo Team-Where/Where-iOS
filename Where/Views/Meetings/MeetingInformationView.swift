@@ -10,6 +10,8 @@ import SwiftUI
 struct MeetingInformationView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var sheetType: SheetType?
+    @State private var fullScreenCoverType: FullScreenCoverType? = .editMeetingDate
+    @State private var selectedDate: Date?
     
     var body: some View {
         SelectionTab(selection: [.meetingInfo, .placeInfo])
@@ -51,6 +53,12 @@ struct MeetingInformationView: View {
                 switch type {
                 case .editMeetingInfo:
                     EditMeetingInfoSheet($sheetType)
+                }
+            }
+            .fullScreenCover(item: $fullScreenCoverType) { type in
+                switch type {
+                case .editMeetingDate:
+                    EditMeetingDateFullScreenCover(selectedDate: $selectedDate)
                 }
             }
     }
@@ -359,6 +367,212 @@ extension MeetingInformationView {
                             .clipShape(.rect(cornerRadius: 16))
                     }
                 }
+            }
+        }
+    }
+}
+
+// MARK: FullScreenCover
+extension MeetingInformationView {
+    /// 모임정보 화면에서 라우팅 가능한 풀스크린커버의 종류
+    enum FullScreenCoverType: Identifiable {
+        /// 모임 일정 편집
+        case editMeetingDate
+        
+        var id: String { String(describing: self) }
+    }
+    
+    // MARK: 모임일정 편집 화면에서 라우팅 가능한 시트의 종류
+    enum EditMeetingDateSheetType: Identifiable {
+        case date, time
+        
+        var id: String { String(describing: self) }
+    }
+    
+    struct EditMeetingDateFullScreenCover: View {
+        @State private var sheetType: EditMeetingDateSheetType? = .date
+        @Binding var selectedDate: Date?
+        
+        var body: some View {
+            VStack(spacing: 24) {
+                HStack {
+                    Image(systemName: "xmark")
+                        .hidden()
+                    
+                    Spacer()
+                    
+                    Text("일정 등록")
+                        .whereFont(.subtitle18semibold)
+                    
+                    Spacer()
+                    
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+                .foregroundStyle(Color(hex: 0x1F2937))
+                .padding(.vertical)
+                
+                Divider()
+                
+                HStack {
+                    Text("만나는 날짜")
+                        .whereFont(.body16medium)
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .date
+                    } label: {
+                        HStack(spacing: 8) {
+                            AsyncDateView(date: $selectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
+                                .whereFont(.body14regular)
+                            
+                            Image(.polygonDown)
+                        }
+                        .foregroundStyle(Color(hex: 0x6B7280))
+                        
+                    }
+                }
+                
+                Divider()
+                
+                HStack {
+                    Text("만나는 시간")
+                        .whereFont(.body16medium)
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .time
+                    } label: {
+                        HStack(spacing: 8) {
+                            Text("시간을 선택해주세요")
+                                .whereFont(.body14regular)
+                            
+                            Image(.polygonDown)
+                        }
+                        .foregroundStyle(Color(hex: 0x6B7280))
+                        
+                    }
+                }
+                
+                Spacer()
+                
+                Button {
+                    
+                } label: {
+                    Text("확인")
+                        .whereFont(.body16medium)
+                        .padding()
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(.accent)
+                        )
+                }
+            }
+            .padding()
+            .sheet(item: $sheetType) { type in
+                switch type {
+                case .date:
+                    EditMeetingDateSheet(
+                        sheetType: $sheetType,
+                        selectedDate: $selectedDate
+                    )
+                case .time:
+                    Text("time")
+                }
+            }
+        }
+    }
+    
+    struct EditMeetingDateSheet: View {
+        @Binding var sheetType: EditMeetingDateSheetType?
+        @Binding var selectedDate: Date?
+        @State private var temporalSelectedDate: Date?
+        
+        var body: some View {
+            VStack(spacing: 10) {
+                HStack {
+                    Text("날짜 선택")
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                .padding([.top, .horizontal])
+                
+                Divider()
+                
+                CalendarView(selectedDate: $temporalSelectedDate)
+                
+                Button {
+                    selectedDate = temporalSelectedDate
+                    sheetType = .none
+                } label: {
+                    HStack {
+                        AsyncDateView(date: $temporalSelectedDate, format: .MMddEEKorean, prompt: "날짜를 선택해주세요")
+                        
+                        if let _ = temporalSelectedDate {
+                            Rectangle()
+                                .frame(width: 1, height: 16)
+                            
+                            Text("선택")
+                        }
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(temporalSelectedDate == nil ? Color(hex: 0xD1D5DB) : .accent)
+                    )
+                }
+                .padding(.horizontal)
+                .disabled(temporalSelectedDate == nil)
+            }
+            .presentationDetents([.fraction(0.6)])
+        }
+    }
+    
+    struct EditMeetingTimeSheet: View {
+        @Binding var sheetType: EditMeetingDateSheetType?
+        @Binding var selectedTime: Date?
+        @State private var temporalSelectedTime: Date?
+        
+        var body: some View {
+            VStack {
+                HStack {
+                    Text("날짜 선택")
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                .padding([.top, .horizontal])
+                
+                Divider()
             }
         }
     }
