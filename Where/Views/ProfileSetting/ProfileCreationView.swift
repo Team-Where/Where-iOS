@@ -81,7 +81,7 @@ struct ProfileCreationView: View {
                     )
                     .overlay(RoundedRectangle(cornerRadius: 12).stroke(!username.isEmpty && !isValid ? Color.red : (isValid ? Color.green : Color(hex: 0xE5E7EB))))
                     .padding(.horizontal)
-                    .onChange(of: username) { newValue in
+                    .onChange(of: username) { oldValue, newValue in
                         // onChange 로직은 동일하게 유지
                         if newValue.isEmpty {
                             isValid = false
@@ -114,12 +114,13 @@ struct ProfileCreationView: View {
                         Text("다음")
                             .frame(maxWidth: .infinity)
                             .padding()  // 버튼 내부 여백
-                            .background(isValid ? Color(hex: 0x4F46E5) : Color(.systemGray3))  // 유효성 검사에 따라 배경색 변경
+                            .background(isValid ? Color(hex: 0x4F46E5) : Color(.systemGray5))  // 유효성 검사에 따라 배경색 변경
                             .foregroundStyle(.white)
                             .bold()
-                            .cornerRadius(10)  // 둥근 모서리
+                            .cornerRadius(10)
                     }
-                    .padding()
+                    .padding(.horizontal, 20)
+                    .padding(.vertical)
                     .disabled(!isValid)  // 유효성 검사 통과 시에만 활성화
                     .navigationDestination(isPresented: $shouldNavigate) {
                         SignUpCompleteView(username: username)

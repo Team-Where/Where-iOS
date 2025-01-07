@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SignUpCompleteView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var shouldNavigate = false
+    
     var username: String
     
     var body: some View {
@@ -31,7 +33,7 @@ struct SignUpCompleteView: View {
                 Spacer()
                 
                 Button {
-                    // 버튼 클릭 시 동작할 코드
+                    shouldNavigate = true
                 } label: {
                     Text("완료")
                         .frame(maxWidth: .infinity)
@@ -41,7 +43,8 @@ struct SignUpCompleteView: View {
                         .bold()
                         .cornerRadius(10)  // 둥근 모서리
                 }
-                .padding()
+                .padding(.horizontal, 20)
+                .padding(.vertical)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -53,6 +56,9 @@ struct SignUpCompleteView: View {
                             .foregroundStyle(.black)
                     }
                 }
+            }
+            .navigationDestination(isPresented: $shouldNavigate) {
+                TabBarView()
             }
         }
         .navigationBarBackButtonHidden()
