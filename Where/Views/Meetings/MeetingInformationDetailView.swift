@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct MeetingInformationDetailView: View {
+    @State private var sheetType: SheetType?
+    @State private var fullScreenCoverType: FullScreenCoverType?
+    @State private var selectedDate: Date?
+    
     var body: some View {
         ScrollView(.vertical) {
             header
@@ -31,6 +35,25 @@ struct MeetingInformationDetailView: View {
             ], isInvited: false)
             .padding(.bottom)
             .padding(.horizontal)
+        }
+        .sheet(item: $sheetType) { type in
+            switch type {
+            case .editFriend(let friend):
+                EditFriendSheet(friend: friend, sheetType: $sheetType) { friend in
+                    // TODO: 모임에서 친구 삭제 기능 연결
+                }
+            case .sharePlace:
+                Text("fd")
+            }
+        }
+        .fullScreenCover(item: $fullScreenCoverType) { type in
+            switch type {
+            case .editMeetingDate:
+                EditMeetingDateFullScreenCover(
+                    fullScreenCoverType: $fullScreenCoverType,
+                    selectedDate: $selectedDate
+                )
+            }
         }
     }
     
@@ -57,17 +80,76 @@ struct MeetingInformationDetailView: View {
     
     private var summaryArea: some View {
         VStack(spacing: 8) {
-            SummaryType.date(date: nil).view()
+            summaryCell(.date(date: nil)) {
+                fullScreenCoverType = .editMeetingDate
+            }
             
-            SummaryType.sharedPlace(count: 6).view()
+            summaryCell(.sharedPlace(count: 6)) {
+                sheetType = .sharePlace
+            }
             
-            SummaryType.invitedFriends(count: 4).view()
+            summaryCell(.invitedFriends(count: 4)) {
+                // TODO: 친구 초대 화면으로 라우팅
+            }
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(hex: 0xF9FAFB))
         )
+    }
+    
+    @ViewBuilder private func summaryCell(_ type: SummaryType, route: @escaping () -> Void) -> some View {
+        HStack {
+            type.content.primaryIcon
+            
+            switch type {
+            case .date(let date):
+                AsyncDateView(date: date, format: .yyyyMMddah, prompt: "아직 정해진 일정이 없어요")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(date == .none ? Color(hex: 0x868E96) : Color(hex: 0x212529))
+            case .sharedPlace(let count):
+                HStack {
+                    Text("공유된 장소")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x212529))
+                    
+                    Text("\(count)")
+                        .whereFont(.body14semibold)
+                        .foregroundStyle(.accent)
+                }
+            case .invitedFriends(let count):
+                HStack {
+                    Text("초대된 친구")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x212529))
+                    
+                    Text("\(count)")
+                        .whereFont(.body14semibold)
+                        .foregroundStyle(.accent)
+                }
+            }
+            
+            Spacer()
+            
+            Button {
+                route()
+            } label: {
+                HStack {
+                    type.content.secondaryIcon
+                    
+                    Text(type.content.buttonLabel)
+                        .whereFont(.caption12regular)
+                        .foregroundStyle(Color(hex: 0x212529))
+                }
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(.white)
+                        .strokeBorder(Color(hex: 0xE5E7EB))
+                )
+            }
+        }
     }
     
     @ViewBuilder private func friendsList(_ friends: [User], isInvited: Bool) -> some View {
@@ -95,7 +177,7 @@ struct MeetingInformationDetailView: View {
                     Spacer()
                     
                     Button {
-                        // TODO: 친구 편집 기능 연결
+                        sheetType = .editFriend(friend: friend)
                     } label: {
                         if isInvited {
                             Image(systemName: "ellipsis")
@@ -158,53 +240,272 @@ extension MeetingInformationDetailView {
                 )
             }
         }
+    }
+}
+
+// MARK: Sheet
+extension MeetingInformationDetailView {
+    /// 모임정보 상세 화면에서 라우팅 가능한 시트의 종류
+    enum SheetType: Identifiable {
+        /// 친구 편집
+        case editFriend(friend: User)
+        /// 장소 공유
+        case sharePlace
         
-        @ViewBuilder func view() -> some View {
-            HStack {
-                content.primaryIcon
-                
-                switch self {
-                case .date(let date):
-                    AsyncDateView(date: date, format: .yyyyMMddah, prompt: "아직 정해진 일정이 없어요")
-                        .whereFont(.body14regular)
-                        .foregroundStyle(date == .none ? Color(hex: 0x868E96) : Color(hex: 0x212529))
-                case .sharedPlace(let count):
-                    HStack {
-                        Text("공유된 장소")
-                            .whereFont(.body14regular)
-                            .foregroundStyle(Color(hex: 0x212529))
-                        
-                        Text("\(count)")
-                            .whereFont(.body14semibold)
-                            .foregroundStyle(.accent)
+        var id: String { String(describing: self) }
+    }
+    
+    struct EditFriendSheet: View {
+        @Binding var sheetType: SheetType?
+        private let friend: User
+        private let removeFriend: (User) -> Void
+        
+        init(
+            friend: User,
+            sheetType: Binding<SheetType?>,
+            removeFriend: @escaping (User) -> Void
+        ) {
+            self.friend = friend
+            self._sheetType = sheetType
+            self.removeFriend = removeFriend
+        }
+        
+        var body: some View {
+            VStack {
+                HStack {
+                    Text("친구 편집")
+                        .whereFont(.subtitle18semibold)
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
                     }
-                case .invitedFriends(let count):
-                    HStack {
-                        Text("초대된 친구")
-                            .whereFont(.body14regular)
-                            .foregroundStyle(Color(hex: 0x212529))
+                }
+                .padding()
+                
+                Button {
+                    removeFriend(friend)
+                } label: {
+                    Text("모임에서 친구 삭제")
+                        .whereFont(.body16medium)
+                        .foregroundColor(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: 0xF3F4F6))
+                        .clipShape(.rect(cornerRadius: 16))
+                }
+                .padding(.horizontal)
+            }
+            .presentationDetents([.fraction(0.2)])
+        }
+    }
+}
+
+// MARK: FullScreenCover
+extension MeetingInformationDetailView {
+    /// 모임정보 상세 화면에서 라우팅 가능한 풀스크린커버의 종류
+    enum FullScreenCoverType: Identifiable {
+        /// 모임 일정 편집
+        case editMeetingDate
+        
+        var id: String { String(describing: self) }
+    }
+    
+    // MARK: 모임일정 편집 화면에서 라우팅 가능한 시트의 종류
+    enum EditMeetingDateSheetType: Identifiable {
+        case date, time
+        
+        var id: String { String(describing: self) }
+    }
+    
+    struct EditMeetingDateFullScreenCover: View {
+        @State private var sheetType: EditMeetingDateSheetType?
+        @Binding var fullScreenCoverType: FullScreenCoverType?
+        @Binding var selectedDate: Date?
+        
+        var body: some View {
+            VStack(spacing: 24) {
+                HStack {
+                    Image(systemName: "xmark")
+                        .hidden()
+                    
+                    Spacer()
+                    
+                    Text("일정 등록")
+                        .whereFont(.subtitle18semibold)
+                    
+                    Spacer()
+                    
+                    Button {
+                        fullScreenCoverType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+                .foregroundStyle(Color(hex: 0x1F2937))
+                .padding(.vertical)
+                
+                Divider()
+                
+                HStack {
+                    Text("만나는 날짜")
+                        .whereFont(.body16medium)
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .date
+                    } label: {
+                        HStack(spacing: 8) {
+                            AsyncDateView(date: $selectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
+                                .whereFont(.body14regular)
+                            
+                            Image(.polygonDown)
+                        }
+                        .foregroundStyle(Color(hex: 0x6B7280))
                         
-                        Text("\(count)")
-                            .whereFont(.body14semibold)
-                            .foregroundStyle(.accent)
+                    }
+                }
+                
+                Divider()
+                
+                HStack {
+                    Text("만나는 시간")
+                        .whereFont(.body16medium)
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .time
+                    } label: {
+                        HStack(spacing: 8) {
+                            Text("시간을 선택해주세요")
+                                .whereFont(.body14regular)
+                            
+                            Image(.polygonDown)
+                        }
+                        .foregroundStyle(Color(hex: 0x6B7280))
+                        
                     }
                 }
                 
                 Spacer()
                 
-                HStack {
-                    content.secondaryIcon
+                Button {
                     
-                    Text(content.buttonLabel)
-                        .whereFont(.caption12regular)
-                        .foregroundStyle(Color(hex: 0x212529))
+                } label: {
+                    Text("확인")
+                        .whereFont(.body16medium)
+                        .padding()
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(.accent)
+                        )
                 }
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.white)
-                        .strokeBorder(Color(hex: 0xE5E7EB))
-                )
+            }
+            .padding()
+            .sheet(item: $sheetType) { type in
+                switch type {
+                case .date:
+                    EditMeetingDateSheet(
+                        sheetType: $sheetType,
+                        selectedDate: $selectedDate
+                    )
+                case .time:
+                    Text("time")
+                }
+            }
+        }
+    }
+    
+    struct EditMeetingDateSheet: View {
+        @Binding var sheetType: EditMeetingDateSheetType?
+        @Binding var selectedDate: Date?
+        @State private var temporalSelectedDate: Date?
+        
+        var body: some View {
+            VStack(spacing: 10) {
+                HStack {
+                    Text("날짜 선택")
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                .padding([.top, .horizontal])
+                
+                Divider()
+                
+                CalendarView(selectedDate: $temporalSelectedDate)
+                
+                Button {
+                    selectedDate = temporalSelectedDate
+                    sheetType = .none
+                } label: {
+                    HStack {
+                        AsyncDateView(date: $temporalSelectedDate, format: .MMddEEKorean, prompt: "날짜를 선택해주세요")
+                        
+                        if let _ = temporalSelectedDate {
+                            Rectangle()
+                                .frame(width: 1, height: 16)
+                            
+                            Text("선택")
+                        }
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(temporalSelectedDate == nil ? Color(hex: 0xD1D5DB) : .accent)
+                    )
+                }
+                .padding(.horizontal)
+                .disabled(temporalSelectedDate == nil)
+            }
+            .presentationDetents([.fraction(0.6)])
+        }
+    }
+    
+    struct EditMeetingTimeSheet: View {
+        @Binding var sheetType: EditMeetingDateSheetType?
+        @Binding var selectedTime: Date?
+        @State private var temporalSelectedTime: Date?
+        
+        var body: some View {
+            VStack {
+                HStack {
+                    Text("날짜 선택")
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                .padding([.top, .horizontal])
+                
+                Divider()
             }
         }
     }
