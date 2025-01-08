@@ -43,7 +43,7 @@ struct MeetingInformationDetailView: View {
                     // TODO: 모임에서 친구 삭제 기능 연결
                 }
             case .sharePlace:
-                Text("fd")
+                SharePlaceSheet(sheetType: $sheetType)
             }
         }
         .fullScreenCover(item: $fullScreenCoverType) { type in
@@ -300,6 +300,59 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
             }
             .presentationDetents([.fraction(0.2)])
+        }
+    }
+    
+    struct SharePlaceSheet: View {
+        @Environment(\.openURL) private var openURL
+        @Binding var sheetType: SheetType?
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 28) {
+                HStack {
+                    Text("장소 공유")
+                        .whereFont(.subtitle18semibold)
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+                .padding([.top, .horizontal])
+                .padding(.top)
+                
+                Button {
+                    // TODO: 네이버지도 Universal Link 연결
+                } label: {
+                    HStack(spacing: 16) {
+                        Image(.colorNaverMapLogo)
+                        
+                        Text("네이버 지도에서 공유하기")
+                            .whereFont(.body16medium)
+                            .foregroundStyle(Color(hex: 0x282828))
+                    }
+                }
+                .padding(.horizontal)
+                
+                Button {
+                    // TODO: 카카오맵 Universal Link 연결
+                } label: {
+                    HStack(spacing: 16) {
+                        Image(.colorKakaoMapLogo)
+                        
+                        Text("카카오맵에서 공유하기")
+                            .whereFont(.body16medium)
+                            .foregroundStyle(Color(hex: 0x282828))
+                    }
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .presentationDetents([.fraction(0.27)])
         }
     }
 }
