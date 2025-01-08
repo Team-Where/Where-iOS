@@ -14,7 +14,7 @@ struct HistoryReminderView: View {
         VStack {
             ProfilesArea(
                 user: .init(nickname: "Swain", isFavorite: false),
-                opponentUser: .init(nickname: "상대방", isFavorite: true)
+                opponentUser: .init(nickname: "우리동네 먹짱방방", isFavorite: true)
             )
             
             Rectangle()
@@ -64,7 +64,7 @@ extension HistoryReminderView {
         
         var body: some View {
             VStack {
-                ZStack {
+                ZStack(alignment: .top) {
                     profile(user, isMine: true)
                         .padding(.trailing, 80)
                     
@@ -92,7 +92,10 @@ extension HistoryReminderView {
                 Text(isMine ? "나" : user.nickname)
                     .whereFont(.body16semibold)
                     .foregroundStyle(isMine ? Color(hex: 0x495057) : .black)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
                     .padding(.top, 8)
+                    .frame(maxWidth: 100)
             }
         }
     }
@@ -170,7 +173,7 @@ extension HistoryReminderView {
                     .padding(.bottom, 10)
                     
                     NavigationLink {
-                        // TODO: 모임정보 화면으로 이동
+                        MeetingInformationView()
                     } label: {
                         Text("자세히 보기")
                             .whereFont(.body14medium)
