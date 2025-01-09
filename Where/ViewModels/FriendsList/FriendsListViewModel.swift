@@ -29,7 +29,7 @@ final class FriendsListViewModel: ObservableObject {
     private func subscribe() {
         $searchingText
             .removeDuplicates()
-            .debounce(for: .seconds(0.4), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
             .sink { [weak self] text in
                 guard text.isEmpty == false,
                       let filtered = self?.friends.filter({ $0.nickname.contains(text) })
