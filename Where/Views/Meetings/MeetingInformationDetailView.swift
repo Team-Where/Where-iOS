@@ -10,6 +10,7 @@ import SwiftUI
 struct MeetingInformationDetailView: View {
     @State private var sheetType: SheetType?
     @State private var fullScreenCoverType: FullScreenCoverType?
+    @State private var navigationType: NavigationType?
     @State private var selectedDate: Date?
     
     var body: some View {
@@ -55,6 +56,12 @@ struct MeetingInformationDetailView: View {
                 )
             }
         }
+        .navigationDestination(item: $navigationType) { type in
+            switch type {
+            case .inviteFriends:
+                InviteFriendsView()
+            }
+        }
     }
     
     private var header: some View {
@@ -89,7 +96,7 @@ struct MeetingInformationDetailView: View {
             }
             
             summaryCell(.invitedFriends(count: 4)) {
-                // TODO: 친구 초대 화면으로 라우팅
+                navigationType = .inviteFriends
             }
         }
         .padding()
@@ -564,6 +571,17 @@ extension MeetingInformationDetailView {
     }
 }
 
+// MARK: NavigationType
+extension MeetingInformationDetailView {
+    /// 모임정보 상세 화면에서 라우팅 가능한 네비게이션패스의 종류
+    enum NavigationType: Hashable {
+        /// 친구 초대
+        case inviteFriends
+    }
+}
+
 #Preview {
-    MeetingInformationDetailView()
+    NavigationStack {
+        MeetingInformationDetailView()
+    }
 }
