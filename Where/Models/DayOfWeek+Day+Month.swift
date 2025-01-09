@@ -113,4 +113,26 @@ extension Date {
         
         return self.month(from: start)
     }
+    
+    /// 날짜 및 시간 정보를 취합해 반환
+    ///
+    /// - Parameters:
+    ///     * date: 선택한 연월일 값
+    ///     * hour: 선택한 시간 값
+    ///     * period: 선택한 오전, 오후 Meridiems 중 값
+    ///
+    /// - Returns:
+    ///     주어진 날짜 및 시간 정보를 취합한 값
+    func combine(date: Date, hour: Int, period: String) -> Date {
+        var components = calendar.dateComponents([.year, .month, .day, .hour], from: date)
+        
+        components.hour = hour
+        if period == "오전", hour == 12 {
+            components.hour = 0 // 오전 12시 == 자정
+        } else if period == "오후", hour != 12 {
+            components.hour = hour + 12 // 오후 n시(n != 12)인 경우 24시간제 적용, 12를 더함
+        }
+        
+        return calendar.date(from: components) ?? .now
+    }
 }
