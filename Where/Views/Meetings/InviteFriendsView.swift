@@ -1,0 +1,261 @@
+//
+//  InviteFriendsView.swift
+//  Where
+//
+//  Created by Swain Yun on 1/8/25.
+//
+
+import SwiftUI
+
+struct InviteFriendsView: View {
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var viewModel = InviteFriendsViewModel()
+    @FocusState private var isFocused: Bool
+    
+    var body: some View {
+        ZStack {
+            if viewModel.isSearching {
+                VStack {
+                    HStack(spacing: 16) {
+                        SearchBar("검색", text: $viewModel.searchingText, $isFocused)
+                        
+                        Button {
+                            isFocused = false
+                            viewModel.isSearching.toggle()
+                            viewModel.searchingText.removeAll()
+                        } label: {
+                            Text("취소")
+                                .whereFont(.body16medium)
+                                .foregroundStyle(Color(hex: 0x1F2937))
+                        }
+                    }
+                    .frame(maxHeight: 48)
+                    .padding(.bottom)
+                    
+                    if viewModel.searchedFriends.isEmpty {
+                        Spacer()
+                        
+                        Text("검색 결과가 없습니다.")
+                            .whereFont(.body16regular)
+                            .foregroundStyle(Color(hex: 0x374151))
+                        
+                        Spacer()
+                    } else {
+                        ScrollView(.vertical) {
+                            LazyVStack {
+                                ForEach(viewModel.searchedFriends, id: \.id) { friend in
+                                    friendsListCell(friend)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding()
+            } else {
+                ScrollView(.vertical) {
+                    invitedFriends(viewModel.friends)
+                    
+                    Button {
+                        // TODO: KakaoTalk Universal Link
+                    } label: {
+                        Image(.kakaoInvitationButton)
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    .padding(.horizontal)
+                    
+                    friendsList([
+                        .init(nickname: "나", isFavorite: false),
+                        .init(nickname: "죠니월드", isFavorite: false),
+                        .init(nickname: "이초홍", isFavorite: false),
+                        .init(nickname: "두니주니", isFavorite: false),
+                    ])
+                }
+            }
+        }
+        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if viewModel.isSearching == false {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "arrow.backward")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 12)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 6)
+                            .foregroundStyle(.black)
+                    }
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    Text("친구 초대")
+                        .whereFont(.subtitle18semibold)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.isSearching.toggle()
+                        isFocused = true
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18, height: 18)
+                            .foregroundStyle(Color(hex: 0x1F2937))
+                    }
+                }
+            }
+        }
+        .floater($viewModel.isFloaterPresented, message: "초대되었습니다.")
+        .scrollIndicators(.never)
+    }
+    
+    @ViewBuilder private func invitedFriends(_ friends: [User]) -> some View {
+        VStack(spacing: 16) {
+            HStack {
+                Text("초대된 친구 \(3)")
+                    .whereFont(.body16semibold)
+                    .foregroundStyle(Color(hex: 0x1F2937))
+                
+                Spacer()
+                
+                Text("대기중 \(1)")
+                    .whereFont(.caption12regular)
+                    .foregroundStyle(Color(hex: 0x6B7280))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 26)
+                            .fill(Color(hex: 0xF3F4F6))
+                    )
+            }
+            
+            Divider()
+            
+            ScrollView(.horizontal) {
+                LazyHStack {
+                    ForEach(friends, id: \.id) { friend in
+                        VStack {
+                            AsyncImage(url: nil)
+                                .frame(width: 40, height: 40)
+                                .clipShape(.circle)
+                            
+                            Text(friend.nickname)
+                                .whereFont(.body14medium)
+                                .foregroundStyle(Color(hex: 0x374151))
+                                .multilineTextAlignment(.center)
+                                .lineLimit(2)
+                        }
+                    }
+                }
+            }
+            .frame(maxHeight: 68)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.white)
+                .strokeBorder(Color(hex: 0xF3F4F6))
+                .shadow(color: Color(hex: 0x566271).opacity(0.1), radius: 1, y: 4)
+        )
+        .padding()
+    }
+    
+    @ViewBuilder private func friendsList(_ friends: [User]) -> some View {
+        LazyVStack(spacing: 20) {
+            Section {
+                ForEach(friends, id: \.id) { friend in
+                    friendsListCell(friend)
+                }
+            } header: {
+                sectionHeader("최근 만난 친구", count: 3)
+            }
+            
+            Section {
+                ForEach(friends, id: \.id) { friend in
+                    friendsListCell(friend)
+                }
+            } header: {
+                sectionHeader("모든친구", count: 23)
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder private func sectionHeader(_ title: String, count: Int) -> some View {
+        HStack {
+            Text("\(title) \(count)")
+                .whereFont(.body14medium)
+                .foregroundStyle(Color(hex: 0x4B5563))
+            
+            Spacer()
+        }
+        .padding(.top)
+    }
+    
+    @ViewBuilder private func friendsListCell(_ friend: User) -> some View {
+        HStack(spacing: 12) {
+            AsyncImage(url: nil)
+                .frame(width: 40, height: 40)
+                .clipShape(.circle)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(friend.nickname)
+                    .whereFont(.body16medium)
+                    .foregroundStyle(Color(hex: 0x1F2937))
+                
+                Text("\(2)번 만남")
+                    .whereFont(.caption11regular)
+                    .foregroundStyle(Color(hex: 0x9CA3AF))
+            }
+            
+            Spacer()
+            
+            // TODO: 도메인 모델 나오면 수정 예정
+            Button {
+                
+            } label: {
+                HStack {
+                    Image(systemName: "checkmark")
+                    
+                    Text("완료")
+                }
+                .whereFont(.body14medium)
+                .foregroundStyle(.accent)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 14)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(hex: 0xF1F3F5))
+                        .strokeBorder(Color(hex: 0xDEE2E6))
+                )
+            }
+            
+            // TODO: 도메인 모델 나오면 수정 예정
+            Button {
+                viewModel.isFloaterPresented.toggle()
+            } label: {
+                Text("초대")
+                    .whereFont(.body14medium)
+                    .foregroundStyle(.accent)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(.white)
+                            .strokeBorder(Color(hex: 0xDEE2E6))
+                    )
+            }
+        }
+    }
+}
+
+#Preview {
+    NavigationStack {
+        InviteFriendsView()
+    }
+}
