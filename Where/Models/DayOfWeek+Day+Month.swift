@@ -84,22 +84,6 @@ extension Date {
     }
     
     func month(from date: Date = .now) -> Month {
-//        guard let start = date.startOfMonth,
-//              let dayRange = calendar.range(of: .day, in: .month, for: start)
-//        else {
-//            return Month()
-//        }
-//        
-//        let daysOfWeek = DayOfWeek.allCases
-//        let month = calendar.component(.month, from: start)
-//        let days: [Day] = dayRange.compactMap { day in
-//            guard let date = calendar.date(byAdding: .day, value: day - 1, to: start) else { return nil }
-//            let dayOfWeek = daysOfWeek[calendar.component(.weekday, from: date) - 1]
-//            return Day(dayOfWeek, day, date)
-//        }
-//        
-//        return Month(month, days)
-        
         guard let startOfMonth = date.startOfMonth,
               let dayRange = calendar.range(of: .day, in: .month, for: startOfMonth)
         else { return Month([], .now) }
