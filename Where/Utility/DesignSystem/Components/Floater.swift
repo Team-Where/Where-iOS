@@ -47,6 +47,7 @@ struct Floater<Based: View, Floater: StringProtocol>: View {
             
             if isFloaterPresented {
                 FloaterView(isFloaterPresented: $isFloaterPresented, title: floaterContent)
+                    .padding(.horizontal)
             }
         }
     }
