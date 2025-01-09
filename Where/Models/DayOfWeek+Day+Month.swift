@@ -119,20 +119,25 @@ extension Date {
     /// - Parameters:
     ///     * date: 선택한 연월일 값
     ///     * hour: 선택한 시간 값
-    ///     * period: 선택한 오전, 오후 Meridiems 중 값
+    ///     * meridiem: 선택한 오전, 오후 중 값
     ///
     /// - Returns:
     ///     주어진 날짜 및 시간 정보를 취합한 값
-    func combine(date: Date, hour: Int, period: String) -> Date {
-        var components = calendar.dateComponents([.year, .month, .day, .hour], from: date)
+    func combine(date: Date? = nil, hour: Int?, meridiem: Meridiem?) -> Date? {
+        var components = calendar.dateComponents([.year, .month, .day, .hour], from: date ?? self)
         
         components.hour = hour
-        if period == "오전", hour == 12 {
+        if meridiem == .am, hour == 12 {
             components.hour = 0 // 오전 12시 == 자정
-        } else if period == "오후", hour != 12 {
-            components.hour = hour + 12 // 오후 n시(n != 12)인 경우 24시간제 적용, 12를 더함
+        } else if meridiem == .pm, hour != 12 {
+            components.hour = hour ?? .zero + 12 // 오후 n시(n != 12)인 경우 24시간제 적용, 12를 더함
         }
         
-        return calendar.date(from: components) ?? .now
+        return calendar.date(from: components)
+    }
+    
+    func dateComponents() -> DateComponents {
+        let components = calendar.dateComponents([.year, .month, .day, .hour], from: self)
+        return components
     }
 }
