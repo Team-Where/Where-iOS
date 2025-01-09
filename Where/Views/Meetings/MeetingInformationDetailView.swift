@@ -87,7 +87,7 @@ struct MeetingInformationDetailView: View {
     
     private var summaryArea: some View {
         VStack(spacing: 8) {
-            summaryCell(.date(date: nil)) {
+            summaryCell(.date(date: selectedDate)) {
                 fullScreenCoverType = .editMeetingDate
             }
             
@@ -384,6 +384,9 @@ extension MeetingInformationDetailView {
     struct EditMeetingDateFullScreenCover: View {
         @State private var sheetType: EditMeetingDateSheetType?
         @Binding var fullScreenCoverType: FullScreenCoverType?
+        @State private var temporalSelectedDate: Date?
+        @State private var temporalSelectedTime: Int?
+        @State private var temporalSelectedMeridiem: Meridiem?
         @Binding var selectedDate: Date?
         
         var body: some View {
@@ -420,7 +423,7 @@ extension MeetingInformationDetailView {
                         sheetType = .date
                     } label: {
                         HStack(spacing: 8) {
-                            AsyncDateView(date: $selectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
+                            AsyncDateView(date: $temporalSelectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
                                 .whereFont(.body14regular)
                             
                             Image(.polygonDown)
@@ -442,11 +445,16 @@ extension MeetingInformationDetailView {
                         sheetType = .time
                     } label: {
                         HStack(spacing: 8) {
-                            Text("시간을 선택해주세요")
-                                .whereFont(.body14regular)
+                            if let time = temporalSelectedTime,
+                               let meridiem = temporalSelectedMeridiem {
+                                Text("\(meridiem.koreanDescription) \(time)시")
+                            } else {
+                                Text("시간을 선택해주세요")
+                            }
                             
                             Image(.polygonDown)
                         }
+                        .whereFont(.body14regular)
                         .foregroundStyle(Color(hex: 0x6B7280))
                         
                     }
@@ -455,7 +463,9 @@ extension MeetingInformationDetailView {
                 Spacer()
                 
                 Button {
-                    
+                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime, meridiem: temporalSelectedMeridiem)
+                    selectedDate = date
+                    fullScreenCoverType = .none
                 } label: {
                     Text("확인")
                         .whereFont(.body16medium)
@@ -474,10 +484,14 @@ extension MeetingInformationDetailView {
                 case .date:
                     EditMeetingDateSheet(
                         sheetType: $sheetType,
-                        selectedDate: $selectedDate
+                        selectedDate: $temporalSelectedDate
                     )
                 case .time:
-                    Text("time")
+                    EditMeetingTimeSheet(
+                        sheetType: $sheetType,
+                        selectedTime: $temporalSelectedTime,
+                        selectedMeridiem: $temporalSelectedMeridiem
+                    )
                 }
             }
         }
@@ -543,11 +557,16 @@ extension MeetingInformationDetailView {
     
     struct EditMeetingTimeSheet: View {
         @Binding var sheetType: EditMeetingDateSheetType?
-        @Binding var selectedTime: Date?
-        @State private var temporalSelectedTime: Date?
+        @Binding var selectedTime: Int?
+        @Binding var selectedMeridiem: Meridiem?
+        @State private var temporalSelectedMeridiem: Meridiem = .am
+        @State private var temporalSelectedTime: Int = 1
+        
+        private let meridiems: [Meridiem] = Meridiem.allCases
+        private let times: [Int] = Array(1...12)
         
         var body: some View {
-            VStack {
+            VStack(alignment: .leading) {
                 HStack {
                     Text("날짜 선택")
                     
@@ -566,7 +585,61 @@ extension MeetingInformationDetailView {
                 .padding([.top, .horizontal])
                 
                 Divider()
+                
+                List {
+                    Picker("오전/오후", selection: $temporalSelectedMeridiem) {
+                        ForEach(meridiems, id: \.self) { meridiem in
+                            Text(meridiem.koreanDescription)
+                        }
+                    }
+                    
+                    Picker("시간", selection: $temporalSelectedTime) {
+                        ForEach(times, id: \.self) { time in
+                            Text("\(time)시")
+                        }
+                    }
+                }
+                .onAppear {
+                    guard let hour = Date.now.dateComponents().hour else { return }
+                    temporalSelectedMeridiem = hour > 12 ? .pm : .am
+                    temporalSelectedTime = hour > 12 ? hour - 12 : hour
+                }
+                .listStyle(.plain)
+                
+                HStack {
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Text("취소")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(Color(hex: 0x4B5563))
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(hex: 0xF3F4F6))
+                    )
+                    
+                    Button {
+                        selectedTime = temporalSelectedTime
+                        selectedMeridiem = temporalSelectedMeridiem
+                        sheetType = .none
+                    } label: {
+                        Text("확인")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.accent)
+                    )
+                }
+                .padding(.horizontal)
             }
+            .presentationDetents([.fraction(0.54)])
         }
     }
 }

@@ -49,6 +49,7 @@
 		049345142D229E10003D1129 /* BasedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049345132D229E10003D1129 /* BasedFormView.swift */; };
 		04AA3B992D2E85FF00059570 /* InviteFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3B982D2E85FF00059570 /* InviteFriendsView.swift */; };
 		04AA3B9C2D2F9BC600059570 /* InviteFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3B9B2D2F9BC600059570 /* InviteFriendsViewModel.swift */; };
+		04AA3BA02D2FF42B00059570 /* Meridiem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3B9F2D2FF42B00059570 /* Meridiem.swift */; };
 		04F18AAD2D2AC24900675990 /* DayOfWeek+Day+Month.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F18AAC2D2AC24900675990 /* DayOfWeek+Day+Month.swift */; };
 		04F18AB12D2ACF3A00675990 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F18AB02D2ACF3A00675990 /* CalendarView.swift */; };
 		91B7A16F2D26DFC2003932B4 /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */; };
@@ -112,6 +113,7 @@
 		049345132D229E10003D1129 /* BasedFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasedFormView.swift; sourceTree = "<group>"; };
 		04AA3B982D2E85FF00059570 /* InviteFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsView.swift; sourceTree = "<group>"; };
 		04AA3B9B2D2F9BC600059570 /* InviteFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewModel.swift; sourceTree = "<group>"; };
+		04AA3B9F2D2FF42B00059570 /* Meridiem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meridiem.swift; sourceTree = "<group>"; };
 		04F18AAC2D2AC24900675990 /* DayOfWeek+Day+Month.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DayOfWeek+Day+Month.swift"; sourceTree = "<group>"; };
 		04F18AB02D2ACF3A00675990 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				045B44982D2150AF00514A27 /* Model.swift */,
 				045CA1622D27E3EE001B5CEE /* User.swift */,
 				04F18AAC2D2AC24900675990 /* DayOfWeek+Day+Month.swift */,
+				04AA3B9F2D2FF42B00059570 /* Meridiem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -476,6 +479,7 @@
 				045CA15F2D27BEFB001B5CEE /* FriendsListViewModel.swift in Sources */,
 				04832B352D23F765003FFE3B /* FloaterView.swift in Sources */,
 				04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */,
+				04AA3BA02D2FF42B00059570 /* Meridiem.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				04832B522D26A55B003FFE3B /* WhereTabView.swift in Sources */,
