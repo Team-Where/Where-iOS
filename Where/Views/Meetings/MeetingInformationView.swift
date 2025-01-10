@@ -72,7 +72,7 @@ extension MeetingInformationView {
         @ViewBuilder func view() -> some View {
             switch self {
             case .meetingInfo: MeetingInformationDetailView()
-            case .placeInfo: ScrollView { Text("hi") }
+            case .placeInfo: MeetingPlacesView()
             }
         }
     }
