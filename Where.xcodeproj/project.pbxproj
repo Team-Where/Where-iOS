@@ -50,6 +50,8 @@
 		04AA3B992D2E85FF00059570 /* InviteFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3B982D2E85FF00059570 /* InviteFriendsView.swift */; };
 		04AA3B9C2D2F9BC600059570 /* InviteFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3B9B2D2F9BC600059570 /* InviteFriendsViewModel.swift */; };
 		04AA3BA02D2FF42B00059570 /* Meridiem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3B9F2D2FF42B00059570 /* Meridiem.swift */; };
+		04AA3BA22D310C9100059570 /* MeetingPlacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3BA12D310C9100059570 /* MeetingPlacesView.swift */; };
+		04AA3BA42D3125C400059570 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AA3BA32D3125C400059570 /* Place.swift */; };
 		04F18AAD2D2AC24900675990 /* DayOfWeek+Day+Month.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F18AAC2D2AC24900675990 /* DayOfWeek+Day+Month.swift */; };
 		04F18AB12D2ACF3A00675990 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F18AB02D2ACF3A00675990 /* CalendarView.swift */; };
 		91B7A16F2D26DFC2003932B4 /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */; };
@@ -114,6 +116,8 @@
 		04AA3B982D2E85FF00059570 /* InviteFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsView.swift; sourceTree = "<group>"; };
 		04AA3B9B2D2F9BC600059570 /* InviteFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewModel.swift; sourceTree = "<group>"; };
 		04AA3B9F2D2FF42B00059570 /* Meridiem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meridiem.swift; sourceTree = "<group>"; };
+		04AA3BA12D310C9100059570 /* MeetingPlacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingPlacesView.swift; sourceTree = "<group>"; };
+		04AA3BA32D3125C400059570 /* Place.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		04F18AAC2D2AC24900675990 /* DayOfWeek+Day+Month.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DayOfWeek+Day+Month.swift"; sourceTree = "<group>"; };
 		04F18AB02D2ACF3A00675990 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 				045CA1622D27E3EE001B5CEE /* User.swift */,
 				04F18AAC2D2AC24900675990 /* DayOfWeek+Day+Month.swift */,
 				04AA3B9F2D2FF42B00059570 /* Meridiem.swift */,
+				04AA3BA32D3125C400059570 /* Place.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -336,6 +341,7 @@
 				048182202D28DE3E00CCF721 /* MeetingInformationView.swift */,
 				048182222D28F37C00CCF721 /* MeetingInformationDetailView.swift */,
 				04AA3B982D2E85FF00059570 /* InviteFriendsView.swift */,
+				04AA3BA12D310C9100059570 /* MeetingPlacesView.swift */,
 			);
 			path = Meetings;
 			sourceTree = "<group>";
@@ -467,6 +473,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				045B44A82D2150AF00514A27 /* Model.swift in Sources */,
+				04AA3BA22D310C9100059570 /* MeetingPlacesView.swift in Sources */,
 				048182212D28DE3E00CCF721 /* MeetingInformationView.swift in Sources */,
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
@@ -498,6 +505,7 @@
 				045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
+				04AA3BA42D3125C400059570 /* Place.swift in Sources */,
 				048182232D28F37C00CCF721 /* MeetingInformationDetailView.swift in Sources */,
 				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
