@@ -15,20 +15,22 @@ struct SignUpCompleteView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(alignment: .leading) {
+                Text("\(username)님, \n회원가입을 축하합니다!")
+                    .whereFont(.title24semibold)
+                    .padding(.top, 40)
+                
                 HStack {
-                    Text("\(username)님, \n회원가입을 축하합니다!")
-                        .whereFont(.title24semibold)
+                    Spacer()
+                    
+                    Image("SignUpCharacter")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 274.85, height: 264)
+                    
                     Spacer()
                 }
-                .padding(.top, 40)
-                .padding(.horizontal)
-                
-                Image("SignUpCharacter")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 274.85, height: 264)
-                    .padding(.top, 93)
+                .padding(.top, 93)
                 
                 Spacer()
                 
@@ -37,15 +39,18 @@ struct SignUpCompleteView: View {
                 } label: {
                     Text("완료")
                         .frame(maxWidth: .infinity)
-                        .padding()  // 버튼 내부 여백
-                        .background(Color(hex: 0x4F46E5))  // 배경색 설정
-                        .foregroundStyle(.white)  // 텍스트 색을 흰색으로 설정
+                        .padding()
+                        .background(Color(hex: 0x4F46E5))
+                        .foregroundStyle(.white)
                         .bold()
-                        .cornerRadius(10)  // 둥근 모서리
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .padding(.horizontal, 20)
                 .padding(.vertical)
+                .navigationDestination(isPresented: $shouldNavigate) {
+                    TabBarView()
+                }
             }
+            .padding(.horizontal, 20)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -57,14 +62,11 @@ struct SignUpCompleteView: View {
                     }
                 }
             }
-            .navigationDestination(isPresented: $shouldNavigate) {
-                TabBarView()
-            }
         }
         .navigationBarBackButtonHidden()
     }
 }
 
 #Preview {
-    SignUpCompleteView(username: "") // Add preview parameter
+    SignUpCompleteView(username: "")
 }

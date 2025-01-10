@@ -1,16 +1,16 @@
 //
-//  ProfileCreationPopUpView.swift
+//  NewImagePopupView.swift
 //  Where
 //
-//  Created by LHH on 12/30/24.
+//  Created by LHH on 1/9/25.
 //
 
 import SwiftUI
 import PhotosUI
 
-struct ProfilePopupView: View {
+struct NewImagePopupView: View {
     @Binding var showPopup: Bool
-    @Binding var profileImage: UIImage?
+    @Binding var newMeetImage: UIImage?
     @State private var selectedItem: PhotosPickerItem?
     
     var body: some View {
@@ -20,8 +20,8 @@ struct ProfilePopupView: View {
                 .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 20) {
-                Button("기본 이미지로 설정") {
-                    profileImage = UIImage(named: "person")
+                Button("기본 커버 선택") {
+                    newMeetImage = UIImage(systemName: "person") // 추후 기본 커버 이미지 변경
                     showPopup = false
                 }
                 .padding(.top,20)
@@ -41,7 +41,7 @@ struct ProfilePopupView: View {
                     Task {
                         if let data = try? await newItem?.loadTransferable(type: Data.self),
                            let uiImage = UIImage(data: data) {
-                            profileImage = uiImage
+                            newMeetImage = uiImage
                             showPopup = false
                         }
                     }

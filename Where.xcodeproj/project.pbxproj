@@ -42,11 +42,14 @@
 		91A9EAB72D299D4B005F09D2 /* SignUpCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EAB62D299D4B005F09D2 /* SignUpCompleteView.swift */; };
 		91A9EABA2D29AFD7005F09D2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EAB92D29AFD7005F09D2 /* HomeView.swift */; };
 		91A9EABD2D29BA85005F09D2 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EABC2D29BA85005F09D2 /* TabBarView.swift */; };
-		91A9EABF2D29C511005F09D2 /* NewMeetingSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EABE2D29C511005F09D2 /* NewMeetingSheetView.swift */; };
+		91A9EABF2D29C511005F09D2 /* NewMeetingSheet1View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EABE2D29C511005F09D2 /* NewMeetingSheet1View.swift */; };
 		91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EAC32D29C5D0005F09D2 /* Dismiss.swift */; };
 		91B7A16F2D26DFC2003932B4 /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */; };
 		91B7A1702D26DFC2003932B4 /* ProfilePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */; };
 		91B7A1722D26DFDE003932B4 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A1712D26DFDE003932B4 /* String.swift */; };
+		F70F76C82D2FBB1E006EFF2D /* NewImagePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70F76C72D2FBB1E006EFF2D /* NewImagePopupView.swift */; };
+		F70F76CA2D2FC00A006EFF2D /* NewMeetingSheet2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70F76C92D2FC00A006EFF2D /* NewMeetingSheet2View.swift */; };
+		F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75400952D310EF5009D201F /* NewFriendListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,11 +101,14 @@
 		91A9EAB62D299D4B005F09D2 /* SignUpCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpCompleteView.swift; sourceTree = "<group>"; };
 		91A9EAB92D29AFD7005F09D2 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		91A9EABC2D29BA85005F09D2 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
-		91A9EABE2D29C511005F09D2 /* NewMeetingSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMeetingSheetView.swift; sourceTree = "<group>"; };
+		91A9EABE2D29C511005F09D2 /* NewMeetingSheet1View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMeetingSheet1View.swift; sourceTree = "<group>"; };
 		91A9EAC32D29C5D0005F09D2 /* Dismiss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dismiss.swift; sourceTree = "<group>"; };
 		91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
 		91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePopupView.swift; sourceTree = "<group>"; };
 		91B7A1712D26DFDE003932B4 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		F70F76C72D2FBB1E006EFF2D /* NewImagePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewImagePopupView.swift; sourceTree = "<group>"; };
+		F70F76C92D2FC00A006EFF2D /* NewMeetingSheet2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMeetingSheet2View.swift; sourceTree = "<group>"; };
+		F75400952D310EF5009D201F /* NewFriendListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,7 +315,10 @@
 		91A9EAC02D29C519005F09D2 /* Meeting */ = {
 			isa = PBXGroup;
 			children = (
-				91A9EABE2D29C511005F09D2 /* NewMeetingSheetView.swift */,
+				91A9EABE2D29C511005F09D2 /* NewMeetingSheet1View.swift */,
+				F70F76C92D2FC00A006EFF2D /* NewMeetingSheet2View.swift */,
+				F70F76C72D2FBB1E006EFF2D /* NewImagePopupView.swift */,
+				F75400952D310EF5009D201F /* NewFriendListView.swift */,
 			);
 			path = Meeting;
 			sourceTree = "<group>";
@@ -442,7 +451,8 @@
 				04832B4C2D2675EF003FFE3B /* FriendsListView.swift in Sources */,
 				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
-				91A9EABF2D29C511005F09D2 /* NewMeetingSheetView.swift in Sources */,
+				F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */,
+				91A9EABF2D29C511005F09D2 /* NewMeetingSheet1View.swift in Sources */,
 				04832B352D23F765003FFE3B /* FloaterView.swift in Sources */,
 				04832B2F2D2398CD003FFE3B /* RegistrationTermView.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
@@ -451,6 +461,7 @@
 				91A9EABA2D29AFD7005F09D2 /* HomeView.swift in Sources */,
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
 				045B44AB2D2150AF00514A27 /* ViewModel.swift in Sources */,
+				F70F76C82D2FBB1E006EFF2D /* NewImagePopupView.swift in Sources */,
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045B44F42D22889000514A27 /* LoginView.swift in Sources */,
 				91A9EAB72D299D4B005F09D2 /* SignUpCompleteView.swift in Sources */,
@@ -465,6 +476,7 @@
 				045B44EE2D224D5C00514A27 /* OnboardingView.swift in Sources */,
 				91B7A16F2D26DFC2003932B4 /* ProfileCreationView.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* TabBarView.swift in Sources */,
+				F70F76CA2D2FC00A006EFF2D /* NewMeetingSheet2View.swift in Sources */,
 				91B7A1702D26DFC2003932B4 /* ProfilePopupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
