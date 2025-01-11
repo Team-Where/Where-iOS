@@ -23,6 +23,11 @@ struct MeetingPlacesView: View {
                 .frame(height: 8)
             
             sortOptions
+            
+            candidatePlacesList(sortOption, users: [
+                .init(nickname: "swain", isFavorite: false),
+                .init(nickname: "죠니월드", isFavorite: true)
+            ])
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -159,6 +164,7 @@ struct MeetingPlacesView: View {
                     )
                 }
                 .whereFont(.caption12regular)
+                .foregroundStyle(Color(hex: 0x282828))
             }
         }
     }
@@ -185,6 +191,143 @@ struct MeetingPlacesView: View {
             Spacer()
         }
         .padding()
+    }
+    
+    @ViewBuilder private func candidatePlacesList(_ sortOption: PlaceSortOption, users: [User]) -> some View {
+        switch sortOption {
+        case .all:
+            LazyVStack {
+                ForEach(users, id: \.id) { user in
+                    sectionByUser(user, [
+                        .init(),
+                        .init(),
+                        .init(),
+                    ])
+                }
+            }
+        case .byLikesDescending:
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder private func sectionByUser(_ user: User, _ places: [Place]) -> some View {
+        Section {
+            ForEach(places, id: \.id) { place in
+                placesSectionCell(place)
+            }
+        } header: {
+            HStack(spacing: 12) {
+                AsyncImage(url: user.imageURL)
+                    .frame(width: 40, height: 40)
+                    .clipShape(.circle)
+                
+                Text(user.nickname)
+                    .whereFont(.body16medium)
+                    .foregroundStyle(Color(hex: 0x1F2937))
+                
+                Spacer()
+                
+                // TODO: "나" 일 때만 장소 공유 인터랙션 가능
+                Button {
+                    // TODO: 장소 공유 시트 연결
+                } label: {
+                    Label {
+                        Text("장소 공유")
+                            .whereFont(.body14medium)
+                    } icon: {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                    }
+                }
+            }
+        }
+        .padding([.horizontal, .top])
+    }
+    
+    @ViewBuilder private func sectionByLikes(_ places: [Place]) -> some View {
+        
+    }
+    
+    @ViewBuilder private func placesSectionCell(_ place: Place) -> some View {
+        VStack(spacing: 18) {
+            HStack(spacing: 16) {
+                AsyncImage(url: place.imageURL)
+                    .frame(width: 80, height: 80)
+                    .clipShape(.rect(cornerRadius: 16))
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(place.name)
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                    
+                    Text(place.address)
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x4B5563))
+                    
+                    HStack(spacing: 12) {
+                        HStack(spacing: 4) {
+                            Image(.bubbleIcon)
+                            
+                            Text("코멘트 \(place.comments.count)")
+                        }
+                        .foregroundStyle(Color(hex: 0x868E96))
+                        
+                        HStack(spacing: 4) {
+                            Image(systemName: "heart.fill")
+                            
+                            Text("좋아요 \(place.likes)")
+                        }
+                        .foregroundStyle(.accent)
+                    }
+                    .whereFont(.caption12medium)
+                }
+                
+                Spacer()
+            }
+            
+            HStack(spacing: 8) {
+                HStack(spacing: 4) {
+                    Image(.colorNaverMapLogo)
+                    
+                    Text("네이버 지도")
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(
+                    Capsule()
+                        .fill(.white)
+                        .strokeBorder(Color(hex: 0xE3E4E9))
+                )
+                
+                HStack(spacing: 4) {
+                    Image(.colorKakaoMapLogo)
+                    
+                    Text("카카오맵")
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(
+                    Capsule()
+                        .fill(.white)
+                        .strokeBorder(Color(hex: 0xE3E4E9))
+                )
+            }
+            .whereFont(.caption12regular)
+            .foregroundStyle(Color(hex: 0x282828))
+        }
+        .padding(.vertical, 24)
+        .padding(.horizontal, 16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.white)
+                .strokeBorder(Color(hex: 0xF3F4F6))
+                .shadow(color: Color(hex: 0x566271).opacity(0.1), radius: 1, y: 4)
+        )
+        .padding(.bottom)
     }
 }
 
