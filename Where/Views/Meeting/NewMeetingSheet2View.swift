@@ -9,18 +9,24 @@ import SwiftUI
 
 struct NewMeetingSheet2View: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var shouldNavigate = false
+    @State private var showCompleteView = false
     @State private var showMessage = false
     @State private var isInvited = false
     @State private var invitedFriendName: String? = nil
     @State private var friends = [
         ("친구1", "2번 만남", "person"),
         ("친구2", "3번 만남", "person"),
-        ("친구3", "5번 만남", "person")
+        ("친구3", "5번 만남", "person"),
+        ("친구4", "1번 만남", "person"),
+        ("친구5", "2번 만남", "person"),
+        ("친구6", "4번 만남", "person")
     ]  // 이 부분은 나중에 변경
+    @Binding var newMeetImage: UIImage?
+    @Binding var text: String
+    @Binding var showNewMeeting: Bool
     
     var body: some View {
-        NavigationStack {
+        ZStack(alignment: .bottom) {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
                     Text("새 모임 만들기(2/2)")
@@ -29,7 +35,7 @@ struct NewMeetingSheet2View: View {
                     
                     Text("파티원을 초대해요!")
                         .whereFont(.title24semibold)
-                        .padding(.top, 16)
+                        .padding(.top, 10)
                 }
                 
                 // 카카오톡 초대 버튼 추가
@@ -53,24 +59,44 @@ struct NewMeetingSheet2View: View {
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
+                    .frame(height: 46)
                     .background(Color(hex: 0xF9E000))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .padding(.top, 32)
+                //                    .padding(.top, 32)
                 
                 Text("최근 만난 친구")
                     .whereFont(.body14semibold)
-                    .padding(.top, 33)
+                    .padding(.top, 20)
                 
-                // 친구 목록을 위한 ScrollView
+                // 최근 만난 친구 스크롤뷰
                 ScrollView {
                     ForEach(friends, id: \.0) { friend in
                         NewFriendListView(showMessage: $showMessage, invitedFriendName: $invitedFriendName, friendName: friend.0, meetingCount: friend.1, imageName: friend.2)
                     }
                 }
+                .frame(height: 190)
+                
+                HStack(spacing: 2) {
+                    Text("친구")
+                        .whereFont(.body14semibold)
+                    
+                    Text("\(friends.count)") // 친구목록 숫자 표시
+                        .whereFont(.body14semibold)
+                        .foregroundStyle(Color(hex: 0x4F46E5))
+                }
+                .padding(.top, 24)
+                
+                // 전체 친구 스크롤뷰
+                ScrollView {
+                    ForEach(friends, id: \.0) { friend in
+                        NewFriendListView(showMessage: $showMessage, invitedFriendName: $invitedFriendName, friendName: friend.0, meetingCount: friend.1, imageName: friend.2)
+                    }
+                }
+                .frame(height: 190)
             }
             .padding(.horizontal, 20)
-                        
+            
             Spacer()
             
             if showMessage {
@@ -95,28 +121,28 @@ struct NewMeetingSheet2View: View {
                         .stroke(Color(hex: 0x353941))
                 )
                 .padding(.horizontal, 20)
-            }
-            
-            Button {
-                shouldNavigate = true
-            } label: {
-                Text("다음")
-                    .frame(maxWidth: .infinity)
-                    .padding()  // 버튼 내부 여백
-                    .foregroundStyle(.white)
-                    .bold()
-                    .cornerRadius(10)
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical)
-            .navigationDestination(isPresented: $shouldNavigate) {
-                // 이동할 뷰 추가
+                .opacity(0.8)
             }
         }
+        
+        // 다음 버튼
+        Button {
+            showCompleteView = true
+        } label: {
+            Text("다음")
+                .frame(maxWidth: .infinity)
+                .padding()  // 버튼 내부 여백
+                .background(Color(hex: 0x4F46E5))
+                .foregroundStyle(.white)
+                .bold()
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing ) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     dismiss()
                 } label: {
@@ -125,10 +151,18 @@ struct NewMeetingSheet2View: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $showCompleteView) {
+            NewMeetingCompleteView(newMeetImage: $newMeetImage, text: $text, showNewMeeting: $showNewMeeting)
+        }
     }
 }
 
-
 #Preview {
-    NewMeetingSheet2View()
+    NavigationStack {
+        NewMeetingSheet2View(
+            newMeetImage: .constant(UIImage(systemName: "person")!),
+            text: .constant("테스트 모임"),
+            showNewMeeting: .constant(true)
+        )
+    }
 }

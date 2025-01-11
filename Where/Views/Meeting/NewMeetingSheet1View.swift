@@ -13,8 +13,10 @@ struct NewMeetingSheet1View: View {
     @State private var shouldNavigate = false
     @State private var isValid = false
     @State private var showMessage = true
-    @State private var newMeetImage: UIImage? = nil
     @State private var showPopup = false
+    @State private var newMeetImage: UIImage? = nil
+    
+    @Binding var showNewMeeting: Bool
     
     var body: some View {
         NavigationStack {
@@ -43,7 +45,7 @@ struct NewMeetingSheet1View: View {
                                 RoundedRectangle(cornerSize: .init(width: 16, height: 16))
                                     .overlay {
                                         if let image = newMeetImage {
-                                             Image(uiImage: image)
+                                            Image(uiImage: image)
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: 120, height: 120)
@@ -123,14 +125,14 @@ struct NewMeetingSheet1View: View {
                         .padding(.vertical)
                         .disabled(!isValid)  // 유효성 검사 통과 시에만 활성화
                         .navigationDestination(isPresented: $shouldNavigate) {
-                            NewMeetingSheet2View()
+                            NewMeetingSheet2View(newMeetImage: $newMeetImage, text: $text, showNewMeeting: $showNewMeeting)
                         }
                     }
                 }
                 .padding(.horizontal, 20)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing ) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             dismiss()
                         } label: {
@@ -173,7 +175,3 @@ struct CounterView: View {
     }
 }
 
-
-#Preview {
-    NewMeetingSheet1View()
-}

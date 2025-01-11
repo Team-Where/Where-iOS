@@ -8,7 +8,7 @@
 import Foundation
 
 enum WhereFont {
-    case title24semibold, title20semibold
+    case title28semibold, title24semibold, title20semibold
     case subtitle18bold, subtitle18semibold
     case body16semibold, body16medium, body16regular
     case body14semibold, body14medium, body14regular
@@ -17,7 +17,7 @@ enum WhereFont {
     
     var pretendard: Pretendard {
         switch self {
-        case .title24semibold, .title20semibold, .subtitle18semibold, .body16semibold, .body14semibold:
+        case .title28semibold, .title24semibold, .title20semibold, .subtitle18semibold, .body16semibold, .body14semibold:
             return .semibold
         case .subtitle18bold:
             return .bold
@@ -30,6 +30,8 @@ enum WhereFont {
     
     var size: CGFloat {
         switch self {
+        case .title28semibold:
+            return 28
         case .title24semibold:
             return 24
         case .title20semibold:
@@ -49,7 +51,7 @@ enum WhereFont {
     
     var lineHeight: CGFloat {
         switch self {
-        case .title24semibold, .title20semibold, .subtitle18bold, .subtitle18semibold, .caption12medium, .caption12regular, .caption11regular:
+        case .title28semibold, .title24semibold, .title20semibold, .subtitle18bold, .subtitle18semibold, .caption12medium, .caption12regular, .caption11regular:
             return size * 1.4
         case .body16semibold, .body16medium, .body16regular, .body14semibold, .body14medium, .body14regular:
             return size * 1.45

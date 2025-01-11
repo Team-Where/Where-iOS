@@ -12,7 +12,7 @@ struct ProfileCreationView: View {
     @State var username: String = ""
     @State private var isValid: Bool = false
     @State private var showPopup = false
-    @State private var profileImage: UIImage? = UIImage(named: "person")
+    @State private var profileImage: UIImage? = UIImage(named: "person") // 기본 이미지 설정
     @State private var shouldNavigate = false
     
     var body: some View {

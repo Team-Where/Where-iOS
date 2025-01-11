@@ -47,7 +47,7 @@ struct TabBarView: View {
                 }
             }
             .sheet(isPresented: $showNewMeeting) {
-                NewMeetingSheet1View()
+                NewMeetingSheet1View(showNewMeeting: $showNewMeeting)
                     .presentationCornerRadius(24)
             }
             VStack {
