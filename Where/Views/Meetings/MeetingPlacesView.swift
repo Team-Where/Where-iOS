@@ -206,7 +206,15 @@ struct MeetingPlacesView: View {
                 }
             }
         case .byLikesDescending:
-            EmptyView()
+            LazyVStack {
+                ForEach(1...3, id: \.self) { index in
+                    sectionByLikes(index: index, [
+                        .init(),
+                        .init(),
+                        .init(),
+                    ])
+                }
+            }
         }
     }
     
@@ -246,8 +254,24 @@ struct MeetingPlacesView: View {
         .padding([.horizontal, .top])
     }
     
-    @ViewBuilder private func sectionByLikes(_ places: [Place]) -> some View {
-        
+    @ViewBuilder private func sectionByLikes(index: Int, _ places: [Place]) -> some View {
+        Section {
+            ForEach(places, id: \.id) { place in
+                placesSectionCell(place)
+            }
+        } header: {
+            VStack {
+                Text("Best \(index)")
+                    .whereFont(.subtitle18semibold)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 6)
+                
+                Rectangle()
+                    .frame(width: 80, height: 2)
+            }
+            .foregroundStyle(.accent)
+        }
+        .padding([.horizontal, .top])
     }
     
     @ViewBuilder private func placesSectionCell(_ place: Place) -> some View {
