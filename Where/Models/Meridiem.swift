@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum Meridiem: CaseIterable, Hashable {
+enum Meridiem: CaseIterable, Hashable, CustomStringConvertible {
     case am, pm
     
-    var koreanDescription: String {
+    var description: String {
         switch self {
         case .am:
             "오전"
