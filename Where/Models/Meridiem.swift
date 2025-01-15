@@ -19,3 +19,12 @@ enum Meridiem: CaseIterable, Hashable, CustomStringConvertible {
         }
     }
 }
+
+/// 12시간제에서 시간의 네임스페이스
+enum Hour: Int, CaseIterable, Hashable, CustomStringConvertible {
+    case one = 1, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve
+    
+    var description: String {
+        "\(self.rawValue)시"
+    }
+}
