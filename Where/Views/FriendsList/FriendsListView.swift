@@ -32,7 +32,9 @@ struct FriendsListView: View {
                 }
             } else {
                 ScrollView(.vertical) {
-                    section(.favorite, friends.filter { $0.isFavorite })
+                    if viewModel.isEditing == false {
+                        section(.favorite, friends.filter { $0.isFavorite })
+                    }
                     section(.common, friends)
                 }
             }
@@ -142,6 +144,7 @@ struct FriendsListView: View {
         case .deleteFriend(let friend):
             Button {
                 viewModel.deleteFriend(by: friend.id)
+                sheetItem = .none
             } label: {
                 Text("친구 삭제")
                     .whereFont(.body16medium)
