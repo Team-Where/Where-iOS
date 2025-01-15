@@ -425,6 +425,7 @@ extension MeetingInformationDetailView {
                         HStack(spacing: 8) {
                             AsyncDateView(date: $temporalSelectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
                                 .whereFont(.body14regular)
+                                .foregroundStyle(temporalSelectedDate == nil ? Color(hex: 0x6B7280) : Color(hex: 0x1F2937))
                             
                             Image(.polygonDown)
                         }
@@ -448,6 +449,7 @@ extension MeetingInformationDetailView {
                             if let time = temporalSelectedTime,
                                let meridiem = temporalSelectedMeridiem {
                                 Text("\(meridiem.koreanDescription) \(time)시")
+                                    .foregroundStyle(Color(hex: 0x1F2937))
                             } else {
                                 Text("시간을 선택해주세요")
                             }

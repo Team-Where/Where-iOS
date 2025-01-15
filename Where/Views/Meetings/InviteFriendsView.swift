@@ -232,6 +232,7 @@ struct InviteFriendsView: View {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color(hex: 0xF1F3F5))
                         .strokeBorder(Color(hex: 0xDEE2E6))
+                        .frame(width: 72, height: 32)
                 )
             }
             
@@ -248,6 +249,7 @@ struct InviteFriendsView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .fill(.white)
                             .strokeBorder(Color(hex: 0xDEE2E6))
+                            .frame(width: 52, height: 32)
                     )
             }
         }
