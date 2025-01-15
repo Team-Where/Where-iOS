@@ -385,7 +385,7 @@ extension MeetingInformationDetailView {
         @State private var sheetType: EditMeetingDateSheetType?
         @Binding var fullScreenCoverType: FullScreenCoverType?
         @State private var temporalSelectedDate: Date?
-        @State private var temporalSelectedTime: Int?
+        @State private var temporalSelectedTime: Hour?
         @State private var temporalSelectedMeridiem: Meridiem?
         @Binding var selectedDate: Date?
         
@@ -448,7 +448,7 @@ extension MeetingInformationDetailView {
                         HStack(spacing: 8) {
                             if let time = temporalSelectedTime,
                                let meridiem = temporalSelectedMeridiem {
-                                Text("\(meridiem.koreanDescription) \(time)시")
+                                Text("\(meridiem.description) \(time.description)")
                                     .foregroundStyle(Color(hex: 0x1F2937))
                             } else {
                                 Text("시간을 선택해주세요")
@@ -465,7 +465,7 @@ extension MeetingInformationDetailView {
                 Spacer()
                 
                 Button {
-                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime, meridiem: temporalSelectedMeridiem)
+                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime?.rawValue, meridiem: temporalSelectedMeridiem)
                     selectedDate = date
                     fullScreenCoverType = .none
                 } label: {
@@ -559,13 +559,13 @@ extension MeetingInformationDetailView {
     
     struct EditMeetingTimeSheet: View {
         @Binding var sheetType: EditMeetingDateSheetType?
-        @Binding var selectedTime: Int?
+        @Binding var selectedTime: Hour?
         @Binding var selectedMeridiem: Meridiem?
         @State private var temporalSelectedMeridiem: Meridiem = .am
-        @State private var temporalSelectedTime: Int = 1
+        @State private var temporalSelectedTime: Hour = .one
         
-        private let meridiems: [Meridiem] = Meridiem.allCases
-        private let times: [Int] = Array(1...12)
+        private let meridiems: [Meridiem] = Meridiem.allCases.reversed()
+        private let times: [Hour] = Hour.allCases.reversed()
         
         var body: some View {
             VStack(alignment: .leading) {
@@ -588,25 +588,16 @@ extension MeetingInformationDetailView {
                 
                 Divider()
                 
-                List {
-                    Picker("오전/오후", selection: $temporalSelectedMeridiem) {
-                        ForEach(meridiems, id: \.self) { meridiem in
-                            Text(meridiem.koreanDescription)
-                        }
-                    }
+                VStack(spacing: 23) {
+                    pickerCell("오전/오후", selection: $temporalSelectedMeridiem, items: meridiems)
                     
-                    Picker("시간", selection: $temporalSelectedTime) {
-                        ForEach(times, id: \.self) { time in
-                            Text("\(time)시")
-                        }
-                    }
+                    Divider()
+                    
+                    pickerCell("시간", selection: $temporalSelectedTime, items: times)
                 }
-                .onAppear {
-                    guard let hour = Date.now.dateComponents().hour else { return }
-                    temporalSelectedMeridiem = hour > 12 ? .pm : .am
-                    temporalSelectedTime = hour > 12 ? hour - 12 : hour
-                }
-                .listStyle(.plain)
+                .padding()
+                
+                Spacer()
                 
                 HStack {
                     Button {
@@ -642,6 +633,38 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
             }
             .presentationDetents([.fraction(0.54)])
+        }
+        
+        @ViewBuilder private func pickerCell<Value: CustomStringConvertible & Hashable>(
+            _ label: String,
+            selection: Binding<Value>,
+            items: [Value]
+        ) -> some View {
+            HStack {
+                Text(label)
+                    .whereFont(.body16medium)
+                    .foregroundStyle(Color(hex: 0x495057))
+                
+                Spacer()
+                
+                HStack(spacing: 4) {
+                    Menu {
+                        ForEach(items, id: \.self) { item in
+                            Button {
+                                selection.wrappedValue = item
+                            } label: {
+                                Text(item.description)
+                            }
+                        }
+                    } label: {
+                        Text(selection.wrappedValue.description)
+                        
+                        Image(systemName: "chevron.up.chevron.down")
+                    }
+                    .whereFont(.body16semibold)
+                    .foregroundStyle(Color(hex: 0x212529))
+                }
+            }
         }
     }
 }
