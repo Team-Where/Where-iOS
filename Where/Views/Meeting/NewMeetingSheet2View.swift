@@ -25,6 +25,10 @@ struct NewMeetingSheet2View: View {
     @Binding var text: String
     @Binding var showNewMeeting: Bool
     
+    // 접기/펼치기 상태 관리
+    @State private var isRecentFriendsExpanded = true // 최근만난친구
+    @State private var isFriendsExpanded = true // 친구목록
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(alignment: .leading) {
@@ -63,37 +67,23 @@ struct NewMeetingSheet2View: View {
                     .background(Color(hex: 0xF9E000))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                //                    .padding(.top, 32)
                 
-                Text("최근 만난 친구")
-                    .whereFont(.body14semibold)
-                    .padding(.top, 20)
-                
-                // 최근 만난 친구 스크롤뷰
+                // 스크롤뷰
                 ScrollView {
-                    ForEach(friends, id: \.0) { friend in
-                        NewFriendListView(showMessage: $showMessage, invitedFriendName: $invitedFriendName, friendName: friend.0, meetingCount: friend.1, imageName: friend.2)
+                    // 최근 만난 친구
+                    SectionView(title: "최근 만난 친구", isExpanded: $isRecentFriendsExpanded) {
+                        ForEach(friends, id: \.0) { friend in
+                            NewFriendListView(showMessage: $showMessage, invitedFriendName: $invitedFriendName, friendName: friend.0, meetingCount: friend.1, imageName: friend.2)
+                        }
                     }
-                }
-                .frame(height: 190)
-                
-                HStack(spacing: 2) {
-                    Text("친구")
-                        .whereFont(.body14semibold)
                     
-                    Text("\(friends.count)") // 친구목록 숫자 표시
-                        .whereFont(.body14semibold)
-                        .foregroundStyle(Color(hex: 0x4F46E5))
-                }
-                .padding(.top, 24)
-                
-                // 전체 친구 스크롤뷰
-                ScrollView {
-                    ForEach(friends, id: \.0) { friend in
-                        NewFriendListView(showMessage: $showMessage, invitedFriendName: $invitedFriendName, friendName: friend.0, meetingCount: friend.1, imageName: friend.2)
+                    SectionView(title: "친구 \(friends.count)", isExpanded: $isFriendsExpanded) {
+                        ForEach(friends, id: \.0) { friend in
+                            NewFriendListView(showMessage: $showMessage, invitedFriendName: $invitedFriendName, friendName: friend.0, meetingCount: friend.1, imageName: friend.2)
+                        }
                     }
+//                    .padding(.top, 24)
                 }
-                .frame(height: 190)
             }
             .padding(.horizontal, 20)
             
@@ -153,6 +143,37 @@ struct NewMeetingSheet2View: View {
         }
         .fullScreenCover(isPresented: $showCompleteView) {
             NewMeetingCompleteView(newMeetImage: $newMeetImage, text: $text, showNewMeeting: $showNewMeeting)
+        }
+    }
+}
+
+struct SectionView<Content: View>: View {
+    let title: String
+    @Binding var isExpanded: Bool
+    let content: () -> Content
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Text(title)
+                    .whereFont(.body14semibold)
+                
+                Spacer()
+                
+                Button {
+                    withAnimation {
+                        isExpanded.toggle()
+                    }
+                } label: {
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .foregroundStyle(.gray)
+                }
+            }
+            .padding(.top, 20)
+            
+            if isExpanded {
+                content()
+            }
         }
     }
 }
