@@ -205,7 +205,6 @@
 				045CA15A2D26EE1C001B5CEE /* FriendsList */,
 				045CA1592D26ED4A001B5CEE /* Login+Registration */,
 				045CA1582D26ED41001B5CEE /* Onboarding */,
-
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -265,7 +264,6 @@
 				04832B472D266F55003FFE3B /* SearchBar.swift */,
 				04832B512D26A55B003FFE3B /* WhereTabView.swift */,
 				91F1BFC82D3B8093000B4C84 /* BackButton.swift */,
-				04832B342D23F765003FFE3B /* FloaterView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -273,8 +271,6 @@
 		045CA1582D26ED41001B5CEE /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				045B44ED2D224D5C00514A27 /* OnboardingView.swift */,
-				045B44B12D21517D00514A27 /* Splash.storyboard */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -282,12 +278,8 @@
 		045CA1592D26ED4A001B5CEE /* Login+Registration */ = {
 			isa = PBXGroup;
 			children = (
-				045B44F32D22889000514A27 /* LoginView.swift */,
-				04832B282D22A6D7003FFE3B /* SignInView.swift */,
 				91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */,
 				91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */,
-				04832B2E2D2398CD003FFE3B /* RegistrationTermView.swift */,
-				04832B302D23D63D003FFE3B /* AthentificationView.swift */,
 			);
 			path = "Login+Registration";
 			sourceTree = "<group>";
@@ -295,7 +287,6 @@
 		045CA15A2D26EE1C001B5CEE /* FriendsList */ = {
 			isa = PBXGroup;
 			children = (
-				04832B4B2D2675EF003FFE3B /* FriendsListView.swift */,
 			);
 			path = FriendsList;
 			sourceTree = "<group>";
@@ -332,8 +323,6 @@
 		91A9EAB52D26EF53005F09D2 /* ProfileSetting */ = {
 			isa = PBXGroup;
 			children = (
-				91B7A16D2D26DFC2003932B4 /* ProfileCreationView.swift */,
-				91B7A16E2D26DFC2003932B4 /* ProfilePopupView.swift */,
 				91A9EAB62D299D4B005F09D2 /* SignUpCompleteView.swift */,
 			);
 			path = ProfileSetting;
