@@ -21,7 +21,7 @@ struct NewImagePopupView: View {
             
             VStack(alignment: .leading, spacing: 20) {
                 Button("기본 커버 선택") {
-                    newMeetImage = UIImage(systemName: "person") // 추후 기본 커버 이미지 변경
+                    newMeetImage = UIImage(named: "DefaultCover") // 추후 기본 커버 이미지 변경
                     showPopup = false
                 }
                 .padding(.top,20)
