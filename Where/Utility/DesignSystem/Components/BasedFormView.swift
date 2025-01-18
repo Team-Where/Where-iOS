@@ -38,7 +38,7 @@ struct BasedFormView<Content: View, Footer: View>: View {
                 .whereFont(.title24semibold)
                 .foregroundStyle(Color(hex: 0x1F2937))
                 .multilineTextAlignment(.leading)
-//                .padding(.top)
+                .padding(.top)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             content()
@@ -61,8 +61,11 @@ struct BasedFormView<Content: View, Footer: View>: View {
             dismiss()
         } label: {
             Image(systemName: "arrow.backward")
-                .padding(.leading, 14)
+                .resizable()
+                .scaledToFit()
                 .frame(width: 14, height: 12)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 6)
                 .foregroundStyle(.black)
         }
     }
