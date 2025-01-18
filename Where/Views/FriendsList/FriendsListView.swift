@@ -7,79 +7,89 @@
 
 import SwiftUI
 
-struct User: Identifiable {
-    let id: UUID = UUID()
-    let imageURL: URL? = nil
-    let nickname: String
-    let isFavorite: Bool
-}
-
 struct FriendsListView: View {
-    @State private var searchingText: String = String()
-    @State private var friends: [User] = [
-        .init(nickname: "Swain", isFavorite: false),
-        .init(nickname: "즐겨찾기한 친구", isFavorite: true),
-        .init(nickname: "삭제될 친구", isFavorite: true),
-    ]
-    @State private var isSearching: Bool = false
     @State private var sheetItem: SheetType?
+    @State private var route: Route?
     @FocusState private var isFocused: Bool
+    
+    @ObservedObject private var viewModel = FriendsListViewModel()
+    
+    private var friends: [User] { viewModel.friends }
+    private var searchedFriends: [User] { viewModel.searchedFriends }
+    private var isEditing: Bool { viewModel.isEditing }
     
     var body: some View {
         VStack {
-            header
-            
-            SearchBar("친구를 검색하세요.", text: $searchingText, $isFocused)
+            SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
             
             if friends.isEmpty {
                 unavailableView
+            } else if viewModel.isSearching {
+                ScrollView(.vertical) {
+                    ForEach(searchedFriends) { friend in
+                        Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
+                    }
+                }
             } else {
                 ScrollView(.vertical) {
-                    section(.favorite, friends.filter { $0.isFavorite })
+                    if viewModel.isEditing == false {
+                        section(.favorite, friends.filter { $0.isFavorite })
+                    }
                     section(.common, friends)
                 }
             }
         }
         .padding()
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if isEditing {
+                    Button {
+                        withAnimation {
+                            viewModel.toggleEditMode()
+                        }
+                    } label: {
+                        Image(systemName: "arrow.backward")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 12)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 6)
+                            .foregroundStyle(.black)
+                    }
+                }
+            }
+            
+            ToolbarItem(placement: .navigation) {
+                if isEditing {
+                    Text("목록편집")
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                        .padding(.leading)
+                } else {
+                    Text("친구목록")
+                        .whereFont(.title24semibold)
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation {
+                        viewModel.toggleEditMode()
+                    }
+                } label: {
+                    Text(isEditing ? "완료" : "편집")
+                        .whereFont(.body16medium)
+                }
+            }
+        }
         .sheet(item: $sheetItem) { item in
             sheet(item)
         }
-    }
-    
-    private var header: some View {
-        HStack {
-            if isSearching {
-                Button {
-                    withAnimation {
-                        isSearching.toggle()
-                    }
-                } label: {
-                    HStack {
-                        Image(systemName: "arrow.backward")
-                            .padding(.leading, 14)
-                            .frame(width: 24, height: 24)
-                            .foregroundStyle(.black)
-                        
-                        Text("목록편집")
-                            .whereFont(.subtitle18semibold)
-                            .foregroundStyle(Color(hex: 0x1F2937))
-                            .padding(.leading)
-                    }
-                }
-            } else {
-                Text("친구목록")
-                    .whereFont(.title24semibold)
-            }
-            
-            Spacer()
-            
-            Button {
-                withAnimation {
-                    isSearching.toggle()
-                }
-            } label: {
-                Text(isSearching ? "완료" : "편집")
-                    .whereFont(.body16medium)
+        .navigationDestination(item: $route) { route in
+            switch route {
+            case .historyReminder(let friend):
+                HistoryReminderView()
             }
         }
     }
@@ -116,40 +126,7 @@ struct FriendsListView: View {
         if friends.isEmpty == false {
             Section {
                 ForEach(friends) { friend in
-                    HStack {
-                        AsyncImage(url: friend.imageURL)
-                            .scaledToFit()
-                            .frame(width: 50, height: 50)
-                            .clipShape(.circle)
-                        
-                        Text(friend.nickname)
-                            .whereFont(.body16medium)
-                        
-                        Spacer()
-                        
-                        if isSearching {
-                            Button {
-                                sheetItem = .deleteFriend(friend: friend)
-                            } label: {
-                                Image(systemName: "trash")
-                                    .foregroundStyle(Color(hex: 0x6B7280))
-                            }
-                            .transition(.move(edge: .trailing))
-                        } else {
-                            Button {
-                                // TODO: 즐겨찾기 토글
-                            } label: {
-                                let isFavorite = friend.isFavorite
-                                Image(systemName: isFavorite ? "star.fill" : "star")
-                                    .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
-                            }
-                            .transition(.move(edge: .trailing))
-                        }
-                    }
-                    .contentShape(.rect)
-                    .onTapGesture {
-                        sheetItem = .historyWithFriend(friend: friend)
-                    }
+                    Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
                 }
             } header: {
                 HStack {
@@ -166,9 +143,8 @@ struct FriendsListView: View {
         switch type {
         case .deleteFriend(let friend):
             Button {
-                // TODO: 친구 삭제
-                guard let index = friends.firstIndex(where: { friend.id == $0.id }) else { return }
-                friends.remove(at: index)
+                viewModel.deleteFriend(by: friend.id)
+                sheetItem = .none
             } label: {
                 Text("친구 삭제")
                     .whereFont(.body16medium)
@@ -180,6 +156,7 @@ struct FriendsListView: View {
             }
             .padding(.horizontal)
             .presentationDetents([.height(150)])
+            .presentationCornerRadius(16)
         case .historyWithFriend(let friend):
             VStack {
                 HStack {
@@ -224,8 +201,9 @@ struct FriendsListView: View {
                     }
                 }
                 
-                NavigationLink {
-                    // TODO: 모임활동 화면으로 이동
+                Button {
+                    sheetItem = .none
+                    route = .historyReminder(friend: friend)
                 } label: {
                     Text("나와의 모임활동 보기")
                         .whereFont(.body16medium)
@@ -238,6 +216,7 @@ struct FriendsListView: View {
             }
             .padding()
             .presentationDetents([.fraction(0.45)])
+            .presentationCornerRadius(16)
         }
     }
 }
@@ -260,24 +239,88 @@ extension FriendsListView {
     }
     
     /// 친구목록 내에서 라우팅 가능한 시트의 종류
-    enum SheetType: Identifiable, Hashable {
+    enum SheetType: Identifiable {
         /// 친구삭제
         case deleteFriend(friend: User)
         /// 나와의 모임활동 보기
         case historyWithFriend(friend: User)
         
         var id: String { String(describing: self) }
+    }
+    
+    /// 친구목록 내에서 라우팅 가능한 Path의 종류
+    enum Route: Identifiable, Hashable {
+        /// 나와의 모임활동 상세 보기
+        case historyReminder(friend: User)
         
-        static func == (lhs: FriendsListView.SheetType, rhs: FriendsListView.SheetType) -> Bool {
-            return lhs.id == rhs.id
+        var id: String { String(describing: self) }
+        
+        static func == (lhs: Route, rhs: Route) -> Bool {
+            lhs.id == rhs.id
         }
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
         }
     }
+    
+    struct Cell: View {
+        @Binding var sheetItem: SheetType?
+        
+        private let friend: User
+        private var isEditing: Bool
+        
+        init(
+            sheetItem: Binding<SheetType?>,
+            isEditing: Bool,
+            _ friend: User
+        ) {
+            self._sheetItem = sheetItem
+            self.isEditing = isEditing
+            self.friend = friend
+        }
+        
+        var body: some View {
+            HStack {
+                AsyncImage(url: friend.imageURL)
+                    .scaledToFit()
+                    .frame(width: 50, height: 50)
+                    .clipShape(.circle)
+                
+                Text(friend.nickname)
+                    .whereFont(.body16medium)
+                
+                Spacer()
+                
+                if isEditing {
+                    Button {
+                        sheetItem = .deleteFriend(friend: friend)
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundStyle(Color(hex: 0x6B7280))
+                    }
+                    .transition(.move(edge: .trailing))
+                } else {
+                    Button {
+                        // TODO: 즐겨찾기 토글
+                    } label: {
+                        let isFavorite = friend.isFavorite
+                        Image(systemName: isFavorite ? "star.fill" : "star")
+                            .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
+                    }
+                    .transition(.move(edge: .trailing))
+                }
+            }
+            .contentShape(.rect)
+            .onTapGesture {
+                sheetItem = .historyWithFriend(friend: friend)
+            }
+        }
+    }
 }
 
 #Preview {
-    FriendsListView()
+    NavigationStack {
+        FriendsListView()
+    }
 }

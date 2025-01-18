@@ -35,7 +35,6 @@ struct WhereTabView: View {
                     Spacer()
                 }
             }
-            .ignoresSafeArea(.container, edges: .bottom)
         }
     }
     
