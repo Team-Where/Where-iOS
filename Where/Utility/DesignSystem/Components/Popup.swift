@@ -46,10 +46,10 @@ struct Popup<Based: View, Popup: View>: View {
     
     var body: some View {
         ZStack {
+            basedContent
+            
             Color.black.opacity(isPopupPresented ? 0.4 : 0)
                 .ignoresSafeArea(edges: .all)
-            
-            basedContent
             
             if isPopupPresented {
                 popupContent
