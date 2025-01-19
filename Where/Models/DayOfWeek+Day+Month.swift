@@ -34,11 +34,12 @@ struct Day: Identifiable {
     
     init(
         _ date: Date,
-        _ day: Int = .zero
+        _ day: Int,
+        isValid: Bool
     ) {
         self.day = day
         self.date = date
-        self.isValid = day > .zero
+        self.isValid = isValid
     }
 }
 
@@ -60,23 +61,17 @@ struct Month: Identifiable {
 extension Date {
     private var calendar: Calendar { Calendar.current }
     
-    var isDateInToday: Bool {
-        calendar.isDateInToday(self)
-    }
-    
-    var startOfDay: Date {
-        calendar.startOfDay(for: self)
-    }
-    
     var startOfMonth: Date? {
         calendar.date(from: calendar.dateComponents([.year, .month], from: self))
     }
     
-    var numberOfWeeks: CGFloat {
-        guard let range = calendar.range(of: .weekOfMonth, in: .month, for: self) else {
-            return .zero
-        }
-        return CGFloat(range.count)
+    var startOfPreviousMonth: Date? {
+        let lastMonthDate = calendar.date(byAdding: .month, value: -1, to: self)
+        return lastMonthDate?.startOfMonth
+    }
+    
+    var rangeOfDays: Range<Int>? {
+        calendar.range(of: .day, in: .month, for: self)
     }
     
     func inSameDay(as date: Date) -> Bool {
@@ -84,18 +79,44 @@ extension Date {
     }
     
     func month(from date: Date = .now) -> Month {
+        let rowsCount: Int = 6
+        let totalDays: Int = rowsCount * 7
+        
         guard let startOfMonth = date.startOfMonth,
-              let dayRange = calendar.range(of: .day, in: .month, for: startOfMonth)
+              let dayRange = startOfMonth.rangeOfDays
         else { return Month([], .now) }
+        
         let firstWeekDay = calendar.component(.weekday, from: startOfMonth)
         
-        let emptyDays = Array(repeating: Day(self), count: firstWeekDay - 1)
-        let daysInMonth: [Day] = dayRange.compactMap { day in
-            guard let date = calendar.date(byAdding: .day, value: day - 1, to: startOfMonth) else { return nil }
-            return Day(date, day)
+        let emptyDays: [Day] = (0..<firstWeekDay - 1).reversed().compactMap { offset in
+            let previousDate = calendar.date(byAdding: .day, value: -offset - 1, to: startOfMonth)
+            guard let date = previousDate else { return nil }
+            let day = calendar.component(.day, from: date)
+            return Day(date, day, isValid: false)
         }
         
-        return Month(emptyDays + daysInMonth, startOfMonth)
+        let daysInMonth: [Day] = dayRange.compactMap { day in
+            guard let dayDate = calendar.date(byAdding: .day, value: day - 1, to: startOfMonth) else { return nil }
+            return Day(dayDate, day, isValid: true)
+        }
+        
+        var days = emptyDays + daysInMonth
+        if days.count < totalDays {
+            let additionalDaysCount = totalDays - days.count
+            
+            guard let nextMonthStartDate = calendar.date(byAdding: .month, value: 1, to: startOfMonth),
+                  let firstDayOfNextMonth = nextMonthStartDate.startOfMonth else {
+                return Month(days, startOfMonth)
+            }
+            
+            let nextDays: [Day] = (0..<additionalDaysCount).compactMap { index in
+                guard let nextDate = calendar.date(byAdding: .day, value: index, to: firstDayOfNextMonth) else { return nil }
+                return Day(nextDate, calendar.component(.day, from: nextDate), isValid: false)
+            }
+            days.append(contentsOf: nextDays)
+        }
+        
+        return Month(days, startOfMonth)
     }
     
     func previousMonth() -> Month {
