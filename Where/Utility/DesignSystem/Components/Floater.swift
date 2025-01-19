@@ -7,38 +7,43 @@
 
 import SwiftUI
 
-struct FloaterModifier<FloaterContent: StringProtocol>: ViewModifier {
+struct FloaterModifier<Icon: View>: ViewModifier {
     @Binding var isFloaterPresented: Bool
-    
-    private let floaterContent: FloaterContent
+    let title: String
+    let icon: (() -> Icon)?
     
     init(
         _ isFloaterPresented: Binding<Bool>,
-        floaterContent: FloaterContent
+        _ title: String,
+        _ icon: (() -> Icon)?
     ) {
         self._isFloaterPresented = isFloaterPresented
-        self.floaterContent = floaterContent
+        self.title = title
+        self.icon = icon
     }
     
     func body(content: Content) -> some View {
-        Floater($isFloaterPresented, basedContent: content, floaterContent: floaterContent)
+        Floater($isFloaterPresented, basedContent: content, title, icon)
     }
 }
 
-struct Floater<Based: View, Floater: StringProtocol>: View {
+struct Floater<Based: View, Icon: View>: View {
     @Binding var isFloaterPresented: Bool
     
     private let basedContent: Based
-    private let floaterContent: Floater
+    private let title: String
+    private let icon: (() -> Icon)?
     
     init(
         _ isFloaterPresented: Binding<Bool>,
         basedContent: Based,
-        floaterContent: Floater
+        _ title: String,
+        _ icon: (() -> Icon)?
     ) {
         self._isFloaterPresented = isFloaterPresented
         self.basedContent = basedContent
-        self.floaterContent = floaterContent
+        self.title = title
+        self.icon = icon
     }
     
     var body: some View {
@@ -46,18 +51,48 @@ struct Floater<Based: View, Floater: StringProtocol>: View {
             basedContent
             
             if isFloaterPresented {
-                FloaterView(isFloaterPresented: $isFloaterPresented, title: floaterContent)
-                    .padding(.horizontal)
+                FloaterView(isFloaterPresented: $isFloaterPresented, title: title, icon: icon?())
+            }
+        }
+    }
+}
+
+struct FloaterView<Icon: View>: View {
+    var isFloaterPresented: Binding<Bool>
+    let title: String
+    let icon: Icon?
+    
+    var body: some View {
+        HStack(spacing: 10) {
+            if let icon = icon {
+                icon
+            }
+            
+            Text(title)
+                .whereFont(.body14medium)
+                .foregroundStyle(.white)
+            
+            Spacer()
+        }
+        .frame(height: 44)
+        .padding(.horizontal)
+        .background(Color(hex: 0x030712))
+        .clipShape(.rect(cornerRadius: 8))
+        .padding(.bottom)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                isFloaterPresented.wrappedValue = false
             }
         }
     }
 }
 
 extension View {
-    func floater<Message: StringProtocol>(
+    func floater<Icon: View>(
         _ isPresented: Binding<Bool>,
-        message: Message
+        title: String,
+        icon: (() -> Icon)? = nil
     ) -> some View {
-        modifier(FloaterModifier(isPresented, floaterContent: message))
+        modifier(FloaterModifier<Icon>(isPresented, title, icon))
     }
 }

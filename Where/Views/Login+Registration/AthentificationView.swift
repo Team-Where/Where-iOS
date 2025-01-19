@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AthentificationView: View {
-    @State private var isToastPresented: Bool = false
+    @State private var isFloaterPresented: Bool = false
     @State private var emailFieldText: String = String()
     @State private var authorizationCodeFieldText: String = String()
     @State private var passwordFieldText: String = String()
@@ -27,7 +27,10 @@ struct AthentificationView: View {
                 Spacer()
             }
             .padding(.top, 40)
-            .floater($isToastPresented, message: "인증코드가 전송되었습니다.")
+            .floater($isFloaterPresented, title: "인증코드가 전송되었습니다.") {
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.accent)
+            }
         } footer: {
             NavigationLink {
                 // TODO: 비밀번호 작성 화면으로 이동? 프로필 설정 화면으로 이동?
@@ -49,7 +52,7 @@ struct AthentificationView: View {
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
                     text: $emailFieldText,
-                    color: Color(hex: 0xE5E7EB)
+                    lineColor: Color(hex: 0xE5E7EB)
                 )
                 .focused($textFieldFocus, equals: .emailTextField)
                 .keyboardType(.emailAddress)
@@ -57,7 +60,7 @@ struct AthentificationView: View {
                 // TODO: 전송 여부에 따라 컴포넌트 바뀌어야함
                 Button {
                     // TODO: 인증코드 요청
-                    isToastPresented = true
+                    isFloaterPresented = true
                     textFieldFocus = .authorizationCodeTextField
                 } label: {
                     Text("인증코드 전송")
@@ -103,7 +106,7 @@ struct AthentificationView: View {
                 RoundedTextField(
                     "코드 6자리 입력해주세요",
                     text: $authorizationCodeFieldText,
-                    color: /*Color(hex: 0xE5E7EB)*/ .red
+                    lineColor: /*Color(hex: 0xE5E7EB)*/ .red
                 )
                 .focused($textFieldFocus, equals: .authorizationCodeTextField)
                 
@@ -134,9 +137,9 @@ struct AthentificationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $passwordFieldText,
-                    color: /*Color(hex: 0xE5E7EB)*/ .red,
-                    isSecured: true
+                    lineColor: /*Color(hex: 0xE5E7EB)*/ .red
                 )
+                .secured()
                 .focused($textFieldFocus, equals: .passwordTextField)
                 
                 Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자")
@@ -157,9 +160,9 @@ struct AthentificationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $reInputPasswordFieldText,
-                    color: Color(hex: 0xE5E7EB),
-                    isSecured: true
+                    lineColor: Color(hex: 0xE5E7EB)
                 )
+                .secured()
                 .focused($textFieldFocus, equals: .reInputPasswordTextField)
                 
                 Text("비밀번호를 한 번 더 입력해주세요.")
