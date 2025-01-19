@@ -17,12 +17,12 @@ struct CalendarView: View {
     @Binding var selectedDate: Date?
     
     private let daysOfWeek: [DayOfWeek] = DayOfWeek.allCases
-    private let columns = [GridItem](repeating: .init(.flexible()), count: DayOfWeek.count)
+    private let columns = [GridItem](repeating: .init(), count: DayOfWeek.count)
     
     private var currentMonth: Month { months[currentIndex] }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             calendarHeader()
             
             calendarBody()
@@ -30,7 +30,7 @@ struct CalendarView: View {
     }
     
     @ViewBuilder private func calendarHeader() -> some View {
-        HStack {
+        HStack(spacing: 12) {
             AsyncDateView(date: currentMonth.startDate, format: .yyyyMMKorean, prompt: "선택해주세요.")
                 .whereFont(.title20semibold)
                 .foregroundStyle(Color(hex: 0x1F2937))
@@ -71,7 +71,8 @@ struct CalendarView: View {
                 }
             }
         }
-        .padding(.horizontal)
+        .frame(height: 32)
+        .padding([.top, .horizontal])
         
         HStack {
             ForEach(daysOfWeek, id: \.self) { dayOfWeek in
@@ -81,7 +82,9 @@ struct CalendarView: View {
                     .frame(maxWidth: .infinity)
             }
         }
+        .frame(height: 32)
         .padding(.top)
+        .padding(.horizontal, 10)
     }
     
     @ViewBuilder private func calendarBody() -> some View {
@@ -95,10 +98,11 @@ struct CalendarView: View {
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
+        .padding(.horizontal, 10)
     }
     
     @ViewBuilder private func calendarGrid(_ month: Month) -> some View {
-        LazyVGrid(columns: columns) {
+        LazyVGrid(columns: columns, spacing: 0) {
             ForEach(month.days, id: \.id) { day in
                 gridCell(day)
             }
@@ -108,21 +112,22 @@ struct CalendarView: View {
     @ViewBuilder private func gridCell(_ day: Day) -> some View {
         let inSameDay = selectedDate?.inSameDay(as: day.date) ?? false
         
-        if day.isValid {
-            Text("\(day.day)")
-                .whereFont(.body16regular)
-                .frame(width: 36, height: 36)
-                .foregroundStyle(inSameDay ? .white : .black)
-                .background(
-                    Circle()
-                        .fill(inSameDay ? .black : .clear)
-                )
-                .onTapGesture {
+        Text("\(day.day)")
+            .whereFont(.body16regular)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .foregroundStyle(inSameDay ? .white : (day.isValid ? .black : .gray))
+            .background(
+                Circle()
+                    .fill(inSameDay ? .black : .clear)
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .containerShape(.rect)
+            .onTapGesture {
+                if day.isValid {
                     selectedDate = inSameDay ? nil : day.date
                 }
-        } else {
-            Text("")
-        }
+            }
     }
     
     private func prepare() {
@@ -141,4 +146,8 @@ struct CalendarView: View {
             break
         }
     }
+}
+
+#Preview {
+    MeetingInformationView()
 }
