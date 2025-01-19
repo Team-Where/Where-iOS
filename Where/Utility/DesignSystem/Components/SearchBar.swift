@@ -27,7 +27,7 @@ struct SearchBar: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             icon
             
             textFieldArea
@@ -36,8 +36,9 @@ struct SearchBar: View {
                 removeButton
             }
         }
-        .padding()
+        .padding(12)
         .whereFont(.body16regular)
+        .frame(height: 48)
         .background(Color(hex: 0xF3F4F6))
         .clipShape(.rect(cornerRadius: 12))
     }
@@ -45,6 +46,8 @@ struct SearchBar: View {
     private var textFieldArea: some View {
         TextField(titleKey, text: $searchingText)
             .focused(isFocused)
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
     }
     
     private var icon: some View {
