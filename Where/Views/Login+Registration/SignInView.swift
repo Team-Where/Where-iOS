@@ -26,7 +26,7 @@ struct SignInView: View {
                     RoundedTextField(
                         "이메일 주소를 입력해주세요",
                         text: $emailFieldText,
-                        color: Color(hex: 0xE5E7EB)
+                        lineColor: Color(hex: 0xE5E7EB)
                     )
                     .focused($textFieldFocus, equals: .emailTextField)
                     .keyboardType(.emailAddress)
@@ -40,9 +40,9 @@ struct SignInView: View {
                     RoundedTextField(
                         "비밀번호를 입력해주세요",
                         text: $passwordFieldText,
-                        color: Color(hex: 0xE5E7EB),
-                        isSecured: true
+                        lineColor: Color(hex: 0xE5E7EB)
                     )
+                    .secured()
                     .focused($textFieldFocus, equals: .passwordTextField)
                 }
             }
