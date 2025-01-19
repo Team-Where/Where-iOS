@@ -62,7 +62,7 @@ struct InviteFriendsView: View {
                             .resizable()
                             .scaledToFit()
                     }
-                    .padding(.horizontal)
+                    .padding(.vertical)
                     
                     friendsList([
                         .init(nickname: "나", isFavorite: false),
@@ -110,8 +110,12 @@ struct InviteFriendsView: View {
                 }
             }
         }
-        .floater($viewModel.isFloaterPresented, message: "초대되었습니다.")
         .scrollIndicators(.never)
+        .floater($viewModel.isFloaterPresented, title: "초대되었습니다.") {
+            Image(systemName: "checkmark")
+                .foregroundStyle(.accent)
+        }
+        .padding([.top, .horizontal])
     }
     
     @ViewBuilder private func invitedFriends(_ friends: [User]) -> some View {
@@ -162,7 +166,6 @@ struct InviteFriendsView: View {
                 .strokeBorder(Color(hex: 0xF3F4F6))
                 .shadow(color: Color(hex: 0x566271).opacity(0.1), radius: 1, y: 4)
         )
-        .padding()
     }
     
     @ViewBuilder private func friendsList(_ friends: [User]) -> some View {
@@ -183,7 +186,6 @@ struct InviteFriendsView: View {
                 sectionHeader("모든친구", count: 23)
             }
         }
-        .padding(.horizontal)
     }
     
     @ViewBuilder private func sectionHeader(_ title: String, count: Int) -> some View {

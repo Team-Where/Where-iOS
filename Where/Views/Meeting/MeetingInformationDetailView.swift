@@ -521,6 +521,7 @@ extension MeetingInformationDetailView {
                             .foregroundStyle(Color(hex: 0x030712))
                     }
                 }
+                .frame(height: 41)
                 .padding([.top, .horizontal])
                 
                 Divider()
@@ -553,7 +554,7 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
                 .disabled(temporalSelectedDate == nil)
             }
-            .presentationDetents([.fraction(0.6)])
+            .presentationDetents([.fraction(0.7)])
         }
     }
     

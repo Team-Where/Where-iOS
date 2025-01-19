@@ -43,7 +43,6 @@
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
 		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
-		04832B352D23F765003FFE3B /* FloaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B342D23F765003FFE3B /* FloaterView.swift */; };
 		04832B462D266819003FFE3B /* WhereTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B442D266819003FFE3B /* WhereTests.swift */; };
 		04832B482D266F55003FFE3B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B472D266F55003FFE3B /* SearchBar.swift */; };
 		049345142D229E10003D1129 /* BasedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049345132D229E10003D1129 /* BasedFormView.swift */; };
@@ -116,7 +115,6 @@
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		04832B322D23EB93003FFE3B /* Floater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Floater.swift; sourceTree = "<group>"; };
-		04832B342D23F765003FFE3B /* FloaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloaterView.swift; sourceTree = "<group>"; };
 		04832B3B2D266813003FFE3B /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04832B442D266819003FFE3B /* WhereTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereTests.swift; sourceTree = "<group>"; };
 		04832B472D266F55003FFE3B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
@@ -285,6 +283,7 @@
 				04832B472D266F55003FFE3B /* SearchBar.swift */,
 				91F1BFC82D3B8093000B4C84 /* BackButton.swift */,
 				048182262D29151800CCF721 /* AsyncDateView.swift */,
+				91A9EABC2D29BA85005F09D2 /* TabBarView.swift */,
 				046833FA2D3B902E009D2357 /* CalendarView.swift */,
 				04832B342D23F765003FFE3B /* FloaterView.swift */,
 				91A9EABC2D29BA85005F09D2 /* TabBarView.swift */,
@@ -549,7 +548,6 @@
 				F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */,
 				91A9EABF2D29C511005F09D2 /* NewMeetingSheet1View.swift in Sources */,
 				046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */,
-				04832B352D23F765003FFE3B /* FloaterView.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				91A9EABA2D29AFD7005F09D2 /* HomeView.swift in Sources */,
