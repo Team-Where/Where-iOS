@@ -73,7 +73,7 @@ struct NewMeetingSheet1View: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        TextField(
+                        TextField(                        
                             "",
                             text: $text,
                             prompt: Text(verbatim: "모임이름을 입력해주세요")
@@ -104,6 +104,8 @@ struct NewMeetingSheet1View: View {
                                     Text("모임 이름과 사진은 생성 후에도 변경할 수 있어요.")
                                         .whereFont(.body14medium)
                                         .foregroundStyle(.white)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.leading)
                                 }
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 44)

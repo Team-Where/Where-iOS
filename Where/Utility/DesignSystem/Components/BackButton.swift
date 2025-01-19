@@ -21,8 +21,6 @@ struct BackButton: View {
             dismiss()
         } label: {
             Image(systemName: "arrow.backward")
-                .frame(width: 12, height: 12)
-                .padding()
                 .foregroundStyle(.black)
         }
     }
