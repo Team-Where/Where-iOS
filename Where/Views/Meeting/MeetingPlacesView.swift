@@ -289,6 +289,7 @@ struct MeetingPlacesView: View {
                                     .whereFont(.caption11regular)
                                     .foregroundStyle(.white)
                             }
+                            .offset(y: 4)
                     }
                 
                 VStack(alignment: .leading, spacing: 6) {
