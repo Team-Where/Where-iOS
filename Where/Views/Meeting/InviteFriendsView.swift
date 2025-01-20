@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct InviteFriendsView: View {
-    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel = InviteFriendsViewModel()
     @FocusState private var isFocused: Bool
     
@@ -78,17 +77,7 @@ struct InviteFriendsView: View {
         .toolbar {
             if viewModel.isSearching == false {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "arrow.backward")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 14, height: 12)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 6)
-                            .foregroundStyle(.black)
-                    }
+                    BackButton()
                 }
                 
                 ToolbarItem(placement: .principal) {
