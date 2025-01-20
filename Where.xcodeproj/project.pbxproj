@@ -39,6 +39,7 @@
 		046833F62D3B8FB4009D2357 /* FriendsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CA15E2D27BEFB001B5CEE /* FriendsListViewModel.swift */; };
 		046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046833F72D3B8FE5009D2357 /* InviteFriendsViewModel.swift */; };
 		046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046833FA2D3B902E009D2357 /* CalendarView.swift */; };
+		046834182D3E26E2009D2357 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046834172D3E26E2009D2357 /* SettingView.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -111,6 +112,7 @@
 		046833F32D3B8F77009D2357 /* DateFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormat.swift; sourceTree = "<group>"; };
 		046833F72D3B8FE5009D2357 /* InviteFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewModel.swift; sourceTree = "<group>"; };
 		046833FA2D3B902E009D2357 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		046834172D3E26E2009D2357 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 		045B44A32D2150AF00514A27 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				046834162D3E26D3009D2357 /* Setting */,
 				91F1BFC52D3B7F88000B4C84 /* Place */,
 				91A9EAC02D29C519005F09D2 /* Meeting */,
 				91A9EAB82D29AFC9005F09D2 /* Home */,
@@ -332,6 +335,14 @@
 				046833F72D3B8FE5009D2357 /* InviteFriendsViewModel.swift */,
 			);
 			path = Meetings;
+			sourceTree = "<group>";
+		};
+		046834162D3E26D3009D2357 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				046834172D3E26E2009D2357 /* SettingView.swift */,
+			);
+			path = Setting;
 			sourceTree = "<group>";
 		};
 		04832B452D266819003FFE3B /* WhereTests */ = {
@@ -556,6 +567,7 @@
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
 				046833DD2D3B8DB8009D2357 /* AthentificationView.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
+				046834182D3E26E2009D2357 /* SettingView.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
 				F70F76C82D2FBB1E006EFF2D /* NewImagePopupView.swift in Sources */,
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
