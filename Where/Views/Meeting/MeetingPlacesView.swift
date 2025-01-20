@@ -280,6 +280,16 @@ struct MeetingPlacesView: View {
                 AsyncImage(url: place.imageURL)
                     .frame(width: 80, height: 80)
                     .clipShape(.rect(cornerRadius: 16))
+                    .overlay(alignment: .bottom) {
+                        RoundedRectangle(cornerRadius: 17)
+                            .fill(.accent)
+                            .frame(width: 71, height: 19)
+                            .overlay {
+                                Text("같이 찾은 장소")
+                                    .whereFont(.caption11regular)
+                                    .foregroundStyle(.white)
+                            }
+                    }
                 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(place.name)
