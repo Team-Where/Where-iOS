@@ -31,7 +31,7 @@ struct TabBarView: View {
                     .tag(1)
                 
                 // 친구목록 뷰
-                Text("친구목록 뷰")
+                FriendsListView()
                     .tabItem {
                         Label("친구목록", systemImage: "list.bullet")
                     }
