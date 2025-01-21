@@ -51,22 +51,8 @@ struct BasedFormView<Content: View, Footer: View>: View {
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                backButton
+                BackButton()
             }
-        }
-    }
-    
-    private var backButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Image(systemName: "arrow.backward")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 14, height: 12)
-                .padding(.horizontal, 5)
-                .padding(.vertical, 6)
-                .foregroundStyle(.black)
         }
     }
 }
