@@ -80,7 +80,7 @@ struct AthentificationView: View {
                 
                 authorizationCodeRequestButton(viewModel.emailValidationState)
                     .containerRelativeFrame(.horizontal, alignment: .trailing) { value, _ in
-                        value - 60
+                        value - 26
                     }
             }
             
