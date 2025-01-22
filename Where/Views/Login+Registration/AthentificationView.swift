@@ -8,37 +8,58 @@
 import SwiftUI
 
 struct AthentificationView: View {
-    @State private var isFloaterPresented: Bool = false
-    @State private var emailFieldText: String = String()
-    @State private var authorizationCodeFieldText: String = String()
-    @State private var passwordFieldText: String = String()
-    @State private var reInputPasswordFieldText: String = String()
+    @ObservedObject private var viewModel = AthentificationViewModel()
+    @State private var floater: FloaterType?
+    
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
     var body: some View {
         BasedFormView("가입을 위한 이메일을\n인증해주세요") {
-            VStack(spacing: 20) {
+            ScrollView(.vertical) {
                 emailCell
                 
-//                authorizationCodeCell
-                
-                passwordCell
+                if viewModel.authorizationCodeValidationState == .valid {
+                    passwordCell
+                } else {
+                    authorizationCodeCell
+                }
                 
                 Spacer()
             }
             .padding(.top, 40)
-            .floater($isFloaterPresented, title: "인증코드가 전송되었습니다.") {
-                Image(systemName: "checkmark")
-                    .foregroundStyle(.accent)
+            .floater($floater) { type in
+                switch type {
+                case .authorizationCodeSended:
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.accent)
+                case .inValidAuthorizationCode:
+                    Image(systemName: "exclamationmark.circle")
+                        .foregroundStyle(.red)
+                }
             }
         } footer: {
-            NavigationLink {
-                // TODO: 비밀번호 작성 화면으로 이동? 프로필 설정 화면으로 이동?
+            Button {
+                print("clicked")
+                
+                if viewModel.authorizationCodeValidationState == .valid {
+                    // 인증코드 유효성 검사에 성공한 이후라면 비밀번호 설정
+                    // TODO: 프로필 설정 화면으로 이동
+                } else {
+                    // 인증코드 유효성 검사에 성공하기 전이라면 인증코드 제출
+                    // TODO: 인증코드 제출 기능
+                    guard viewModel.authorizationCodeFieldText != "tlean code" else {
+                        floater = .inValidAuthorizationCode
+                        return
+                    }
+                    viewModel.authorizationCodeValidationState = .valid
+                }
             } label: {
                 Text("다음")
                     .whereFont(.body16semibold)
             }
-            .buttonStyle(.whereRoundedProminent(true))
+            .buttonStyle(.whereRoundedProminent())
+            .disabled(viewModel.isProceedButtonDisabled)
+            .ignoresSafeArea(.keyboard)
         }
     }
     
@@ -51,48 +72,58 @@ struct AthentificationView: View {
             ZStack {
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
-                    text: $emailFieldText,
-                    lineColor: Color(hex: 0xE5E7EB)
+                    text: $viewModel.emailFieldText,
+                    lineColor: textFieldLineColor(focus: .emailTextField, invalid: viewModel.emailValidationState == .invalid)
                 )
                 .focused($textFieldFocus, equals: .emailTextField)
                 .keyboardType(.emailAddress)
                 
-                // TODO: 전송 여부에 따라 컴포넌트 바뀌어야함
-                Button {
-                    // TODO: 인증코드 요청
-                    isFloaterPresented = true
-                    textFieldFocus = .authorizationCodeTextField
-                } label: {
-                    Text("인증코드 전송")
-                        .whereFont(.caption12regular)
-                        .foregroundStyle(Color(hex: 0xF2F5F5))
-                        .frame(width: 84, height: 26)
-                        .padding(3)
-                        .background(Color(hex: 0x9CA3AF))
-                        .clipShape(.capsule)
-                }
-                .containerRelativeFrame(.horizontal, alignment: .trailing) { value, _ in
-                    value - 60
-                }
-                
-                // TODO: 전송 여부에 따라 컴포넌트 바뀌어야함
-                Text("전송 완료")
-                    .whereFont(.caption12regular)
-                    .foregroundStyle(Color(hex: 0xF2F5F5))
-                    .frame(width: 65, height: 26)
-                    .padding(3)
-                    .background(Color(hex: 0x1F2937))
-                    .clipShape(.capsule)
+                authorizationCodeRequestButton(viewModel.emailValidationState)
                     .containerRelativeFrame(.horizontal, alignment: .trailing) { value, _ in
                         value - 60
                     }
-                
             }
             
-            // TODO: Email Validation Check
-            Text("잘못된 이메일 주소입니다.")
-                .whereFont(.body14regular)
-                .foregroundStyle(Color(hex: 0xEF4444))
+            if viewModel.emailValidationState == .invalid {
+                Text("잘못된 이메일 주소입니다.")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0xEF4444))
+            }
+        }
+    }
+    
+    @ViewBuilder private func authorizationCodeRequestButton(_ state: EmailValidationState) -> some View {
+        switch state {
+        case .beforeValidate, .invalid:
+            Button {
+                // TODO: 인증코드 요청
+                floater = .authorizationCodeSended
+                textFieldFocus = .authorizationCodeTextField
+                viewModel.startTimer(seconds: 20)
+            } label: {
+                Text("인증코드 전송")
+                    .whereFont(.caption12regular)
+                    .foregroundStyle(Color(hex: 0xF2F5F5))
+                    .frame(width: 84, height: 28)
+                    .background(state == .invalid ? Color(hex: 0xDEE2E6) : Color(hex: 0x212529))
+                    .clipShape(.capsule)
+            }
+            .disabled(viewModel.emailFieldText.isEmpty)
+        case .valid:
+            Button {
+                // TODO: 인증코드 재요청
+                floater = .authorizationCodeSended
+                textFieldFocus = .authorizationCodeTextField
+                viewModel.startTimer(seconds: 10)
+            } label: {
+                Text("재전송")
+                    .whereFont(.caption12regular)
+                    .foregroundStyle(Color(hex: 0xF2F5F5))
+                    .frame(width: 52, height: 28)
+                    .background(Color(hex: 0x1F2937))
+                    .clipShape(.capsule)
+            }
+            .disabled(viewModel.emailFieldText.isEmpty)
         }
     }
     
@@ -102,28 +133,37 @@ struct AthentificationView: View {
                 .whereFont(.body14regular)
                 .foregroundStyle(Color(hex: 0x374151))
             
-            HStack {
+            ZStack {
                 RoundedTextField(
                     "코드 6자리 입력해주세요",
-                    text: $authorizationCodeFieldText,
-                    lineColor: /*Color(hex: 0xE5E7EB)*/ .red
+                    text: $viewModel.authorizationCodeFieldText,
+                    lineColor: textFieldLineColor(focus: .authorizationCodeTextField, invalid: viewModel.authorizationCodeValidationState == .timeout)
                 )
                 .focused($textFieldFocus, equals: .authorizationCodeTextField)
+                .keyboardType(.emailAddress)
+                .textContentType(.oneTimeCode)
                 
-                // TODO: 등장 조건?
-                Text("재전송")
-                    .padding(20)
-                    .whereFont(.body16regular)
-                    .overlay(alignment: .center) {
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color(hex: 0xE5E7EB))
+                timerCell(viewModel.remainingTime)
+                    .containerRelativeFrame(.horizontal, alignment: .trailing) { value, _ in
+                        value - 60
                     }
             }
             
-            // TODO: Code Validation Check
-            Text("인증코드가 올바르지 않습니다.")
-                .whereFont(.body14regular)
-                .foregroundStyle(Color(hex: 0xEF4444))
+            if viewModel.authorizationCodeValidationState == .timeout {
+                Text("인증 시간이 만료되었습니다.")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+    
+    @ViewBuilder private func timerCell(_ seconds: Int?) -> some View {
+        if let time = seconds {
+            let remainingTime = String(format: "%01d:%02d", time / 60, time % 60)
+            
+            Text(remainingTime)
+                .whereFont(.body16regular)
+                .foregroundStyle(seconds == .zero ? .red : .accent)
         }
     }
     
@@ -136,20 +176,22 @@ struct AthentificationView: View {
                 
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
-                    text: $passwordFieldText,
-                    lineColor: /*Color(hex: 0xE5E7EB)*/ .red
+                    text: $viewModel.passwordFieldText,
+                    lineColor: textFieldLineColor(focus: .passwordTextField, invalid: viewModel.passwordValidationState == .invalid)
                 )
                 .secured()
                 .focused($textFieldFocus, equals: .passwordTextField)
+                .textContentType(.oneTimeCode)
                 
-                Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자")
-                    .whereFont(.body14regular)
-                    .foregroundStyle(Color(hex: 0x374151))
-                
-                // TODO: Password Validation Check
-                Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자에 부합하지 않습니다.")
-                    .whereFont(.body14regular)
-                    .foregroundStyle(Color(hex: 0xEF4444))
+                if viewModel.passwordValidationState == .invalid {
+                    Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자에 부합하지 않습니다.")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0xEF4444))
+                } else {
+                    Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x374151))
+                }
             }
             
             VStack(alignment: .leading, spacing: 10) {
@@ -159,35 +201,28 @@ struct AthentificationView: View {
                 
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
-                    text: $reInputPasswordFieldText,
-                    lineColor: Color(hex: 0xE5E7EB)
+                    text: $viewModel.reInputPasswordFieldText,
+                    lineColor: textFieldLineColor(focus: .reInputPasswordTextField, invalid: viewModel.passwordComparisonResult == .different)
                 )
                 .secured()
                 .focused($textFieldFocus, equals: .reInputPasswordTextField)
                 
-                Text("비밀번호를 한 번 더 입력해주세요.")
-                    .whereFont(.body14regular)
-                    .foregroundStyle(Color(hex: 0x374151))
-                
-                // TODO: Password Validation Check
-                Text("비밀번호가 올바르지 않습니다.")
-                    .whereFont(.body14regular)
-                    .foregroundStyle(Color(hex: 0xEF4444))
+                if viewModel.passwordComparisonResult == .different {
+                    Text("비밀번호가 올바르지 않습니다.")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0xEF4444))
+                } else {
+                    Text("비밀번호를 한 번 더 입력해주세요.")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x374151))
+                }
             }
         }
     }
     
-    private func isPasswordValid(_ password: String) -> Bool {
-        // 8~32자
-        guard (8...32).contains(password.count) else { return false }
-        
-        // 영문, 숫자, 특수문자("!", "~", "@") 포함
-        let hasUppercase = password.rangeOfCharacter(from: .uppercaseLetters) != nil
-        let hasLowercase = password.rangeOfCharacter(from: .lowercaseLetters) != nil
-        let hasDigits = password.rangeOfCharacter(from: .decimalDigits) != nil
-        let hasSpecialCharacters = password.rangeOfCharacter(from: CharacterSet(charactersIn: "!~@")) != nil
-        
-        return hasUppercase && hasLowercase && hasDigits && hasSpecialCharacters
+    private func textFieldLineColor(focus: KeyboardFocusState, invalid: Bool) -> Color {
+        guard invalid == false else { return .red }
+        return textFieldFocus == focus ? .accent : Color(hex: 0xE5E7EB)
     }
 }
 
@@ -196,8 +231,22 @@ extension AthentificationView {
     enum KeyboardFocusState: Hashable {
         case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField
     }
+    
+    enum FloaterType: FloaterContent {
+        case authorizationCodeSended
+        case inValidAuthorizationCode
+        
+        var title: String {
+            switch self {
+            case .authorizationCodeSended: "인증코드가 전송되었습니다."
+            case .inValidAuthorizationCode: "인증코드가 잘못되었습니다."
+            }
+        }
+    }
 }
 
 #Preview {
-    AthentificationView()
+    NavigationStack {
+        AthentificationView()
+    }
 }
