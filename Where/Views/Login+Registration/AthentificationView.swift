@@ -14,7 +14,9 @@ struct AthentificationView: View {
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
     var body: some View {
-        BasedFormView("가입을 위한 이메일을\n인증해주세요") {
+        BasedFormView(
+            viewModel.authorizationCodeValidationState == .valid ? "설정할 비밀번호를\n입력해주세요" : "가입을 위한 이메일을\n인증해주세요"
+        ) {
             ScrollView(.vertical) {
                 emailCell
                 
@@ -39,8 +41,6 @@ struct AthentificationView: View {
             }
         } footer: {
             Button {
-                print("clicked")
-                
                 if viewModel.authorizationCodeValidationState == .valid {
                     // 인증코드 유효성 검사에 성공한 이후라면 비밀번호 설정
                     // TODO: 프로필 설정 화면으로 이동
@@ -57,8 +57,7 @@ struct AthentificationView: View {
                 Text("다음")
                     .whereFont(.body16semibold)
             }
-            .buttonStyle(.whereRoundedProminent())
-            .disabled(viewModel.isProceedButtonDisabled)
+            .buttonStyle(.whereRoundedProminent(viewModel.isProceedButtonDisabled))
             .ignoresSafeArea(.keyboard)
         }
     }
@@ -90,6 +89,7 @@ struct AthentificationView: View {
                     .foregroundStyle(Color(hex: 0xEF4444))
             }
         }
+        .padding(.bottom)
     }
     
     @ViewBuilder private func authorizationCodeRequestButton(_ state: EmailValidationState) -> some View {
@@ -181,7 +181,6 @@ struct AthentificationView: View {
                 )
                 .secured()
                 .focused($textFieldFocus, equals: .passwordTextField)
-                .textContentType(.oneTimeCode)
                 
                 if viewModel.passwordValidationState == .invalid {
                     Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자에 부합하지 않습니다.")
@@ -193,6 +192,7 @@ struct AthentificationView: View {
                         .foregroundStyle(Color(hex: 0x374151))
                 }
             }
+            .padding(.bottom)
             
             VStack(alignment: .leading, spacing: 10) {
                 Text("비밀번호")
