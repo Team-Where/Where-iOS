@@ -27,6 +27,7 @@ struct RoundedTextFieldStyle: TextFieldStyle {
                     .opacity(disabled ? 0.4 : 1.0)
             }
             .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
             .replaceDisabled()
             .frame(height: 56)
     }
