@@ -19,7 +19,7 @@ struct RoundedTextFieldStyle: TextFieldStyle {
             .foregroundStyle(Color(hex: 0x1F2937))
             .overlay(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(lineColor)
+                    .strokeBorder(lineColor)
             }
             .background {
                 RoundedRectangle(cornerRadius: 12)
