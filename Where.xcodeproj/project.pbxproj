@@ -48,6 +48,9 @@
 		04832B482D266F55003FFE3B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B472D266F55003FFE3B /* SearchBar.swift */; };
 		049345142D229E10003D1129 /* BasedFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049345132D229E10003D1129 /* BasedFormView.swift */; };
 		04A4F43F2D3F92730041FD02 /* AthentificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F43E2D3F92730041FD02 /* AthentificationViewModel.swift */; };
+		04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */; };
+		04A4F4442D40D82E0041FD02 /* AdjustPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4432D40D82E0041FD02 /* AdjustPasswordViewModel.swift */; };
+		04A4F4462D40D8E20041FD02 /* AthentificationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4452D40D8E20041FD02 /* AthentificationState.swift */; };
 		91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */; };
 		91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */; };
 		91A9EAB12D26EE45005F09D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAAD2D26EE45005F09D2 /* Preview Assets.xcassets */; };
@@ -123,6 +126,9 @@
 		04832B472D266F55003FFE3B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		049345132D229E10003D1129 /* BasedFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasedFormView.swift; sourceTree = "<group>"; };
 		04A4F43E2D3F92730041FD02 /* AthentificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthentificationViewModel.swift; sourceTree = "<group>"; };
+		04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordView.swift; sourceTree = "<group>"; };
+		04A4F4432D40D82E0041FD02 /* AdjustPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordViewModel.swift; sourceTree = "<group>"; };
+		04A4F4452D40D8E20041FD02 /* AthentificationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthentificationState.swift; sourceTree = "<group>"; };
 		91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -186,6 +192,7 @@
 				046833ED2D3B8F65009D2357 /* DayOfWeek+Day+Month.swift */,
 				046833EE2D3B8F65009D2357 /* Meridiem.swift */,
 				046833EF2D3B8F65009D2357 /* Place.swift */,
+				04A4F4452D40D8E20041FD02 /* AthentificationState.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -212,6 +219,7 @@
 		045B44A12D2150AF00514A27 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				04A4F4422D40D81F0041FD02 /* Setting */,
 				04A4F43D2D3F92580041FD02 /* Login+Registration */,
 				045CA15D2D27BEE7001B5CEE /* FriendsList */,
 				046833F82D3B8FE5009D2357 /* Meetings */,
@@ -344,6 +352,7 @@
 			isa = PBXGroup;
 			children = (
 				046834172D3E26E2009D2357 /* SettingView.swift */,
+				04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -362,6 +371,14 @@
 				04A4F43E2D3F92730041FD02 /* AthentificationViewModel.swift */,
 			);
 			path = "Login+Registration";
+			sourceTree = "<group>";
+		};
+		04A4F4422D40D81F0041FD02 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				04A4F4432D40D82E0041FD02 /* AdjustPasswordViewModel.swift */,
+			);
+			path = Setting;
 			sourceTree = "<group>";
 		};
 		91A9EAAB2D26EE45005F09D2 /* PretendardFont */ = {
@@ -568,11 +585,14 @@
 				F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */,
 				91A9EABF2D29C511005F09D2 /* NewMeetingSheet1View.swift in Sources */,
 				046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */,
+				04A4F4442D40D82E0041FD02 /* AdjustPasswordViewModel.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				91A9EABA2D29AFD7005F09D2 /* HomeView.swift in Sources */,
+				04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */,
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
 				04A4F43F2D3F92730041FD02 /* AthentificationViewModel.swift in Sources */,
+				04A4F4462D40D8E20041FD02 /* AthentificationState.swift in Sources */,
 				046833DB2D3B8DB8009D2357 /* RegistrationTermView.swift in Sources */,
 				046833DC2D3B8DB8009D2357 /* SignInView.swift in Sources */,
 				046833F62D3B8FB4009D2357 /* FriendsListViewModel.swift in Sources */,
