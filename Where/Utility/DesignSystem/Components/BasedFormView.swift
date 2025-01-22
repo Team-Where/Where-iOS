@@ -39,7 +39,7 @@ struct BasedFormView<Content: View, Footer: View>: View {
                 .foregroundStyle(Color(hex: 0x1F2937))
                 .multilineTextAlignment(.leading)
                 .padding(.top)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: 350, alignment: .leading)
             
             content()
             

@@ -74,12 +74,13 @@ struct AthentificationView: View {
                     text: $viewModel.emailFieldText,
                     lineColor: textFieldLineColor(focus: .emailTextField, invalid: viewModel.emailValidationState == .invalid)
                 )
+                .frame(width: 350)
                 .focused($textFieldFocus, equals: .emailTextField)
                 .keyboardType(.emailAddress)
                 
                 authorizationCodeRequestButton(viewModel.emailValidationState)
                     .containerRelativeFrame(.horizontal, alignment: .trailing) { value, _ in
-                        value - 26
+                        value - 36
                     }
             }
             
@@ -139,6 +140,7 @@ struct AthentificationView: View {
                     text: $viewModel.authorizationCodeFieldText,
                     lineColor: textFieldLineColor(focus: .authorizationCodeTextField, invalid: viewModel.authorizationCodeValidationState == .timeout)
                 )
+                .frame(width: 350)
                 .focused($textFieldFocus, equals: .authorizationCodeTextField)
                 .keyboardType(.emailAddress)
                 .textContentType(.oneTimeCode)
@@ -180,6 +182,7 @@ struct AthentificationView: View {
                     lineColor: textFieldLineColor(focus: .passwordTextField, invalid: viewModel.passwordValidationState == .invalid)
                 )
                 .secured()
+                .frame(width: 350)
                 .focused($textFieldFocus, equals: .passwordTextField)
                 
                 if viewModel.passwordValidationState == .invalid {
@@ -205,6 +208,7 @@ struct AthentificationView: View {
                     lineColor: textFieldLineColor(focus: .reInputPasswordTextField, invalid: viewModel.passwordComparisonResult == .different)
                 )
                 .secured()
+                .frame(width: 350)
                 .focused($textFieldFocus, equals: .reInputPasswordTextField)
                 
                 if viewModel.passwordComparisonResult == .different {

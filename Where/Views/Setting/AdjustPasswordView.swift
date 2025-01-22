@@ -38,6 +38,7 @@ struct AdjustPasswordView: View {
                             .foregroundStyle(Color(hex: 0x374151))
                     }
                 }
+                .frame(width: 350)
                 .padding(.bottom)
                 
                 VStack(alignment: .leading, spacing: 10) {
@@ -63,6 +64,7 @@ struct AdjustPasswordView: View {
                             .foregroundStyle(Color(hex: 0x374151))
                     }
                 }
+                .frame(width: 350)
             }
             
             Button {
