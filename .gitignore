@@ -122,5 +122,7 @@ iOSInjectionProject/
 Packages
 xcuserdata
 
+### AppSecret ###
+AppSecret.xcconfig
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,macos,swiftpackagemanager
