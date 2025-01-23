@@ -34,7 +34,7 @@ struct FriendsListView: View {
                 } else {
                     ScrollView(.vertical) {
                         if viewModel.isEditing == false {
-                            section(.favorite, friends.filter { $0.isFavorite })
+                            section(.favorite, [])
                         }
                         section(.common, friends)
                     }
@@ -154,7 +154,8 @@ struct FriendsListView: View {
         case .historyWithFriend(let friend):
             VStack {
                 HStack {
-                    let isFavorite = friend.isFavorite
+                    // TODO: 도메인 모델 WIP
+                    let isFavorite = true
                     
                     Button {
                         sheetItem = nil
@@ -298,7 +299,8 @@ extension FriendsListView {
                     Button {
                         // TODO: 즐겨찾기 토글
                     } label: {
-                        let isFavorite = friend.isFavorite
+                        // TODO: 도메인 모델 WIP
+                        let isFavorite = false
                         Image(systemName: isFavorite ? "star.fill" : "star")
                             .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
                     }

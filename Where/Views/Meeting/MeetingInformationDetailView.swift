@@ -22,18 +22,11 @@ struct MeetingInformationDetailView: View {
                 .padding(.bottom)
                 .padding(.horizontal)
             
-            friendsList([
-                .init(nickname: "나", isFavorite: false),
-                .init(nickname: "죠니월드", isFavorite: false),
-                .init(nickname: "이초홍", isFavorite: false),
-                .init(nickname: "랄랄", isFavorite: false),
-            ], isInvited: true)
+            friendsList([], isInvited: true)
             .padding(.bottom)
             .padding(.horizontal)
             
-            friendsList([
-                .init(nickname: "두니주니", isFavorite: true)
-            ], isInvited: false)
+            friendsList([], isInvited: false)
             .padding(.bottom)
             .padding(.horizontal)
         }

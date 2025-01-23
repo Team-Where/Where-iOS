@@ -63,12 +63,7 @@ struct InviteFriendsView: View {
                     }
                     .padding(.vertical)
                     
-                    friendsList([
-                        .init(nickname: "나", isFavorite: false),
-                        .init(nickname: "죠니월드", isFavorite: false),
-                        .init(nickname: "이초홍", isFavorite: false),
-                        .init(nickname: "두니주니", isFavorite: false),
-                    ])
+                    friendsList([])
                 }
             }
         }

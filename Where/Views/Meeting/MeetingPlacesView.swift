@@ -12,11 +12,7 @@ struct MeetingPlacesView: View {
     
     var body: some View {
         ScrollView(.vertical) {
-            pickedPlacesArea([
-                .init(),
-                .init(),
-                .init(),
-            ])
+            pickedPlacesArea([])
             
             Rectangle()
                 .foregroundStyle(Color(hex: 0xF3F4F6))
@@ -24,10 +20,7 @@ struct MeetingPlacesView: View {
             
             sortOptions
             
-            candidatePlacesList(sortOption, users: [
-                .init(nickname: "swain", isFavorite: false),
-                .init(nickname: "죠니월드", isFavorite: true)
-            ])
+            candidatePlacesList(sortOption, users: [])
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -130,7 +123,7 @@ struct MeetingPlacesView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "heart.fill")
                         
-                        Text("좋아요 \(place.likes)")
+                        Text("좋아요 \(place.likesCount)")
                     }
                     .foregroundStyle(.accent)
                 }
@@ -198,21 +191,13 @@ struct MeetingPlacesView: View {
         case .all:
             LazyVStack {
                 ForEach(users, id: \.id) { user in
-                    sectionByUser(user, [
-                        .init(),
-                        .init(),
-                        .init(),
-                    ])
+                    sectionByUser(user, [])
                 }
             }
         case .byLikesDescending:
             LazyVStack {
                 ForEach(1...3, id: \.self) { index in
-                    sectionByLikes(index: index, [
-                        .init(),
-                        .init(),
-                        .init(),
-                    ])
+                    sectionByLikes(index: index, [])
                 }
             }
         }
@@ -312,7 +297,7 @@ struct MeetingPlacesView: View {
                         HStack(spacing: 4) {
                             Image(systemName: "heart.fill")
                             
-                            Text("좋아요 \(place.likes)")
+                            Text("좋아요 \(place.likesCount)")
                         }
                         .foregroundStyle(.accent)
                     }

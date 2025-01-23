@@ -11,8 +11,8 @@ struct HistoryReminderView: View {
     var body: some View {
         VStack {
             ProfilesArea(
-                user: .init(nickname: "Swain", isFavorite: false),
-                opponentUser: .init(nickname: "우리동네 먹짱방방", isFavorite: true)
+                user: .init(),
+                opponentUser: .init()
             )
             
             Rectangle()
