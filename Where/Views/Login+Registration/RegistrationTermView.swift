@@ -53,7 +53,7 @@ struct RegistrationTermView: View {
             .padding(.top)
         } footer: {
             NavigationLink {
-                AthentificationView()
+                AuthentificationView()
             } label: {
                 Text("다음")
                     .whereFont(.body16semibold)
