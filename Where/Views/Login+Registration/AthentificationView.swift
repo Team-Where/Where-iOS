@@ -106,7 +106,7 @@ struct AthentificationView: View {
                     .whereFont(.caption12regular)
                     .foregroundStyle(Color(hex: 0xF2F5F5))
                     .frame(width: 84, height: 28)
-                    .background(state == .invalid ? Color(hex: 0xDEE2E6) : Color(hex: 0x212529))
+                    .background(state == .invalid ? Color(hex: 0xADB5BD) : Color(hex: 0x212529))
                     .clipShape(.capsule)
             }
             .disabled(viewModel.emailFieldText.isEmpty)
