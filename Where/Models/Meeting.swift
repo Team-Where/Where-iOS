@@ -1,0 +1,40 @@
+//
+//  Meeting.swift
+//  Where
+//
+//  Created by Swain Yun on 1/23/25.
+//
+
+import Foundation
+
+/// 모임 정보
+struct Meeting: Identifiable {
+    /// 식별자
+    let id: UInt64
+    /// 제목
+    let title: String
+    /// 모임 소개 등 부가설명
+    let description: String
+    /// 공유 링크
+    let link: URL
+    /// 모임 대표 이미지 URL
+    let imageURL: URL?
+    /// 생성일시
+    let createdAt: Date
+    /// 최근 수정일시
+    let updatedAt: Date
+    /// 모임 일정
+    let schedule: Date
+}
+
+/// 모임 참여 인원
+struct Participant {
+    let from: UInt64
+    let to: UInt64
+    /// 초대 요청 수락 여부
+    let status: Bool
+    /// 초대 요청 일시
+    let createdAt: Date
+    /// 초대 요청 수정일시
+    let updatedAt: Date
+}
