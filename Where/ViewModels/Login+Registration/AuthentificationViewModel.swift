@@ -1,5 +1,5 @@
 //
-//  AthentificationViewModel.swift
+//  AuthentificationViewModel.swift
 //  Where
 //
 //  Created by Swain Yun on 1/21/25.
@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 @MainActor
-final class AthentificationViewModel: ObservableObject {
+final class AuthentificationViewModel: ObservableObject {
     @Published var emailFieldText: String = String()
     @Published var authorizationCodeFieldText: String = String()
     @Published var passwordFieldText: String = String()
@@ -140,6 +140,6 @@ final class AthentificationViewModel: ObservableObject {
 }
 
 // MARK: Interfaces
-extension AthentificationViewModel {
+extension AuthentificationViewModel {
     
 }

@@ -1,5 +1,5 @@
 //
-//  AthentificationView.swift
+//  AuthentificationView.swift
 //  Where
 //
 //  Created by Swain Yun on 12/31/24.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct AthentificationView: View {
-    @ObservedObject private var viewModel = AthentificationViewModel()
+struct AuthentificationView: View {
+    @ObservedObject private var viewModel = AuthentificationViewModel()
     @State private var floater: FloaterType?
     
     @FocusState private var textFieldFocus: KeyboardFocusState?
@@ -231,7 +231,7 @@ struct AthentificationView: View {
 }
 
 // MARK: Nested Types
-extension AthentificationView {
+extension AuthentificationView {
     enum KeyboardFocusState: Hashable {
         case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField
     }
@@ -251,6 +251,6 @@ extension AthentificationView {
 
 #Preview {
     NavigationStack {
-        AthentificationView()
+        AuthentificationView()
     }
 }

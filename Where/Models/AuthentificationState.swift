@@ -1,5 +1,5 @@
 //
-//  AthentificationState.swift
+//  AuthentificationState.swift
 //  Where
 //
 //  Created by Swain Yun on 1/22/25.
