@@ -72,6 +72,7 @@ struct AdjustPasswordView: View {
             } label: {
                 Text("완료")
                     .whereFont(.body16semibold)
+                    .frame(width: 350, height: 48)
             }
             .buttonStyle(.whereRoundedProminent(viewModel.isDoneButtomDisabled))
         }

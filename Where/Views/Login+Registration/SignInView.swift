@@ -59,6 +59,7 @@ struct SignInView: View {
             } label: {
                 Text("로그인")
                     .whereFont(.body16semibold)
+                    .frame(width: 350, height: 48)
             }
             .buttonStyle(.whereRoundedProminent())
         }
@@ -67,15 +68,18 @@ struct SignInView: View {
             textFieldFocus = .none
         }
         .popup($isPopupPresented) {
-            VStack(spacing: 20) {
+            VStack(spacing: 22) {
                 Text("이메일 또는 비밀번호를\n잘못 입력하셨습니다.")
-                    .padding()
+                    .whereFont(.body14medium)
+                    .foregroundStyle(Color(hex: 0x343A40))
+                    .multilineTextAlignment(.center)
                 
                 Button {
                     isPopupPresented = false
                 } label: {
                     Text("확인")
                         .whereFont(.body16semibold)
+                        .frame(width: 270, height: 48)
                 }
                 .buttonStyle(.whereRoundedProminent())
             }

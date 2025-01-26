@@ -24,8 +24,6 @@ struct RoundedProminentButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding()
-            .frame(maxWidth: .infinity)
             .foregroundStyle(foregroundColor)
             .background(
                 RoundedRectangle(cornerRadius: 10)
