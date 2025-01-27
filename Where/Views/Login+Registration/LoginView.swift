@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var viewModel = LoginViewModel()
     
     var body: some View {
         VStack {
@@ -34,6 +36,10 @@ struct LoginView: View {
                         .resizable()
                         .scaledToFit()
                 }
+                .frame(width: 350, height: 48)
+                .onOpenURL { url in
+                    viewModel.handleOpenURL(.naver, url)
+                }
                 
                 // Start With Kakao Button
                 Button {
@@ -43,15 +49,18 @@ struct LoginView: View {
                         .resizable()
                         .scaledToFit()
                 }
-                
-                // Start With Apple Button
-                Button {
-                    // TODO: 애플 Authenficiation 연결
-                } label: {
-                    Image(.startWithApple)
-                        .resizable()
-                        .scaledToFit()
+                .frame(width: 350, height: 48)
+                .onOpenURL { url in
+                    viewModel.handleOpenURL(.kakao, url)
                 }
+                
+                SignInWithAppleButton(.continue) { request in
+                    
+                } onCompletion: { result in
+                    
+                }
+                .frame(width: 350, height: 48)
+                .clipShape(.rect(cornerRadius: 10))
                 
                 // Start With E-mail Button
                 Button {
@@ -59,6 +68,7 @@ struct LoginView: View {
                 } label: {
                     Text("이메일로 시작하기")
                         .whereFont(.body16semibold)
+                        .frame(width: 350, height: 48)
                 }
                 .buttonStyle(.whereRoundedProminent())
                 
