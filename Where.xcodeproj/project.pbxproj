@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		045685172D46067F004CB29F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045685162D46067F004CB29F /* NetworkService.swift */; };
-		045B44A92D2150AF00514A27 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B449C2D2150AF00514A27 /* Service.swift */; };
+		0456851C2D46361F004CB29F /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0456851B2D46361F004CB29F /* LoginViewModel.swift */; };
 		045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A52D2150AF00514A27 /* ContentView.swift */; };
 		045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A62D2150AF00514A27 /* WhereApp.swift */; };
 		045B44BA2D21650200514A27 /* Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44B92D2164FA00514A27 /* Pretendard.swift */; };
@@ -97,8 +97,8 @@
 
 /* Begin PBXFileReference section */
 		045685162D46067F004CB29F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		0456851B2D46361F004CB29F /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		045B44752D2146B000514A27 /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		045B449C2D2150AF00514A27 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		045B44A52D2150AF00514A27 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		045B44A62D2150AF00514A27 /* WhereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereApp.swift; sourceTree = "<group>"; };
 		045B44B92D2164FA00514A27 /* Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pretendard.swift; sourceTree = "<group>"; };
@@ -233,7 +233,6 @@
 		045B449D2D2150AF00514A27 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				045B449C2D2150AF00514A27 /* Service.swift */,
 				04F051912D424C65000892C0 /* Network */,
 				04F0518E2D424BF1000892C0 /* Storage */,
 			);
@@ -405,6 +404,7 @@
 			isa = PBXGroup;
 			children = (
 				04A4F43E2D3F92730041FD02 /* AuthentificationViewModel.swift */,
+				0456851B2D46361F004CB29F /* LoginViewModel.swift */,
 			);
 			path = "Login+Registration";
 			sourceTree = "<group>";
@@ -647,7 +647,6 @@
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */,
-				045B44A92D2150AF00514A27 /* Service.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
 				F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */,
 				91A9EABF2D29C511005F09D2 /* NewMeetingSheet1View.swift in Sources */,
@@ -689,6 +688,7 @@
 				049345142D229E10003D1129 /* BasedFormView.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* TabBarView.swift in Sources */,
 				F70F76CA2D2FC00A006EFF2D /* NewMeetingSheet2View.swift in Sources */,
+				0456851C2D46361F004CB29F /* LoginViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,6 +835,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Where/Preview Content\"";
@@ -845,6 +846,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Splash.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -865,6 +867,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Where/Preview Content\"";
@@ -875,6 +878,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Splash.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
