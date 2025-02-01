@@ -56,14 +56,12 @@ struct ProfileCreationView: View {
                         .padding(.top, 38)
                     
                     VStack(alignment: .leading) {
-                        TextField("",
-                                  text: $username,
-                                  prompt: Text("닉네임을 입력해주세요").foregroundStyle(Color(hex: 0x6B7280))
+                        RoundedTextField(
+                            "닉네임을 입력해주세요",
+                            text: $username,
+                            lineColor: !username.isEmpty && !isValid ? Color.red : (isValid ? Color.green : Color(hex: 0xE5E7EB))
                         )
-                        .whereFont(.body16regular)
-                        .frame(height: 56)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .padding(.horizontal, 15)
+                        .foregroundStyle(Color(hex: 0x6B7280))
                         .background(
                             ZStack(alignment: .trailing) {
                                 HStack {
@@ -77,7 +75,6 @@ struct ProfileCreationView: View {
                                 }
                             }
                         )
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(!username.isEmpty && !isValid ? Color.red : (isValid ? Color.green : Color(hex: 0xE5E7EB))))
                         .onChange(of: username) { oldValue, newValue in
                             // onChange 로직은 동일하게 유지
                             if newValue.isEmpty {
@@ -127,13 +124,7 @@ struct ProfileCreationView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "arrow.backward")
-                            .frame(width: 14, height: 12)
-                            .foregroundStyle(.black)
-                    }
+                    BackButton()
                 }
             }
         }

@@ -14,6 +14,7 @@ struct ProfilePopupView: View {
     @State private var selectedItem: PhotosPickerItem?
     
     var body: some View {
+        // 리팩토링
         ZStack {
             Rectangle()
                 .fill(Color.black.opacity(0.4)) // 배경을 어두운 반투명 색으로 설정

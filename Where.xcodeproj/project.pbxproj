@@ -80,6 +80,9 @@
 		91F1BFC42D329798000B4C84 /* NewMeetingCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F1BFC32D329798000B4C84 /* NewMeetingCompleteView.swift */; };
 		91F1BFC72D3B7F95000B4C84 /* PlaceDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F1BFC62D3B7F95000B4C84 /* PlaceDetail.swift */; };
 		91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F1BFC82D3B8093000B4C84 /* BackButton.swift */; };
+		91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */; };
+		91F6CE422D3D786F00BD24D1 /* PlaceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */; };
+		91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */; };
 		F70F76C82D2FBB1E006EFF2D /* NewImagePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70F76C72D2FBB1E006EFF2D /* NewImagePopupView.swift */; };
 		F70F76CA2D2FC00A006EFF2D /* NewMeetingSheet2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70F76C92D2FC00A006EFF2D /* NewMeetingSheet2View.swift */; };
 		F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75400952D310EF5009D201F /* NewFriendListView.swift */; };
@@ -167,6 +170,9 @@
 		91F1BFC32D329798000B4C84 /* NewMeetingCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMeetingCompleteView.swift; sourceTree = "<group>"; };
 		91F1BFC62D3B7F95000B4C84 /* PlaceDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetail.swift; sourceTree = "<group>"; };
 		91F1BFC82D3B8093000B4C84 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
+		91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
+		91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceInfo.swift; sourceTree = "<group>"; };
+		91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDelete.swift; sourceTree = "<group>"; };
 		F70F76C72D2FBB1E006EFF2D /* NewImagePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewImagePopupView.swift; sourceTree = "<group>"; };
 		F70F76C92D2FC00A006EFF2D /* NewMeetingSheet2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMeetingSheet2View.swift; sourceTree = "<group>"; };
 		F75400952D310EF5009D201F /* NewFriendListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendListView.swift; sourceTree = "<group>"; };
@@ -332,8 +338,8 @@
 				04832B472D266F55003FFE3B /* SearchBar.swift */,
 				91F1BFC82D3B8093000B4C84 /* BackButton.swift */,
 				048182262D29151800CCF721 /* AsyncDateView.swift */,
-				91A9EABC2D29BA85005F09D2 /* TabBarView.swift */,
 				046833FA2D3B902E009D2357 /* CalendarView.swift */,
+				91A9EABC2D29BA85005F09D2 /* TabBarView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -503,6 +509,9 @@
 			isa = PBXGroup;
 			children = (
 				91F1BFC62D3B7F95000B4C84 /* PlaceDetail.swift */,
+				91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */,
+				91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */,
+				91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */,
 			);
 			path = Place;
 			sourceTree = "<group>";
@@ -627,6 +636,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91F6CE422D3D786F00BD24D1 /* PlaceInfo.swift in Sources */,
 				91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */,
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				046833F42D3B8F77009D2357 /* DateFormat.swift in Sources */,
@@ -648,6 +658,7 @@
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
+				91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */,
 				F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */,
 				91A9EABF2D29C511005F09D2 /* NewMeetingSheet1View.swift in Sources */,
 				046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */,
@@ -680,6 +691,7 @@
 				91F1BFC72D3B7F95000B4C84 /* PlaceDetail.swift in Sources */,
 				045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */,
 				046833F52D3B8F99009D2357 /* User.swift in Sources */,
+				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				04A4F45D2D4212020041FD02 /* Meeting.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
