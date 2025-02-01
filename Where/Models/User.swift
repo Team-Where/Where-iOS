@@ -21,6 +21,22 @@ struct User: Identifiable {
     let createdAt: Date
     /// 사용자 대표 이미지 URL
     let imageURL: URL?
+    
+    init(
+        id: UInt64 = 1,
+        name: String = "사용자",
+        nickname: String = "별명",
+        smsVerificationToken: String? = nil,
+        createdAt: Date = .now,
+        imageURL: URL? = nil
+    ) {
+        self.id = id
+        self.name = name
+        self.nickname = nickname
+        self.smsVerificationToken = smsVerificationToken
+        self.createdAt = createdAt
+        self.imageURL = imageURL
+    }
 }
 
 // TODO: 도메인 모델 설계 중 (WIP)
