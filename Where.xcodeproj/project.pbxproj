@@ -63,6 +63,7 @@
 		91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F1BFC82D3B8093000B4C84 /* BackButton.swift */; };
 		91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */; };
 		91F6CE422D3D786F00BD24D1 /* PlaceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */; };
+		91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */; };
 		F70F76C82D2FBB1E006EFF2D /* NewImagePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70F76C72D2FBB1E006EFF2D /* NewImagePopupView.swift */; };
 		F70F76CA2D2FC00A006EFF2D /* NewMeetingSheet2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70F76C92D2FC00A006EFF2D /* NewMeetingSheet2View.swift */; };
 		F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75400952D310EF5009D201F /* NewFriendListView.swift */; };
@@ -138,6 +139,7 @@
 		91F1BFC82D3B8093000B4C84 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
 		91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceInfo.swift; sourceTree = "<group>"; };
+		91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDelete.swift; sourceTree = "<group>"; };
 		F70F76C72D2FBB1E006EFF2D /* NewImagePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewImagePopupView.swift; sourceTree = "<group>"; };
 		F70F76C92D2FC00A006EFF2D /* NewMeetingSheet2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMeetingSheet2View.swift; sourceTree = "<group>"; };
 		F75400952D310EF5009D201F /* NewFriendListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendListView.swift; sourceTree = "<group>"; };
@@ -417,6 +419,7 @@
 				91F1BFC62D3B7F95000B4C84 /* PlaceDetail.swift */,
 				91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */,
 				91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */,
+				91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */,
 			);
 			path = Place;
 			sourceTree = "<group>";
@@ -575,6 +578,7 @@
 				91F1BFC72D3B7F95000B4C84 /* PlaceDetail.swift in Sources */,
 				045B44AD2D2150AF00514A27 /* ContentView.swift in Sources */,
 				046833F52D3B8F99009D2357 /* User.swift in Sources */,
+				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
 				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
