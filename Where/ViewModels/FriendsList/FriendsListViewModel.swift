@@ -9,11 +9,7 @@ import Foundation
 import Combine
 
 final class FriendsListViewModel: ObservableObject {
-    @Published var friends: [User] = [
-        .init(nickname: "Swain", isFavorite: false),
-        .init(nickname: "즐겨찾기한 친구", isFavorite: true),
-        .init(nickname: "삭제될 친구", isFavorite: true),
-    ]
+    @Published var friends: [User] = []
     @Published var searchedFriends: [User] = []
     @Published var searchingText: String = String()
     @Published var isEditing: Bool = false
@@ -50,7 +46,7 @@ extension FriendsListViewModel {
         isEditing.toggle()
     }
     
-    func deleteFriend(by id: UUID) {
+    func deleteFriend(by id: UInt64) {
         guard let index = friends.firstIndex(where: { id == $0.id }) else { return }
         friends.remove(at: index)
         

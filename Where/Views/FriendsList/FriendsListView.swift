@@ -19,77 +19,71 @@ struct FriendsListView: View {
     private var isEditing: Bool { viewModel.isEditing }
     
     var body: some View {
-        VStack {
-            SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
-            
-            if friends.isEmpty {
-                unavailableView
-            } else if viewModel.isSearching {
-                ScrollView(.vertical) {
-                    ForEach(searchedFriends) { friend in
-                        Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
+        NavigationStack {
+            VStack {
+                SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
+                
+                if friends.isEmpty {
+                    unavailableView
+                } else if viewModel.isSearching {
+                    ScrollView(.vertical) {
+                        ForEach(searchedFriends) { friend in
+                            Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
+                        }
                     }
-                }
-            } else {
-                ScrollView(.vertical) {
-                    if viewModel.isEditing == false {
-                        section(.favorite, friends.filter { $0.isFavorite })
+                } else {
+                    ScrollView(.vertical) {
+                        if viewModel.isEditing == false {
+                            section(.favorite, [])
+                        }
+                        section(.common, friends)
                     }
-                    section(.common, friends)
                 }
             }
-        }
-        .padding()
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                if isEditing {
+            .padding()
+            .navigationBarBackButtonHidden()
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if isEditing {
+                        BackButton {
+                            withAnimation {
+                                viewModel.toggleEditMode()
+                            }
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .navigation) {
+                    if isEditing {
+                        Text("목록편집")
+                            .whereFont(.subtitle18semibold)
+                            .foregroundStyle(Color(hex: 0x1F2937))
+                            .padding(.leading)
+                    } else {
+                        Text("친구목록")
+                            .whereFont(.title24semibold)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         withAnimation {
                             viewModel.toggleEditMode()
                         }
                     } label: {
-                        Image(systemName: "arrow.backward")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 14, height: 12)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 6)
-                            .foregroundStyle(.black)
+                        Text(isEditing ? "완료" : "편집")
+                            .whereFont(.body16medium)
                     }
                 }
             }
-            
-            ToolbarItem(placement: .navigation) {
-                if isEditing {
-                    Text("목록편집")
-                        .whereFont(.subtitle18semibold)
-                        .foregroundStyle(Color(hex: 0x1F2937))
-                        .padding(.leading)
-                } else {
-                    Text("친구목록")
-                        .whereFont(.title24semibold)
-                }
+            .sheet(item: $sheetItem) { item in
+                sheet(item)
             }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation {
-                        viewModel.toggleEditMode()
-                    }
-                } label: {
-                    Text(isEditing ? "완료" : "편집")
-                        .whereFont(.body16medium)
+            .navigationDestination(item: $route) { route in
+                switch route {
+                case .historyReminder(let friend):
+                    HistoryReminderView()
                 }
-            }
-        }
-        .sheet(item: $sheetItem) { item in
-            sheet(item)
-        }
-        .navigationDestination(item: $route) { route in
-            switch route {
-            case .historyReminder(let friend):
-                HistoryReminderView()
             }
         }
     }
@@ -160,7 +154,8 @@ struct FriendsListView: View {
         case .historyWithFriend(let friend):
             VStack {
                 HStack {
-                    let isFavorite = friend.isFavorite
+                    // TODO: 도메인 모델 WIP
+                    let isFavorite = true
                     
                     Button {
                         sheetItem = nil
@@ -304,7 +299,8 @@ extension FriendsListView {
                     Button {
                         // TODO: 즐겨찾기 토글
                     } label: {
-                        let isFavorite = friend.isFavorite
+                        // TODO: 도메인 모델 WIP
+                        let isFavorite = false
                         Image(systemName: isFavorite ? "star.fill" : "star")
                             .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
                     }

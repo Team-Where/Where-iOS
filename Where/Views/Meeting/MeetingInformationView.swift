@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MeetingInformationView: View {
-    @Environment(\.dismiss) private var dismiss
     @State private var sheetType: SheetType?
     
     var body: some View {
@@ -17,17 +16,7 @@ struct MeetingInformationView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "arrow.backward")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 14, height: 12)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 6)
-                            .foregroundStyle(.black)
-                    }
+                    BackButton()
                 }
                 
                 ToolbarItem(placement: .principal) {

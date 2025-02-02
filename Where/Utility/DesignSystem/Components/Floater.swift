@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+protocol FloaterContent {
+    var title: String { get }
+}
+
 struct FloaterModifier<Icon: View>: ViewModifier {
     @Binding var isFloaterPresented: Bool
     let title: String
@@ -94,5 +98,14 @@ extension View {
         icon: (() -> Icon)? = nil
     ) -> some View {
         modifier(FloaterModifier<Icon>(isPresented, title, icon))
+    }
+    
+    func floater<Item: FloaterContent, Icon: View>(
+        _ item: Binding<Item?>,
+        @ViewBuilder content: @escaping (Item) -> Icon
+    ) -> some View {
+        let isPresented = Binding<Bool> { item.wrappedValue != nil } set: { if $0 == false { item.wrappedValue = nil } }
+        let title = item.wrappedValue?.title ?? String()
+        return modifier(FloaterModifier(isPresented, title, { item.wrappedValue.map(content) }))
     }
 }

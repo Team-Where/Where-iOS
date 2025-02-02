@@ -8,13 +8,11 @@
 import SwiftUI
 
 struct HistoryReminderView: View {
-    @Environment(\.dismiss) private var dismiss
-    
     var body: some View {
         VStack {
             ProfilesArea(
-                user: .init(nickname: "Swain", isFavorite: false),
-                opponentUser: .init(nickname: "우리동네 먹짱방방", isFavorite: true)
+                user: .init(),
+                opponentUser: .init()
             )
             
             Rectangle()
@@ -30,7 +28,7 @@ struct HistoryReminderView: View {
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                backButton
+                BackButton()
             }
             
             ToolbarItem(placement: .principal) {
@@ -38,20 +36,6 @@ struct HistoryReminderView: View {
                     .whereFont(.subtitle18semibold)
                     .padding(.vertical, 14)
             }
-        }
-    }
-    
-    private var backButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Image(systemName: "arrow.backward")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 14, height: 12)
-                .padding(.horizontal, 5)
-                .padding(.vertical, 6)
-                .foregroundStyle(.black)
         }
     }
 }

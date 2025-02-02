@@ -53,10 +53,11 @@ struct RegistrationTermView: View {
             .padding(.top)
         } footer: {
             NavigationLink {
-                AthentificationView()
+                AuthentificationView()
             } label: {
                 Text("다음")
                     .whereFont(.body16semibold)
+                    .frame(width: 350, height: 48)
             }
             .buttonStyle(.whereRoundedProminent(didAgreedToMandatoryConsent == false))
         }

@@ -9,12 +9,7 @@ import Foundation
 import Combine
 
 final class InviteFriendsViewModel: ObservableObject {
-    @Published var friends: [User] = [
-        .init(nickname: "나", isFavorite: false),
-        .init(nickname: "죠니월드", isFavorite: false),
-        .init(nickname: "이초홍", isFavorite: false),
-        .init(nickname: "두니주니", isFavorite: false),
-    ]
+    @Published var friends: [User] = []
     
     @Published var isFloaterPresented: Bool = false
     @Published var isSearching: Bool = false
