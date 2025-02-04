@@ -154,6 +154,18 @@ extension View {
         ToolTipView<Self, Label>(isPresented, configuration: configuration, content: self, label: label)
     }
     
+    func whereTip<Label: View>(
+        _ isPresented: Binding<Bool>,
+        arrowPosition: ArrowPosition,
+        arrowSize: ArrowSize? = nil,
+        backgroundColor: Color? = nil,
+        cornerRadius: CGFloat? = nil,
+        label: @escaping () -> Label
+    ) -> some View {
+        let configuration = ToolTipConfiguration(arrowPosition: arrowPosition, arrowSize: arrowSize, backgroundColor: backgroundColor, cornerRadius: cornerRadius)
+        return ToolTipView(isPresented, configuration: configuration, content: self, label: label)
+    }
+    
     func measureSize(onChange: @escaping (CGSize) -> Void) -> some View {
         self.overlay(
             GeometryReader { proxy in
