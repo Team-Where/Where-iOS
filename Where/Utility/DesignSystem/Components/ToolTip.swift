@@ -115,8 +115,6 @@ struct ToolTipView<Content:View, Label: View>: View {
     
     @ViewBuilder private func toolTipLabel(label: Label) -> some View {
         label
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
             .background(configuration.backgroundColor)
             .clipShape(.rect(cornerRadius: configuration.cornerRadius))
     }
@@ -124,8 +122,6 @@ struct ToolTipView<Content:View, Label: View>: View {
     private func getToolTipPosition(_ proxy: GeometryProxy) -> CGPoint {
         let targetWidth = proxy.size.width
         let targetHeight = proxy.size.height
-        
-        print(targetWidth, size.width)
         
         switch configuration.arrowPosition {
         case .topLeading:
