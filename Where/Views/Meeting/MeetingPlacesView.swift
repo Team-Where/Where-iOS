@@ -9,6 +9,10 @@ import SwiftUI
 
 struct MeetingPlacesView: View {
     @State private var sortOption: PlaceSortOption = .all
+    @State private var isPickTipPresented: Bool = false
+    @State private var isShareTipPresented: Bool = false
+    
+    private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing)
     
     var body: some View {
         ScrollView(.vertical) {
@@ -24,6 +28,13 @@ struct MeetingPlacesView: View {
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
+        .contentShape(.interaction, .containerRelative)
+        .onTapGesture {
+            withAnimation {
+                isPickTipPresented = false
+                isShareTipPresented = false
+            }
+        }
     }
     
     @ViewBuilder private func pickedPlacesArea(_ places: [Place]) -> some View {
@@ -37,8 +48,21 @@ struct MeetingPlacesView: View {
                 
                 Spacer()
                 
-                Image(systemName: "info.circle")
-                    .foregroundStyle(Color(hex: 0x9CA3AF))
+                Button {
+                    withAnimation {
+                        isPickTipPresented.toggle()
+                    }
+                } label: {
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(Color(hex: 0x9CA3AF))
+                }
+                .whereTip($isPickTipPresented, configuration: tipConfiguration) {
+                    Text("친구들과 가기로 결정한 장소 목록입니다")
+                        .whereFont(.caption12regular)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                }
             }
             .padding(.horizontal)
             
@@ -233,6 +257,13 @@ struct MeetingPlacesView: View {
                             .scaledToFit()
                             .frame(width: 15, height: 15)
                     }
+                }
+                .whereTip($isShareTipPresented, configuration: tipConfiguration) {
+                    Text("가장 먼저 장소를 공유해보세요!")
+                        .whereFont(.caption12regular)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
                 }
             }
         }
