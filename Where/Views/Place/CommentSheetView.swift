@@ -2,16 +2,17 @@
 //  CommentEditView.swift
 //  Where
 //
-//  Created by 이현호 on 2/8/25.
+//  Created by 이현호 on 2/2/25.
 //
 
 import SwiftUI
 
-struct CommentEditView: View {
+struct CommentSheetView: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var commentText: String
-    var onUpdate: () -> Void // 수정 완료 시 실행될 클로저
-    
+    @Binding var selectedComment: String
+    var onEdit: () -> Void
+    var onDelete: () -> Void
+
     var body: some View {
         VStack {
             // 상단 제목 + 닫기 버튼
@@ -30,18 +31,14 @@ struct CommentEditView: View {
             }
             .padding(.horizontal)
 
-            // 입력된 코멘트 부분
+            // 선택된 코멘트 부분
             VStack {
                 HStack {
-                    TextField("", text: $commentText, axis: .vertical)
+                    Text(selectedComment)
                         .whereFont(.body16regular)
-                        .lineLimit(4)
+                        .lineLimit(4) // 최대 4줄까지 표시
+                        .multilineTextAlignment(.leading) // 왼쪽 정렬
                         .foregroundStyle(.black)
-                        .onChange(of: commentText) {
-                            if commentText.count > 50 {
-                                commentText = String(commentText.prefix(50))
-                            }
-                        }
                     Spacer()
                 }
                 .padding(.horizontal)
@@ -53,14 +50,14 @@ struct CommentEditView: View {
             // 하단 버튼
             HStack {
                 Button {
+                    onDelete() // 삭제
                     dismiss()
                 } label: {
                     RoundedRectangle(cornerSize: .init(width: 16, height: 16))
                         .overlay {
-                            Text("취소")
+                            Text("삭제")
                                 .whereFont(.body16medium)
-                                .foregroundStyle(.black)
-                            
+                                .foregroundStyle(.red)
                         }
                 }
                 .frame(width: 169, height: 54)
@@ -68,18 +65,18 @@ struct CommentEditView: View {
                 .transition(.opacity)
 
                 Button {
-                    onUpdate() // 코멘트 업데이트
+                    onEdit() // 수정모드
                     dismiss()
                 } label: {
                     RoundedRectangle(cornerSize: .init(width: 16, height: 16))
                         .overlay {
-                            Text("확인")
+                            Text("수정")
                                 .whereFont(.body16medium)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color(hex: 0x4F46E5))
                         }
                 }
                 .frame(width: 169, height: 54)
-                .foregroundStyle(Color(hex: 0x4F46E5))
+                .foregroundStyle(Color(hex: 0xF3F4F6))
                 .transition(.opacity)
             }
         }

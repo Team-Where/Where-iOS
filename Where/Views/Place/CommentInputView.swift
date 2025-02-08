@@ -10,9 +10,8 @@ import SwiftUI
 struct CommentInputView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var commentText: String
-    
     var onSubmit: () -> Void
-    let placeholder: String = "친구들이 볼 수 있도록 코멘트를 달아보세요. (0/50)"
+    let placeholder: String = "친구들이 볼 수 있도록 코멘트를 달아보세요.(50자 제한)"
     
     var body: some View {
         VStack {
@@ -30,6 +29,7 @@ struct CommentInputView: View {
                         .foregroundColor(.black)
                 }
             }
+            .padding(.horizontal)
             
             // 입력 부분
             VStack {
@@ -46,6 +46,7 @@ struct CommentInputView: View {
                 Spacer()
             }
             .padding(.top, 12)
+            .padding(.horizontal)
                 
             // 하단 버튼
             HStack {

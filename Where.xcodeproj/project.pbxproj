@@ -65,7 +65,8 @@
 		04F0518D2D423B38000892C0 /* NaverThirdPartyLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 04F0518C2D423B38000892C0 /* NaverThirdPartyLogin */; };
 		04F051902D424C01000892C0 /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0518F2D424C01000892C0 /* TokenStorage.swift */; };
 		91446F3D2D4FA3FA00C142B2 /* CommentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */; };
-		91446F3F2D4FB07F00C142B2 /* CommentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3E2D4FB07F00C142B2 /* CommentEditView.swift */; };
+		91446F3F2D4FB07F00C142B2 /* CommentSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */; };
+		91446F412D57388400C142B2 /* CommentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F402D57388400C142B2 /* CommentEditView.swift */; };
 		91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */; };
 		91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */; };
 		91A9EAB12D26EE45005F09D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAAD2D26EE45005F09D2 /* Preview Assets.xcassets */; };
@@ -156,7 +157,8 @@
 		04F051892D42332D000892C0 /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
 		91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputView.swift; sourceTree = "<group>"; };
-		91446F3E2D4FB07F00C142B2 /* CommentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditView.swift; sourceTree = "<group>"; };
+		91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentSheetView.swift; sourceTree = "<group>"; };
+		91446F402D57388400C142B2 /* CommentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditView.swift; sourceTree = "<group>"; };
 		91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -513,7 +515,8 @@
 				91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */,
 				91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */,
 				91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */,
-				91446F3E2D4FB07F00C142B2 /* CommentEditView.swift */,
+				91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */,
+				91446F402D57388400C142B2 /* CommentEditView.swift */,
 				91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */,
 			);
 			path = Place;
@@ -673,7 +676,7 @@
 				91A9EABA2D29AFD7005F09D2 /* HomeView.swift in Sources */,
 				04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */,
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
-				91446F3F2D4FB07F00C142B2 /* CommentEditView.swift in Sources */,
+				91446F3F2D4FB07F00C142B2 /* CommentSheetView.swift in Sources */,
 				04A4F43F2D3F92730041FD02 /* AuthentificationViewModel.swift in Sources */,
 				04A4F4462D40D8E20041FD02 /* AuthentificationState.swift in Sources */,
 				046833DB2D3B8DB8009D2357 /* RegistrationTermView.swift in Sources */,
@@ -702,6 +705,7 @@
 				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
 				049345142D229E10003D1129 /* BasedFormView.swift in Sources */,
+				91446F412D57388400C142B2 /* CommentEditView.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* TabBarView.swift in Sources */,
 				F70F76CA2D2FC00A006EFF2D /* NewMeetingSheet2View.swift in Sources */,
 				0456851C2D46361F004CB29F /* LoginViewModel.swift in Sources */,
