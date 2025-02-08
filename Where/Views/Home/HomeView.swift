@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Binding var isSideMenu: Bool
+    
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
@@ -57,12 +59,14 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Image("HomeLogo")
-                        
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 52, height: 24)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // 햄버거 메뉴
+                        isSideMenu = true
                     } label: {
                         Image(systemName: "line.3.horizontal")
                             .foregroundStyle(.black)
@@ -71,8 +75,4 @@ struct HomeView: View {
             }
         }
     }
-}
-
-#Preview {
-    HomeView()
 }

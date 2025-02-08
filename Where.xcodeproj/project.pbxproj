@@ -67,6 +67,8 @@
 		91446F3D2D4FA3FA00C142B2 /* CommentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */; };
 		91446F3F2D4FB07F00C142B2 /* CommentSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */; };
 		91446F412D57388400C142B2 /* CommentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F402D57388400C142B2 /* CommentEditView.swift */; };
+		91446F442D574FE700C142B2 /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F432D574FE700C142B2 /* SideMenuView.swift */; };
+		91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F452D575BEE00C142B2 /* SideMenuContentView.swift */; };
 		91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */; };
 		91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */; };
 		91A9EAB12D26EE45005F09D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAAD2D26EE45005F09D2 /* Preview Assets.xcassets */; };
@@ -159,6 +161,8 @@
 		91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputView.swift; sourceTree = "<group>"; };
 		91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentSheetView.swift; sourceTree = "<group>"; };
 		91446F402D57388400C142B2 /* CommentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditView.swift; sourceTree = "<group>"; };
+		91446F432D574FE700C142B2 /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
+		91446F452D575BEE00C142B2 /* SideMenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuContentView.swift; sourceTree = "<group>"; };
 		91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -278,6 +282,7 @@
 				91F1BFC52D3B7F88000B4C84 /* Place */,
 				91A9EAC02D29C519005F09D2 /* Meeting */,
 				91A9EAB82D29AFC9005F09D2 /* Home */,
+				91446F422D574FD700C142B2 /* SideMenu */,
 				91A9EAB52D26EF53005F09D2 /* ProfileSetting */,
 				045CA15A2D26EE1C001B5CEE /* FriendsList */,
 				045CA1592D26ED4A001B5CEE /* Login+Registration */,
@@ -440,6 +445,15 @@
 				045685162D46067F004CB29F /* NetworkService.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		91446F422D574FD700C142B2 /* SideMenu */ = {
+			isa = PBXGroup;
+			children = (
+				91446F432D574FE700C142B2 /* SideMenuView.swift */,
+				91446F452D575BEE00C142B2 /* SideMenuContentView.swift */,
+			);
+			path = SideMenu;
 			sourceTree = "<group>";
 		};
 		91A9EAAB2D26EE45005F09D2 /* PretendardFont */ = {
@@ -641,6 +655,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91446F442D574FE700C142B2 /* SideMenuView.swift in Sources */,
 				91F6CE422D3D786F00BD24D1 /* PlaceInfo.swift in Sources */,
 				91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */,
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
@@ -662,6 +677,7 @@
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */,
+				91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
 				91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */,
 				F75400962D310EF5009D201F /* NewFriendListView.swift in Sources */,
