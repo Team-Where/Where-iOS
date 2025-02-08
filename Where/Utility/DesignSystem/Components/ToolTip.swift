@@ -82,7 +82,11 @@ struct ToolTipView<Content:View, Label: View>: View {
                         GeometryReader { proxy in
                             toolTipContent(configuration.arrowPosition, label: label)
                                 .fixedSize()
-                                .measureSize { size = $0 }
+                                .onGeometryChange(for: CGSize.self) { proxy in
+                                    proxy.size
+                                } action: { newValue in
+                                    self.size = newValue
+                                }
                                 .position(getToolTipPosition(proxy))
                         }
                     }
@@ -164,19 +168,5 @@ extension View {
     ) -> some View {
         let configuration = ToolTipConfiguration(arrowPosition: arrowPosition, arrowSize: arrowSize, backgroundColor: backgroundColor, cornerRadius: cornerRadius)
         return ToolTipView(isPresented, configuration: configuration, content: self, label: label)
-    }
-    
-    func measureSize(onChange: @escaping (CGSize) -> Void) -> some View {
-        self.overlay(
-            GeometryReader { proxy in
-                Color.clear
-                    .onAppear {
-                        onChange(proxy.size)
-                    }
-                    .onChange(of: proxy.size) { _, newValue in
-                        onChange(newValue)
-                    }
-            }
-        )
     }
 }
