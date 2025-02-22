@@ -107,13 +107,14 @@ extension HistoryReminderView {
                         .whereFont(.caption12regular)
                         .foregroundStyle(Color(hex: 0x6B7280))
                 }
+                .padding(.top)
             }
             .padding(.top)
         }
         
         @ViewBuilder private func cell(_ month: Int) -> some View {
-            HStack {
-                VStack {
+            HStack(alignment: .top) {
+                VStack(spacing: 38) {
                     HStack {
                         Circle()
                             .fill(.accent)
@@ -131,6 +132,7 @@ extension HistoryReminderView {
                     Rectangle()
                         .fill(Color(hex: 0xD1D5DB))
                         .frame(maxWidth: 1)
+                        .frame(height: 116)
                 }
                 
                 VStack {
