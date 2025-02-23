@@ -134,8 +134,6 @@ extension MeetingInformationView {
         @State private var editStep: EditStep = .entry
         @State private var titleText: String = "2024 연말파티"
         @State private var memoText: String = "메모 입력"
-        @State private var detentSelection: PresentationDetent = .fraction(0.3)
-        @State private var detents: Set<PresentationDetent> = [.fraction(0.2), .fraction(0.3), .medium]
         @Binding var sheetType: SheetType?
         @FocusState private var textFieldFocused: EditMeetingFocusState?
         
@@ -149,7 +147,6 @@ extension MeetingInformationView {
         var body: some View {
             content()
                 .padding()
-                .presentationDetents(detents, selection: $detentSelection)
                 .presentationCornerRadius(16)
                 .presentationDragIndicator(.hidden)
                 .interactiveDismissDisabled()
@@ -185,7 +182,6 @@ extension MeetingInformationView {
                         .foregroundStyle(Color(hex: 0x111827))
                     
                     Button {
-                        detentSelection = .medium
                         editStep = .title
                     } label: {
                         Image(.pencilIcon)
@@ -201,7 +197,6 @@ extension MeetingInformationView {
                         .whereFont(.body14regular)
                         .foregroundStyle(Color(hex: 0x6B7280))
                     Button {
-                        detentSelection = .medium
                         editStep = .memo
                     } label: {
                         Image(.pencilIcon)
@@ -226,6 +221,7 @@ extension MeetingInformationView {
                         .clipShape(.rect(cornerRadius: 16))
                 }
             }
+            .presentationDetents([.fraction(0.3)])
         }
         
         var title: some View {
@@ -260,7 +256,6 @@ extension MeetingInformationView {
                     Button {
                         textFieldFocused = .none
                         editStep = .entry
-                        detentSelection = .fraction(0.3)
                     } label: {
                         Text("취소")
                             .whereFont(.body16medium)
@@ -275,7 +270,6 @@ extension MeetingInformationView {
                         // TODO: 모임명 업데이트 기능 연결
                         textFieldFocused = .none
                         editStep = .entry
-                        detentSelection = .fraction(0.3)
                     } label: {
                         Text("확인")
                             .whereFont(.body16medium)
@@ -288,6 +282,10 @@ extension MeetingInformationView {
                     .disabled(titleText.isEmpty) // 모임명은 필수 입력
                 }
             }
+            .onAppear {
+                textFieldFocused = .title
+            }
+            .presentationDetents(textFieldFocused == nil ? [.medium] : [.fraction(0.2)])
         }
         
         var memo: some View {
@@ -322,7 +320,6 @@ extension MeetingInformationView {
                     Button {
                         textFieldFocused = .none
                         editStep = .entry
-                        detentSelection = .fraction(0.3)
                     } label: {
                         Text("취소")
                             .whereFont(.body16medium)
@@ -337,7 +334,6 @@ extension MeetingInformationView {
                         // TODO: 메모 업데이트 기능 연결
                         textFieldFocused = .none
                         editStep = .entry
-                        detentSelection = .fraction(0.3)
                     } label: {
                         Text("확인")
                             .whereFont(.body16medium)
@@ -349,6 +345,10 @@ extension MeetingInformationView {
                     }
                 }
             }
+            .onAppear {
+                textFieldFocused = .memo
+            }
+            .presentationDetents(textFieldFocused == nil ? [.medium] : [.fraction(0.2)])
         }
     }
 }
