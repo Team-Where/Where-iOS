@@ -115,7 +115,7 @@ extension HistoryReminderView {
         @ViewBuilder private func cell(_ month: Int) -> some View {
             HStack(alignment: .top) {
                 VStack(spacing: 38) {
-                    HStack {
+                    HStack(spacing: 7) {
                         Circle()
                             .fill(.accent)
                             .frame(width: 6, height: 6)
@@ -128,6 +128,7 @@ extension HistoryReminderView {
                         Text("\(month)월")
                             .whereFont(.body16medium)
                     }
+                    .frame(maxWidth: 45)
                     
                     Rectangle()
                         .fill(Color(hex: 0xD1D5DB))
