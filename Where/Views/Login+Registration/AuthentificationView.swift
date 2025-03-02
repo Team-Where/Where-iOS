@@ -69,7 +69,7 @@ struct AuthentificationView: View {
                 .whereFont(.body14regular)
                 .foregroundStyle(Color(hex: 0x374151))
             
-            ZStack {
+            ZStack(alignment: .trailing) {
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
                     text: $viewModel.emailFieldText,
@@ -80,9 +80,7 @@ struct AuthentificationView: View {
                 .keyboardType(.emailAddress)
                 
                 authorizationCodeRequestButton(viewModel.emailValidationState)
-                    .containerRelativeFrame(.horizontal, alignment: .trailing) { value, _ in
-                        value - 36
-                    }
+                    .padding(.trailing)
             }
             
             if viewModel.emailValidationState == .invalid {
@@ -135,7 +133,7 @@ struct AuthentificationView: View {
                 .whereFont(.body14regular)
                 .foregroundStyle(Color(hex: 0x374151))
             
-            ZStack {
+            ZStack(alignment: .trailing) {
                 RoundedTextField(
                     "코드 6자리 입력해주세요",
                     text: $viewModel.authorizationCodeFieldText,
@@ -147,9 +145,7 @@ struct AuthentificationView: View {
                 .textContentType(.oneTimeCode)
                 
                 timerCell(viewModel.remainingTime)
-                    .containerRelativeFrame(.horizontal, alignment: .trailing) { value, _ in
-                        value - 60
-                    }
+                    .padding(.trailing)
             }
             
             if viewModel.authorizationCodeValidationState == .timeout {
