@@ -14,32 +14,30 @@ struct AuthentificationView: View {
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
     var body: some View {
-        BasedFormView(
-            viewModel.authorizationCodeValidationState == .valid ? "설정할 비밀번호를\n입력해주세요" : "가입을 위한 이메일을\n인증해주세요"
-        ) {
-            ScrollView(.vertical) {
-                emailCell
-                
-                if viewModel.authorizationCodeValidationState == .valid {
-                    passwordCell
-                } else {
-                    authorizationCodeCell
-                }
-                
-                Spacer()
+        ScrollView(.vertical) {
+            emailCell
+            
+            if viewModel.authorizationCodeValidationState == .valid {
+                passwordCell
+            } else {
+                authorizationCodeCell
             }
-            .padding(.top, 40)
-            .floater($floater) { type in
-                switch type {
-                case .authorizationCodeSended:
-                    Image(systemName: "checkmark")
-                        .foregroundStyle(.accent)
-                case .inValidAuthorizationCode:
-                    Image(systemName: "exclamationmark.circle")
-                        .foregroundStyle(.red)
-                }
+            
+            Spacer()
+        }
+        .padding(.top, 40)
+        .floater($floater) { type in
+            switch type {
+            case .authorizationCodeSended:
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.accent)
+            case .inValidAuthorizationCode:
+                Image(systemName: "exclamationmark.circle")
+                    .foregroundStyle(.red)
             }
-        } footer: {
+        }
+        .whereForm(viewModel.authorizationCodeValidationState == .valid ? "설정할 비밀번호를\n입력해주세요" : "가입을 위한 이메일을\n인증해주세요") {
+            // TODO: 이메일 주소, 비밀번호 설정이 끝나면 프로필 설정 화면으로 이동할 수 있게 해야함
             Button {
                 if viewModel.authorizationCodeValidationState == .valid {
                     // 인증코드 유효성 검사에 성공한 이후라면 비밀번호 설정
