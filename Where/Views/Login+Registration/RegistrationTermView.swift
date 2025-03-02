@@ -19,39 +19,40 @@ struct RegistrationTermView: View {
         ageLimitSelected && agreeToTermsOfServiceSelected
     }
     
+    private let navigationTitle: String = "어디 이용을 위한\n약관을 동의해주세요"
+    
     var body: some View {
-        BasedFormView("어디 이용을 위한\n약관을 동의해주세요") {
-            VStack(spacing: 20) {
-                HStack {
-                    CircleSelectionButton($isAllSelected)
-                        .onChange(of: isAllSelected) {
-                            guard $1 else { return }
-                            ageLimitSelected = $1
-                            agreeToTermsOfServiceSelected = $1
-                            agreeToReceiveAdvertisingInformationSelected = $1
-                            consentToMarketingUtilizationSelected = $1
-                        }
-                    
-                    Text("네, 모두 동의합니다.")
-                        .whereFont(.body16medium)
-                        .foregroundStyle(Color(hex: 0x6366F1))
-                    
-                    Spacer()
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.clear)
-                        .strokeBorder(Color(hex: 0x6366F1))
-                )
-                .padding(.top)
+        VStack(spacing: 20) {
+            HStack {
+                CircleSelectionButton($isAllSelected)
+                    .onChange(of: isAllSelected) {
+                        guard $1 else { return }
+                        ageLimitSelected = $1
+                        agreeToTermsOfServiceSelected = $1
+                        agreeToReceiveAdvertisingInformationSelected = $1
+                        consentToMarketingUtilizationSelected = $1
+                    }
                 
-                ForEach(terms, id: \.self) { term in
-                    termCell(term)
-                }
+                Text("네, 모두 동의합니다.")
+                    .whereFont(.body16medium)
+                    .foregroundStyle(Color(hex: 0x6366F1))
+                
+                Spacer()
             }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.clear)
+                    .strokeBorder(Color(hex: 0x6366F1))
+            )
             .padding(.top)
-        } footer: {
+            
+            ForEach(terms, id: \.self) { term in
+                termCell(term)
+            }
+        }
+        .padding(.top)
+        .whereForm(navigationTitle) {
             NavigationLink {
                 AuthentificationView()
             } label: {

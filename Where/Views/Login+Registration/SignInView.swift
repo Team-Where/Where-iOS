@@ -13,42 +13,40 @@ struct SignInView: View {
     @State private var isPopupPresented: Bool = false
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
+    private let navigationTitle: String = "로그인을 해주세요"
+    
     var body: some View {
-        BasedFormView("로그인을 해주세요") {
-            Spacer()
-            
-            VStack(spacing: 20) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("이메일")
-                        .whereFont(.body14regular)
-                        .foregroundStyle(Color(hex: 0x374151))
-                    
-                    RoundedTextField(
-                        "이메일 주소를 입력해주세요",
-                        text: $emailFieldText,
-                        lineColor: Color(hex: 0xE5E7EB)
-                    )
-                    .focused($textFieldFocus, equals: .emailTextField)
-                    .keyboardType(.emailAddress)
-                }
+        VStack(spacing: 20) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("이메일")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0x374151))
                 
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("비밀번호")
-                        .whereFont(.body14regular)
-                        .foregroundStyle(Color(hex: 0x374151))
-                    
-                    RoundedTextField(
-                        "비밀번호를 입력해주세요",
-                        text: $passwordFieldText,
-                        lineColor: Color(hex: 0xE5E7EB)
-                    )
-                    .secured()
-                    .focused($textFieldFocus, equals: .passwordTextField)
-                }
+                RoundedTextField(
+                    "이메일 주소를 입력해주세요",
+                    text: $emailFieldText,
+                    lineColor: Color(hex: 0xE5E7EB)
+                )
+                .focused($textFieldFocus, equals: .emailTextField)
+                .keyboardType(.emailAddress)
             }
             
-            Spacer()
-        } footer: {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("비밀번호")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(Color(hex: 0x374151))
+                
+                RoundedTextField(
+                    "비밀번호를 입력해주세요",
+                    text: $passwordFieldText,
+                    lineColor: Color(hex: 0xE5E7EB)
+                )
+                .secured()
+                .focused($textFieldFocus, equals: .passwordTextField)
+            }
+        }
+        .padding(.top, 40)
+        .whereForm(navigationTitle) {
             Button {
                 // TODO: 로그인
                 // 1. API 통해 인증 과정

@@ -13,25 +13,24 @@ struct OnboardingView: View {
     @State private var currentStepIndex: Int = .zero
     
     private let steps: [OnboardingStep] = OnboardingStep.allCases
-    private var title: String { steps[currentStepIndex].title }
+    private var navigationTitle: String { steps[currentStepIndex].title }
     
     var body: some View {
-        BasedFormView(header: Text(title)) {
-            TabView(selection: $currentStepIndex) {
-                ForEach(steps.indices, id: \.self) { index in
-                    steps[index].image
-                        .tag(index)
+        TabView(selection: $currentStepIndex) {
+            ForEach(steps.indices, id: \.self) { index in
+                steps[index].image
+                    .tag(index)
+            }
+        }
+        .disabled(true) // 건너뛰기 버튼을 통해서만 단계 이동
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .overlay(alignment: .bottom) {
+            PageControl(currentPageIndex: $currentStepIndex, pageCountLimit: steps.count)
+                .alignmentGuide(.bottom) { dimension in
+                    dimension.height * 6
                 }
-            }
-            .disabled(true) // 건너뛰기 버튼을 통해서만 단계 이동
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .overlay(alignment: .bottom) {
-                PageControl(currentPageIndex: $currentStepIndex, pageCountLimit: steps.count)
-                    .alignmentGuide(.bottom) { dimension in
-                        dimension.height * 6
-                    }
-            }
-        } footer: {
+        }
+        .whereForm(navigationTitle) {
             if currentStepIndex == steps.count - 1 {
                 completeOnboardingButton
             } else {
