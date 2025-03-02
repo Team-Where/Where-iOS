@@ -24,11 +24,9 @@ struct RegistrationTermView: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                CircleSelectionButton($isAllSelected)
-                    .onChange(of: isAllSelected) { _, isAllSelected in
-                        guard isAllSelected else { return }
-                        selectAllTerms()
-                    }
+                CircleSelectionButton($isAllSelected) {
+                    isAllSelected ? selectAllTerms() : deselectAllTerms()
+                }
                 
                 Text("네, 모두 동의합니다.")
                     .whereFont(.body16medium)
@@ -127,6 +125,13 @@ struct RegistrationTermView: View {
         agreeToReceiveAdvertisingInformationSelected = true
         consentToMarketingUtilizationSelected = true
     }
+    
+    private func deselectAllTerms() {
+        ageLimitSelected = false
+        agreeToTermsOfServiceSelected = false
+        agreeToReceiveAdvertisingInformationSelected = false
+        consentToMarketingUtilizationSelected = false
+    }
 }
 
 // MARK: Nested Types
@@ -157,14 +162,20 @@ extension RegistrationTermView {
     
     struct CircleSelectionButton: View {
         @Binding var isSelected: Bool
+        let action: (() -> Void)?
         
-        init(_ isSelected: Binding<Bool>) {
+        init(
+            _ isSelected: Binding<Bool>,
+            action: (() -> Void)? = nil
+        ) {
             self._isSelected = isSelected
+            self.action = action
         }
         
         var body: some View {
             Button {
                 isSelected.toggle()
+                action?()
             } label: {
                 Image(.whereCheckmark)
                     .resizable()
