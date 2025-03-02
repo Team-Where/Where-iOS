@@ -25,12 +25,9 @@ struct RegistrationTermView: View {
         VStack(spacing: 20) {
             HStack {
                 CircleSelectionButton($isAllSelected)
-                    .onChange(of: isAllSelected) {
-                        guard $1 else { return }
-                        ageLimitSelected = $1
-                        agreeToTermsOfServiceSelected = $1
-                        agreeToReceiveAdvertisingInformationSelected = $1
-                        consentToMarketingUtilizationSelected = $1
+                    .onChange(of: isAllSelected) { _, isAllSelected in
+                        guard isAllSelected else { return }
+                        selectAllTerms()
                     }
                 
                 Text("네, 모두 동의합니다.")
@@ -68,7 +65,7 @@ struct RegistrationTermView: View {
         HStack {
             CircleSelectionButton(bindSelection(type))
                 .onChange(of: bindSelection(type).wrappedValue) { _, _ in
-                    updateAllSelection()
+                    updateAllSelectionState()
                 }
             
             Text(type.title)
@@ -116,12 +113,19 @@ struct RegistrationTermView: View {
         }
     }
     
-    private func updateAllSelection() {
+    private func updateAllSelectionState() {
         // 각각의 동의 항목이 모두 선택 되었을 경우 전체 동의 버튼도 선택
         isAllSelected = ageLimitSelected &&
                         agreeToTermsOfServiceSelected &&
                         agreeToReceiveAdvertisingInformationSelected &&
                         consentToMarketingUtilizationSelected
+    }
+    
+    private func selectAllTerms() {
+        ageLimitSelected = true
+        agreeToTermsOfServiceSelected = true
+        agreeToReceiveAdvertisingInformationSelected = true
+        consentToMarketingUtilizationSelected = true
     }
 }
 
