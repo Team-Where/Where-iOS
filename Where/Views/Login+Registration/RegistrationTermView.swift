@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct RegistrationTermView: View {
-    @State private var isAllSelected: Bool = true
-    @State private var ageLimitSelected: Bool = true
-    @State private var agreeToTermsOfServiceSelected: Bool = true
-    @State private var agreeToReceiveAdvertisingInformationSelected: Bool = true
-    @State private var consentToMarketingUtilizationSelected: Bool = true
+    @State private var termSelections: [TermType: Bool] = TermType.allCases.reduce(into: [:]) {
+        $0[$1] = true
+    }
+    
+    @State private var isAllSelectedState: Bool = true
     
     private let terms: [TermType] = TermType.allCases
     private var didAgreedToMandatoryConsent: Bool {
-        ageLimitSelected && agreeToTermsOfServiceSelected
+        termSelections[.ageLimit] == true && termSelections[.agreeToTermsOfService] == true
     }
     
     private let navigationTitle: String = "어디 이용을 위한\n약관을 동의해주세요"
@@ -24,8 +24,8 @@ struct RegistrationTermView: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                CircleSelectionButton($isAllSelected) {
-                    isAllSelected ? selectAllTerms() : deselectAllTerms()
+                CircleSelectionButton($isAllSelectedState) {
+                    isAllSelectedState ? selectAllTerms() : deselectAllTerms()
                 }
                 
                 Text("네, 모두 동의합니다.")
@@ -87,50 +87,22 @@ struct RegistrationTermView: View {
     }
     
     private func bindSelection(_ type: TermType) -> Binding<Bool> {
-        switch type {
-        case .ageLimit:
-            return Binding(
-                get: { ageLimitSelected },
-                set: { ageLimitSelected = $0 }
-            )
-        case .agreeToTermsOfService:
-            return Binding(
-                get: { agreeToTermsOfServiceSelected },
-                set: { agreeToTermsOfServiceSelected = $0 }
-            )
-        case .agreeToReceiveAdvertisingInformation:
-            return Binding(
-                get: { agreeToReceiveAdvertisingInformationSelected },
-                set: { agreeToReceiveAdvertisingInformationSelected = $0 }
-            )
-        case .consentToMarketingUtilization:
-            return Binding(
-                get: { consentToMarketingUtilizationSelected },
-                set: { consentToMarketingUtilizationSelected = $0 }
-            )
-        }
+        Binding(
+            get: { termSelections[type] ?? false },
+            set: { termSelections[type] = $0 }
+        )
     }
     
     private func updateAllSelectionState() {
-        // 각각의 동의 항목이 모두 선택 되었을 경우 전체 동의 버튼도 선택
-        isAllSelected = ageLimitSelected &&
-                        agreeToTermsOfServiceSelected &&
-                        agreeToReceiveAdvertisingInformationSelected &&
-                        consentToMarketingUtilizationSelected
+        isAllSelectedState = termSelections.values.allSatisfy { $0 }
     }
     
     private func selectAllTerms() {
-        ageLimitSelected = true
-        agreeToTermsOfServiceSelected = true
-        agreeToReceiveAdvertisingInformationSelected = true
-        consentToMarketingUtilizationSelected = true
+        TermType.allCases.forEach { termSelections[$0] = true }
     }
     
     private func deselectAllTerms() {
-        ageLimitSelected = false
-        agreeToTermsOfServiceSelected = false
-        agreeToReceiveAdvertisingInformationSelected = false
-        consentToMarketingUtilizationSelected = false
+        TermType.allCases.forEach { termSelections[$0] = false }
     }
 }
 
