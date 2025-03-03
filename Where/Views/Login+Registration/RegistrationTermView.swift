@@ -98,11 +98,11 @@ struct RegistrationTermView: View {
     }
     
     private func selectAllTerms() {
-        TermType.allCases.forEach { termSelections[$0] = true }
+        terms.forEach { termSelections[$0] = true }
     }
     
     private func deselectAllTerms() {
-        TermType.allCases.forEach { termSelections[$0] = false }
+        terms.forEach { termSelections[$0] = false }
     }
 }
 
