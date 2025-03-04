@@ -23,8 +23,14 @@
 	</array>
 	<key>KAKAO_NATIVE_APP_KEY</key>
 	<string>$(KAKAO_NATIVE_APP_KEY)</string>
-	<key>NAVER_NATIVE_APP_KEY</key>
+	<key>NidAppName</key>
+	<string>약속을 새롭게 정의하다, 어디</string>
+	<key>NidClientID</key>
+	<string>EM6n_yrMpySUgUsU_d4Z</string>
+	<key>NidClientSecret</key>
 	<string>$(NAVER_NATIVE_APP_KEY)</string>
+	<key>NidUrlScheme</key>
+	<string>where.naver.login</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>
