@@ -16,7 +16,13 @@ struct MeetingPlacesView: View {
     
     var body: some View {
         ScrollView(.vertical) {
-            pickedPlacesArea([])
+            pickedPlacesArea([
+                Place(id: 1, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)]),
+                
+                Place(id: 2, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)]),
+                
+                Place(id: 3, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)])
+            ])
             
             Rectangle()
                 .foregroundStyle(Color(hex: 0xF3F4F6))
@@ -24,7 +30,9 @@ struct MeetingPlacesView: View {
             
             sortOptions
             
-            candidatePlacesList(sortOption, users: [])
+            candidatePlacesList(sortOption, users: [
+                User(id: 1)
+            ])
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -87,103 +95,82 @@ struct MeetingPlacesView: View {
     }
     
     @ViewBuilder private func placeCell(_ place: Place) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            VStack(spacing: 0) {
-                Label {
-                    Text("Pick")
-                } icon: {
-                    Image(systemName: "checkmark.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
-                }
-                .whereFont(.body16medium)
-                .foregroundStyle(.accent)
-                .padding(.vertical, 8)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 4) {
+                Text("Pick")
+                    .whereFont(.body14medium)
+                    .foregroundStyle(.accent)
                 
-                ZStack {
-                    AsyncImage(url: place.imageURL)
-                        .frame(width: 220, height: 220)
-                        .clipShape(.rect(cornerRadius: 16))
-                    
-                    VStack {
-                        Image(systemName: "heart")
-                        
-                        Text("\(4)")
-                    }
-                    .whereFont(.caption12medium)
-                    .padding(4)
-                    .foregroundStyle(.white)
+                Image(.whereCheckmark)
                     .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.black.opacity(0.5))
+                        Circle()
+                            .fill(.accent)
                     )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-                    .offset(x: -10, y: -10)
-                }
             }
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(hex: 0xF3F4F6))
-            )
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(place.name)
                     .whereFont(.subtitle18semibold)
-                    .foregroundStyle(Color(hex: 0x1F2937))
+                    .foregroundStyle(.where(.gray800))
                 
                 Text(place.address)
                     .whereFont(.body14regular)
-                    .foregroundStyle(Color(hex: 0x4B5563))
-                
-                HStack(spacing: 12) {
-                    HStack(spacing: 4) {
-                        Image(.bubbleIcon)
-                        
-                        Text("코멘트 \(place.comments.count)")
-                    }
-                    .foregroundStyle(Color(hex: 0x868E96))
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "heart.fill")
-                        
-                        Text("좋아요 \(place.likesCount)")
-                    }
-                    .foregroundStyle(.accent)
-                }
-                .whereFont(.caption12medium)
-                
-                HStack(spacing: 8) {
-                    HStack(spacing: 4) {
-                        Image(.colorNaverMapLogo)
-                        
-                        Text("네이버 지도")
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(
-                        Capsule()
-                            .fill(.white)
-                            .strokeBorder(Color(hex: 0xE3E4E9))
-                    )
-                    
-                    HStack(spacing: 4) {
-                        Image(.colorKakaoMapLogo)
-                        
-                        Text("카카오맵")
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(
-                        Capsule()
-                            .fill(.white)
-                            .strokeBorder(Color(hex: 0xE3E4E9))
-                    )
-                }
-                .whereFont(.caption12regular)
-                .foregroundStyle(Color(hex: 0x282828))
+                    .foregroundStyle(.where(.gray600))
             }
+            
+            HStack(spacing: 12) {
+                HStack(spacing: 4) {
+                    Image(.bubbleIcon)
+                    
+                    Text("코멘트 \(place.comments.count)")
+                }
+                .foregroundStyle(Color(hex: 0x868E96))
+                
+                HStack(spacing: 4) {
+                    Image(systemName: "heart.fill")
+                    
+                    Text("좋아요 \(place.likesCount)")
+                }
+                .foregroundStyle(.accent)
+            }
+            .whereFont(.caption12medium)
+            
+            HStack(spacing: 8) {
+                HStack(spacing: 4) {
+                    Image(.colorNaverMapLogo)
+                    
+                    Text("네이버 지도")
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(
+                    Capsule()
+                        .fill(.white)
+                        .strokeBorder(Color(hex: 0xE3E4E9))
+                )
+                
+                HStack(spacing: 4) {
+                    Image(.colorKakaoMapLogo)
+                    
+                    Text("카카오맵")
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(
+                    Capsule()
+                        .fill(.white)
+                        .strokeBorder(Color(hex: 0xE3E4E9))
+                )
+            }
+            .whereFont(.caption12regular)
+            .foregroundStyle(Color(hex: 0x282828))
         }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.white)
+                .shadow(color: .where(.gray200), radius: 4, y: 4)
+        )
     }
     
     private var sortOptions: some View {
@@ -215,7 +202,13 @@ struct MeetingPlacesView: View {
         case .all:
             LazyVStack {
                 ForEach(users, id: \.id) { user in
-                    sectionByUser(user, [])
+                    sectionByUser(user, [
+                        Place(id: 1, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)]),
+                        
+                        Place(id: 2, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 0, status: .picked, comments: []),
+                        
+                        Place(id: 3, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)])
+                    ])
                 }
             }
         case .byLikesDescending:
@@ -245,25 +238,27 @@ struct MeetingPlacesView: View {
                 Spacer()
                 
                 // TODO: "나" 일 때만 장소 공유 인터랙션 가능
-                Button {
-                    // TODO: 장소 공유 시트 연결
-                } label: {
-                    Label {
-                        Text("장소 공유")
-                            .whereFont(.body14medium)
-                    } icon: {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 15, height: 15)
+                if true {
+                    Button {
+                        // TODO: 장소 공유 시트 연결
+                    } label: {
+                        Label {
+                            Text("장소 공유")
+                                .whereFont(.body14medium)
+                        } icon: {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 15, height: 15)
+                        }
                     }
-                }
-                .whereTip($isShareTipPresented, configuration: tipConfiguration) {
-                    Text("가장 먼저 장소를 공유해보세요!")
-                        .whereFont(.caption12regular)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 8)
+                    .whereTip($isShareTipPresented, configuration: tipConfiguration) {
+                        Text("가장 먼저 장소를 공유해보세요!")
+                            .whereFont(.caption12regular)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 8)
+                    }
                 }
             }
         }
@@ -291,23 +286,19 @@ struct MeetingPlacesView: View {
     }
     
     @ViewBuilder private func placesSectionCell(_ place: Place) -> some View {
-        VStack(spacing: 18) {
+        VStack(alignment: .leading, spacing: 10) {
+            // TODO: 2명 이상의 Pick을 받은 장소만 뱃지 노출
+            if true {
+                Text("같이 찾은 장소")
+                    .whereFont(.caption11regular)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 5)
+                    .padding(.vertical, 2)
+                    .background(.accent)
+                    .clipShape(.rect(cornerRadius: 17))
+            }
+            
             HStack(spacing: 16) {
-                AsyncImage(url: place.imageURL)
-                    .frame(width: 80, height: 80)
-                    .clipShape(.rect(cornerRadius: 16))
-                    .overlay(alignment: .bottom) {
-                        RoundedRectangle(cornerRadius: 17)
-                            .fill(.accent)
-                            .frame(width: 71, height: 19)
-                            .overlay {
-                                Text("같이 찾은 장소")
-                                    .whereFont(.caption11regular)
-                                    .foregroundStyle(.white)
-                            }
-                            .offset(y: 4)
-                    }
-                
                 VStack(alignment: .leading, spacing: 6) {
                     Text(place.name)
                         .whereFont(.subtitle18semibold)
@@ -321,16 +312,24 @@ struct MeetingPlacesView: View {
                         HStack(spacing: 4) {
                             Image(.bubbleIcon)
                             
-                            Text("코멘트 \(place.comments.count)")
+                            if place.comments.count > 0 {
+                                Text("코멘트 \(place.comments.count)")
+                            } else {
+                                Text("코멘트")
+                            }
                         }
                         .foregroundStyle(Color(hex: 0x868E96))
                         
                         HStack(spacing: 4) {
                             Image(systemName: "heart.fill")
                             
-                            Text("좋아요 \(place.likesCount)")
+                            if place.likesCount > 0 {
+                                Text("좋아요 \(place.likesCount)")
+                            } else {
+                                Text("좋아요")
+                            }
                         }
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(place.likesCount > 0 ? .accent : Color(hex: 0x868E96))
                     }
                     .whereFont(.caption12medium)
                 }
@@ -375,10 +374,8 @@ struct MeetingPlacesView: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(.white)
-                .strokeBorder(Color(hex: 0xF3F4F6))
-                .shadow(color: Color(hex: 0x566271).opacity(0.1), radius: 1, y: 4)
+                .shadow(color: .where(.gray200), radius: 4, y: 4)
         )
-        .padding(.bottom)
     }
 }
 
