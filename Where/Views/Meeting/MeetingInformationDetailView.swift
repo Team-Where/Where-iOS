@@ -29,6 +29,21 @@ struct MeetingInformationDetailView: View {
             friendsList([], isInvited: false)
             .padding(.bottom)
             .padding(.horizontal)
+            
+            Button {
+                // TODO: 모임 마감 기능 연결
+            } label: {
+                Text("모임 끝내기")
+                    .whereFont(.body16medium)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 54)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(.accent)
+            )
+            .padding(.bottom)
+            .padding(.horizontal)
         }
         .sheet(item: $sheetType) { type in
             switch type {
@@ -353,6 +368,7 @@ extension MeetingInformationDetailView {
                 Spacer()
             }
             .presentationDetents([.fraction(0.27)])
+            .presentationCornerRadius(16)
         }
     }
 }
