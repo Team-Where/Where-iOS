@@ -131,6 +131,9 @@ actor DateFormatterCached {
         let formatter = DateFormatter()
         formatter.dateFormat = dateFormat
         formatter.locale = Locale(identifier: "ko_KR")
+        if let timeZone = TimeZone(identifier: "UTC") {
+            formatter.timeZone = timeZone
+        }
         return formatter
     }
 }
