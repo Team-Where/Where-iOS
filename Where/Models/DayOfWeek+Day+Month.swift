@@ -81,11 +81,9 @@ extension Date {
         calendar.range(of: .day, in: .month, for: self)
     }
     
-    func inSameDay(as date: Date) -> Bool {
-        calendar.isDate(self, inSameDayAs: date)
-    }
+    private static var cachedMonth: [Int: Month] = [:]
     
-    func month(from date: Date = .now) -> Month {
+    private func monthCalculation(from date: Date) -> Month {
         let rowsCount: Int = 6
         let totalDays: Int = rowsCount * 7
         
@@ -126,6 +124,24 @@ extension Date {
         }
         
         return Month(days, startOfMonth)
+    }
+    
+    private func cachedMonth(from date: Date) -> Month {
+        let key = date.hashValue
+        if let cached = Date.cachedMonth[key] {
+            return cached
+        }
+        let month = monthCalculation(from: date)
+        Date.cachedMonth[key] = month
+        return month
+    }
+    
+    func inSameDay(as date: Date) -> Bool {
+        calendar.isDate(self, inSameDayAs: date)
+    }
+    
+    func month(from date: Date = .now) -> Month {
+        cachedMonth(from: date)
     }
     
     func previousMonth() -> Month {
