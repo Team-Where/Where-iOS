@@ -112,22 +112,22 @@ struct CalendarView: View {
     @ViewBuilder private func gridCell(_ day: Day) -> some View {
         let inSameDay = selectedDate?.inSameDay(as: day.date) ?? false
         
-        Text("\(day.day)")
-            .whereFont(.body16regular)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .foregroundStyle(inSameDay ? .white : (day.isValid ? .black : .gray))
-            .background(
-                Circle()
-                    .fill(inSameDay ? .black : .clear)
-            )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .containerShape(.rect)
-            .onTapGesture {
-                if day.isValid {
-                    selectedDate = inSameDay ? nil : day.date
-                }
+        Button {
+            if day.isValid {
+                selectedDate = inSameDay ? nil : day.date
             }
+        } label: {
+            Text("\(day.day)")
+                .whereFont(.body16regular)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .foregroundStyle(inSameDay ? .white : (day.isValid ? .black : .gray))
+                .background(
+                    Circle()
+                        .fill(inSameDay ? .black : .clear)
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
     }
     
     private func prepare() {

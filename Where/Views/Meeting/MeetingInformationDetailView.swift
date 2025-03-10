@@ -235,11 +235,11 @@ extension MeetingInformationDetailView {
         
         var content: Content {
             switch self {
-            case .date:
+            case .date(let date):
                 (
                     Image(.colorCalendarIcon),
                     Image(.calendarIcon),
-                    "일정 등록"
+                    date == nil ? "일정 등록" : "일정 수정"
                 )
             case .sharedPlace:
                 (
@@ -406,7 +406,7 @@ extension MeetingInformationDetailView {
                     
                     Spacer()
                     
-                    Text("일정 등록")
+                    Text(selectedDate == nil ? "일정 등록" : "일정 수정")
                         .whereFont(.subtitle18semibold)
                     
                     Spacer()
