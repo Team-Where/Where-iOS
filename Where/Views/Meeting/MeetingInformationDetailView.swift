@@ -474,7 +474,7 @@ extension MeetingInformationDetailView {
                 Spacer()
                 
                 Button {
-                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime?.rawValue, meridiem: temporalSelectedMeridiem)
+                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime, meridiem: temporalSelectedMeridiem)
                     selectedDate = date
                     fullScreenCoverType = .none
                 } label: {
@@ -490,6 +490,9 @@ extension MeetingInformationDetailView {
                 }
             }
             .padding()
+            .onAppear {
+                initializePicker()
+            }
             .sheet(item: $sheetType) { type in
                 switch type {
                 case .date:
@@ -505,6 +508,35 @@ extension MeetingInformationDetailView {
                     )
                 }
             }
+        }
+        
+        private func convert24HourTo12(hour24: Int) -> Int {
+            if hour24 == 0 { // 자정(0시)는 12시로 표현
+                return 12
+            } else if hour24 > 12 { // 오후 시간 (13시 ~ 23시)
+                return hour24 - 12
+            } else if hour24 == 12 { // 정오(12시)는 12시로 표현
+                return 12
+            } else { // 오전 시간 (1시 ~ 11시)
+                return hour24
+            }
+        }
+        
+        private func initializePicker() {
+            guard let selectedDate = selectedDate else {
+                temporalSelectedDate = nil
+                temporalSelectedTime = nil
+                temporalSelectedMeridiem = nil
+                return
+            }
+            
+            temporalSelectedDate = selectedDate
+            let hour24 = selectedDate.dateComponents().hour ?? .zero
+            let meridiem: Meridiem = hour24 < 12 ? .am : .pm
+            temporalSelectedMeridiem = meridiem
+            
+            let hour12 = convert24HourTo12(hour24: hour24)
+            temporalSelectedTime = Hour(rawValue: hour12)
         }
     }
     
@@ -564,6 +596,9 @@ extension MeetingInformationDetailView {
                 .disabled(temporalSelectedDate == nil)
             }
             .presentationDetents([.fraction(0.7)])
+            .onAppear {
+                temporalSelectedDate = selectedDate
+            }
         }
     }
     
@@ -643,6 +678,10 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
             }
             .presentationDetents([.fraction(0.54)])
+            .onAppear {
+                temporalSelectedTime = selectedTime ?? .one
+                temporalSelectedMeridiem = selectedMeridiem ?? .am
+            }
         }
         
         @ViewBuilder private func pickerCell<Value: CustomStringConvertible & Hashable>(
