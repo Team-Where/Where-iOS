@@ -580,7 +580,7 @@ extension MeetingInformationDetailView {
         var body: some View {
             VStack(alignment: .leading) {
                 HStack {
-                    Text("날짜 선택")
+                    Text("시간 선택")
                     
                     Spacer()
                     
