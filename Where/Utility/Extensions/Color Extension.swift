@@ -21,7 +21,7 @@ extension Color {
 
 extension ShapeStyle where Self == Color {
     static func `where`(_ type: WhereColor) -> Color { type.color() }
-    static func `where`(hex: UInt) -> Color { Color(hex: hex) }
+    static func `where`(hex: Int) -> Color { Color(hex: UInt(hex)) }
 }
 
 protocol WhereColorProtocol: RawRepresentable where RawValue == UInt {
