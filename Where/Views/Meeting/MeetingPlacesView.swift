@@ -94,85 +94,6 @@ struct MeetingPlacesView: View {
         .padding(.top)
     }
     
-    @ViewBuilder private func placeCell(_ place: Place) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 4) {
-                Text("Pick")
-                    .whereFont(.body14medium)
-                    .foregroundStyle(.accent)
-                
-                Image(.whereCheckmark)
-                    .background(
-                        Circle()
-                            .fill(.accent)
-                    )
-            }
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(place.name)
-                    .whereFont(.subtitle18semibold)
-                    .foregroundStyle(.where(.gray800))
-                
-                Text(place.address)
-                    .whereFont(.body14regular)
-                    .foregroundStyle(.where(.gray600))
-            }
-            
-            HStack(spacing: 12) {
-                HStack(spacing: 4) {
-                    Image(.bubbleIcon)
-                    
-                    Text("코멘트 \(place.comments.count)")
-                }
-                .foregroundStyle(Color(hex: 0x868E96))
-                
-                HStack(spacing: 4) {
-                    Image(systemName: "heart.fill")
-                    
-                    Text("좋아요 \(place.likesCount)")
-                }
-                .foregroundStyle(.accent)
-            }
-            .whereFont(.caption12medium)
-            
-            HStack(spacing: 8) {
-                HStack(spacing: 4) {
-                    Image(.colorNaverMapLogo)
-                    
-                    Text("네이버 지도")
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(
-                    Capsule()
-                        .fill(.white)
-                        .strokeBorder(Color(hex: 0xE3E4E9))
-                )
-                
-                HStack(spacing: 4) {
-                    Image(.colorKakaoMapLogo)
-                    
-                    Text("카카오맵")
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(
-                    Capsule()
-                        .fill(.white)
-                        .strokeBorder(Color(hex: 0xE3E4E9))
-                )
-            }
-            .whereFont(.caption12regular)
-            .foregroundStyle(Color(hex: 0x282828))
-        }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.white)
-                .shadow(color: .where(.gray200), radius: 4, y: 4)
-        )
-    }
-    
     private var sortOptions: some View {
         HStack(spacing: 8) {
             ForEach(PlaceSortOption.allCases, id: \.self) { option in
@@ -393,6 +314,99 @@ extension MeetingPlacesView {
             case .all: "전체보기"
             case .byLikesDescending: "BEST 순위"
             }
+        }
+    }
+    
+    struct PlaceCell: View {
+        @State private var isPicked: Bool = false
+        
+        private let place: Place
+        
+        init(place: Place) {
+            self.place = place
+        }
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 16) {
+                Button {
+                    isPicked.toggle()
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("Pick")
+                            .whereFont(.body14medium)
+                            .foregroundStyle(isPicked ? .accent : .where(.gray400))
+                        
+                        Image(.whereCheckmark)
+                            .background(
+                                Circle()
+                                    .fill(isPicked ? .accent : .where(.gray400))
+                            )
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(place.name)
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(.where(.gray800))
+                    
+                    Text(place.address)
+                        .whereFont(.body14regular)
+                        .foregroundStyle(.where(.gray600))
+                }
+                
+                HStack(spacing: 12) {
+                    HStack(spacing: 4) {
+                        Image(.bubbleIcon)
+                        
+                        Text("코멘트 \(place.comments.count)")
+                    }
+                    .foregroundStyle(Color(hex: 0x868E96))
+                    
+                    HStack(spacing: 4) {
+                        Image(systemName: "heart.fill")
+                        
+                        Text("좋아요 \(place.likesCount)")
+                    }
+                    .foregroundStyle(.accent)
+                }
+                .whereFont(.caption12medium)
+                
+                HStack(spacing: 8) {
+                    HStack(spacing: 4) {
+                        Image(.colorNaverMapLogo)
+                        
+                        Text("네이버 지도")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(.white)
+                            .strokeBorder(Color(hex: 0xE3E4E9))
+                    )
+                    
+                    HStack(spacing: 4) {
+                        Image(.colorKakaoMapLogo)
+                        
+                        Text("카카오맵")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(.white)
+                            .strokeBorder(Color(hex: 0xE3E4E9))
+                    )
+                }
+                .whereFont(.caption12regular)
+                .foregroundStyle(Color(hex: 0x282828))
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.white)
+                    .shadow(color: .where(.gray200), radius: 4, y: 4)
+            )
         }
     }
 }
