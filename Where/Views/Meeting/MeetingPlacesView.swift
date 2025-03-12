@@ -46,7 +46,27 @@ struct MeetingPlacesView: View {
     }
     
     @ViewBuilder private func pickedPlacesArea(_ places: [Place]) -> some View {
-        VStack {
+        ZStack(alignment: .top) {
+            Group {
+                if places.isEmpty {
+                    Text("아직 정한 장소가 없어요.")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x495057))
+                        .frame(height: 150)
+                } else {
+                    ScrollView(.horizontal) {
+                        LazyHStack {
+                            ForEach(places, id: \.id) { place in
+                                PlaceCell(place: place)
+                            }
+                        }
+                    }
+                    .scrollIndicators(.never)
+                    .contentMargins(20, for: .scrollContent)
+                }
+            }
+            .padding(.top, 26)
+            
             HStack {
                 Image(.logoColorShort)
                 
@@ -73,23 +93,6 @@ struct MeetingPlacesView: View {
                 }
             }
             .padding(.horizontal)
-            
-            if places.isEmpty {
-                Text("아직 정한 장소가 없어요.")
-                    .whereFont(.body14regular)
-                    .foregroundStyle(Color(hex: 0x495057))
-                    .frame(height: 150)
-            } else {
-                ScrollView(.horizontal) {
-                    LazyHStack {
-                        ForEach(places, id: \.id) { place in
-                            placeCell(place)
-                        }
-                    }
-                }
-                .scrollIndicators(.never)
-                .contentMargins(20, for: .scrollContent)
-            }
         }
         .padding(.top)
     }
@@ -184,6 +187,9 @@ struct MeetingPlacesView: View {
             }
         }
         .padding([.horizontal, .top])
+        .onAppear {
+            isShareTipPresented = places.isEmpty
+        }
     }
     
     @ViewBuilder private func sectionByLikes(index: Int, _ places: [Place]) -> some View {
