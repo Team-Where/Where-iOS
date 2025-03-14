@@ -324,8 +324,6 @@ extension MeetingPlacesView {
     }
     
     struct PlaceCell: View {
-        @State private var isPicked: Bool = false
-        
         private let place: Place
         
         init(place: Place) {
@@ -334,20 +332,16 @@ extension MeetingPlacesView {
         
         var body: some View {
             VStack(alignment: .leading, spacing: 16) {
-                Button {
-                    isPicked.toggle()
-                } label: {
-                    HStack(spacing: 4) {
-                        Text("Pick")
-                            .whereFont(.body14medium)
-                            .foregroundStyle(isPicked ? .accent : .where(.gray400))
-                        
-                        Image(.whereCheckmark)
-                            .background(
-                                Circle()
-                                    .fill(isPicked ? .accent : .where(.gray400))
-                            )
-                    }
+                HStack(spacing: 4) {
+                    Text("Pick")
+                        .whereFont(.body14medium)
+                        .foregroundStyle(.accent)
+                    
+                    Image(.whereCheckmark)
+                        .background(
+                            Circle()
+                                .fill(.accent)
+                        )
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
