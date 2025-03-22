@@ -16,11 +16,7 @@ struct WhereDisclosureGroupStyle: DisclosureGroupStyle {
                 }
             } label: {
                 HStack {
-                    Text("Q")
-                        .foregroundStyle(.accent)
-                    
                     configuration.label
-                        .foregroundStyle(.where(.gray800))
                     
                     Spacer()
                     
