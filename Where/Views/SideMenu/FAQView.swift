@@ -88,7 +88,11 @@ extension FAQView {
                 Text(notification.content)
             } label: {
                 HStack(spacing: 10) {
+                    Text("Q")
+                        .foregroundStyle(.accent)
+                    
                     Text(notification.title)
+                        .foregroundStyle(.where(.gray800))
                 }
                 .whereFont(.body16semibold)
             }
