@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct WhereDisclosureGroupStyle: DisclosureGroupStyle {
+    let labelHeight: CGFloat
+    
+    init(labelHeight: CGFloat) {
+        self.labelHeight = labelHeight
+    }
+    
     func makeBody(configuration: Configuration) -> some View {
         VStack {
             Button {
@@ -27,7 +33,8 @@ struct WhereDisclosureGroupStyle: DisclosureGroupStyle {
                         .foregroundStyle(.where(.gray500))
                         .frame(width: 8, height: 4)
                 }
-                .frame(height: 60)
+                .frame(height: labelHeight)
+                .contentShape(.rect)
             }
             .buttonStyle(.plain)
             
