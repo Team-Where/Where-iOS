@@ -43,6 +43,7 @@ struct WhereDisclosureGroupStyle: DisclosureGroupStyle {
                     .whereFont(.body14regular)
                     .foregroundStyle(.where(.gray700))
                     .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
                             .foregroundStyle(.where(.gray100))

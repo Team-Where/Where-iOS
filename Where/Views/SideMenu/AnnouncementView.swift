@@ -63,7 +63,6 @@ extension AnnouncementView {
         var body: some View {
             DisclosureGroup(isExpanded: $isExpanded) {
                 Text(announcement.content)
-                    .frame(maxWidth: .infinity, alignment: .leading)
             } label: {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(announcement.title)
