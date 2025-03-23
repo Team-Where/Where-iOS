@@ -188,8 +188,9 @@ extension AuthentificationService {
                 switch result {
                 case .success(let entity):
                     guard let id = entity["id"] else { return }
+                    let email = entity["email"]
                     let nickname = entity["nickname"]
-                    let userCredential = UserCredential(provider: .naver, ci: id, email: nil, nickname: nickname)
+                    let userCredential = UserCredential(provider: .naver, ci: id, email: email, nickname: nickname)
                 case .failure(let error):
                     print(error)
                 }
