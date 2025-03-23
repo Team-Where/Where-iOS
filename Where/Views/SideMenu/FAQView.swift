@@ -33,9 +33,11 @@ struct FAQView: View {
             } label: {
                 Text("1:1 문의하기")
                     .whereFont(.body16medium)
-                    .frame(width: 350, height: 48)
+                    .frame(height: 48)
+                    .frame(maxWidth: .infinity)
             }
             .buttonStyle(.whereRoundedProminent())
+            .padding(.horizontal)
         }
         .navigationDestination(item: $navigationType) { type in
             // TODO: 화면 연결 필요
