@@ -55,7 +55,7 @@ struct RegistrationTermView: View {
                     .whereFont(.body16semibold)
                     .frame(width: 350, height: 48)
             }
-            .buttonStyle(.whereRoundedProminent(didAgreedToMandatoryConsent == false))
+            .buttonStyle(.whereRoundedProminent(disabled: didAgreedToMandatoryConsent == false))
         }
     }
     

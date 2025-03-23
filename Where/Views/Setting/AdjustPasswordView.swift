@@ -74,7 +74,7 @@ struct AdjustPasswordView: View {
                     .whereFont(.body16semibold)
                     .frame(width: 350, height: 48)
             }
-            .buttonStyle(.whereRoundedProminent(viewModel.isDoneButtomDisabled))
+            .buttonStyle(.whereRoundedProminent(disabled: viewModel.isDoneButtomDisabled))
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

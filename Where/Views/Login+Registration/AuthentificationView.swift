@@ -56,7 +56,7 @@ struct AuthentificationView: View {
                     .whereFont(.body16semibold)
                     .frame(width: 350, height: 48)
             }
-            .buttonStyle(.whereRoundedProminent(viewModel.isProceedButtonDisabled))
+            .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
             .ignoresSafeArea(.keyboard)
         }
     }
