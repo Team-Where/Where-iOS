@@ -19,71 +19,69 @@ struct FriendsListView: View {
     private var isEditing: Bool { viewModel.isEditing }
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
-                
-                if friends.isEmpty {
-                    unavailableView
-                } else if viewModel.isSearching {
-                    ScrollView(.vertical) {
-                        ForEach(searchedFriends) { friend in
-                            Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
-                        }
+        VStack {
+            SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
+            
+            if friends.isEmpty {
+                unavailableView
+            } else if viewModel.isSearching {
+                ScrollView(.vertical) {
+                    ForEach(searchedFriends) { friend in
+                        Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
                     }
-                } else {
-                    ScrollView(.vertical) {
-                        if viewModel.isEditing == false {
-                            section(.favorite, [])
-                        }
-                        section(.common, friends)
+                }
+            } else {
+                ScrollView(.vertical) {
+                    if viewModel.isEditing == false {
+                        section(.favorite, [])
                     }
+                    section(.common, friends)
                 }
             }
-            .padding()
-            .navigationBarBackButtonHidden()
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if isEditing {
-                        BackButton {
-                            withAnimation {
-                                viewModel.toggleEditMode()
-                            }
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .navigation) {
-                    if isEditing {
-                        Text("목록편집")
-                            .whereFont(.subtitle18semibold)
-                            .foregroundStyle(Color(hex: 0x1F2937))
-                            .padding(.leading)
-                    } else {
-                        Text("친구목록")
-                            .whereFont(.title24semibold)
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+        }
+        .padding()
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if isEditing {
+                    BackButton {
                         withAnimation {
                             viewModel.toggleEditMode()
                         }
-                    } label: {
-                        Text(isEditing ? "완료" : "편집")
-                            .whereFont(.body16medium)
                     }
                 }
             }
-            .sheet(item: $sheetItem) { item in
-                sheet(item)
-            }
-            .navigationDestination(item: $route) { route in
-                switch route {
-                case .historyReminder(let friend):
-                    HistoryReminderView()
+            
+            ToolbarItem(placement: .navigation) {
+                if isEditing {
+                    Text("목록편집")
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                        .padding(.leading)
+                } else {
+                    Text("친구목록")
+                        .whereFont(.title24semibold)
                 }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation {
+                        viewModel.toggleEditMode()
+                    }
+                } label: {
+                    Text(isEditing ? "완료" : "편집")
+                        .whereFont(.body16medium)
+                }
+            }
+        }
+        .sheet(item: $sheetItem) { item in
+            sheet(item)
+        }
+        .navigationDestination(item: $route) { route in
+            switch route {
+            case .historyReminder(let friend):
+                HistoryReminderView()
             }
         }
     }
