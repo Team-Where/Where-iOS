@@ -11,7 +11,7 @@ struct MeetingInformationView: View {
     @State private var sheetType: SheetType?
     
     var body: some View {
-        SelectionTab(selection: [.meetingInfo, .placeInfo])
+        SelectionTab<TabViewItem>(selection: [.meetingInfo, .placeInfo])
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -47,9 +47,11 @@ struct MeetingInformationView: View {
 
 // MARK: Nested Types - CustomTabbar
 extension MeetingInformationView {
-    enum TabViewItem {
+    enum TabViewItem: SelectionTabItem {
         case meetingInfo
         case placeInfo
+        
+        var id: Int { self.hashValue }
         
         var title: String {
             switch self {
@@ -62,45 +64,6 @@ extension MeetingInformationView {
             switch self {
             case .meetingInfo: MeetingInformationDetailView()
             case .placeInfo: MeetingPlacesView()
-            }
-        }
-    }
-    
-    struct SelectionTab: View {
-        @State private var selectedTab: Int = .zero
-        
-        private let selection: [TabViewItem]
-        
-        init(selection: [TabViewItem]) {
-            self.selection = selection
-        }
-        
-        var body: some View {
-            VStack {
-                HStack(spacing: 0) {
-                    ForEach(selection.indices, id: \.self) { index in
-                        tab(index)
-                    }
-                }
-                
-                selection[selectedTab].view()
-            }
-        }
-        
-        @ViewBuilder private func tab(_ index: Int) -> some View {
-            Button {
-                selectedTab = index
-            } label: {
-                let item = selection[index]
-                
-                VStack {
-                    Text(item.title)
-                        .whereFont(selectedTab == index ? .body16semibold : .body16regular)
-                    
-                    Rectangle()
-                        .frame(height: 2)
-                }
-                .foregroundStyle(selectedTab == index ? Color(hex: 0x1F2937) : Color(hex: 0xE5E7EB))
             }
         }
     }
