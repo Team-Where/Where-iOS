@@ -75,19 +75,7 @@ struct ProfileCreationView: View {
                         }
                     )
                     .onChange(of: username) { oldValue, newValue in
-                        // onChange 로직은 동일하게 유지
-                        if newValue.isEmpty {
-                            isValid = false
-                        } else {
-                            let maxLength = 8
-                            let filteredValue = newValue.filter { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }
-                            username = String(filteredValue.prefix(maxLength))
-                            
-                            // 최소 2글자 이상, 최대 8글자 이하, 특수문자와 이모지 제외 조건 추가
-                            isValid = username.count >= 2 && username.count <= maxLength &&
-                            !username.containsEmoji &&
-                            username.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }
-                        }
+                        isValid = newValue.isValidNickname()
                     }
                     
                     Text(isValid ? "사용 가능한 닉네임입니다" : "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다.")
