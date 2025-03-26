@@ -11,8 +11,6 @@ import Foundation
 struct User: Identifiable {
     /// 고유 식별자
     let id: UInt64
-    /// 사용자 이름
-    let name: String
     /// 사용자 닉네임
     let nickname: String
     /// SMS 토큰
@@ -24,14 +22,12 @@ struct User: Identifiable {
     
     init(
         id: UInt64 = 1,
-        name: String = "사용자",
         nickname: String = "별명",
         smsVerificationToken: String? = nil,
         createdAt: Date = .now,
         imageURL: URL? = nil
     ) {
         self.id = id
-        self.name = name
         self.nickname = nickname
         self.smsVerificationToken = smsVerificationToken
         self.createdAt = createdAt
