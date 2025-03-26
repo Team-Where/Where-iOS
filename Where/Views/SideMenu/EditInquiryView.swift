@@ -41,7 +41,7 @@ struct EditInquiryView: View {
     }
     
     var body: some View {
-        VStack {
+        ScrollView(.vertical) {
             textFieldsArea
             
             VStack(alignment: .leading, spacing: 20) {
@@ -107,7 +107,7 @@ struct EditInquiryView: View {
             ZStack(alignment: .bottomTrailing) {
                 RoundedTextEditor(Constants.contentPlaceholder, text: $contentFieldText)
                     .characterLimit(text: $contentFieldText, limit: Constants.contentCharacterLimit)
-                    .frame(maxHeight: 175)
+                    .frame(height: 175)
                 
                 Text("\(contentFieldText.count)/\(Constants.contentCharacterLimit)")
                     .whereFont(.body14regular)
@@ -128,7 +128,7 @@ struct EditInquiryView: View {
             }
         }
         .scrollIndicators(.never)
-        .frame(maxHeight: 80)
+        .frame(height: 80)
     }
     
     private var guideArea: some View {
