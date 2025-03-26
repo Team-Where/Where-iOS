@@ -41,6 +41,7 @@ struct RoundedTextEditor: View {
                     .foregroundStyle(.where(.gray500))
                     .padding(16)
                     .padding(.top, 8)
+                    .padding(.leading, 4)
             }
         }
     }
