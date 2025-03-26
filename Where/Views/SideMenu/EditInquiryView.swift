@@ -105,7 +105,7 @@ struct EditInquiryView: View {
                 Text("\(titleFieldText.count)/\(Constants.titleCharacterLimit)")
                     .whereFont(.body14regular)
                     .foregroundStyle(.where(.gray500))
-                    .padding(.trailing)
+                    .padding(.trailing, 30)
             }
             
             ZStack(alignment: .bottomTrailing) {
@@ -117,7 +117,8 @@ struct EditInquiryView: View {
                 Text("\(contentFieldText.count)/\(Constants.contentCharacterLimit)")
                     .whereFont(.body14regular)
                     .foregroundStyle(.where(.gray500))
-                    .padding([.trailing, .bottom])
+                    .padding(.bottom)
+                    .padding(.trailing, 30)
             }
         }
         .padding()
