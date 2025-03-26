@@ -31,6 +31,7 @@ struct EditInquiryView: View {
     @State private var selectedIndex: Int = 0
     @State private var titleFieldText: String
     @State private var contentFieldText: String
+    @FocusState private var isContentFieldFocused
     @State private var images: [UIImage?] = .init(repeating: nil, count: Constants.maxAttachmentImageCount)
     
     private var disabled: Bool { titleFieldText.isEmpty || contentFieldText.isEmpty }
@@ -87,6 +88,9 @@ struct EditInquiryView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
+        .onTapGesture {
+            isContentFieldFocused = false
+        }
         .popup($isPopupPresented) {
             PopupView(isPopupPresented: $isPopupPresented, image: $images[selectedIndex])
         }
@@ -107,6 +111,7 @@ struct EditInquiryView: View {
             ZStack(alignment: .bottomTrailing) {
                 RoundedTextEditor(Constants.contentPlaceholder, text: $contentFieldText)
                     .characterLimit(text: $contentFieldText, limit: Constants.contentCharacterLimit)
+                    .focused($isContentFieldFocused)
                     .frame(height: 175)
                 
                 Text("\(contentFieldText.count)/\(Constants.contentCharacterLimit)")
