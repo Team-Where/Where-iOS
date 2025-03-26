@@ -16,7 +16,7 @@ extension RadioButtonSelection {
 }
 
 struct RadioButton<Selection: RadioButtonSelection>: View {
-    @Binding var selectedValue: Selection?
+    @Binding var selectedValue: Selection
     let value: Selection
     
     var isOn: Bool { selectedValue == value }
