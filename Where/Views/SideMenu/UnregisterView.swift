@@ -13,12 +13,9 @@ struct UnregisterView: View {
         static let confirmationContentScript: String = "탈퇴 시 계정 및 이용 기록은 모두 삭제되며,\n삭제된 데이터는 복구가 불가능합니다.\n또한 탈퇴 후 동일 계정으로 재가입시\n제한을 받을 수 있습니다.\n탈퇴를 진행할까요?"
     }
     
-    @State private var selectedUnregisterReason: UnregisterReasonType?
+    @State private var selectedUnregisterReason: UnregisterReasonType = .infrequentUse
     @State private var unregisterStep: UnregisterStep = .submitUnregisterReason
     @State private var isSheetPresented: Bool = false
-    
-    
-    private var disabled: Bool { selectedUnregisterReason == nil }
     
     var body: some View {
         VStack {
@@ -117,7 +114,7 @@ struct UnregisterView: View {
                 .frame(height: 48)
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.whereRoundedProminent(disabled: disabled))
+        .buttonStyle(.whereRoundedProminent())
     }
     
     private var completeButton: some View {

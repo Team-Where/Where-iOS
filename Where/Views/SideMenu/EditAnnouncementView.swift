@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EditAnnouncementView: View {
-    @State private var selection: Selection? = .FAQ
+    @State private var selection: Selection = .FAQ
     @State private var title: String = String()
     @State private var content: String = String()
     @State private var isPopupPresented: Bool = false
