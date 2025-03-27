@@ -62,7 +62,7 @@ struct Floater<Based: View, Icon: View>: View {
 }
 
 struct FloaterView<Icon: View>: View {
-    var isFloaterPresented: Binding<Bool>
+    @Binding var isFloaterPresented: Bool
     let title: String
     let icon: Icon?
     
@@ -85,26 +85,39 @@ struct FloaterView<Icon: View>: View {
         .padding(.bottom)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                isFloaterPresented.wrappedValue = false
+                isFloaterPresented = false
             }
         }
     }
 }
 
 extension View {
+    func floater(
+        _ isPresented: Binding<Bool>,
+        title: String
+    ) -> some View {
+        modifier(FloaterModifier<EmptyView>(isPresented, title, nil))
+    }
+
     func floater<Icon: View>(
         _ isPresented: Binding<Bool>,
         title: String,
-        icon: (() -> Icon)? = nil
+        @ViewBuilder icon: @escaping () -> Icon
     ) -> some View {
-        modifier(FloaterModifier<Icon>(isPresented, title, icon))
+        modifier(FloaterModifier(isPresented, title, icon))
     }
-    
+
+    func floater<Item: FloaterContent>(
+        _ item: Binding<Item?>
+    ) -> some View {
+        floater(item) { _ in EmptyView() }
+    }
+
     func floater<Item: FloaterContent, Icon: View>(
         _ item: Binding<Item?>,
         @ViewBuilder content: @escaping (Item) -> Icon
     ) -> some View {
-        let isPresented = Binding<Bool> { item.wrappedValue != nil } set: { if $0 == false { item.wrappedValue = nil } }
+        let isPresented = Binding<Bool> { item.wrappedValue != nil } set: { if !$0 { item.wrappedValue = nil } }
         let title = item.wrappedValue?.title ?? String()
         return modifier(FloaterModifier(isPresented, title, { item.wrappedValue.map(content) }))
     }
