@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var selectedTab = 0 // 현재 선택된 탭의 인덱스
-    @State private var showNewMeeting = false // sheet 표시 여부
+    @State private var isSheetPresented = false // sheet 표시 여부
     @State private var previousTab = 0 // 이전 탭 저장
     
     var body: some View {
@@ -49,12 +49,12 @@ struct TabBarView: View {
             if newValue != 1 {
                 previousTab = newValue
             } else {
-                showNewMeeting = true
+                isSheetPresented = true
                 selectedTab = previousTab
             }
         }
-        .sheet(isPresented: $showNewMeeting) {
-            NewMeetingSheet1View(showNewMeeting: $showNewMeeting)
+        .sheet(isPresented: $isSheetPresented) {
+            NewMeetingSheet1View(showNewMeeting: $isSheetPresented)
                 .presentationCornerRadius(24)
         }
     }
