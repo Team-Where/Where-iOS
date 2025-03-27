@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var isSideMenuPresented: Bool = true
+    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
+    @State private var isOnboardingViewPresented: Bool = false
+    @State private var isSideMenuPresented: Bool = false
     @State private var meetings: [Meeting] = []
     
     var body: some View {
@@ -53,6 +55,12 @@ struct HomeView: View {
                         .foregroundStyle(.black)
                 }
             }
+        }
+        .onAppear {
+            isOnboardingViewPresented = isOnboardingNeeded
+        }
+        .navigationDestination(isPresented: $isOnboardingViewPresented) {
+            OnboardingView()
         }
     }
     
