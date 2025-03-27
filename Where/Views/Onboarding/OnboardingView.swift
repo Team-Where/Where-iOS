@@ -37,6 +37,7 @@ struct OnboardingView: View {
                 skipToNextStepButton
             }
         }
+        .toolbarVisibility(.hidden, for: .tabBar)
     }
     
     private var skipToNextStepButton: some View {
