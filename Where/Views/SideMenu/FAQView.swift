@@ -45,11 +45,12 @@ struct FAQView: View {
             case .editAnnouncement:
                 EmptyView()
             case .editInquiry:
-                EmptyView()
+                InquiryView()
             }
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarVisibility(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()

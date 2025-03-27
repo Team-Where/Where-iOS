@@ -28,13 +28,14 @@ struct InquiryView: View {
         ])
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarVisibility(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()
             }
             
             ToolbarItem(placement: .principal) {
-                Text("FAQ")
+                Text("1:1 문의")
                     .whereFont(.subtitle18semibold)
                     .foregroundStyle(.where(.gray800))
             }
