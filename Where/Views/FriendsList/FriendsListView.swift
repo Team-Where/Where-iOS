@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FriendsListView: View {
+    @Binding var selectedTab: Int
     @State private var sheetItem: SheetType?
     @State private var route: Route?
     @FocusState private var isFocused: Bool
@@ -42,36 +43,38 @@ struct FriendsListView: View {
         .padding()
         .navigationBarBackButtonHidden()
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                if isEditing {
-                    BackButton {
-                        withAnimation {
-                            viewModel.toggleEditMode()
+            if selectedTab == 2 {
+                ToolbarItem(placement: .topBarLeading) {
+                    if isEditing {
+                        BackButton {
+                            withAnimation {
+                                viewModel.toggleEditMode()
+                            }
                         }
                     }
                 }
-            }
-            
-            ToolbarItem(placement: .navigation) {
-                if isEditing {
-                    Text("목록편집")
-                        .whereFont(.subtitle18semibold)
-                        .foregroundStyle(Color(hex: 0x1F2937))
-                        .padding(.leading)
-                } else {
-                    Text("친구목록")
-                        .whereFont(.title24semibold)
-                }
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation {
-                        viewModel.toggleEditMode()
+                
+                ToolbarItem(placement: .navigation) {
+                    if isEditing {
+                        Text("목록편집")
+                            .whereFont(.subtitle18semibold)
+                            .foregroundStyle(Color(hex: 0x1F2937))
+                            .padding(.leading)
+                    } else {
+                        Text("친구목록")
+                            .whereFont(.title24semibold)
                     }
-                } label: {
-                    Text(isEditing ? "완료" : "편집")
-                        .whereFont(.body16medium)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        withAnimation {
+                            viewModel.toggleEditMode()
+                        }
+                    } label: {
+                        Text(isEditing ? "완료" : "편집")
+                            .whereFont(.body16medium)
+                    }
                 }
             }
         }
@@ -314,7 +317,5 @@ extension FriendsListView {
 }
 
 #Preview {
-    NavigationStack {
-        FriendsListView()
-    }
+    TabBarView()
 }

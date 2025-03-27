@@ -13,38 +13,36 @@ struct TabBarView: View {
     @State private var previousTab = 0 // 이전 탭 저장
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            // 내모임 뷰
-            NavigationStack {
-                HomeView()
+        NavigationStack {
+            TabView(selection: $selectedTab) {
+                // 내모임 뷰
+                HomeView(selectedTab: $selectedTab)
                     .overlay(alignment: .bottom) {
                         Divider()
                     }
-            }
-            .tabItem {
-                Label("내모임", systemImage: "person.2")
-                    .environment(\.symbolVariants, .none)
-            }
-            .tag(0)
-            
-            // 새 모임 만들기
-            Color.clear
-                .tabItem {
-                    Image("BottomPlus")
-                }
-                .tag(1)
-            
-            // 친구목록 뷰
-            NavigationStack {
-                FriendsListView()
+                    .tabItem {
+                        Label("내 모임", systemImage: "person.2")
+                            .environment(\.symbolVariants, .none)
+                    }
+                    .tag(0)
+                
+                // 새 모임 만들기
+                Color.clear
+                    .tabItem {
+                        Image("BottomPlus")
+                    }
+                    .tag(1)
+                
+                // 친구목록 뷰
+                FriendsListView(selectedTab: $selectedTab)
                     .overlay(alignment: .bottom) {
                         Divider()
                     }
+                    .tabItem {
+                        Label("친구목록", systemImage: "list.bullet")
+                    }
+                    .tag(2)
             }
-            .tabItem {
-                Label("친구목록", systemImage: "list.bullet")
-            }
-            .tag(2)
         }
         .tint(.black) // 선택된 탭 아이템의 색상
         .onChange(of: selectedTab) { oldValue, newValue in

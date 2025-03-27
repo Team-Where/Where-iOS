@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
+    @Binding var selectedTab: Int
     @State private var isOnboardingViewPresented: Bool = false
     @State private var isSideMenuPresented: Bool = false
     @State private var meetings: [Meeting] = []
@@ -38,21 +39,23 @@ struct HomeView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image("HomeLogo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 52, height: 24)
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation {
-                        isSideMenuPresented.toggle()
+            if selectedTab == 0 {
+                ToolbarItem(placement: .topBarLeading) {
+                    Image("HomeLogo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 52, height: 24)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        withAnimation {
+                            isSideMenuPresented.toggle()
+                        }
+                    } label: {
+                        Image(systemName: isSideMenuPresented ? "xmark" : "line.3.horizontal")
+                            .foregroundStyle(.black)
                     }
-                } label: {
-                    Image(systemName: isSideMenuPresented ? "xmark" : "line.3.horizontal")
-                        .foregroundStyle(.black)
                 }
             }
         }
