@@ -48,6 +48,7 @@
 		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
 		04832B462D266819003FFE3B /* WhereTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B442D266819003FFE3B /* WhereTests.swift */; };
 		04832B482D266F55003FFE3B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B472D266F55003FFE3B /* SearchBar.swift */; };
+		04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C3D2D950260007AADE4 /* FlowLayout.swift */; };
 		04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04993AA52D50BA940058EAB8 /* ToolTip.swift */; };
 		04A4F43F2D3F92730041FD02 /* AuthentificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F43E2D3F92730041FD02 /* AuthentificationViewModel.swift */; };
 		04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */; };
@@ -57,7 +58,6 @@
 		04A4F45D2D4212020041FD02 /* Meeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F45C2D4212020041FD02 /* Meeting.swift */; };
 		04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F45E2D42153F0041FD02 /* Comment.swift */; };
 		04A4F4612D42189F0041FD02 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4602D42189F0041FD02 /* Announcement.swift */; };
-		04A5307E2D8548FB004E58AD /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A5307D2D8548FB004E58AD /* Endpoint.swift */; };
 		04A5309C2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A5309B2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift */; };
 		04A5309E2D8EDDD4004E58AD /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A5309D2D8EDDD4004E58AD /* Notification.swift */; };
 		04A530A22D8EE312004E58AD /* FAQView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A5309F2D8EE312004E58AD /* FAQView.swift */; };
@@ -162,6 +162,7 @@
 		04832B3B2D266813003FFE3B /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04832B442D266819003FFE3B /* WhereTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereTests.swift; sourceTree = "<group>"; };
 		04832B472D266F55003FFE3B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		04854C3D2D950260007AADE4 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		04993AA52D50BA940058EAB8 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		04A4F43E2D3F92730041FD02 /* AuthentificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationViewModel.swift; sourceTree = "<group>"; };
 		04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordView.swift; sourceTree = "<group>"; };
@@ -171,7 +172,6 @@
 		04A4F45C2D4212020041FD02 /* Meeting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meeting.swift; sourceTree = "<group>"; };
 		04A4F45E2D42153F0041FD02 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		04A4F4602D42189F0041FD02 /* Announcement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcement.swift; sourceTree = "<group>"; };
-		04A5307D2D8548FB004E58AD /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		04A5309B2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereDisclosureGroupStyle.swift; sourceTree = "<group>"; };
 		04A5309D2D8EDDD4004E58AD /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		04A5309F2D8EE312004E58AD /* FAQView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQView.swift; sourceTree = "<group>"; };
@@ -387,6 +387,7 @@
 				04A5309B2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift */,
 				04A530A82D8FB9E6004E58AD /* RadioButton.swift */,
 				04A530B42D914C7E004E58AD /* SelectionTab.swift */,
+				04854C3D2D950260007AADE4 /* FlowLayout.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -519,7 +520,6 @@
 			isa = PBXGroup;
 			children = (
 				045685162D46067F004CB29F /* NetworkService.swift */,
-				04A5307D2D8548FB004E58AD /* Endpoint.swift */,
 				04A5307F2D858B03004E58AD /* Entities */,
 			);
 			path = Network;
@@ -786,6 +786,7 @@
 				04A530B32D914BE4004E58AD /* InquiryView.swift in Sources */,
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
 				046833DD2D3B8DB8009D2357 /* AuthentificationView.swift in Sources */,
+				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				046834182D3E26E2009D2357 /* SettingView.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
@@ -807,7 +808,6 @@
 				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* TabBarView.swift in Sources */,
-				04A5307E2D8548FB004E58AD /* Endpoint.swift in Sources */,
 				F70F76CA2D2FC00A006EFF2D /* NewMeetingSheet2View.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
