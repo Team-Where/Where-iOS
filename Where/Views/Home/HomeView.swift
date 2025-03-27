@@ -37,6 +37,7 @@ struct HomeView: View {
             Text("내모임")
                 .whereFont(.title24semibold)
                 .padding(.top, 40)
+                .padding(.horizontal)
             
             Spacer()
             
@@ -48,7 +49,6 @@ struct HomeView: View {
             
             Spacer()
         }
-        .padding(.horizontal, 20)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Image("HomeLogo")
@@ -77,8 +77,8 @@ struct HomeView: View {
                 .foregroundStyle(Color(hex: 0xADB5BD))
                 .padding(.top, 16)
             
-            Button {
-                
+            NavigationLink {
+                HowToAddMeetingView()
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 20)
@@ -104,19 +104,14 @@ struct HomeView: View {
     
     @ViewBuilder private func meetingsSection() -> some View {
         ScrollView(.vertical) {
-//            FlowLayout(alignment: .topLeading) {
-//                ForEach(meetings) { meeting in
-//                    meetingCell(meeting)
-//                }
-//            }
-            
-            LazyVGrid(columns: [.init(), .init()]) {
+            FlowLayout(alignment: .topLeading) {
                 ForEach(meetings) { meeting in
                     meetingCell(meeting)
                 }
             }
         }
         .scrollIndicators(.never)
+        .padding()
     }
     
     @ViewBuilder private func meetingCell(_ meeting: Meeting) -> some View {
@@ -149,7 +144,7 @@ struct HomeView: View {
             }
             .frame(maxWidth: 170)
         }
-        .padding(.top, 20)
+        .padding(.bottom, 20)
     }
 }
 
