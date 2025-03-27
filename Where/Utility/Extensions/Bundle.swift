@@ -22,7 +22,19 @@ extension Bundle {
     }
     
     static private func fetchKey(_ provider: AuthentificationProvider) -> Result<Key, FetchingAPIKeyError> {
-        guard let key = Bundle.main.object(forInfoDictionaryKey: provider.infoDictionaryKey) as? String else { return .failure(.keyNotFound) }
+        // Bundle 검색에 필요한 키
+        let infoDictionaryKey: String? = {
+            switch provider {
+            case .apple, .custom: nil
+            case .kakao: "KAKAO_NATIVE_APP_KEY"
+            case .naver: "NAVER_NATIVE_APP_KEY"
+            }
+        }()
+        
+        guard let infoDictionaryKey = infoDictionaryKey,
+              let key = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
+        else { return .failure(.keyNotFound) }
+        
         return .success(key)
     }
     

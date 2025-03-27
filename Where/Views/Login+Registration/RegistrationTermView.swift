@@ -8,50 +8,46 @@
 import SwiftUI
 
 struct RegistrationTermView: View {
-    @State private var isAllSelected: Bool = true
-    @State private var ageLimitSelected: Bool = true
-    @State private var agreeToTermsOfServiceSelected: Bool = true
-    @State private var agreeToReceiveAdvertisingInformationSelected: Bool = true
-    @State private var consentToMarketingUtilizationSelected: Bool = true
+    @State private var termSelections: [TermType: Bool] = TermType.allCases.reduce(into: [:]) {
+        $0[$1] = true
+    }
+    
+    @State private var isAllSelectedState: Bool = true
     
     private let terms: [TermType] = TermType.allCases
     private var didAgreedToMandatoryConsent: Bool {
-        ageLimitSelected && agreeToTermsOfServiceSelected
+        termSelections[.ageLimit] == true && termSelections[.agreeToTermsOfService] == true
     }
     
+    private let navigationTitle: String = "어디 이용을 위한\n약관을 동의해주세요"
+    
     var body: some View {
-        BasedFormView("어디 이용을 위한\n약관을 동의해주세요") {
-            VStack(spacing: 20) {
-                HStack {
-                    CircleSelectionButton($isAllSelected)
-                        .onChange(of: isAllSelected) {
-                            guard $1 else { return }
-                            ageLimitSelected = $1
-                            agreeToTermsOfServiceSelected = $1
-                            agreeToReceiveAdvertisingInformationSelected = $1
-                            consentToMarketingUtilizationSelected = $1
-                        }
-                    
-                    Text("네, 모두 동의합니다.")
-                        .whereFont(.body16medium)
-                        .foregroundStyle(Color(hex: 0x6366F1))
-                    
-                    Spacer()
+        VStack(spacing: 20) {
+            HStack {
+                CircleSelectionButton($isAllSelectedState) {
+                    isAllSelectedState ? selectAllTerms() : deselectAllTerms()
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.clear)
-                        .strokeBorder(Color(hex: 0x6366F1))
-                )
-                .padding(.top)
                 
-                ForEach(terms, id: \.self) { term in
-                    termCell(term)
-                }
+                Text("네, 모두 동의합니다.")
+                    .whereFont(.body16medium)
+                    .foregroundStyle(Color(hex: 0x6366F1))
+                
+                Spacer()
             }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.clear)
+                    .strokeBorder(Color(hex: 0x6366F1))
+            )
             .padding(.top)
-        } footer: {
+            
+            ForEach(terms, id: \.self) { term in
+                termCell(term)
+            }
+        }
+        .padding(.top)
+        .whereForm(navigationTitle) {
             NavigationLink {
                 AuthentificationView()
             } label: {
@@ -59,7 +55,7 @@ struct RegistrationTermView: View {
                     .whereFont(.body16semibold)
                     .frame(width: 350, height: 48)
             }
-            .buttonStyle(.whereRoundedProminent(didAgreedToMandatoryConsent == false))
+            .buttonStyle(.whereRoundedProminent(disabled: didAgreedToMandatoryConsent == false))
         }
     }
     
@@ -67,7 +63,7 @@ struct RegistrationTermView: View {
         HStack {
             CircleSelectionButton(bindSelection(type))
                 .onChange(of: bindSelection(type).wrappedValue) { _, _ in
-                    updateAllSelection()
+                    updateAllSelectionState()
                 }
             
             Text(type.title)
@@ -91,36 +87,22 @@ struct RegistrationTermView: View {
     }
     
     private func bindSelection(_ type: TermType) -> Binding<Bool> {
-        switch type {
-        case .ageLimit:
-            return Binding(
-                get: { ageLimitSelected },
-                set: { ageLimitSelected = $0 }
-            )
-        case .agreeToTermsOfService:
-            return Binding(
-                get: { agreeToTermsOfServiceSelected },
-                set: { agreeToTermsOfServiceSelected = $0 }
-            )
-        case .agreeToReceiveAdvertisingInformation:
-            return Binding(
-                get: { agreeToReceiveAdvertisingInformationSelected },
-                set: { agreeToReceiveAdvertisingInformationSelected = $0 }
-            )
-        case .consentToMarketingUtilization:
-            return Binding(
-                get: { consentToMarketingUtilizationSelected },
-                set: { consentToMarketingUtilizationSelected = $0 }
-            )
-        }
+        Binding(
+            get: { termSelections[type] ?? false },
+            set: { termSelections[type] = $0 }
+        )
     }
     
-    private func updateAllSelection() {
-        // 각각의 동의 항목이 모두 선택 되었을 경우 전체 동의 버튼도 선택
-        isAllSelected = ageLimitSelected &&
-                        agreeToTermsOfServiceSelected &&
-                        agreeToReceiveAdvertisingInformationSelected &&
-                        consentToMarketingUtilizationSelected
+    private func updateAllSelectionState() {
+        isAllSelectedState = termSelections.values.allSatisfy { $0 }
+    }
+    
+    private func selectAllTerms() {
+        terms.forEach { termSelections[$0] = true }
+    }
+    
+    private func deselectAllTerms() {
+        terms.forEach { termSelections[$0] = false }
     }
 }
 
@@ -152,14 +134,20 @@ extension RegistrationTermView {
     
     struct CircleSelectionButton: View {
         @Binding var isSelected: Bool
+        let action: (() -> Void)?
         
-        init(_ isSelected: Binding<Bool>) {
+        init(
+            _ isSelected: Binding<Bool>,
+            action: (() -> Void)? = nil
+        ) {
             self._isSelected = isSelected
+            self.action = action
         }
         
         var body: some View {
             Button {
                 isSelected.toggle()
+                action?()
             } label: {
                 Image(.whereCheckmark)
                     .resizable()

@@ -34,9 +34,9 @@ struct RoundedProminentButtonStyle: ButtonStyle {
 
 extension ButtonStyle where Self == RoundedProminentButtonStyle {
     static func whereRoundedProminent(
-        _ disabled: Bool = false,
-        _ foreground: Color = .white,
-        _ background: Color = .accent
+        disabled: Bool = false,
+        foreground: Color = .white,
+        background: Color = .accent
     ) -> RoundedProminentButtonStyle {
         RoundedProminentButtonStyle(disabled, foreground, background)
     }

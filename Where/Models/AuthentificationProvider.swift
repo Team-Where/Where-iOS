@@ -7,18 +7,18 @@
 
 import Foundation
 
-/// O-Auth 공급자 종류
-enum AuthentificationProvider {
+/// 로그인 타입 정의 (소셜 로그인, 자체 로그인)
+enum AuthentificationProvider: String {
     case apple
     case kakao
     case naver
+    case custom
     
-    /// Bundle 검색에 필요한 키
-    var infoDictionaryKey: String {
-        switch self {
-        case .apple: "APPLE_NATIVE_APP_KEY"
-        case .kakao: "KAKAO_NATIVE_APP_KEY"
-        case .naver: "NAVER_NATIVE_APP_KEY"
-        }
+    init?(identifier: String) {
+        self.init(rawValue: identifier)
+    }
+    
+    var identifier: String {
+        self.rawValue
     }
 }

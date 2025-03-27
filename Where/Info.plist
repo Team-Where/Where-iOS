@@ -29,6 +29,14 @@
 		<string>naversearchapp</string>
 		<string>naversearchthirdlogin</string>
 	</array>
+	<key>NidAppName</key>
+	<string>약속을 새롭게 정의하다, 어디</string>
+	<key>NidClientID</key>
+	<string>EM6n_yrMpySUgUsU_d4Z</string>
+	<key>NidClientSecret</key>
+	<string>$(NAVER_NATIVE_APP_KEY)</string>
+	<key>NidUrlScheme</key>
+	<string>where.naver.login</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Bold.otf</string>

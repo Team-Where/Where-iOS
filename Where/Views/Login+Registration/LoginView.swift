@@ -10,7 +10,7 @@ import AuthenticationServices
 
 struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel = LoginViewModel()
+    @EnvironmentObject private var authService: AuthentificationService
     
     var body: some View {
         VStack {
@@ -30,7 +30,7 @@ struct LoginView: View {
             VStack(spacing: 20) {
                 // Start With Naver Button
                 Button {
-                    // TODO: 네이버 OAuth API 연결
+                    authService.loginWithNaver()
                 } label: {
                     Image(.startWithNaver)
                         .resizable()
@@ -38,12 +38,12 @@ struct LoginView: View {
                 }
                 .frame(width: 350, height: 48)
                 .onOpenURL { url in
-                    viewModel.handleOpenURL(.naver, url)
+                    authService.handleOpenURL(.naver, url)
                 }
                 
                 // Start With Kakao Button
                 Button {
-                    // TODO: 카카오 OAuth API 연결
+                    authService.loginWithKakao()
                 } label: {
                     Image(.startWithKakao)
                         .resizable()
@@ -51,20 +51,26 @@ struct LoginView: View {
                 }
                 .frame(width: 350, height: 48)
                 .onOpenURL { url in
-                    viewModel.handleOpenURL(.kakao, url)
+                    authService.handleOpenURL(.kakao, url)
                 }
                 
                 SignInWithAppleButton(.continue) { request in
-                    
+                    request.requestedScopes = [.email]
+                    request.nonce = UUID().uuidString
                 } onCompletion: { result in
-                    
+                    switch result {
+                    case .failure(let error):
+                        print(error)
+                    case .success(let auth):
+                        authService.loginWithApple(auth: auth)
+                    }
                 }
                 .frame(width: 350, height: 48)
                 .clipShape(.rect(cornerRadius: 10))
                 
                 // Start With E-mail Button
-                Button {
-                    
+                NavigationLink {
+                    RegistrationTermView()
                 } label: {
                     Text("이메일로 시작하기")
                         .whereFont(.body16semibold)

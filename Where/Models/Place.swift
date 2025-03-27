@@ -28,11 +28,9 @@ struct Place: Identifiable {
     /// 장소 선택 여부
     let status: PickedState
     /// 외부 지도앱 장소 링크
-    let links: PlaceLinks
+//    let links: PlaceLinks
     /// 장소에 대한 코멘트
     let comments: [Comment]
-    /// 장소 대표 이미지 URL
-    let imageURL: URL?
 }
 
 /// 장소 선택 여부

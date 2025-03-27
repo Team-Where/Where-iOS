@@ -29,6 +29,21 @@ struct MeetingInformationDetailView: View {
             friendsList([], isInvited: false)
             .padding(.bottom)
             .padding(.horizontal)
+            
+            Button {
+                // TODO: 모임 마감 기능 연결
+            } label: {
+                Text("모임 끝내기")
+                    .whereFont(.body16medium)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 54)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(.accent)
+            )
+            .padding(.bottom)
+            .padding(.horizontal)
         }
         .sheet(item: $sheetType) { type in
             switch type {
@@ -220,11 +235,11 @@ extension MeetingInformationDetailView {
         
         var content: Content {
             switch self {
-            case .date:
+            case .date(let date):
                 (
                     Image(.colorCalendarIcon),
                     Image(.calendarIcon),
-                    "일정 등록"
+                    date == nil ? "일정 등록" : "일정 수정"
                 )
             case .sharedPlace:
                 (
@@ -353,6 +368,7 @@ extension MeetingInformationDetailView {
                 Spacer()
             }
             .presentationDetents([.fraction(0.27)])
+            .presentationCornerRadius(16)
         }
     }
 }
@@ -390,7 +406,7 @@ extension MeetingInformationDetailView {
                     
                     Spacer()
                     
-                    Text("일정 등록")
+                    Text(selectedDate == nil ? "일정 등록" : "일정 수정")
                         .whereFont(.subtitle18semibold)
                     
                     Spacer()
@@ -458,7 +474,7 @@ extension MeetingInformationDetailView {
                 Spacer()
                 
                 Button {
-                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime?.rawValue, meridiem: temporalSelectedMeridiem)
+                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime, meridiem: temporalSelectedMeridiem)
                     selectedDate = date
                     fullScreenCoverType = .none
                 } label: {
@@ -474,6 +490,9 @@ extension MeetingInformationDetailView {
                 }
             }
             .padding()
+            .onAppear {
+                initializePicker()
+            }
             .sheet(item: $sheetType) { type in
                 switch type {
                 case .date:
@@ -489,6 +508,35 @@ extension MeetingInformationDetailView {
                     )
                 }
             }
+        }
+        
+        private func convert24HourTo12(hour24: Int) -> Int {
+            if hour24 == 0 { // 자정(0시)는 12시로 표현
+                return 12
+            } else if hour24 > 12 { // 오후 시간 (13시 ~ 23시)
+                return hour24 - 12
+            } else if hour24 == 12 { // 정오(12시)는 12시로 표현
+                return 12
+            } else { // 오전 시간 (1시 ~ 11시)
+                return hour24
+            }
+        }
+        
+        private func initializePicker() {
+            guard let selectedDate = selectedDate else {
+                temporalSelectedDate = nil
+                temporalSelectedTime = nil
+                temporalSelectedMeridiem = nil
+                return
+            }
+            
+            temporalSelectedDate = selectedDate
+            let hour24 = selectedDate.dateComponents().hour ?? .zero
+            let meridiem: Meridiem = hour24 < 12 ? .am : .pm
+            temporalSelectedMeridiem = meridiem
+            
+            let hour12 = convert24HourTo12(hour24: hour24)
+            temporalSelectedTime = Hour(rawValue: hour12)
         }
     }
     
@@ -548,6 +596,9 @@ extension MeetingInformationDetailView {
                 .disabled(temporalSelectedDate == nil)
             }
             .presentationDetents([.fraction(0.7)])
+            .onAppear {
+                temporalSelectedDate = selectedDate
+            }
         }
     }
     
@@ -564,7 +615,7 @@ extension MeetingInformationDetailView {
         var body: some View {
             VStack(alignment: .leading) {
                 HStack {
-                    Text("날짜 선택")
+                    Text("시간 선택")
                     
                     Spacer()
                     
@@ -627,6 +678,10 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
             }
             .presentationDetents([.fraction(0.54)])
+            .onAppear {
+                temporalSelectedTime = selectedTime ?? .one
+                temporalSelectedMeridiem = selectedMeridiem ?? .am
+            }
         }
         
         @ViewBuilder private func pickerCell<Value: CustomStringConvertible & Hashable>(

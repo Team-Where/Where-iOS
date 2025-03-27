@@ -59,7 +59,14 @@ struct Month: Identifiable {
 
 // MARK: Extensions
 extension Date {
-    private var calendar: Calendar { Calendar.current }
+    private var calendar: Calendar {
+        var calendar = Calendar.current
+        calendar.locale = Locale(identifier: "ko_KR")
+        if let timeZone = TimeZone(identifier: "UTC") {
+            calendar.timeZone = timeZone
+        }
+        return calendar
+    }
     
     var startOfMonth: Date? {
         calendar.date(from: calendar.dateComponents([.year, .month], from: self))
@@ -74,11 +81,9 @@ extension Date {
         calendar.range(of: .day, in: .month, for: self)
     }
     
-    func inSameDay(as date: Date) -> Bool {
-        calendar.isDate(self, inSameDayAs: date)
-    }
+    private static var cachedMonth: [Int: Month] = [:]
     
-    func month(from date: Date = .now) -> Month {
+    private func monthCalculation(from date: Date) -> Month {
         let rowsCount: Int = 6
         let totalDays: Int = rowsCount * 7
         
@@ -97,7 +102,9 @@ extension Date {
         
         let daysInMonth: [Day] = dayRange.compactMap { day in
             guard let dayDate = calendar.date(byAdding: .day, value: day - 1, to: startOfMonth) else { return nil }
-            return Day(dayDate, day, isValid: true)
+            let components = calendar.dateComponents([.year, .month, .day], from: dayDate)
+            guard let normalizedDay = calendar.date(from: components) else { return nil }
+            return Day(normalizedDay, day, isValid: true)
         }
         
         var days = emptyDays + daysInMonth
@@ -119,6 +126,24 @@ extension Date {
         return Month(days, startOfMonth)
     }
     
+    private func cachedMonth(from date: Date) -> Month {
+        let key = date.hashValue
+        if let cached = Date.cachedMonth[key] {
+            return cached
+        }
+        let month = monthCalculation(from: date)
+        Date.cachedMonth[key] = month
+        return month
+    }
+    
+    func inSameDay(as date: Date) -> Bool {
+        calendar.isDate(self, inSameDayAs: date)
+    }
+    
+    func month(from date: Date = .now) -> Month {
+        cachedMonth(from: date)
+    }
+    
     func previousMonth() -> Month {
         guard let start = calendar.date(byAdding: .month, value: -1, to: self) else {
             return Month([], .now)
@@ -138,23 +163,26 @@ extension Date {
     /// 날짜 및 시간 정보를 취합해 반환
     ///
     /// - Parameters:
-    ///     * date: 선택한 연월일 값
     ///     * hour: 선택한 시간 값
     ///     * meridiem: 선택한 오전, 오후 중 값
     ///
     /// - Returns:
     ///     주어진 날짜 및 시간 정보를 취합한 값
-    func combine(date: Date? = nil, hour: Int?, meridiem: Meridiem?) -> Date? {
-        var components = calendar.dateComponents([.year, .month, .day, .hour], from: date ?? self)
+    func combine(hour: Hour?, meridiem: Meridiem?) -> Date? {
+        var components = calendar.dateComponents([.year, .month, .day, .hour], from: self)
+        let hour = hour?.rawValue
         
-        components.hour = hour
-        if meridiem == .am, hour == 12 {
-            components.hour = 0 // 오전 12시 == 자정
-        } else if meridiem == .pm, hour != 12 {
-            components.hour = hour ?? .zero + 12 // 오후 n시(n != 12)인 경우 24시간제 적용, 12를 더함
+        switch meridiem {
+        case .am:
+            components.hour = hour == 12 ? 0 : hour
+        case .pm:
+            components.hour = hour == 12 ? 12 : (hour ?? 0) + 12
+        case nil:
+            break
         }
         
-        return calendar.date(from: components)
+        let combinedDate = calendar.date(from: components)
+        return combinedDate
     }
     
     func dateComponents() -> DateComponents {

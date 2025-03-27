@@ -17,6 +17,7 @@ struct RoundedTextFieldStyle: TextFieldStyle {
             .padding(16)
             .whereFont(font)
             .foregroundStyle(Color(hex: 0x1F2937))
+            .frame(minHeight: 56)
             .overlay(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
                     .strokeBorder(lineColor)
@@ -29,7 +30,6 @@ struct RoundedTextFieldStyle: TextFieldStyle {
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .replaceDisabled()
-            .frame(height: 56)
     }
 }
 
@@ -37,6 +37,7 @@ struct RoundedTextField: View {
     private let titleKey: String
     private let text: Binding<String>
     private let prompt: Text
+    private let axis: Axis
     private let textFieldStyle: RoundedTextFieldStyle
     
     init(
@@ -44,16 +45,18 @@ struct RoundedTextField: View {
         text: Binding<String>,
         font: WhereFont = .body16regular,
         disabled: Bool = false,
-        lineColor: Color = .accent
+        lineColor: Color = .accent,
+        axis: Axis = .horizontal
     ) {
         self.titleKey = titleKey
         self.text = text
         self.textFieldStyle = RoundedTextFieldStyle(lineColor: lineColor, disabled: disabled, font: font)
         self.prompt = Text(titleKey).foregroundStyle(Color(hex: 0x6B7280))
+        self.axis = axis
     }
     
     var body: some View {
-        TextField(titleKey, text: text, prompt: prompt)
+        TextField(titleKey, text: text, prompt: prompt, axis: axis)
             .textFieldStyle(textFieldStyle)
     }
     

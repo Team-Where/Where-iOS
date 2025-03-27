@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct WhereApp: App {
+    @StateObject private var authentificationService = AuthentificationService(networkService: NetworkService())
+    
     var body: some Scene {
         WindowGroup {
-            TabBarView()
+            NavigationStack {
+                LoginView()
+            }
+            .environmentObject(authentificationService)
         }
     }
 }
