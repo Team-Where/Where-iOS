@@ -51,6 +51,7 @@
 		04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C3D2D950260007AADE4 /* FlowLayout.swift */; };
 		04854C432D95069F007AADE4 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04854C422D95069F007AADE4 /* AppSecret.xcconfig */; };
 		04854C452D954B02007AADE4 /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C442D954B02007AADE4 /* SideMenu.swift */; };
+		04854C472D958817007AADE4 /* CreateMeetingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C462D958817007AADE4 /* CreateMeetingSheet.swift */; };
 		04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04993AA52D50BA940058EAB8 /* ToolTip.swift */; };
 		04A4F43F2D3F92730041FD02 /* AuthentificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F43E2D3F92730041FD02 /* AuthentificationViewModel.swift */; };
 		04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */; };
@@ -170,6 +171,7 @@
 		04854C3D2D950260007AADE4 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		04854C422D95069F007AADE4 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		04854C442D954B02007AADE4 /* SideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenu.swift; sourceTree = "<group>"; };
+		04854C462D958817007AADE4 /* CreateMeetingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingSheet.swift; sourceTree = "<group>"; };
 		04993AA52D50BA940058EAB8 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		04A4F43E2D3F92730041FD02 /* AuthentificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationViewModel.swift; sourceTree = "<group>"; };
 		04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordView.swift; sourceTree = "<group>"; };
@@ -597,6 +599,7 @@
 				046833E62D3B8E8E009D2357 /* MeetingInformationDetailView.swift */,
 				046833E72D3B8E8E009D2357 /* MeetingInformationView.swift */,
 				046833E82D3B8E8E009D2357 /* MeetingPlacesView.swift */,
+				04854C462D958817007AADE4 /* CreateMeetingSheet.swift */,
 			);
 			path = Meeting;
 			sourceTree = "<group>";
@@ -749,6 +752,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91F6CE422D3D786F00BD24D1 /* PlaceInfo.swift in Sources */,
+				04854C472D958817007AADE4 /* CreateMeetingSheet.swift in Sources */,
 				91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */,
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				04A5309C2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift in Sources */,
