@@ -11,7 +11,7 @@ struct CreateMeetingSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isPopupPresented: Bool = false
     @State private var selectedImage: UIImage?
-    @State private var step: MeetingCreationStep = .inviteFriends
+    @State private var step: MeetingCreationStep = .basicInformation
     @State private var tempMeetingInfo: TemporaryMeetingInfo = .initialize(.zero)
     
     var body: some View {
@@ -316,8 +316,6 @@ extension CreateMeetingSheet {
                     // 임시 모임 정보 기록 후 다음 단계 진행
                     tempMeetingInfo = tempMeetingInfo
                         .setInvitedFriends(friends.map({ $0.id }))
-                        
-                    step = .completed
                 } label: {
                     Text("다음")
                         .whereFont(.body16medium)
