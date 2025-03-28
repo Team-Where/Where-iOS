@@ -107,12 +107,6 @@ extension View {
         modifier(FloaterModifier(isPresented, title, icon))
     }
 
-    func floater<Item: FloaterContent>(
-        _ item: Binding<Item?>
-    ) -> some View {
-        floater(item) { _ in EmptyView() }
-    }
-
     func floater<Item: FloaterContent, Icon: View>(
         _ item: Binding<Item?>,
         @ViewBuilder content: @escaping (Item) -> Icon
