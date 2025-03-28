@@ -13,10 +13,8 @@ struct WhereApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                LoginView()
-            }
-            .environmentObject(authentificationService)
+            TabBarView()
+                .environmentObject(authentificationService)
         }
     }
 }
