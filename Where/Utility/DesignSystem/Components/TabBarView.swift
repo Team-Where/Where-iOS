@@ -54,7 +54,7 @@ struct TabBarView: View {
             }
         }
         .sheet(isPresented: $isSheetPresented) {
-            NewMeetingSheet1View(showNewMeeting: $isSheetPresented)
+            CreateMeetingSheet()
                 .presentationCornerRadius(24)
         }
     }
