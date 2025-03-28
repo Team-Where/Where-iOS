@@ -9,12 +9,22 @@ import SwiftUI
 
 @main
 struct WhereApp: App {
+    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
+    @State private var isOnboardingViewPresented: Bool = false
     @StateObject private var authentificationService = AuthentificationService(networkService: NetworkService())
     
     var body: some Scene {
         WindowGroup {
-            TabBarView()
-                .environmentObject(authentificationService)
+            NavigationStack {
+                TabBarView()
+                    .navigationDestination(isPresented: $isOnboardingViewPresented) {
+                        OnboardingView()
+                    }
+                    .onAppear {
+                        isOnboardingViewPresented = isOnboardingNeeded
+                    }
+            }
+            .environmentObject(authentificationService)
         }
     }
 }

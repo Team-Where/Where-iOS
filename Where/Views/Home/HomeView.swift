@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     @Binding var selectedTab: Int
-    @State private var isOnboardingViewPresented: Bool = false
+    @Binding var isCreateMeetingSheetPresented: Bool // sheet 표시 여부
     @State private var isSideMenuPresented: Bool = false
     @State private var meetings: [Meeting] = []
     
@@ -59,11 +58,9 @@ struct HomeView: View {
                 }
             }
         }
-        .onAppear {
-            isOnboardingViewPresented = isOnboardingNeeded
-        }
-        .navigationDestination(isPresented: $isOnboardingViewPresented) {
-            OnboardingView()
+        .sheet(isPresented: $isCreateMeetingSheetPresented) {
+            CreateMeetingSheet()
+                .presentationCornerRadius(24)
         }
     }
     
