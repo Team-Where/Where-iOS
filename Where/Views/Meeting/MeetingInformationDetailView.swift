@@ -12,28 +12,48 @@ struct MeetingInformationDetailView: View {
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
     @State private var selectedDate: Date?
+    @State private var isMeetingAvailiable: Bool = true
     
     var body: some View {
-        ScrollView(.vertical) {
-            header
-                .padding()
+        VStack {
+            if isMeetingAvailiable == false {
+                HStack(spacing: 6) {
+                    Text("✋")
+                        .rotationEffect(.degrees(-45))
+                    
+                    Text("모임이 종료되었어요")
+                        .whereFont(.body16semibold)
+                        .foregroundStyle(.accent)
+                }
+                .padding(.top)
+            }
             
-            summaryArea
-                .padding(.bottom)
-                .padding(.horizontal)
-            
-            friendsList([], isInvited: true)
-            .padding(.bottom)
-            .padding(.horizontal)
-            
-            friendsList([], isInvited: false)
-            .padding(.bottom)
-            .padding(.horizontal)
+            ScrollView(.vertical) {
+                header
+                    .padding()
+                
+                summaryArea
+                    .padding(.bottom)
+                    .padding(.horizontal)
+                
+                friendsList([], isInvited: true)
+                    .padding(.bottom)
+                    .padding(.horizontal)
+                
+                friendsList([], isInvited: false)
+                    .padding(.bottom)
+                    .padding(.horizontal)
+            }
+            .opacity(isMeetingAvailiable ? 1 : 0.5)
+            .disabled(isMeetingAvailiable == false)
             
             Button {
                 // TODO: 모임 마감 기능 연결
+                withAnimation {
+                    isMeetingAvailiable.toggle()
+                }
             } label: {
-                Text("모임 끝내기")
+                Text(isMeetingAvailiable ? "모임 끝내기" : "모임 활성화")
                     .whereFont(.body16medium)
             }
             .frame(maxWidth: .infinity)
