@@ -8,9 +8,9 @@
 import SwiftUI
 import AuthenticationServices
 
-struct LoginView: View {
+struct LoginView<Auth: AuthentificationCoreProtocol>: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var authService: AuthentificationService
+    @EnvironmentObject private var auth: Auth
     
     var body: some View {
         VStack {
@@ -30,7 +30,7 @@ struct LoginView: View {
             VStack(spacing: 20) {
                 // Start With Naver Button
                 Button {
-                    authService.loginWithNaver()
+                    auth.loginWithNaver()
                 } label: {
                     Image(.startWithNaver)
                         .resizable()
@@ -38,12 +38,12 @@ struct LoginView: View {
                 }
                 .frame(width: 350, height: 48)
                 .onOpenURL { url in
-                    authService.handleOpenURL(.naver, url)
+                    auth.handleOpenURL(.naver, url)
                 }
                 
                 // Start With Kakao Button
                 Button {
-                    authService.loginWithKakao()
+                    auth.loginWithKakao()
                 } label: {
                     Image(.startWithKakao)
                         .resizable()
@@ -51,7 +51,7 @@ struct LoginView: View {
                 }
                 .frame(width: 350, height: 48)
                 .onOpenURL { url in
-                    authService.handleOpenURL(.kakao, url)
+                    auth.handleOpenURL(.kakao, url)
                 }
                 
                 SignInWithAppleButton(.continue) { request in
@@ -62,7 +62,7 @@ struct LoginView: View {
                     case .failure(let error):
                         print(error)
                     case .success(let auth):
-                        authService.loginWithApple(auth: auth)
+                        self.auth.loginWithApple(auth: auth)
                     }
                 }
                 .frame(width: 350, height: 48)
@@ -114,6 +114,6 @@ struct LoginView: View {
 
 #Preview {
     NavigationStack {
-        LoginView()
+        LoginView<AuthentificationCore>()
     }
 }

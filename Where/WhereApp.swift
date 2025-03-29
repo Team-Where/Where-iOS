@@ -11,7 +11,7 @@ import SwiftUI
 struct WhereApp: App {
     @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     @State private var isOnboardingViewPresented: Bool = false
-    @StateObject private var authentificationService = AuthentificationService(networkService: NetworkService())
+    @StateObject private var auth = AuthentificationCore(networkService: NetworkService())
     
     var body: some Scene {
         WindowGroup {
@@ -24,7 +24,7 @@ struct WhereApp: App {
                         isOnboardingViewPresented = isOnboardingNeeded
                     }
             }
-            .environmentObject(authentificationService)
+            .environmentObject(auth)
         }
     }
 }
