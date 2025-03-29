@@ -1,5 +1,5 @@
 //
-//  AuthentificationService.swift
+//  AuthentificationCore.swift
 //  Where
 //
 //  Created by Swain Yun on 2/28/25.
@@ -13,7 +13,7 @@ import NidThirdPartyLogin
 import AuthenticationServices
 import Combine
 
-protocol AuthentificationServiceProtocol: ObservableObject {
+protocol AuthentificationCoreProtocol: ObservableObject {
     /// 사용자 정보
     var user: User? { get }
     
@@ -40,7 +40,7 @@ protocol AuthentificationServiceProtocol: ObservableObject {
     func logout()
 }
 
-enum AuthentificationServiceError: Error {
+enum AuthentificationCoreError: Error {
     /// 로그인 실패
     case loginFailed
     
@@ -58,7 +58,7 @@ enum AuthentificationServiceError: Error {
 }
 
 @MainActor
-final class AuthentificationService: NSObject, ObservableObject {
+final class AuthentificationCore: NSObject, ObservableObject {
     struct Constants {
         static let currentProviderUserDefaultsKey: String = "currentProvider"
         static let currentUserIdUserDefaultsKey: String = "currentUserId"
@@ -114,7 +114,7 @@ final class AuthentificationService: NSObject, ObservableObject {
 }
 
 // MARK: KakaoSDK Related
-extension AuthentificationService {
+extension AuthentificationCore {
     private func _configureKakaoAPI() {
         guard let key = Bundle.fetchKey(provider: .kakao) else {
             fatalError("카카오SDK 초기화 실패: 잘못된 앱키")
@@ -170,7 +170,7 @@ extension AuthentificationService {
 }
 
 // MARK: NaverSDK Related
-extension AuthentificationService {
+extension AuthentificationCore {
     private func _configureNaverAPI(_ naver: NidOAuth) {
         naver.initialize()
         naver.setLoginBehavior(.appPreferredWithInAppBrowserFallback)
@@ -201,8 +201,8 @@ extension AuthentificationService {
     }
 }
 
-// MARK: AuthentificationServiceProtocol Conformation
-extension AuthentificationService: @preconcurrency AuthentificationServiceProtocol {
+// MARK: AuthentificationCoreProtocol Conformation
+extension AuthentificationCore: @preconcurrency AuthentificationCoreProtocol {
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
         switch provider {
         case .apple, .custom:
