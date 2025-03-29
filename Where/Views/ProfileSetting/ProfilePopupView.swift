@@ -9,15 +9,16 @@ import SwiftUI
 import PhotosUI
 
 struct ProfilePopupView: View {
-    @Binding var showPopup: Bool
-    @Binding var profileImage: UIImage?
+    @Binding var isPopupPresented: Bool
     @State private var selectedItem: PhotosPickerItem?
+    let onSelected: (UIImage) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
             Button("기본 이미지로 설정") {
-                profileImage = UIImage(named: "person")
-                showPopup = false
+                guard let defaultImage = UIImage(named: "person") else { return }
+                onSelected(defaultImage)
+                isPopupPresented = false
             }
             
             PhotosPicker(
@@ -31,14 +32,14 @@ struct ProfilePopupView: View {
                 Task {
                     if let data = try? await newItem?.loadTransferable(type: Data.self),
                        let uiImage = UIImage(data: data) {
-                        profileImage = uiImage
-                        showPopup = false
+                        onSelected(uiImage)
+                        isPopupPresented = false
                     }
                 }
             }
             
             Button {
-                showPopup = false
+                isPopupPresented = false
             } label: {
                 Text("취소")
                     .bold()
@@ -54,8 +55,4 @@ struct ProfilePopupView: View {
         .padding()
         .foregroundStyle(.black)
     }
-}
-
-#Preview {
-    ProfilePopupView(showPopup: .constant(true), profileImage: .constant(nil))
 }
