@@ -28,7 +28,9 @@ struct CreateMeetingSheet: View {
         }
         .padding()
         .popup($isPopupPresented) {
-            ProfilePopupView(showPopup: $isPopupPresented, profileImage: $selectedImage)
+            ProfilePopupView(isPopupPresented: $isPopupPresented) { uiImage in
+                selectedImage = uiImage
+            }
         }
     }
     
