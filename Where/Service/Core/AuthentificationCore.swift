@@ -18,7 +18,7 @@ protocol AuthentificationCoreProtocol: ObservableObject {
     var user: User? { get }
     
     /// Redirection URL Handling
-    func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) async
+    func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL)
     
     /// 애플 로그인
     @MainActor
