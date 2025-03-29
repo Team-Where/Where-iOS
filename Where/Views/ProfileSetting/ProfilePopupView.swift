@@ -14,60 +14,48 @@ struct ProfilePopupView: View {
     @State private var selectedItem: PhotosPickerItem?
     
     var body: some View {
-        // 리팩토링
-        ZStack {
-            Rectangle()
-                .fill(Color.black.opacity(0.4)) // 배경을 어두운 반투명 색으로 설정
-                .ignoresSafeArea()
+        VStack(alignment: .leading, spacing: 40) {
+            Button("기본 이미지로 설정") {
+                profileImage = UIImage(named: "person")
+                showPopup = false
+            }
             
-            VStack(alignment: .leading, spacing: 20) {
-                Button("기본 이미지로 설정") {
-                    profileImage = UIImage(named: "person")
-                    showPopup = false
-                }
-                .padding(.top,20)
-                .padding(.leading)
-                .foregroundStyle(Color.black)
-                
-                PhotosPicker(
-                    selection: $selectedItem,
-                    matching: .images,
-                    photoLibrary: .shared()
-                ) {
-                    Text("앨범에서 사진 선택")
-                        .padding()
-                        .foregroundStyle(Color.black)
-                }
-                .onChange(of: selectedItem) { oldItem, newItem in
-                    Task {
-                        if let data = try? await newItem?.loadTransferable(type: Data.self),
-                           let uiImage = UIImage(data: data) {
-                            profileImage = uiImage
-                            showPopup = false
-                        }
-                    }
-                }
-                
-                Rectangle()
-                    .fill(Color.gray)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .overlay(
-                        Text("취소")
-                            .bold()
-                            .foregroundStyle(Color.white)
-                    )
-                
-                    .onTapGesture {
+            PhotosPicker(
+                selection: $selectedItem,
+                matching: .images,
+                photoLibrary: .shared()
+            ) {
+                Text("앨범에서 사진 선택")
+            }
+            .onChange(of: selectedItem) { oldItem, newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let uiImage = UIImage(data: data) {
+                        profileImage = uiImage
                         showPopup = false
                     }
+                }
             }
-            .padding()
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .frame(width: 300) // 팝업의 가로 크기 설정
-            .shadow(radius: 10) // 그림자 효과 추가
+            
+            Button {
+                showPopup = false
+            } label: {
+                Text("취소")
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(.where(.gray400))
+                    )
+            }
         }
+        .padding()
+        .foregroundStyle(.black)
     }
+}
+
+#Preview {
+    ProfilePopupView(showPopup: .constant(true), profileImage: .constant(nil))
 }
