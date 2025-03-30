@@ -15,8 +15,6 @@ struct Meeting: Identifiable {
     let title: String
     /// 모임 소개 등 부가설명
     let description: String
-    /// 공유 링크
-    let link: URL
     /// 모임 대표 이미지 URL
     let imageURL: URL?
     /// 생성일시
