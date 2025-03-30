@@ -9,7 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     @Binding var selectedTab: Int
-    @Binding var isCreateMeetingSheetPresented: Bool // sheet 표시 여부
+    @Binding var isCreateMeetingSheetPresented: Bool
+    @State private var isCompleteCreationViewPresented: Bool = false
     @State private var isSideMenuPresented: Bool = false
     @State private var meetings: [Meeting] = []
     
@@ -61,6 +62,10 @@ struct HomeView: View {
         .sheet(isPresented: $isCreateMeetingSheetPresented) {
             CreateMeetingSheet()
                 .presentationCornerRadius(24)
+                .presentationDetents([.fraction(0.99)])
+        }
+        .fullScreenCover(isPresented: $isCompleteCreationViewPresented) {
+            CompleteCreationView(isCompleteCreationViewPresented: $isCompleteCreationViewPresented)
         }
     }
     
