@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct RegistrationTermView: View {
+    @Binding var isLoginNeeded: Bool
     @State private var termSelections: [TermType: Bool] = TermType.allCases.reduce(into: [:]) {
         $0[$1] = true
     }
@@ -20,6 +22,16 @@ struct RegistrationTermView: View {
     }
     
     private let navigationTitle: String = "어디 이용을 위한\n약관을 동의해주세요"
+    
+    private let resolver: Resolver
+    
+    init(
+        _ isLoginNeeded: Binding<Bool>,
+        resolver: Resolver
+    ) {
+        self._isLoginNeeded = isLoginNeeded
+        self.resolver = resolver
+    }
     
     var body: some View {
         VStack(spacing: 20) {
@@ -49,7 +61,7 @@ struct RegistrationTermView: View {
         .padding(.top)
         .whereForm(navigationTitle) {
             NavigationLink {
-                AuthentificationView()
+                RegistrationView($isLoginNeeded, resolver: resolver)
             } label: {
                 Text("다음")
                     .whereFont(.body16semibold)
@@ -162,6 +174,6 @@ extension RegistrationTermView {
 
 #Preview {
     NavigationStack {
-        RegistrationTermView()
+        RegistrationTermView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }

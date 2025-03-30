@@ -8,6 +8,7 @@
 import SwiftUI
 import Swinject
 
+@MainActor
 final class PreviewHelper {
     static let shared = PreviewHelper()
     
@@ -16,7 +17,9 @@ final class PreviewHelper {
     private init() {
         let assembler = Assembler(
             [
-                AuthAssembly(),
+                ServiceAssembly(),
+                CoreAssembly(),
+                ViewModelAssembly()
             ],
             container: Container()
         )

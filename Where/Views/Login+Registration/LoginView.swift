@@ -14,12 +14,15 @@ struct LoginView: View {
     
     @Binding var isPresented: Bool
     
+    private let resolver: Resolver
+    
     init(
         _ isPresented: Binding<Bool>,
         resolver: Resolver
     ) {
         self._isPresented = isPresented
         self.viewModel = resolver.resolve(LoginViewModel.self)!
+        self.resolver = resolver
     }
     
     var body: some View {
@@ -80,7 +83,7 @@ struct LoginView: View {
                 
                 // Start With E-mail Button
                 NavigationLink {
-                    RegistrationTermView()
+                    RegistrationTermView($isPresented, resolver: resolver)
                 } label: {
                     Text("이메일로 시작하기")
                         .whereFont(.body16semibold)
@@ -93,7 +96,7 @@ struct LoginView: View {
                         .whereFont(.body14medium)
                     
                     NavigationLink {
-                        SignInView()
+                        SignInView(resolver: resolver)
                     } label: {
                         Text("여기에 로그인하세요")
                             .whereFont(.body14medium)
