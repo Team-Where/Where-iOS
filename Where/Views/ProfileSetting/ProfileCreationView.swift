@@ -49,11 +49,11 @@ struct ProfileCreationView: View {
             }
             .padding(.top, 58)
             
-            Text("닉네임")
-                .whereFont(.body16regular)
-                .padding(.top, 38)
-            
             VStack(alignment: .leading) {
+                Text("닉네임")
+                    .whereFont(.body14regular)
+                    .padding(.top, 38)
+                
                 RoundedTextField(
                     "닉네임을 입력해주세요",
                     text: $username,
@@ -107,11 +107,6 @@ struct ProfileCreationView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()
-            }
-        }
-        .popup($isPopupPresented) {
-            ProfilePopupView(isPopupPresented: $isPopupPresented) { uiImage in
-                profileImage = uiImage
             }
         }
     }
