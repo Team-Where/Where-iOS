@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HistoryReminderView: View {
+    let friend: User
+    
     var body: some View {
         VStack {
             ProfilesArea(
@@ -187,6 +189,6 @@ extension HistoryReminderView {
 
 #Preview {
     NavigationStack {
-        HistoryReminderView()
+        HistoryReminderView(friend: .init())
     }
 }
