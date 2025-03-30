@@ -29,8 +29,10 @@ struct Meeting: Identifiable {
 
 /// 모임 참여 인원
 struct Participant {
-    let from: UInt64
-    let to: UInt64
+    /// 모임 초대자 식별자
+    let inviterId: UInt64
+    /// 모임 참가자 식별자
+    let participantId: UInt64
     /// 초대 요청 수락 여부
     let status: Bool
     /// 초대 요청 일시
