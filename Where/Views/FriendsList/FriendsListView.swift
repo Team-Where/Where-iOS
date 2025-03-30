@@ -84,7 +84,7 @@ struct FriendsListView: View {
         .navigationDestination(item: $route) { route in
             switch route {
             case .historyReminder(let friend):
-                HistoryReminderView()
+                HistoryReminderView(friend: friend)
             }
         }
     }
