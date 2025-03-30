@@ -35,7 +35,6 @@ struct RegistrationView: View {
                 }
             }
             .whereForm(viewModel.navigationTitle) {
-                // TODO: 이메일 주소, 비밀번호 설정이 끝나면 프로필 설정 화면으로 이동할 수 있게 해야함
                 Button {
                     viewModel.proceed()
                 } label: {
