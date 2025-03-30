@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct SignInView: View {
-    @State private var emailFieldText: String = String()
-    @State private var passwordFieldText: String = String()
-    @State private var isPopupPresented: Bool = false
     @FocusState private var textFieldFocus: KeyboardFocusState?
+    @ObservedObject private var viewModel: SignInViewModel
     
     private let navigationTitle: String = "로그인을 해주세요"
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(SignInViewModel.self)!
+    }
     
     var body: some View {
         VStack(spacing: 20) {
@@ -24,7 +27,7 @@ struct SignInView: View {
                 
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
-                    text: $emailFieldText,
+                    text: $viewModel.emailFieldText,
                     lineColor: Color(hex: 0xE5E7EB)
                 )
                 .focused($textFieldFocus, equals: .emailTextField)
@@ -38,7 +41,7 @@ struct SignInView: View {
                 
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
-                    text: $passwordFieldText,
+                    text: $viewModel.passwordFieldText,
                     lineColor: Color(hex: 0xE5E7EB)
                 )
                 .secured()
@@ -49,11 +52,7 @@ struct SignInView: View {
         .whereForm(navigationTitle) {
             Button {
                 // TODO: 로그인
-                // 1. API 통해 인증 과정
-                // 2. 응답에 따라 팝업 표시 등 추후 작업
-                withAnimation {
-                    isPopupPresented = true
-                }
+                viewModel.login()
             } label: {
                 Text("로그인")
                     .whereFont(.body16semibold)
@@ -65,7 +64,7 @@ struct SignInView: View {
         .onTapGesture {
             textFieldFocus = .none
         }
-        .popup($isPopupPresented) {
+        .popup($viewModel.isPopupPresented) {
             VStack(spacing: 22) {
                 Text("이메일 또는 비밀번호를\n잘못 입력하셨습니다.")
                     .whereFont(.body14medium)
@@ -73,7 +72,7 @@ struct SignInView: View {
                     .multilineTextAlignment(.center)
                 
                 Button {
-                    isPopupPresented = false
+                    viewModel.isPopupPresented = false
                 } label: {
                     Text("확인")
                         .whereFont(.body16semibold)
@@ -95,6 +94,6 @@ extension SignInView {
 
 #Preview {
     NavigationStack {
-        SignInView()
+        SignInView(resolver: PreviewHelper.shared.resolver)
     }
 }
