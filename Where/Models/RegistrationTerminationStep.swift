@@ -1,5 +1,5 @@
 //
-//  AuthentificationState.swift
+//  RegistrationTerminationStep.swift
 //  Where
 //
 //  Created by Swain Yun on 1/22/25.
@@ -66,4 +66,28 @@ enum PasswordComparisonResult {
     case same
     /// 입력한 두 비밀번호가 다른 상태입니다.
     case different
+}
+
+/// 닉네임 유효성 검증 과정의 상태
+enum NicknameValidationState {
+    /// 닉네임 유효성 검증 전
+    case beforeValidate
+    /// 닉네임 유효성 검증 후 성공
+    case valid
+    /// 닉네임 유효성 검증 후 실패
+    case invalid
+    /// 이미 사용 중인 닉네임으로 판정된 상태
+    case duplicated
+}
+
+/// 회원가입 과정 단계
+enum RegistrationTerminationStep {
+    /// 이메일 검증 및 입력 단계
+    case email
+    /// 비밀번호 검증 및 입력 단계
+    case password
+    /// 프로필 설정 단계
+    case profile
+    /// 회원가입 완료 단계
+    case completed
 }
