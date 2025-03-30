@@ -25,6 +25,8 @@ struct Meeting: Identifiable {
     let updatedAt: Date
     /// 모임 일정
     let schedule: Date
+    /// 활성화 여부
+    let isFinished: Bool
 }
 
 /// 모임 참여 인원
