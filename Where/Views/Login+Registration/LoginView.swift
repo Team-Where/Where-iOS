@@ -7,10 +7,20 @@
 
 import SwiftUI
 import AuthenticationServices
+import Swinject
 
-struct LoginView<Auth: AuthentificationCoreProtocol>: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var auth: Auth
+struct LoginView: View {
+    @ObservedObject private var viewModel: LoginViewModel
+    
+    @Binding var isPresented: Bool
+    
+    init(
+        _ isPresented: Binding<Bool>,
+        resolver: Resolver
+    ) {
+        self._isPresented = isPresented
+        self.viewModel = resolver.resolve(LoginViewModel.self)!
+    }
     
     var body: some View {
         VStack {
@@ -30,7 +40,7 @@ struct LoginView<Auth: AuthentificationCoreProtocol>: View {
             VStack(spacing: 20) {
                 // Start With Naver Button
                 Button {
-                    auth.loginWithNaver()
+                    viewModel.loginWithNaver()
                 } label: {
                     Image(.startWithNaver)
                         .resizable()
@@ -38,12 +48,12 @@ struct LoginView<Auth: AuthentificationCoreProtocol>: View {
                 }
                 .frame(width: 350, height: 48)
                 .onOpenURL { url in
-                    auth.handleOpenURL(.naver, url)
+                    viewModel.handleOpenURL(.naver, url: url)
                 }
                 
                 // Start With Kakao Button
                 Button {
-                    auth.loginWithKakao()
+                    viewModel.loginWithKakao()
                 } label: {
                     Image(.startWithKakao)
                         .resizable()
@@ -51,7 +61,7 @@ struct LoginView<Auth: AuthentificationCoreProtocol>: View {
                 }
                 .frame(width: 350, height: 48)
                 .onOpenURL { url in
-                    auth.handleOpenURL(.kakao, url)
+                    viewModel.handleOpenURL(.kakao, url: url)
                 }
                 
                 SignInWithAppleButton(.continue) { request in
@@ -62,7 +72,7 @@ struct LoginView<Auth: AuthentificationCoreProtocol>: View {
                     case .failure(let error):
                         print(error)
                     case .success(let auth):
-                        self.auth.loginWithApple(auth: auth)
+                        viewModel.loginWithApple(auth: auth)
                     }
                 }
                 .frame(width: 350, height: 48)
@@ -102,7 +112,7 @@ struct LoginView<Auth: AuthentificationCoreProtocol>: View {
     
     private var backButton: some View {
         Button {
-            dismiss()
+            isPresented = false
         } label: {
             Image(systemName: "xmark")
                 .frame(width: 12, height: 12)
@@ -114,6 +124,6 @@ struct LoginView<Auth: AuthentificationCoreProtocol>: View {
 
 #Preview {
     NavigationStack {
-        LoginView<AuthentificationCore>()
+        LoginView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }
