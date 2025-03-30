@@ -1,63 +1,118 @@
 //
-//  AuthentificationView.swift
+//  RegistrationView.swift
 //  Where
 //
 //  Created by Swain Yun on 12/31/24.
 //
 
 import SwiftUI
+import Swinject
 
-struct AuthentificationView: View {
-    @ObservedObject private var viewModel = AuthentificationViewModel()
-    @State private var floater: FloaterType?
-    
+struct RegistrationView: View {
+    @ObservedObject private var viewModel: RegistrationViewModel
+    @Binding var isLoginNeeded: Bool
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
+    init(
+        _ isLoginNeeded: Binding<Bool>,
+        resolver: Resolver
+    ) {
+        self._isLoginNeeded = isLoginNeeded
+        self.viewModel = resolver.resolve(RegistrationViewModel.self)!
+    }
+    
     var body: some View {
-        ScrollView(.vertical) {
-            emailCell
-            
-            if viewModel.authorizationCodeValidationState == .valid {
-                passwordCell
-            } else {
-                authorizationCodeCell
-            }
-            
-            Spacer()
-        }
-        .padding(.top, 40)
-        .floater($floater) { type in
-            switch type {
-            case .authorizationCodeSended:
-                Image(systemName: "checkmark")
-                    .foregroundStyle(.accent)
-            case .inValidAuthorizationCode:
-                Image(systemName: "exclamationmark.circle")
-                    .foregroundStyle(.red)
-            }
-        }
-        .whereForm(viewModel.authorizationCodeValidationState == .valid ? "설정할 비밀번호를\n입력해주세요" : "가입을 위한 이메일을\n인증해주세요") {
-            // TODO: 이메일 주소, 비밀번호 설정이 끝나면 프로필 설정 화면으로 이동할 수 있게 해야함
-            Button {
-                if viewModel.authorizationCodeValidationState == .valid {
-                    // 인증코드 유효성 검사에 성공한 이후라면 비밀번호 설정
-                    // TODO: 프로필 설정 화면으로 이동
-                } else {
-                    // 인증코드 유효성 검사에 성공하기 전이라면 인증코드 제출
-                    // TODO: 인증코드 제출 기능
-                    guard viewModel.authorizationCodeFieldText != "tlean code" else {
-                        floater = .inValidAuthorizationCode
-                        return
-                    }
-                    viewModel.authorizationCodeValidationState = .valid
+        content()
+            .padding(.top, 40)
+            .floater($viewModel.floater) { type in
+                switch type {
+                case .authorizationCodeSended:
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.accent)
+                case .inValidAuthorizationCode:
+                    Image(systemName: "exclamationmark.circle")
+                        .foregroundStyle(.red)
                 }
-            } label: {
-                Text("다음")
-                    .whereFont(.body16semibold)
-                    .frame(width: 350, height: 48)
             }
-            .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
-            .ignoresSafeArea(.keyboard)
+            .whereForm(viewModel.navigationTitle) {
+                // TODO: 이메일 주소, 비밀번호 설정이 끝나면 프로필 설정 화면으로 이동할 수 있게 해야함
+                Button {
+                    viewModel.proceed()
+                } label: {
+                    Text(viewModel.proceedButtonLabel())
+                        .whereFont(.body16semibold)
+                        .frame(width: 350, height: 48)
+                }
+                .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
+                .ignoresSafeArea(.keyboard)
+            }
+            .popup($viewModel.isPopupPresented) {
+                ProfilePopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
+                    viewModel.profileImage = uiImage
+                }
+            }
+            .onDisappear {
+                viewModel.flush()
+            }
+            .onChange(of: viewModel.isCompleted) { _, isCompleted in
+                guard isCompleted else { return }
+                isLoginNeeded = false
+            }
+    }
+    
+    @ViewBuilder private func content() -> some View {
+        switch viewModel.registrationStep {
+        case .email:
+            ScrollView(.vertical) {
+                emailCell
+                
+                authorizationCodeCell
+                
+                Spacer()
+            }
+        case .password:
+            ScrollView(.vertical) {
+                emailCell
+                
+                passwordCell
+                
+                Spacer()
+            }
+        case .profile:
+            ScrollView(.vertical) {
+                ZStack(alignment: .bottomTrailing) {
+                    if let image = viewModel.profileImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 155, height: 155)
+                            .clipShape(Circle())
+                    }
+                    
+                    Button {
+                        withAnimation {
+                            viewModel.isPopupPresented = true
+                        }
+                    } label: {
+                        Image("CameraButton")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                .padding(.top, 58)
+                
+                nicknameCell()
+            }
+        case .completed:
+            VStack {
+                Image("SignUpCharacter")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 274.85, height: 264)
+                    .padding(.top, 40)
+            }
         }
     }
     
@@ -71,7 +126,7 @@ struct AuthentificationView: View {
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
                     text: $viewModel.emailFieldText,
-                    lineColor: textFieldLineColor(focus: .emailTextField, invalid: viewModel.emailValidationState == .invalid)
+                    lineColor: textFieldLineColor(focus: .emailTextField)
                 )
                 .frame(width: 350)
                 .focused($textFieldFocus, equals: .emailTextField)
@@ -94,8 +149,7 @@ struct AuthentificationView: View {
         switch state {
         case .beforeValidate, .invalid:
             Button {
-                // TODO: 인증코드 요청
-                floater = .authorizationCodeSended
+                viewModel.requestAuthorizationCode()
                 textFieldFocus = .authorizationCodeTextField
                 viewModel.startTimer(seconds: 20)
             } label: {
@@ -110,7 +164,7 @@ struct AuthentificationView: View {
         case .valid:
             Button {
                 // TODO: 인증코드 재요청
-                floater = .authorizationCodeSended
+                viewModel.requestAuthorizationCode()
                 textFieldFocus = .authorizationCodeTextField
                 viewModel.startTimer(seconds: 10)
             } label: {
@@ -135,7 +189,7 @@ struct AuthentificationView: View {
                 RoundedTextField(
                     "코드 6자리 입력해주세요",
                     text: $viewModel.authorizationCodeFieldText,
-                    lineColor: textFieldLineColor(focus: .authorizationCodeTextField, invalid: viewModel.authorizationCodeValidationState == .timeout)
+                    lineColor: textFieldLineColor(focus: .authorizationCodeTextField)
                 )
                 .frame(width: 350)
                 .focused($textFieldFocus, equals: .authorizationCodeTextField)
@@ -174,7 +228,7 @@ struct AuthentificationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $viewModel.passwordFieldText,
-                    lineColor: textFieldLineColor(focus: .passwordTextField, invalid: viewModel.passwordValidationState == .invalid)
+                    lineColor: textFieldLineColor(focus: .passwordTextField)
                 )
                 .secured()
                 .frame(width: 350)
@@ -200,7 +254,7 @@ struct AuthentificationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $viewModel.reInputPasswordFieldText,
-                    lineColor: textFieldLineColor(focus: .reInputPasswordTextField, invalid: viewModel.passwordComparisonResult == .different)
+                    lineColor: textFieldLineColor(focus: .reInputPasswordTextField)
                 )
                 .secured()
                 .frame(width: 350)
@@ -219,33 +273,70 @@ struct AuthentificationView: View {
         }
     }
     
-    private func textFieldLineColor(focus: KeyboardFocusState, invalid: Bool) -> Color {
-        guard invalid == false else { return .red }
+    @ViewBuilder private func nicknameCell() -> some View {
+        VStack(alignment: .leading) {
+            Text("닉네임")
+                .whereFont(.body14regular)
+                .foregroundStyle(.where(.gray700))
+                .padding(.top, 38)
+            
+            RoundedTextField(
+                "닉네임을 입력해주세요",
+                text: $viewModel.nicknameFieldText,
+                lineColor: textFieldLineColor(focus: .nicknameTextField)
+            )
+            .foregroundStyle(Color(hex: 0x6B7280))
+            .background(
+                ZStack(alignment: .trailing) {
+                    HStack {
+                        Spacer()
+                        
+                        if viewModel.nicknameValidationState == .valid {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.green)
+                                .padding(.trailing, 30)
+                        }
+                    }
+                }
+            )
+            
+            Text(viewModel.nicknameValidationNotice())
+                .whereFont(.body14regular)
+                .foregroundColor(viewModel.nicknameValidationNoticeColor())
+                .padding(.top, 8)
+        }
+    }
+    
+    private func textFieldLineColor(focus: KeyboardFocusState) -> Color {
+        var isInvalid: Bool
+        
+        switch focus {
+        case .emailTextField:
+            isInvalid = viewModel.emailValidationState == .invalid
+        case .authorizationCodeTextField:
+            isInvalid = viewModel.authorizationCodeValidationState == .timeout
+        case .passwordTextField:
+            isInvalid = viewModel.passwordValidationState == .invalid
+        case .reInputPasswordTextField:
+            isInvalid = viewModel.passwordComparisonResult == .different
+        case .nicknameTextField:
+            isInvalid = viewModel.nicknameValidationState == .duplicated || viewModel.nicknameValidationState == .invalid
+        }
+        
+        guard isInvalid == false else { return .red }
         return textFieldFocus == focus ? .accent : Color(hex: 0xE5E7EB)
     }
 }
 
 // MARK: Nested Types
-extension AuthentificationView {
+extension RegistrationView {
     enum KeyboardFocusState: Hashable {
-        case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField
-    }
-    
-    enum FloaterType: FloaterContent {
-        case authorizationCodeSended
-        case inValidAuthorizationCode
-        
-        var title: String {
-            switch self {
-            case .authorizationCodeSended: "인증코드가 전송되었습니다."
-            case .inValidAuthorizationCode: "인증코드가 잘못되었습니다."
-            }
-        }
+        case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField, nicknameTextField
     }
 }
 
 #Preview {
     NavigationStack {
-        AuthentificationView()
+        RegistrationView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }
