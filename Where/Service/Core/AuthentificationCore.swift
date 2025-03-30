@@ -15,25 +15,24 @@ import Combine
 
 protocol AuthentificationCoreProtocol: ObservableObject {
     /// 사용자 정보
-    var user: User? { get }
+    var user: AnyPublisher<User?, AuthentificationCoreError> { get }
+    
+    /// 로그인 필요 여부
+    var isLoginNeeded: Bool { get }
     
     /// Redirection URL Handling
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL)
     
     /// 애플 로그인
-    @MainActor
     func loginWithApple(auth: ASAuthorization)
     
     /// 카카오 로그인
-    @MainActor
     func loginWithKakao()
     
     /// 네이버 로그인
-    @MainActor
     func loginWithNaver()
     
     /// 자체 로그인
-    @MainActor
     func login(email: String, password: String)
     
     /// 로그아웃
@@ -57,14 +56,15 @@ enum AuthentificationCoreError: Error {
     case unknown(Error?)
 }
 
-@MainActor
 final class AuthentificationCore: NSObject, ObservableObject {
     struct Constants {
         static let currentProviderUserDefaultsKey: String = "currentProvider"
         static let currentUserIdUserDefaultsKey: String = "currentUserId"
     }
     
-    @Published var user: User?
+    @Published var _user: User?
+    
+    var isLoginNeeded: Bool { _user == nil }
     
     private let kakaoAPI: UserApi
     private let naverAPI: NidOAuth
@@ -107,7 +107,7 @@ final class AuthentificationCore: NSObject, ObservableObject {
         userSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] user in
-                self?.user = user
+                self?._user = user
             }
             .store(in: &cancellables)
     }
@@ -202,7 +202,14 @@ extension AuthentificationCore {
 }
 
 // MARK: AuthentificationCoreProtocol Conformation
-extension AuthentificationCore: @preconcurrency AuthentificationCoreProtocol {
+extension AuthentificationCore: AuthentificationCoreProtocol {
+    var user: AnyPublisher<User?, AuthentificationCoreError> {
+        $_user
+            .map { $0 }
+            .setFailureType(to: AuthentificationCoreError.self)
+            .eraseToAnyPublisher()
+    }
+    
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
         switch provider {
         case .apple, .custom:
@@ -288,9 +295,5 @@ extension AuthentificationCore: @preconcurrency AuthentificationCoreProtocol {
             currentUserId = nil
             userSubject.send(nil)
         }
-    }
-    
-    func currentUser() async -> User? {
-        nil
     }
 }
