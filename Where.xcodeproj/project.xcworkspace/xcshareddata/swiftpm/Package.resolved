@@ -1,5 +1,5 @@
 {
-  "originHash" : "1ab42e54fb387ba5fda0b23808a3721ecac70ca95fb905a8d32f215d9743dc20",
+  "originHash" : "504e7038767e6e35c9ff8c1bef909d7bd0e2bd8f05844ab127f31574e6f8b3c1",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -20,12 +20,39 @@
       }
     },
     {
+      "identity" : "moya",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Moya/Moya.git",
+      "state" : {
+        "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
+        "version" : "15.0.3"
+      }
+    },
+    {
       "identity" : "naveridlogin-sdk-ios-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/naver/naveridlogin-sdk-ios-swift",
       "state" : {
         "revision" : "ad8dc5c0e373720b4688f54a259e131c4e2988bf",
         "version" : "5.0.0"
+      }
+    },
+    {
+      "identity" : "reactiveswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+      "state" : {
+        "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
+        "version" : "6.7.0"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "5dd1907d64f0d36f158f61a466bab75067224893",
+        "version" : "6.9.0"
       }
     }
   ],
