@@ -37,7 +37,7 @@ struct WhereApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                TabBarView()
+                TabBarView(resolver: resolver)
                     .navigationDestination(isPresented: $isOnboardingViewPresented) {
                         OnboardingView()
                     }
