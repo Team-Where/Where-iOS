@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-protocol TokenManagable {
+protocol TokenStorageProtocol {
     typealias Query = [String: Any]
     typealias Key = UInt64
     
@@ -100,7 +100,7 @@ extension TokenStorage {
 }
 
 // MARK: TokenStorage Conformation
-extension TokenStorage: TokenManagable {
+extension TokenStorage: TokenStorageProtocol {
     func store(_ tokens: Data, by key: Key) throws {
         let query = try makeQuery(by: key)
         
