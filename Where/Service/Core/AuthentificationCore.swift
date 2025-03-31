@@ -12,6 +12,7 @@ import KakaoSDKAuth
 import NidThirdPartyLogin
 import AuthenticationServices
 import Combine
+import Moya
 
 protocol AuthentificationCoreProtocol: ObservableObject {
     /// 사용자 정보
@@ -66,9 +67,6 @@ final class AuthentificationCore: NSObject, ObservableObject {
     
     var isLoginNeeded: Bool { _user == nil }
     
-    private let kakaoAPI: UserApi
-    private let naverAPI: NidOAuth
-    private let networkService: NetworkServiceProtocol
     private var currentProvider: AuthentificationProvider? {
         get {
             guard let provider = UserDefaults.standard.string(forKey: Constants.currentProviderUserDefaultsKey) else { return nil }
@@ -90,13 +88,21 @@ final class AuthentificationCore: NSObject, ObservableObject {
         }
     }
     
+    private let kakaoAPI: UserApi
+    private let naverAPI: NidOAuth
+    private let networkService: NetworkServiceProtocol
+    private let tokenStorage: TokenStorageProtocol
     private let userSubject = PassthroughSubject<User?, Never>()
     private var cancellables = Set<AnyCancellable>()
     
-    init(networkService: NetworkServiceProtocol) {
+    init(
+        networkService: NetworkServiceProtocol,
+        tokenStorage: TokenStorageProtocol
+    ) {
         self.kakaoAPI = .shared
         self.naverAPI = .shared
         self.networkService = networkService
+        self.tokenStorage = tokenStorage
         super.init()
         _configureKakaoAPI()
         _configureNaverAPI(self.naverAPI)
