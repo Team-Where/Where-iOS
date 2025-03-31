@@ -6,42 +6,27 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct SideMenuContentView: View {
     @Binding var isSideMenuPresented: Bool // 사이드 메뉴 상태
+    @ObservedObject private var viewModel: SideMenuContentViewModel
     @State private var navigationType: NavigationType?
+    
+    private let resolver: Resolver
+    
+    init(
+        _ isSideMenuPresented: Binding<Bool>,
+        resolver: Resolver
+    ) {
+        self._isSideMenuPresented = isSideMenuPresented
+        self.viewModel = resolver.resolve(SideMenuContentViewModel.self)!
+        self.resolver = resolver
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            // 프로필 섹션
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("로그인 해주세요")
-                        .whereFont(.title24semibold)
-                    Button {
-                        // 로그인 로직
-                    } label: {
-                        Text("로그인")
-                            .whereFont(.body14medium)
-                            .foregroundStyle(Color(hex: 0x4F46E5))
-                    }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 50)
-                            .stroke(Color(hex: 0xDEE2E6), lineWidth: 1)
-                            .frame(width: 68, height: 33)
-                    )
-                    .padding(.top, 16)
-                    .padding(.horizontal)
-                }
-                
-                Spacer()
-                
-                Image("DefaultProfile")
-                    .resizable()
-                    .frame(width: 80, height: 80)
-            }
-            .padding(.top, 40)
-            .padding(.horizontal)
+            profileSection()
 
             // 구분선
             VStack {
@@ -73,9 +58,58 @@ struct SideMenuContentView: View {
             case .FAQs: FAQView()
             case .inquiries: InquiryView()
             case .announcements: AnnouncementView()
-            case .editProfile: EmptyView()
+            case .editProfile: EditProfileView(resolver: resolver)
             }
         }
+        .fullScreenCover(isPresented: $viewModel.isLoginViewPresented) {
+            LoginView($viewModel.isLoginViewPresented, resolver: resolver)
+        }
+    }
+    
+    @ViewBuilder private func profileSection() -> some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(viewModel.user?.nickname ?? "로그인 해주세요")
+                    .whereFont(.title24semibold)
+                
+                Button {
+                    if viewModel.isLoginNeeded {
+                        viewModel.login()
+                    } else {
+                        navigationType = .editProfile
+                    }
+                } label: {
+                    if viewModel.isLoginNeeded {
+                        Text("로그인")
+                            .whereFont(.body14medium)
+                            .foregroundStyle(Color(hex: 0x4F46E5))
+                    } else {
+                        HStack(spacing: 4) {
+                            Image("pencil.line")
+                            
+                            Text("프로필 수정")
+                        }
+                        .whereFont(.body14medium)
+                        .foregroundStyle(Color(hex: 0x4F46E5))
+                    }
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 50)
+                        .stroke(Color(hex: 0xDEE2E6), lineWidth: 1)
+                        .frame(width: 68, height: 33)
+                )
+                .padding(.top, 16)
+                .padding(.horizontal)
+            }
+            
+            Spacer()
+            
+            Image("DefaultProfile")
+                .resizable()
+                .frame(width: 80, height: 80)
+        }
+        .padding(.top, 40)
+        .padding(.horizontal)
     }
 }
 
