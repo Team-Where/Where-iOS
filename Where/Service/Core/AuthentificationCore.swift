@@ -92,6 +92,8 @@ final class AuthentificationCore: NSObject, ObservableObject {
     private let naverAPI: NidOAuth
     private let networkService: NetworkServiceProtocol
     private let tokenStorage: TokenStorageProtocol
+    private let decoder: JSONDecoder = .init()
+    private let encoder: JSONEncoder = .init()
     private let userSubject = PassthroughSubject<User?, Never>()
     private var cancellables = Set<AnyCancellable>()
     
@@ -295,11 +297,9 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     private func handleCustomLogout() {
-        Task {
-            // TODO: 서버 통신 (네트워킹 모델 확정 후 구현)
-            currentProvider = nil
-            currentUserId = nil
-            userSubject.send(nil)
-        }
+        // TODO: 서버 통신 (네트워킹 모델 확정 후 구현)
+        currentProvider = nil
+        currentUserId = nil
+        userSubject.send(nil)
     }
 }
