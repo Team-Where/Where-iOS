@@ -317,5 +317,5 @@ extension FriendsListView {
 }
 
 #Preview {
-    TabBarView()
+    TabBarView(resolver: PreviewHelper.shared.resolver)
 }

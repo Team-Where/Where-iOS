@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct EditProfileView: View {
     @ObservedObject private var viewModel: EditProfileViewModel
     
-    init(_ user: User) {
-        self.viewModel = EditProfileViewModel(user: user)
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(EditProfileViewModel.self)!
+        self.resolver = resolver
     }
     
     var body: some View {
@@ -51,7 +55,7 @@ struct EditProfileView: View {
                     )
                 }
                 
-                Text(viewModel.isNicknameValid ? "사용 가능한 닉네임입니다" : "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다.")
+                Text(viewModel.isNicknameValid ? "사용 가능한 닉네임입니다." : "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다.")
                     .whereFont(.body14regular)
                     .foregroundColor(viewModel.isNicknameValid ? .green : (viewModel.nicknameFieldText.isEmpty ? .black : .red))
             }
@@ -88,6 +92,6 @@ struct EditProfileView: View {
 
 #Preview {
     NavigationStack {
-        EditProfileView(.init())
+        EditProfileView(resolver: PreviewHelper.shared.resolver)
     }
 }

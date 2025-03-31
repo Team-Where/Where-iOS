@@ -69,5 +69,5 @@ extension View {
 }
 
 #Preview {
-    TabBarView()
+    TabBarView(resolver: PreviewHelper.shared.resolver)
 }

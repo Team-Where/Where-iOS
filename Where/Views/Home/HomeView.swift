@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct HomeView: View {
     @Binding var selectedTab: Int
@@ -13,6 +14,18 @@ struct HomeView: View {
     @State private var isCompleteCreationViewPresented: Bool = false
     @State private var isSideMenuPresented: Bool = false
     @State private var meetings: [Meeting] = []
+    
+    private let resolver: Resolver
+    
+    init(
+        _ selectedTab: Binding<Int>,
+        _ isCreateMeetingSheetPresented: Binding<Bool>,
+        resolver: Resolver
+    ) {
+        self._selectedTab = selectedTab
+        self._isCreateMeetingSheetPresented = isCreateMeetingSheetPresented
+        self.resolver = resolver
+    }
     
     var body: some View {
         ZStack(alignment: .trailing) {
@@ -35,7 +48,7 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .allowsHitTesting(isSideMenuPresented == false)
             .sideMenu(isPresented: $isSideMenuPresented) {
-                SideMenuContentView(isSideMenuPresented: $isSideMenuPresented)
+                SideMenuContentView($isSideMenuPresented, resolver: resolver)
             }
         }
         .toolbar {
@@ -153,5 +166,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    TabBarView()
+    TabBarView(resolver: PreviewHelper.shared.resolver)
 }

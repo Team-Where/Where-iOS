@@ -178,5 +178,7 @@ extension SideMenuContentView {
 }
 
 #Preview {
-    TabBarView()
+    NavigationStack {
+        TabBarView(resolver: PreviewHelper.shared.resolver)
+    }
 }

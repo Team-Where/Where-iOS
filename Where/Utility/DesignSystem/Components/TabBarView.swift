@@ -6,16 +6,23 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct TabBarView: View {
     @State private var selectedTab = 0 // 현재 선택된 탭의 인덱스
     @State private var isCreateMeetingSheetPresented = false // sheet 표시 여부
     @State private var previousTab = 0 // 이전 탭 저장
     
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.resolver = resolver
+    }
+    
     var body: some View {
         TabView(selection: $selectedTab) {
             // 내모임 뷰
-            HomeView(selectedTab: $selectedTab, isCreateMeetingSheetPresented: $isCreateMeetingSheetPresented)
+            HomeView($selectedTab, $isCreateMeetingSheetPresented, resolver: resolver)
                 .overlay(alignment: .bottom) {
                     Divider()
                 }
@@ -56,6 +63,6 @@ struct TabBarView: View {
 
 #Preview {
     NavigationStack {
-        TabBarView()
+        TabBarView(resolver: PreviewHelper.shared.resolver)
     }
 }
