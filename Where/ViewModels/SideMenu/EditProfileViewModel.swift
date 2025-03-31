@@ -13,6 +13,8 @@ final class EditProfileViewModel: ObservableObject {
     @Published var profileImage: UIImage?
     @Published var nicknameFieldText: String = String()
     @Published var isNicknameValid: Bool = false
+    @Published var step: EditProfileStep = .beforeUpdate
+    @Published var isFloaterPresented: Bool = false
     
     private let auth: any AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -25,17 +27,19 @@ final class EditProfileViewModel: ObservableObject {
     private func subscribe() {
         auth.user
             .receive(on: DispatchQueue.main)
-            .sink { completion in
+            .sink { [weak self] completion in
                 switch completion {
                 case .finished:
                     break
                 case .failure(let error):
+                    self?.step = .errorOccured
 #if DEBUG
                     print(error)
 #endif
                 }
             } receiveValue: { [weak self] user in
                 self?.initializeProperties(user)
+                self?.step = .done
             }
             .store(in: &cancellables)
         
@@ -63,9 +67,30 @@ final class EditProfileViewModel: ObservableObject {
     }
 }
 
+// MARK: Nested Types
+extension EditProfileViewModel {
+    /// 프로필 수정 단계
+    enum EditProfileStep {
+        /// 프로필 수정 요청 전
+        case beforeUpdate
+        /// 프로필 수정 진행 중
+        case processing
+        /// 프로필 수정 완료
+        case done
+        /// 프로필 수정 실패
+        case errorOccured
+    }
+}
+
 // MARK: Interfaces
 extension EditProfileViewModel {
     func showPopup() {
         isPopupPresented = true
+    }
+    
+    func updateProfile() {
+        step = .processing
+        
+        // TODO: 프로필 수정 기능 연결
     }
 }

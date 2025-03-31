@@ -76,15 +76,31 @@ struct EditProfileView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                Button("완료") {
-                    // TODO: 프로필 수정 기능 연결
+                Button {
+                    viewModel.updateProfile()
+                } label: {
+                    if viewModel.step == .processing {
+                        ProgressView()
+                    } else {
+                        Text("완료")
+                    }
                 }
-                .disabled(viewModel.isNicknameValid == false)
+                .disabled(viewModel.isNicknameValid == false || viewModel.step == .processing)
             }
         }
         .popup($viewModel.isPopupPresented) {
             ProfilePopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
                 viewModel.profileImage = uiImage
+            }
+        }
+        .floater($viewModel.isFloaterPresented, title: "잠시 후 다시 시도해주세요.")
+        .onChange(of: viewModel.step) { oldValue, newValue in
+            switch newValue {
+            case .beforeUpdate, .processing: break
+            case .done:
+                dismiss()
+            case .errorOccured:
+                viewModel.isFloaterPresented = true
             }
         }
     }
