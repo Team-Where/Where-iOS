@@ -63,7 +63,6 @@
 		04832B462D266819003FFE3B /* WhereTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B442D266819003FFE3B /* WhereTests.swift */; };
 		04832B482D266F55003FFE3B /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B472D266F55003FFE3B /* SearchBar.swift */; };
 		04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C3D2D950260007AADE4 /* FlowLayout.swift */; };
-		04854C432D95069F007AADE4 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04854C422D95069F007AADE4 /* AppSecret.xcconfig */; };
 		04854C452D954B02007AADE4 /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C442D954B02007AADE4 /* SideMenu.swift */; };
 		04854C472D958817007AADE4 /* CreateMeetingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C462D958817007AADE4 /* CreateMeetingSheet.swift */; };
 		04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04993AA52D50BA940058EAB8 /* ToolTip.swift */; };
@@ -741,7 +740,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					045B44742D2146B000514A27 = {
 						CreatedOnToolsVersion = 16.2;
@@ -783,7 +782,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04854C432D95069F007AADE4 /* AppSecret.xcconfig in Resources */,
 				91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */,
 				91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */,
 				91A9EAB12D26EE45005F09D2 /* Preview Assets.xcassets in Resources */,
