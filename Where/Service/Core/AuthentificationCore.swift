@@ -14,7 +14,7 @@ import AuthenticationServices
 import Combine
 import Moya
 
-protocol AuthentificationCoreProtocol: ObservableObject {
+protocol AuthentificationCoreProtocol {
     /// 사용자 정보
     var user: AnyPublisher<User?, AuthentificationCoreError> { get }
     
