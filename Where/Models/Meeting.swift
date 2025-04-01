@@ -20,9 +20,11 @@ struct Meeting: Identifiable {
     /// 생성일시
     let createdAt: Date
     /// 최근 수정일시
-    let updatedAt: Date
+    let updatedAt: Date?
     /// 모임 일정
-    let schedule: Date
+    let schedule: Date?
+    /// 공유 링크
+    let shareLink: URL?
     /// 활성화 여부
     let isFinished: Bool
 }
