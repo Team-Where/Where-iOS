@@ -11,9 +11,12 @@ import Swinject
 struct HomeView: View {
     @Binding var selectedTab: Int
     @Binding var isCreateMeetingSheetPresented: Bool
+    @State private var sortType: MeetingSortType = .created
     @State private var isCompleteCreationViewPresented: Bool = false
     @State private var isSideMenuPresented: Bool = false
-    @State private var meetings: [Meeting] = []
+    @State private var meetings: [Meeting] = [
+        .init(id: 0, title: "2024 연말파티", description: "설명", imageURL: nil, createdAt: .now, updatedAt: .now, schedule: .now, isFinished: true)
+    ]
     
     private let resolver: Resolver
     
@@ -30,10 +33,7 @@ struct HomeView: View {
     var body: some View {
         ZStack(alignment: .trailing) {
             VStack(alignment: .leading) {
-                Text("내모임")
-                    .whereFont(.title24semibold)
-                    .padding(.top, 40)
-                    .padding(.horizontal)
+                header
                 
                 Spacer()
                 
@@ -80,6 +80,32 @@ struct HomeView: View {
         .fullScreenCover(isPresented: $isCompleteCreationViewPresented) {
             CompleteCreationView(isCompleteCreationViewPresented: $isCompleteCreationViewPresented)
         }
+    }
+    
+    private var header: some View {
+        HStack(alignment: .bottom) {
+            Text("내모임")
+                .whereFont(.title24semibold)
+            
+            Spacer()
+            
+            Menu {
+                Button("시간순") { sortType = .scheduled }
+                Button("생성순") { sortType = .created }
+            } label: {
+                HStack {
+                    Text(sortType == .scheduled ? "시간순" : "생성순")
+                    
+                    Image(systemName: "chevron.down")
+                        .resizable()
+                        .frame(width: 8, height: 4)
+                }
+                .whereFont(.body14medium)
+                .foregroundStyle(.where(.gray700))
+            }
+        }
+        .padding(.top, 40)
+        .padding(.horizontal)
     }
     
     @ViewBuilder private func unavailableView() -> some View {
@@ -146,16 +172,32 @@ struct HomeView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .frame(width: 170, height: 170)
             }
+//            .brightness(meeting.schedule < .now ? 0 : -0.5)
+            .brightness(meeting.isFinished ? -0.5 : 0)
+            .overlay {
+                if meeting.isFinished {
+                    Text("종료된 모임")
+                        .whereFont(.caption12regular)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(
+                            RoundedRectangle(cornerRadius: 17)
+                                .fill(.accent)
+                        )
+                }
+            }
             
             HStack {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(meeting.title)
                         .whereFont(.body16medium)
                     
-                    AsyncDateView(date: .constant(meeting.schedule), format: .yyyyMMdd, prompt: String())
+                    AsyncDateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
                         .whereFont(.body14regular)
                         .foregroundStyle(.where(.gray500))
                 }
+                .opacity(meeting.isFinished ? 0.5 : 1)
                 
                 Spacer()
             }
