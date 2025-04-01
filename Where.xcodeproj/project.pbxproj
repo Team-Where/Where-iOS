@@ -17,6 +17,11 @@
 		0450E8542D99A2F000DB029A /* ServiceAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8532D99A2F000DB029A /* ServiceAssembly.swift */; };
 		0450E8562D99A2FA00DB029A /* ViewModelAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8552D99A2F500DB029A /* ViewModelAssembly.swift */; };
 		0450E8582D9A2CBB00DB029A /* SideMenuContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8572D9A2CBB00DB029A /* SideMenuContentViewModel.swift */; };
+		0450E85D2D9AC0FE00DB029A /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E85C2D9AC0F000DB029A /* Tokens.swift */; };
+		0450E85F2D9AC85B00DB029A /* CommunityCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E85E2D9AC85B00DB029A /* CommunityCore.swift */; };
+		0450E8612D9AD36700DB029A /* TemporaryMeetingInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */; };
+		0450E8632D9B7BC200DB029A /* MeetingSortType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8622D9B7BC200DB029A /* MeetingSortType.swift */; };
+		0450E8662D9B876E00DB029A /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8652D9B876E00DB029A /* HomeViewModel.swift */; };
 		045685172D46067F004CB29F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045685162D46067F004CB29F /* NetworkService.swift */; };
 		045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A62D2150AF00514A27 /* WhereApp.swift */; };
 		045B44BA2D21650200514A27 /* Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44B92D2164FA00514A27 /* Pretendard.swift */; };
@@ -140,6 +145,11 @@
 		0450E8532D99A2F000DB029A /* ServiceAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAssembly.swift; sourceTree = "<group>"; };
 		0450E8552D99A2F500DB029A /* ViewModelAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelAssembly.swift; sourceTree = "<group>"; };
 		0450E8572D9A2CBB00DB029A /* SideMenuContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuContentViewModel.swift; sourceTree = "<group>"; };
+		0450E85C2D9AC0F000DB029A /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
+		0450E85E2D9AC85B00DB029A /* CommunityCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityCore.swift; sourceTree = "<group>"; };
+		0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryMeetingInfo.swift; sourceTree = "<group>"; };
+		0450E8622D9B7BC200DB029A /* MeetingSortType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingSortType.swift; sourceTree = "<group>"; };
+		0450E8652D9B876E00DB029A /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		045685162D46067F004CB29F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		045B44752D2146B000514A27 /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		045B44A62D2150AF00514A27 /* WhereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereApp.swift; sourceTree = "<group>"; };
@@ -271,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */,
+				0450E85E2D9AC85B00DB029A /* CommunityCore.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -283,6 +294,14 @@
 				0450E8552D99A2F500DB029A /* ViewModelAssembly.swift */,
 			);
 			path = Dependencies;
+			sourceTree = "<group>";
+		};
+		0450E8642D9B876000DB029A /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				0450E8652D9B876E00DB029A /* HomeViewModel.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 		045B446C2D2146B000514A27 = {
@@ -318,6 +337,8 @@
 				04A4F4452D40D8E20041FD02 /* RegistrationTerminationStep.swift */,
 				04F051892D42332D000892C0 /* AuthentificationProvider.swift */,
 				04CBC18D2D72E32D002CA364 /* UserCredential.swift */,
+				0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */,
+				0450E8622D9B7BC200DB029A /* MeetingSortType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -347,6 +368,7 @@
 		045B44A12D2150AF00514A27 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				0450E8642D9B876000DB029A /* Home */,
 				04A530B82D929D59004E58AD /* SideMenu */,
 				04A4F4422D40D81F0041FD02 /* Setting */,
 				04A4F43D2D3F92580041FD02 /* Login+Registration */,
@@ -557,6 +579,7 @@
 			isa = PBXGroup;
 			children = (
 				04F0518F2D424C01000892C0 /* TokenStorage.swift */,
+				0450E85C2D9AC0F000DB029A /* Tokens.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -791,6 +814,7 @@
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				04A5309C2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift in Sources */,
 				046833F42D3B8F77009D2357 /* DateFormat.swift in Sources */,
+				0450E8612D9AD36700DB029A /* TemporaryMeetingInfo.swift in Sources */,
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
 				04A4F45B2D42105E0041FD02 /* Inquiry.swift in Sources */,
 				91F1BFC42D329798000B4C84 /* NewMeetingCompleteView.swift in Sources */,
@@ -800,6 +824,7 @@
 				046833E02D3B8DD1009D2357 /* FriendsListView.swift in Sources */,
 				91B7A1722D26DFDE003932B4 /* String.swift in Sources */,
 				046833E92D3B8E8E009D2357 /* MeetingInformationView.swift in Sources */,
+				0450E8662D9B876E00DB029A /* HomeViewModel.swift in Sources */,
 				046833EA2D3B8E8E009D2357 /* InviteFriendsView.swift in Sources */,
 				04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */,
 				0450E84B2D996E5D00DB029A /* LoginViewModel.swift in Sources */,
@@ -811,6 +836,7 @@
 				04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */,
 				046833F22D3B8F65009D2357 /* Meridiem.swift in Sources */,
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
+				0450E85F2D9AC85B00DB029A /* CommunityCore.swift in Sources */,
 				04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */,
 				046455D52D93E2A100B74A01 /* EditInquiryView.swift in Sources */,
 				046455D92D93EF5000B74A01 /* Text.swift in Sources */,
@@ -818,6 +844,7 @@
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				04A5309E2D8EDDD4004E58AD /* Notification.swift in Sources */,
 				04A530A22D8EE312004E58AD /* FAQView.swift in Sources */,
+				0450E8632D9B7BC200DB029A /* MeetingSortType.swift in Sources */,
 				0450E8542D99A2F000DB029A /* ServiceAssembly.swift in Sources */,
 				04A530B12D913D28004E58AD /* HowToAddMeetingView.swift in Sources */,
 				04A530A32D8EE312004E58AD /* NotificationListView.swift in Sources */,
@@ -853,6 +880,7 @@
 				04A530B72D926D9A004E58AD /* EditProfileView.swift in Sources */,
 				0450E8582D9A2CBB00DB029A /* SideMenuContentViewModel.swift in Sources */,
 				046833DC2D3B8DB8009D2357 /* SignInView.swift in Sources */,
+				0450E85D2D9AC0FE00DB029A /* Tokens.swift in Sources */,
 				046833F62D3B8FB4009D2357 /* FriendsListViewModel.swift in Sources */,
 				04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */,
 				04A530B32D914BE4004E58AD /* InquiryView.swift in Sources */,
