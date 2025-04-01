@@ -11,12 +11,7 @@ import Swinject
 struct HomeView: View {
     @Binding var selectedTab: Int
     @Binding var isCreateMeetingSheetPresented: Bool
-    @State private var sortType: MeetingSortType = .created
-    @State private var isCompleteCreationViewPresented: Bool = false
-    @State private var isSideMenuPresented: Bool = false
-    @State private var meetings: [Meeting] = [
-        .init(id: 0, title: "2024 연말파티", description: "설명", imageURL: nil, createdAt: .now, updatedAt: .now, schedule: .now, isFinished: true)
-    ]
+    @ObservedObject private var viewModel: HomeViewModel
     
     private let resolver: Resolver
     
@@ -27,6 +22,7 @@ struct HomeView: View {
     ) {
         self._selectedTab = selectedTab
         self._isCreateMeetingSheetPresented = isCreateMeetingSheetPresented
+        self.viewModel = resolver.resolve(HomeViewModel.self)!
         self.resolver = resolver
     }
     
@@ -37,7 +33,7 @@ struct HomeView: View {
                 
                 Spacer()
                 
-                if meetings.isEmpty {
+                if viewModel.meetings.isEmpty {
                     unavailableView()
                 } else {
                     meetingsSection()
@@ -46,9 +42,9 @@ struct HomeView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .allowsHitTesting(isSideMenuPresented == false)
-            .sideMenu(isPresented: $isSideMenuPresented) {
-                SideMenuContentView($isSideMenuPresented, resolver: resolver)
+            .allowsHitTesting(viewModel.isSideMenuPresented == false)
+            .sideMenu(isPresented: $viewModel.isSideMenuPresented) {
+                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver)
             }
         }
         .toolbar {
@@ -63,10 +59,10 @@ struct HomeView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         withAnimation {
-                            isSideMenuPresented.toggle()
+                            viewModel.toggleSideMenuPresentation()
                         }
                     } label: {
-                        Image(systemName: isSideMenuPresented ? "xmark" : "line.3.horizontal")
+                        Image(systemName: viewModel.isSideMenuPresented ? "xmark" : "line.3.horizontal")
                             .foregroundStyle(.black)
                     }
                 }
@@ -77,8 +73,11 @@ struct HomeView: View {
                 .presentationCornerRadius(24)
                 .presentationDetents([.fraction(0.99)])
         }
-        .fullScreenCover(isPresented: $isCompleteCreationViewPresented) {
-            CompleteCreationView(isCompleteCreationViewPresented: $isCompleteCreationViewPresented)
+        .fullScreenCover(isPresented: $viewModel.isCompleteCreationViewPresented) {
+            CompleteCreationView(isCompleteCreationViewPresented: $viewModel.isCompleteCreationViewPresented)
+        }
+        .navigationDestination(isPresented: $viewModel.isMeetingInformationViewPresented) {
+            MeetingInformationView()
         }
     }
     
@@ -90,11 +89,11 @@ struct HomeView: View {
             Spacer()
             
             Menu {
-                Button("시간순") { sortType = .scheduled }
-                Button("생성순") { sortType = .created }
+                Button("시간순") { viewModel.selectSortType(for: .scheduled) }
+                Button("생성순") { viewModel.selectSortType(for: .created) }
             } label: {
                 HStack {
-                    Text(sortType == .scheduled ? "시간순" : "생성순")
+                    Text(viewModel.sortType == .scheduled ? "시간순" : "생성순")
                     
                     Image(systemName: "chevron.down")
                         .resizable()
@@ -148,7 +147,7 @@ struct HomeView: View {
     @ViewBuilder private func meetingsSection() -> some View {
         ScrollView(.vertical) {
             FlowLayout(alignment: .topLeading) {
-                ForEach(meetings) { meeting in
+                ForEach(viewModel.meetings) { meeting in
                     meetingCell(meeting)
                 }
             }
@@ -204,9 +203,14 @@ struct HomeView: View {
             .frame(maxWidth: 170)
         }
         .padding(.bottom, 20)
+        .onTapGesture {
+            viewModel.routeToMeetingInformationView()
+        }
     }
 }
 
 #Preview {
-    TabBarView(resolver: PreviewHelper.shared.resolver)
+    NavigationStack {
+        TabBarView(resolver: PreviewHelper.shared.resolver)
+    }
 }
