@@ -11,7 +11,7 @@ struct CompleteCreationView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var isCompleteCreationViewPresented: Bool
     
-    let meeting = Meeting(id: 0, title: "2024연말파티", description: "설명", imageURL: nil, createdAt: .now, updatedAt: .now, schedule: .now, isFinished: false)
+    let meeting = Meeting(id: 0, title: "2024연말파티", description: "설명", imageURL: nil, createdAt: .now, updatedAt: .now, schedule: .now, shareLink: nil, isFinished: false)
     
     var body: some View {
         VStack(spacing: 20) {
