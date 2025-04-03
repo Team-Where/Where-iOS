@@ -6,18 +6,29 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct FriendsListView: View {
+    @ObservedObject private var viewModel: FriendsListViewModel
     @Binding var selectedTab: Int
     @State private var sheetItem: SheetType?
     @State private var route: Route?
     @FocusState private var isFocused: Bool
     
-    @ObservedObject private var viewModel = FriendsListViewModel()
-    
     private var friends: [User] { viewModel.friends }
     private var searchedFriends: [User] { viewModel.searchedFriends }
     private var isEditing: Bool { viewModel.isEditing }
+    
+    private let resolver: Resolver
+    
+    init(
+        selected: Binding<Int>,
+        resolver: Resolver
+    ) {
+        self._selectedTab = selected
+        self.viewModel = resolver.resolve(FriendsListViewModel.self)!
+        self.resolver = resolver
+    }
     
     var body: some View {
         VStack {
@@ -84,7 +95,7 @@ struct FriendsListView: View {
         .navigationDestination(item: $route) { route in
             switch route {
             case .historyReminder(let friend):
-                HistoryReminderView(friend: friend)
+                HistoryReminderView(friend: friend, resolver: resolver)
             }
         }
     }

@@ -77,7 +77,7 @@ struct HomeView: View {
             CompleteCreationView(isCompleteCreationViewPresented: $viewModel.isCompleteCreationViewPresented)
         }
         .navigationDestination(isPresented: $viewModel.isMeetingInformationViewPresented) {
-            MeetingInformationView()
+            MeetingInformationView(resolver: resolver)
         }
     }
     

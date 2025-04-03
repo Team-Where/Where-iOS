@@ -15,6 +15,16 @@ protocol SelectionTabItem: Identifiable, Hashable {
     @ViewBuilder func view() -> Content
 }
 
+extension SelectionTabItem {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.id)
+    }
+}
+
 struct SelectionTab<TabItem: SelectionTabItem>: View {
     @State private var selectedTab: Int = .zero
     

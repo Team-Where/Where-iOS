@@ -40,7 +40,7 @@ struct TabBarView: View {
                 .tag(1)
             
             // 친구목록 뷰
-            FriendsListView(selectedTab: $selectedTab)
+            FriendsListView(selected: $selectedTab, resolver: resolver)
                 .overlay(alignment: .bottom) {
                     Divider()
                 }

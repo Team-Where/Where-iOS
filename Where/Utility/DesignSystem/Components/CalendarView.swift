@@ -147,7 +147,3 @@ struct CalendarView: View {
         }
     }
 }
-
-#Preview {
-    MeetingInformationView()
-}

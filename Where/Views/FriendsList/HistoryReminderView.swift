@@ -6,9 +6,19 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct HistoryReminderView: View {
     let friend: User
+    private let resolver: Resolver
+    
+    init(
+        friend: User,
+        resolver: Resolver
+    ) {
+        self.friend = friend
+        self.resolver = resolver
+    }
     
     var body: some View {
         VStack {
@@ -22,7 +32,7 @@ struct HistoryReminderView: View {
                 .frame(height: 8)
             
             ScrollView(.vertical) {
-                HistoryArea()
+                HistoryArea(resolver: resolver)
             }
             .padding(.horizontal)
             .scrollIndicators(.hidden)
@@ -87,6 +97,12 @@ extension HistoryReminderView {
     }
     
     struct HistoryArea: View {
+        private let resolver: Resolver
+        
+        init(resolver: Resolver) {
+            self.resolver = resolver
+        }
+        
         var body: some View {
             section()
         }
@@ -162,7 +178,7 @@ extension HistoryReminderView {
                     .padding(.bottom, 10)
                     
                     NavigationLink {
-                        MeetingInformationView()
+                        MeetingInformationView(resolver: resolver)
                     } label: {
                         Text("자세히 보기")
                             .whereFont(.body14medium)
@@ -189,6 +205,6 @@ extension HistoryReminderView {
 
 #Preview {
     NavigationStack {
-        HistoryReminderView(friend: .init())
+        HistoryReminderView(friend: .init(), resolver: PreviewHelper.shared.resolver)
     }
 }
