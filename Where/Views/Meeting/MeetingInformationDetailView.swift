@@ -6,17 +6,29 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct MeetingInformationDetailView: View {
+    @ObservedObject private var viewModel: MeetingInformationDetailViewModel
     @State private var sheetType: SheetType?
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
-    @State private var selectedDate: Date?
-    @State private var isMeetingAvailiable: Bool = true
+    
+    let meeting: Meeting
+    private let resolver: Resolver
+    
+    init(
+        meeting: Meeting,
+        resolver: Resolver
+    ) {
+        self.meeting = meeting
+        self.viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
+        self.resolver = resolver
+    }
     
     var body: some View {
         VStack {
-            if isMeetingAvailiable == false {
+            if viewModel.isMeetingAvailiable == false {
                 HStack(spacing: 6) {
                     Text("✋")
                         .rotationEffect(.degrees(-45))
@@ -44,26 +56,28 @@ struct MeetingInformationDetailView: View {
                     .padding(.bottom)
                     .padding(.horizontal)
             }
-            .opacity(isMeetingAvailiable ? 1 : 0.5)
-            .disabled(isMeetingAvailiable == false)
+            .opacity(viewModel.isMeetingAvailiable ? 1 : 0.5)
+            .disabled(viewModel.isMeetingAvailiable == false)
             
-            Button {
-                // TODO: 모임 마감 기능 연결
-                withAnimation {
-                    isMeetingAvailiable.toggle()
+            if viewModel.isMeetingAvailable {
+                Button {
+                    // TODO: 모임 마감 기능 연결
+                    withAnimation {
+                        viewModel.endMeeting()
+                    }
+                } label: {
+                    Text("모임 끝내기")
+                        .whereFont(.body16medium)
                 }
-            } label: {
-                Text(isMeetingAvailiable ? "모임 끝내기" : "모임 활성화")
-                    .whereFont(.body16medium)
+                .frame(maxWidth: .infinity)
+                .frame(height: 54)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(.accent)
+                )
+                .padding(.bottom)
+                .padding(.horizontal)
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: 54)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .strokeBorder(.accent)
-            )
-            .padding(.bottom)
-            .padding(.horizontal)
         }
         .sheet(item: $sheetType) { type in
             switch type {
@@ -80,7 +94,7 @@ struct MeetingInformationDetailView: View {
             case .editMeetingDate:
                 EditMeetingDateFullScreenCover(
                     fullScreenCoverType: $fullScreenCoverType,
-                    selectedDate: $selectedDate
+                    selectedDate: $viewModel.selectedDate
                 )
             }
         }
@@ -115,7 +129,7 @@ struct MeetingInformationDetailView: View {
     
     private var summaryArea: some View {
         VStack(spacing: 8) {
-            summaryCell(.date(date: selectedDate)) {
+            summaryCell(.date(date: viewModel.selectedDate)) {
                 fullScreenCoverType = .editMeetingDate
             }
             
@@ -744,11 +758,5 @@ extension MeetingInformationDetailView {
     enum NavigationType: Hashable {
         /// 친구 초대
         case inviteFriends
-    }
-}
-
-#Preview {
-    NavigationStack {
-        MeetingInformationDetailView()
     }
 }
