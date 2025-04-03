@@ -28,7 +28,7 @@ final class RegistrationViewModel: ObservableObject {
     var nicknameValidationState: NicknameValidationState = .beforeValidate
     var registrationStep: RegistrationTerminationStep = .email
     
-    private let auth: any AuthentificationCoreProtocol
+    private let auth: AuthentificationCoreProtocol
     
     var navigationTitle: String {
         switch registrationStep {
@@ -55,7 +55,7 @@ final class RegistrationViewModel: ObservableObject {
     private var timer: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     
-    init(auth: any AuthentificationCoreProtocol) {
+    init(auth: AuthentificationCoreProtocol) {
         self.auth = auth
         subscribe()
     }

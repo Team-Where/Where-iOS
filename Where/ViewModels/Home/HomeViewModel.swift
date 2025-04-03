@@ -18,10 +18,10 @@ final class HomeViewModel: ObservableObject {
         .init(id: 0, title: "2024 연말파티", description: "설명", imageURL: nil, createdAt: .now, updatedAt: .now, schedule: .now, shareLink: nil, isFinished: true)
     ]
     
-    private let community: any CommunityCoreProtocol
+    private let community: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(community: any CommunityCoreProtocol) {
+    init(community: CommunityCoreProtocol) {
         self.community = community
         subscribe()
     }

@@ -14,10 +14,10 @@ final class SideMenuContentViewModel: ObservableObject {
     
     var isLoginNeeded: Bool { auth.isLoginNeeded }
     
-    private let auth: any AuthentificationCoreProtocol
+    private let auth: AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(auth: any AuthentificationCoreProtocol) {
+    init(auth: AuthentificationCoreProtocol) {
         self.auth = auth
         subscribe()
     }

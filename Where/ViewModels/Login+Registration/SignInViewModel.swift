@@ -14,11 +14,11 @@ final class SignInViewModel: ObservableObject {
     @Published private(set) var isProcessing: Bool = false
     @Published var isPopupPresented: Bool = false
     
-    private let auth: any AuthentificationCoreProtocol
+    private let auth: AuthentificationCoreProtocol
     
     private var cancellables = Set<AnyCancellable>()
     
-    init(auth: any AuthentificationCoreProtocol) {
+    init(auth: AuthentificationCoreProtocol) {
         self.auth = auth
     }
     

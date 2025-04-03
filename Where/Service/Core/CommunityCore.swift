@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-protocol CommunityCoreProtocol: ObservableObject {
+protocol CommunityCoreProtocol {
     /// 나의 친구 목록
     var friends: AnyPublisher<[UInt64: User], CommunityCoreError> { get }
     /// 나와 연관된 모임 목록

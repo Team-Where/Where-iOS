@@ -13,9 +13,9 @@ import Combine
 final class LoginViewModel: ObservableObject {
     @Published private(set) var isProcessing: Bool = false
     
-    private let auth: any AuthentificationCoreProtocol
+    private let auth: AuthentificationCoreProtocol
     
-    init(auth: any AuthentificationCoreProtocol) {
+    init(auth: AuthentificationCoreProtocol) {
         self.auth = auth
     }
 }

@@ -16,10 +16,10 @@ final class EditProfileViewModel: ObservableObject {
     @Published var step: EditProfileStep = .beforeUpdate
     @Published var isFloaterPresented: Bool = false
     
-    private let auth: any AuthentificationCoreProtocol
+    private let auth: AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(auth: any AuthentificationCoreProtocol) {
+    init(auth: AuthentificationCoreProtocol) {
         self.auth = auth
         subscribe()
     }
