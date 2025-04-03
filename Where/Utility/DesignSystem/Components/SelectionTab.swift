@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-protocol SelectionTabItem: Identifiable {
+protocol SelectionTabItem: Identifiable, Hashable {
     associatedtype Content: View
     
     var title: String { get }

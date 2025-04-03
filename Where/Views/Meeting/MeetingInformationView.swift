@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct MeetingInformationView: View {
     @State private var sheetType: SheetType?
     
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.resolver = resolver
+    }
+    
     var body: some View {
-        SelectionTab<TabViewItem>(selection: [.meetingInfo, .placeInfo])
+        SelectionTab<TabViewItem>(selection: [.meetingInfo(resolver: resolver), .placeInfo(resolver: resolver)])
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -48,8 +55,8 @@ struct MeetingInformationView: View {
 // MARK: Nested Types - CustomTabbar
 extension MeetingInformationView {
     enum TabViewItem: SelectionTabItem {
-        case meetingInfo
-        case placeInfo
+        case meetingInfo(resolver: Resolver)
+        case placeInfo(resolver: Resolver)
         
         var id: Int { self.hashValue }
         
@@ -62,9 +69,17 @@ extension MeetingInformationView {
         
         @ViewBuilder func view() -> some View {
             switch self {
-            case .meetingInfo: MeetingInformationDetailView()
-            case .placeInfo: MeetingPlacesView()
+            case .meetingInfo(let resolver): MeetingInformationDetailView(resolver: resolver)
+            case .placeInfo(let resolver): MeetingPlacesView()
             }
+        }
+        
+        static func == (lhs: MeetingInformationView.TabViewItem, rhs: MeetingInformationView.TabViewItem) -> Bool {
+            lhs.id == rhs.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(self.id)
         }
     }
 }
@@ -318,6 +333,6 @@ extension MeetingInformationView {
 
 #Preview {
     NavigationStack {
-        MeetingInformationView()
+        MeetingInformationView(resolver: PreviewHelper.shared.resolver)
     }
 }

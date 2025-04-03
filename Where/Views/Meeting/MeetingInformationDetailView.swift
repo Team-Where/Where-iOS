@@ -14,14 +14,11 @@ struct MeetingInformationDetailView: View {
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
     
-    let meeting: Meeting
     private let resolver: Resolver
     
     init(
-        meeting: Meeting,
         resolver: Resolver
     ) {
-        self.meeting = meeting
         self.viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
         self.resolver = resolver
     }
