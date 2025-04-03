@@ -80,7 +80,8 @@ extension HomeViewModel {
         sortType = type
     }
     
-    func routeToMeetingInformationView() {
+    func routeToMeetingInformationView(meeting: Meeting) {
+        community.readCurrentMeeting(id: meeting.id)
         isMeetingInformationViewPresented = true
     }
 }
