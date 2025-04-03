@@ -171,7 +171,6 @@ struct HomeView: View {
                     .clipShape(.rect(cornerRadius: 10))
                     .frame(width: 170, height: 170)
             }
-//            .brightness(meeting.schedule < .now ? 0 : -0.5)
             .brightness(meeting.isFinished ? -0.5 : 0)
             .overlay {
                 if meeting.isFinished {
@@ -204,7 +203,7 @@ struct HomeView: View {
         }
         .padding(.bottom, 20)
         .onTapGesture {
-            viewModel.routeToMeetingInformationView()
+            viewModel.routeToMeetingInformationView(meeting: meeting)
         }
     }
 }
