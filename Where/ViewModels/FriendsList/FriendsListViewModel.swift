@@ -36,7 +36,7 @@ final class FriendsListViewModel: ObservableObject {
                     #endif
                 }
             } receiveValue: { [weak self] dict in
-                self?.friends = dict.values.map { $0 }
+                self?.friends = dict.values.map { $0 }.sorted { $0.nickname < $1.nickname }
             }
             .store(in: &cancellables)
         
@@ -65,5 +65,9 @@ extension FriendsListViewModel {
     
     func deleteFriend(by id: UInt64) {
         community.deleteFriend(id: id)
+    }
+    
+    func toggleBookmark(by id: UInt64) {
+        community.toggleBookmarkFriend(id: id)
     }
 }
