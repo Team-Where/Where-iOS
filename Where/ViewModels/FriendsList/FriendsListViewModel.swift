@@ -16,13 +16,30 @@ final class FriendsListViewModel: ObservableObject {
     
     var isSearching: Bool { searchingText.isEmpty == false }
     
+    private let community: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    init(community: CommunityCoreProtocol) {
+        self.community = community
         subscribe()
     }
     
     private func subscribe() {
+        community.friends
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    #if DEBUG
+                    print(error)
+                    #endif
+                }
+            } receiveValue: { [weak self] dict in
+                self?.friends = dict.values.map { $0 }
+            }
+            .store(in: &cancellables)
+        
         $searchingText
             .removeDuplicates()
             .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
@@ -47,10 +64,6 @@ extension FriendsListViewModel {
     }
     
     func deleteFriend(by id: UInt64) {
-        guard let index = friends.firstIndex(where: { id == $0.id }) else { return }
-        friends.remove(at: index)
-        
-        guard let index = searchedFriends.firstIndex(where: { id == $0.id }) else { return }
-        searchedFriends.remove(at: index)
+        community.deleteFriend(id: id)
     }
 }
