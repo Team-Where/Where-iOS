@@ -13,6 +13,8 @@ protocol CommunityCoreProtocol {
     var friends: AnyPublisher<[UInt64: User], CommunityCoreError> { get }
     /// 나와 연관된 모임 목록
     var meetings: AnyPublisher<[UInt64: Meeting], CommunityCoreError> { get }
+    /// 최근 살펴본 모임 정보
+    var currentMeeting: AnyPublisher<Meeting?, Never> { get }
     /// 사용자 식별자
     var userId: UInt64? { get }
     
@@ -58,6 +60,10 @@ protocol CommunityCoreProtocol {
     ///     - description: 모임 설명
     ///     - image: 모임 대표 이미지
     func updateMeeting(id: UInt64, title: String?, description: String?, image: UIImage?)
+    /// 모임 종료
+    /// - Parameters:
+    ///     - id: 모임의 고유 식별자
+    func endMeeting(id: UInt64)
     /// 모임 탈퇴
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -75,6 +81,8 @@ protocol CommunityCoreProtocol {
     /// - Parameters:
     ///     - id: 초대장 식별자
     func acceptInvitation(id: UInt64)
+    /// 최근 모임 정보 조회
+    func readCurrentMeeting(id: UInt64)
 }
 
 enum CommunityCoreError: Error {
@@ -82,8 +90,9 @@ enum CommunityCoreError: Error {
 }
 
 final class CommunityCore {
-    @Published var _friends: [UInt64: User] = [:]
-    @Published var _meetings: [UInt64: Meeting] = [:]
+    @Published private(set) var _friends: [UInt64: User] = [:]
+    @Published private(set) var _meetings: [UInt64: Meeting] = [:]
+    @Published private(set) var _currentMeeting: Meeting?
     @Published private(set) var userId: UInt64?
     
     private let networkService: NetworkServiceProtocol
@@ -140,6 +149,11 @@ extension CommunityCore: CommunityCoreProtocol {
         $_meetings
             .map { $0 }
             .setFailureType(to: CommunityCoreError.self)
+            .eraseToAnyPublisher()
+    }
+    
+    var currentMeeting: AnyPublisher<Meeting?, Never> {
+        $_currentMeeting
             .eraseToAnyPublisher()
     }
     
@@ -201,5 +215,9 @@ extension CommunityCore: CommunityCoreProtocol {
     
     func acceptInvitation(id: UInt64) {
         
+    }
+    
+    func readCurrentMeeting(id: UInt64) {
+        _currentMeeting = _meetings[id]
     }
 }
