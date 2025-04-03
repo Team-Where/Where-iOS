@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		042A79D32D9EAD2F004105E2 /* AuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */; };
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
+		042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D62D9EC37A004105E2 /* Endpoint.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -140,6 +141,7 @@
 /* Begin PBXFileReference section */
 		042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthInterceptor.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
+		042A79D62D9EC37A004105E2 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -600,6 +602,7 @@
 		04F051912D424C65000892C0 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				042A79D62D9EC37A004105E2 /* Endpoint.swift */,
 				045685162D46067F004CB29F /* NetworkService.swift */,
 				04A5307F2D858B03004E58AD /* Entities */,
 			);
@@ -862,6 +865,7 @@
 				04A530A32D8EE312004E58AD /* NotificationListView.swift in Sources */,
 				04A530B52D914C82004E58AD /* SelectionTab.swift in Sources */,
 				046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */,
+				042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */,
 				91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
 				91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */,
