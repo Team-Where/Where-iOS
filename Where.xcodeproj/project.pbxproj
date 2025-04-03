@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		042A79D32D9EAD2F004105E2 /* AuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */; };
+		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -136,6 +138,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthInterceptor.swift; sourceTree = "<group>"; };
+		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -276,6 +280,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		042A79D22D9EAD2F004105E2 /* Interceptors */ = {
+			isa = PBXGroup;
+			children = (
+				042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */,
+			);
+			path = Interceptors;
+			sourceTree = "<group>";
+		};
 		0438BA7A2D97DA86008C628F /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -285,14 +297,14 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
-		0450E8472D99665400DB029A /* Dependencies */ = {
+		0450E8472D99665400DB029A /* Assembly */ = {
 			isa = PBXGroup;
 			children = (
 				0450E8482D99676400DB029A /* CoreAssembly.swift */,
 				0450E8532D99A2F000DB029A /* ServiceAssembly.swift */,
 				0450E8552D99A2F500DB029A /* ViewModelAssembly.swift */,
 			);
-			path = Dependencies;
+			path = Assembly;
 			sourceTree = "<group>";
 		};
 		0450E8642D9B876000DB029A /* Home */ = {
@@ -345,6 +357,7 @@
 		045B449D2D2150AF00514A27 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				042A79D22D9EAD2F004105E2 /* Interceptors */,
 				0438BA7A2D97DA86008C628F /* Core */,
 				04F051912D424C65000892C0 /* Network */,
 				04F0518E2D424BF1000892C0 /* Storage */,
@@ -405,7 +418,7 @@
 				045B44A32D2150AF00514A27 /* Views */,
 				045B44A62D2150AF00514A27 /* WhereApp.swift */,
 				0450E84C2D99708900DB029A /* PreviewHelper.swift */,
-				0450E8472D99665400DB029A /* Dependencies */,
+				0450E8472D99665400DB029A /* Assembly */,
 				91A9EAAE2D26EE45005F09D2 /* Preview Content */,
 			);
 			path = Where;
@@ -504,6 +517,7 @@
 			isa = PBXGroup;
 			children = (
 				046833F72D3B8FE5009D2357 /* InviteFriendsViewModel.swift */,
+				042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */,
 			);
 			path = Meetings;
 			sourceTree = "<group>";
@@ -857,6 +871,7 @@
 				0450E84D2D99708C00DB029A /* PreviewHelper.swift in Sources */,
 				91446F3D2D4FA3FA00C142B2 /* CommentInputView.swift in Sources */,
 				0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */,
+				042A79D32D9EAD2F004105E2 /* AuthInterceptor.swift in Sources */,
 				046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */,
 				04F051882D423283000892C0 /* Bundle.swift in Sources */,
 				04A4F4442D40D82E0041FD02 /* AdjustPasswordViewModel.swift in Sources */,
@@ -889,6 +904,7 @@
 				046834182D3E26E2009D2357 /* SettingView.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
 				F70F76C82D2FBB1E006EFF2D /* NewImagePopupView.swift in Sources */,
+				042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */,
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045CA1612D27D22D001B5CEE /* HistoryReminderView.swift in Sources */,
 				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
