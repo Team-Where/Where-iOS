@@ -201,6 +201,10 @@ extension CommunityCore: CommunityCoreProtocol {
         
     }
     
+    func endMeeting(id: UInt64) {
+        
+    }
+    
     func exitMeeting(id: UInt64) {
         
     }
