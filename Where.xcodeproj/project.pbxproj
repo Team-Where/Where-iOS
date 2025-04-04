@@ -10,6 +10,7 @@
 		042A79D32D9EAD2F004105E2 /* AuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */; };
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
 		042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D62D9EC37A004105E2 /* Endpoint.swift */; };
+		042A79DA2D9FACE8004105E2 /* CreateMeetingSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D92D9FACE8004105E2 /* CreateMeetingSheetViewModel.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -142,6 +143,7 @@
 		042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthInterceptor.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
 		042A79D62D9EC37A004105E2 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		042A79D92D9FACE8004105E2 /* CreateMeetingSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingSheetViewModel.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -335,7 +337,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		045B44992D2150AF00514A27 /* Models */ = {
+		045B44992D2150AF00514A27 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
 				045CA1622D27E3EE001B5CEE /* User.swift */,
@@ -353,7 +355,7 @@
 				0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */,
 				0450E8622D9B7BC200DB029A /* MeetingSortType.swift */,
 			);
-			path = Models;
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		045B449D2D2150AF00514A27 /* Service */ = {
@@ -413,7 +415,7 @@
 			isa = PBXGroup;
 			children = (
 				045B44C42D21659700514A27 /* Info.plist */,
-				045B44992D2150AF00514A27 /* Models */,
+				045B44992D2150AF00514A27 /* Entities */,
 				045B449D2D2150AF00514A27 /* Service */,
 				045B449F2D2150AF00514A27 /* Utility */,
 				045B44A12D2150AF00514A27 /* ViewModels */,
@@ -520,6 +522,7 @@
 			children = (
 				046833F72D3B8FE5009D2357 /* InviteFriendsViewModel.swift */,
 				042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */,
+				042A79D92D9FACE8004105E2 /* CreateMeetingSheetViewModel.swift */,
 			);
 			path = Meetings;
 			sourceTree = "<group>";
@@ -559,11 +562,11 @@
 			path = Setting;
 			sourceTree = "<group>";
 		};
-		04A5307F2D858B03004E58AD /* Entities */ = {
+		04A5307F2D858B03004E58AD /* DTOs */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = Entities;
+			path = DTOs;
 			sourceTree = "<group>";
 		};
 		04A530A12D8EE312004E58AD /* SideMenu */ = {
@@ -604,7 +607,7 @@
 			children = (
 				042A79D62D9EC37A004105E2 /* Endpoint.swift */,
 				045685162D46067F004CB29F /* NetworkService.swift */,
-				04A5307F2D858B03004E58AD /* Entities */,
+				04A5307F2D858B03004E58AD /* DTOs */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -829,6 +832,7 @@
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				04A5309C2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift in Sources */,
 				046833F42D3B8F77009D2357 /* DateFormat.swift in Sources */,
+				042A79DA2D9FACE8004105E2 /* CreateMeetingSheetViewModel.swift in Sources */,
 				0450E8612D9AD36700DB029A /* TemporaryMeetingInfo.swift in Sources */,
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
 				04A4F45B2D42105E0041FD02 /* Inquiry.swift in Sources */,
