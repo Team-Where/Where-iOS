@@ -69,7 +69,7 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $isCreateMeetingSheetPresented) {
-            CreateMeetingSheet()
+            CreateMeetingSheet(resolver: resolver)
                 .presentationCornerRadius(24)
                 .presentationDetents([.fraction(0.99)])
         }
