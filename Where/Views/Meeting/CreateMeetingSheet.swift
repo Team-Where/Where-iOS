@@ -6,13 +6,19 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct CreateMeetingSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var isPopupPresented: Bool = false
-    @State private var selectedImage: UIImage?
+    @ObservedObject private var viewModel: CreateMeetingSheetViewModel
     @State private var step: MeetingCreationStep = .basicInformation
-    @State private var tempMeetingInfo: TemporaryMeetingInfo = .initialize(.zero)
+    
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(CreateMeetingSheetViewModel.self)!
+        self.resolver = resolver
+    }
     
     var body: some View {
         VStack {
@@ -27,9 +33,9 @@ struct CreateMeetingSheet: View {
             Spacer()
         }
         .padding()
-        .popup($isPopupPresented) {
-            ProfilePopupView(isPopupPresented: $isPopupPresented) { uiImage in
-                selectedImage = uiImage
+        .popup($viewModel.isPopupPresented) {
+            ProfilePopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
+                viewModel.selectedImage = uiImage
             }
         }
     }
@@ -67,15 +73,15 @@ struct CreateMeetingSheet: View {
         switch step {
         case .basicInformation:
             BasicInformationView(
-                isPopupPresented: $isPopupPresented,
+                isPopupPresented: $viewModel.isPopupPresented,
                 step: $step,
-                tempInfo: $tempMeetingInfo,
-                image: $selectedImage
+                tempInfo: $viewModel.tempMeetingInfo,
+                image: $viewModel.selectedImage
             )
         case .inviteFriends:
             InviteFriendsView(
                 step: $step,
-                tempMeetingInfo: $tempMeetingInfo
+                tempMeetingInfo: $viewModel.tempMeetingInfo
             )
         }
     }
@@ -114,7 +120,7 @@ extension CreateMeetingSheet {
         }
         
         @Binding var step: MeetingCreationStep
-        @Binding var tempMeetingInfo: TemporaryMeetingInfo
+        @Binding var tempMeetingInfo: TemporaryMeetingInfo?
         @Binding var isPopupPresented: Bool
         @Binding var selectedImage: UIImage?
         @State private var isFloaterPresented: Bool = false
@@ -125,7 +131,7 @@ extension CreateMeetingSheet {
         init(
             isPopupPresented: Binding<Bool>,
             step: Binding<MeetingCreationStep>,
-            tempInfo temp: Binding<TemporaryMeetingInfo>,
+            tempInfo temp: Binding<TemporaryMeetingInfo?>,
             image: Binding<UIImage?>
         ) {
             self._isPopupPresented = isPopupPresented
@@ -146,7 +152,7 @@ extension CreateMeetingSheet {
                 
                 Button {
                     // 임시 모임 정보 기록 후 다음 단계 진행
-                    tempMeetingInfo = tempMeetingInfo
+                    tempMeetingInfo = tempMeetingInfo?
                         .setBasicInfo(title: title, description: description, image: selectedImage)
                     step = .inviteFriends
                 } label: {
@@ -268,7 +274,7 @@ extension CreateMeetingSheet {
     
     struct InviteFriendsView: View {
         @Binding var step: MeetingCreationStep
-        @Binding var tempMeetingInfo: TemporaryMeetingInfo
+        @Binding var tempMeetingInfo: TemporaryMeetingInfo?
         @State private var floaterItem: FloaterItem?
         @State private var friends: [User] = [
             .init(id: 0, nickname: "죠니월드"),
@@ -290,7 +296,7 @@ extension CreateMeetingSheet {
                 
                 Button {
                     // 임시 모임 정보 기록 후 다음 단계 진행
-                    tempMeetingInfo = tempMeetingInfo
+                    tempMeetingInfo = tempMeetingInfo?
                         .setInvitedFriends(friends.map({ $0.id }))
                 } label: {
                     Text("다음")
@@ -434,6 +440,6 @@ extension CreateMeetingSheet.InviteFriendsView {
 
 #Preview {
     NavigationStack {
-        CreateMeetingSheet()
+        CreateMeetingSheet(resolver: PreviewHelper.shared.resolver)
     }
 }
