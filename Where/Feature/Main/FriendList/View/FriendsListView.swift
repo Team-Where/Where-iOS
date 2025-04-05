@@ -137,6 +137,9 @@ struct FriendsListView: View {
                 LazyVStack {
                     ForEach(friends) { friend in
                         Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, friend)
+                            .onTapGesture {
+                                isFocused = false
+                            }
                     }
                 }
             } header: {
