@@ -8,6 +8,10 @@
 import SwiftUI
 import Swinject
 
+typealias SectionType = FriendsListViewModel.SectionType
+typealias SheetType = FriendsListViewModel.SheetType
+typealias Route = FriendsListViewModel.Route
+
 struct FriendsListView: View {
     @ObservedObject private var viewModel: FriendsListViewModel
     @Binding var selectedTab: Int
@@ -81,7 +85,7 @@ struct FriendsListView: View {
             case .deleteFriend(let friend):
                 DeleteFriendSheet { viewModel.deleteFriend(by: friend.id) }
             case .historyWithFriend(let friend):
-                HistoryReminderSheet(sheetItem: $viewModel.sheetType, route: $viewModel.route, friend: friend)
+                HistoryReminderSheet(sheetType: $viewModel.sheetType, route: $viewModel.route, friend: friend)
             }
         }
     }
@@ -159,10 +163,6 @@ struct FriendsListView: View {
 
 // MARK: Nested Types
 extension FriendsListView {
-    typealias SectionType = FriendsListViewModel.SectionType
-    typealias SheetType = FriendsListViewModel.SheetType
-    typealias Route = FriendsListViewModel.Route
-    
     struct DeleteFriendSheet: View {
         let action: () -> Void
         
@@ -185,7 +185,7 @@ extension FriendsListView {
     }
     
     struct HistoryReminderSheet: View {
-        @Binding var sheetItem: SheetType?
+        @Binding var sheetType: SheetType?
         @Binding var route: Route?
         
         let friend: User
@@ -197,7 +197,7 @@ extension FriendsListView {
                     let isFavorite = true
                     
                     Button {
-                        sheetItem = nil
+                        sheetType = nil
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -236,7 +236,7 @@ extension FriendsListView {
                 }
                 
                 Button {
-                    sheetItem = .none
+                    sheetType = .none
                     route = .historyReminder(friend: friend)
                 } label: {
                     Text("나와의 모임활동 보기")
