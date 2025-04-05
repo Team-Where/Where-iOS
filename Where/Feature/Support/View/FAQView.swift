@@ -9,13 +9,7 @@ import SwiftUI
 
 struct FAQView: View {
     @State private var navigationType: NavigationType?
-    @State private var announcements: [Announcement] = [
-        .init(id: 0, title: "어디 서비스가 무엇이죠?", content: "어디는 친구들과 모임을 등록하여 카카오톡 등의 메신저로도 쉽게 공유하여 사용자가 원하는 지도 앱으로도 모임의 위치 혹은 장소를 파악할 수 있는 유용한 모임 공유 서비스입니다.", date: .now, type: .QandA),
-        .init(id: 1, title: "닉네임을 변경하고 싶어요.", content: "디엠주세요", date: .now, type: .QandA),
-        .init(id: 2, title: "회원탈퇴/로그아웃은 어떻게 하나요?", content: "설정 화면에서 회원탈퇴, 로그아웃 과정을 진행하실 수 있어요. 메뉴를 열어보세요!", date: .now, type: .QandA),
-        .init(id: 3, title: "비밀번호를 변경하고 싶어요.", content: "디엠주세요", date: .now, type: .QandA),
-        .init(id: 4, title: "모임방은 어떻게 만드나요?", content: "디엠주세요", date: .now, type: .QandA)
-    ]
+    @State private var announcements: [Announcement] = []
     
     var body: some View {
         VStack {
