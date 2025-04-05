@@ -14,9 +14,7 @@ final class MyMeetingViewModel: ObservableObject {
     @Published var isCompleteCreationViewPresented: Bool = false
     @Published var isSideMenuPresented: Bool = false
     @Published var isMeetingInformationViewPresented: Bool = false
-    @Published var meetings: [Meeting] = [
-        .init(id: 0, title: "2024 연말파티", description: "설명", imageURL: nil, createdAt: .now, updatedAt: .now, schedule: .now, shareLink: nil, isFinished: true)
-    ]
+    @Published var meetings: [Meeting] = []
     
     private let community: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
