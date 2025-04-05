@@ -26,89 +26,92 @@ struct LoginView: View {
     }
     
     var body: some View {
-        VStack {
-            Text("약속을 새롭게 정의하다")
-                .whereFont(.subtitle18semibold)
-                .padding()
-            
-            Image(.logo)
-            
-            Spacer()
-            
-            Image(.glassfyingCharacter)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-            
-            Spacer()
-            
-            VStack(spacing: 20) {
-                // Start With Naver Button
-                Button {
-                    viewModel.loginWithNaver()
-                } label: {
-                    Image(.startWithNaver)
-                        .resizable()
-                        .scaledToFit()
-                }
-                .frame(width: 350, height: 48)
-                .onOpenURL { url in
-                    viewModel.handleOpenURL(.naver, url: url)
-                }
+        NavigationStack {
+            VStack {
+                Text("약속을 새롭게 정의하다")
+                    .whereFont(.subtitle18semibold)
+                    .padding()
                 
-                // Start With Kakao Button
-                Button {
-                    viewModel.loginWithKakao()
-                } label: {
-                    Image(.startWithKakao)
-                        .resizable()
-                        .scaledToFit()
-                }
-                .frame(width: 350, height: 48)
-                .onOpenURL { url in
-                    viewModel.handleOpenURL(.kakao, url: url)
-                }
+                Image(.logo)
                 
-                SignInWithAppleButton(.continue) { request in
-                    request.requestedScopes = [.email]
-                    request.nonce = UUID().uuidString
-                } onCompletion: { result in
-                    switch result {
-                    case .failure(let error):
-                        print(error)
-                    case .success(let auth):
-                        viewModel.loginWithApple(auth: auth)
-                    }
-                }
-                .frame(width: 350, height: 48)
-                .clipShape(.rect(cornerRadius: 10))
+                Spacer()
                 
-                // Start With E-mail Button
-                NavigationLink {
-                    RegistrationTermView($isPresented, resolver: resolver)
-                } label: {
-                    Text("이메일로 시작하기")
-                        .whereFont(.body16semibold)
-                        .frame(width: 350, height: 48)
-                }
-                .buttonStyle(.whereRoundedProminent())
+                Image(.glassfyingCharacter)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 
-                HStack {
-                    Text("이미 계정 있나요?")
-                        .whereFont(.body14medium)
-                    
-                    NavigationLink {
-                        SignInView(resolver: resolver)
+                Spacer()
+                
+                VStack(spacing: 20) {
+                    // Start With Naver Button
+                    Button {
+                        viewModel.loginWithNaver()
                     } label: {
-                        Text("여기에 로그인하세요")
+                        Image(.startWithNaver)
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    .frame(width: 350, height: 48)
+                    .onOpenURL { url in
+                        viewModel.handleOpenURL(.naver, url: url)
+                    }
+                    
+                    // Start With Kakao Button
+                    Button {
+                        viewModel.loginWithKakao()
+                    } label: {
+                        Image(.startWithKakao)
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    .frame(width: 350, height: 48)
+                    .onOpenURL { url in
+                        viewModel.handleOpenURL(.kakao, url: url)
+                    }
+                    
+                    SignInWithAppleButton(.continue) { request in
+                        request.requestedScopes = [.email]
+                        request.nonce = UUID().uuidString
+                    } onCompletion: { result in
+                        switch result {
+                        case .failure(let error):
+                            print(error)
+                        case .success(let auth):
+                            viewModel.loginWithApple(auth: auth)
+                        }
+                    }
+                    .frame(width: 350, height: 48)
+                    .clipShape(.rect(cornerRadius: 10))
+                    
+                    // Start With E-mail Button
+                    NavigationLink {
+                        RegistrationTermView($isPresented, resolver: resolver)
+                    } label: {
+                        Text("이메일로 시작하기")
+                            .whereFont(.body16semibold)
+                            .frame(height: 48)
+                    }
+                    .frame(width: 350)
+                    .buttonStyle(.whereRoundedProminent())
+                    
+                    HStack {
+                        Text("이미 계정 있나요?")
                             .whereFont(.body14medium)
-                            .underline()
+                        
+                        NavigationLink {
+                            SignInView(resolver: resolver)
+                        } label: {
+                            Text("여기에 로그인하세요")
+                                .whereFont(.body14medium)
+                                .underline()
+                        }
                     }
                 }
+                .padding()
             }
-            .padding()
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                backButton
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    backButton
+                }
             }
         }
     }
