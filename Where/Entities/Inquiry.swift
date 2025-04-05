@@ -26,3 +26,10 @@ struct Inquiry: Identifiable {
     /// 문의 답변 내용
     let answerContent: String?
 }
+
+/// 사용자 문의 검색 기준의 종류
+enum InquirySearchCriteria: Int {
+    case answeredOnly = 1
+    case unansweredOnly
+    case all
+}
