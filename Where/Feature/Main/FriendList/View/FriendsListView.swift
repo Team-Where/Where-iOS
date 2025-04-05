@@ -36,19 +36,8 @@ struct FriendsListView: View {
             
             if friends.isEmpty {
                 unavailableView
-            } else if viewModel.isSearching {
-                ScrollView(.vertical) {
-                    ForEach(searchedFriends) { friend in
-                        Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
-                    }
-                }
             } else {
-                ScrollView(.vertical) {
-                    if viewModel.isEditing == false {
-                        section(.favorite, [])
-                    }
-                    section(.common, friends)
-                }
+                content()
             }
         }
         .padding()
@@ -92,12 +81,6 @@ struct FriendsListView: View {
         .sheet(item: $sheetItem) { item in
             sheet(item)
         }
-        .navigationDestination(item: $route) { route in
-            switch route {
-            case .historyReminder(let friend):
-                HistoryReminderView(friend: friend, resolver: resolver)
-            }
-        }
     }
     
     private var unavailableView: some View {
@@ -128,20 +111,37 @@ struct FriendsListView: View {
         .padding(.top)
     }
     
+    @ViewBuilder private func content() -> some View {
+        ScrollView(.vertical) {
+            if viewModel.isSearching == false {
+                section(.favorite, viewModel.friends)
+                section(.common, viewModel.friends)
+            } else {
+                section(.common, viewModel.searchedFriends)
+            }
+        }
+    }
+    
     @ViewBuilder private func section(_ type: SectionType, _ friends: [User]) -> some View {
-        if friends.isEmpty == false {
-            Section {
+        Section {
+            LazyVStack{
                 ForEach(friends) { friend in
                     Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
                 }
-            } header: {
-                HStack {
-                    Text("\(type.title)(\(friends.count))")
-                    
-                    Spacer()
-                }
             }
-            .padding(.top)
+        } header: {
+            HStack {
+                Text("\(type.title)(\(friends.count))")
+                
+                Spacer()
+            }
+        }
+        .padding(.top)
+        .navigationDestination(item: $route) { route in
+            switch route {
+            case .historyReminder(let friend):
+                HistoryReminderView(friend: friend, resolver: resolver)
+            }
         }
     }
     
@@ -328,5 +328,7 @@ extension FriendsListView {
 }
 
 #Preview {
-    ContentView(resolver: PreviewHelper.shared.resolver)
+    NavigationStack {
+        ContentView(resolver: PreviewHelper.shared.resolver)
+    }
 }
