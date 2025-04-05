@@ -88,6 +88,12 @@ struct FriendsListView: View {
                 HistoryReminderSheet(sheetType: $viewModel.sheetType, route: $viewModel.route, friend: friend)
             }
         }
+        .navigationDestination(item: $viewModel.route) { route in
+            switch route {
+            case .historyReminder(let friend):
+                HistoryReminderView(friend: friend, resolver: resolver)
+            }
+        }
     }
     
     private var unavailableView: some View {
@@ -146,12 +152,6 @@ struct FriendsListView: View {
                 sectionHeader(type: .common, count: friends.count)
             }
             .padding(.top)
-        }
-        .navigationDestination(item: $viewModel.route) { route in
-            switch route {
-            case .historyReminder(let friend):
-                HistoryReminderView(friend: friend, resolver: resolver)
-            }
         }
     }
     
