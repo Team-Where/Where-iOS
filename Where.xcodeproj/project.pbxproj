@@ -11,6 +11,7 @@
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
 		042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D62D9EC37A004105E2 /* Endpoint.swift */; };
 		042A79DA2D9FACE8004105E2 /* CreateMeetingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D92D9FACE8004105E2 /* CreateMeetingViewModel.swift */; };
+		042A79DC2DA17644004105E2 /* SupportCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79DB2DA17644004105E2 /* SupportCore.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -139,6 +140,7 @@
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
 		042A79D62D9EC37A004105E2 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		042A79D92D9FACE8004105E2 /* CreateMeetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingViewModel.swift; sourceTree = "<group>"; };
+		042A79DB2DA17644004105E2 /* SupportCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportCore.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 			children = (
 				04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */,
 				0450E85E2D9AC85B00DB029A /* CommunityCore.swift */,
+				042A79DB2DA17644004105E2 /* SupportCore.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1105,6 +1108,7 @@
 				04A530A22D8EE312004E58AD /* FAQView.swift in Sources */,
 				0450E8632D9B7BC200DB029A /* MeetingSortType.swift in Sources */,
 				0450E8542D99A2F000DB029A /* ServiceAssembly.swift in Sources */,
+				042A79DC2DA17644004105E2 /* SupportCore.swift in Sources */,
 				04A530B12D913D28004E58AD /* MeetingAdditionGuideView.swift in Sources */,
 				04A530A32D8EE312004E58AD /* NotificationListView.swift in Sources */,
 				04A530B52D914C82004E58AD /* SelectionTab.swift in Sources */,
