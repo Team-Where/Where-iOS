@@ -41,11 +41,11 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             }
             return SideMenuContentViewModel(auth: auth)
         }
-        container.register(HomeViewModel.self) { resolver in
+        container.register(MyMeetingViewModel.self) { resolver in
             guard let community = resolver.resolve((any CommunityCoreProtocol).self) else {
                 fatalError("CommunityCoreProtocol not registered")
             }
-            return HomeViewModel(community: community)
+            return MyMeetingViewModel(community: community)
         }
         container.register(MeetingInformationDetailViewModel.self) { resolver in
             guard let community = resolver.resolve(CommunityCoreProtocol.self) else {
@@ -59,11 +59,11 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             }
             return FriendsListViewModel(community: community)
         }
-        container.register(CreateMeetingSheetViewModel.self) { resolver in
+        container.register(CreateMeetingViewModel.self) { resolver in
             guard let community = resolver.resolve(CommunityCoreProtocol.self) else {
                 fatalError("CommunityCoreProtocol not registered")
             }
-            return CreateMeetingSheetViewModel(community: community)
+            return CreateMeetingViewModel(community: community)
         }
     }
 }
