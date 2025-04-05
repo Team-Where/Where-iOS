@@ -11,8 +11,6 @@ import Swinject
 struct FriendsListView: View {
     @ObservedObject private var viewModel: FriendsListViewModel
     @Binding var selectedTab: Int
-    @State private var sheetItem: SheetType?
-    @State private var route: Route?
     @FocusState private var isFocused: Bool
     
     private var friends: [User] { viewModel.friends }
@@ -78,8 +76,13 @@ struct FriendsListView: View {
                 }
             }
         }
-        .sheet(item: $sheetItem) { item in
-            sheet(item)
+        .sheet(item: $viewModel.sheetType) { type in
+            switch type {
+            case .deleteFriend(let friend):
+                DeleteFriendSheet { viewModel.deleteFriend(by: friend.id) }
+            case .historyWithFriend(let friend):
+                HistoryReminderSheet(sheetItem: $viewModel.sheetType, route: $viewModel.route, friend: friend)
+            }
         }
     }
     
@@ -113,31 +116,31 @@ struct FriendsListView: View {
     
     @ViewBuilder private func content() -> some View {
         ScrollView(.vertical) {
-            if viewModel.isSearching == false {
-                section(.favorite, viewModel.friends)
-                section(.common, viewModel.friends)
-            } else {
-                section(.common, viewModel.searchedFriends)
-            }
-        }
-    }
-    
-    @ViewBuilder private func section(_ type: SectionType, _ friends: [User]) -> some View {
-        Section {
-            LazyVStack{
-                ForEach(friends) { friend in
-                    Cell(sheetItem: $sheetItem, isEditing: isEditing, friend)
+            if isEditing == false {
+                Section {
+                    LazyVStack {
+                        ForEach(friends) { friend in
+                            Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, friend)
+                        }
+                    }
+                } header: {
+                    sectionHeader(type: .favorite, count: friends.count)
                 }
+                .padding(.top)
             }
-        } header: {
-            HStack {
-                Text("\(type.title)(\(friends.count))")
-                
-                Spacer()
+            
+            Section {
+                LazyVStack {
+                    ForEach(friends) { friend in
+                        Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, friend)
+                    }
+                }
+            } header: {
+                sectionHeader(type: .common, count: friends.count)
             }
+            .padding(.top)
         }
-        .padding(.top)
-        .navigationDestination(item: $route) { route in
+        .navigationDestination(item: $viewModel.route) { route in
             switch route {
             case .historyReminder(let friend):
                 HistoryReminderView(friend: friend, resolver: resolver)
@@ -145,12 +148,27 @@ struct FriendsListView: View {
         }
     }
     
-    @ViewBuilder private func sheet(_ type: SheetType) -> some View {
-        switch type {
-        case .deleteFriend(let friend):
+    @ViewBuilder private func sectionHeader(type: SectionType, count: Int) -> some View {
+        HStack {
+            Text("\(type.title)(\(count))")
+            
+            Spacer()
+        }
+    }
+}
+
+// MARK: Nested Types
+extension FriendsListView {
+    typealias SectionType = FriendsListViewModel.SectionType
+    typealias SheetType = FriendsListViewModel.SheetType
+    typealias Route = FriendsListViewModel.Route
+    
+    struct DeleteFriendSheet: View {
+        let action: () -> Void
+        
+        var body: some View {
             Button {
-                viewModel.deleteFriend(by: friend.id)
-                sheetItem = .none
+                action()
             } label: {
                 Text("친구 삭제")
                     .whereFont(.body16medium)
@@ -163,7 +181,16 @@ struct FriendsListView: View {
             .padding(.horizontal)
             .presentationDetents([.height(150)])
             .presentationCornerRadius(16)
-        case .historyWithFriend(let friend):
+        }
+    }
+    
+    struct HistoryReminderSheet: View {
+        @Binding var sheetItem: SheetType?
+        @Binding var route: Route?
+        
+        let friend: User
+        
+        var body: some View {
             VStack {
                 HStack {
                     // TODO: 도메인 모델 WIP
@@ -226,53 +253,9 @@ struct FriendsListView: View {
             .presentationCornerRadius(16)
         }
     }
-}
-
-// MARK: Nested Types
-extension FriendsListView {
-    /// 친구목록 내에서 구분되는 섹션의 종류
-    enum SectionType {
-        /// 일반 친구
-        case common
-        /// 즐겨찾기 친구
-        case favorite
-        
-        var title: String {
-            switch self {
-            case .common: "친구"
-            case .favorite: "즐겨찾기"
-            }
-        }
-    }
-    
-    /// 친구목록 내에서 라우팅 가능한 시트의 종류
-    enum SheetType: Identifiable {
-        /// 친구삭제
-        case deleteFriend(friend: User)
-        /// 나와의 모임활동 보기
-        case historyWithFriend(friend: User)
-        
-        var id: String { String(describing: self) }
-    }
-    
-    /// 친구목록 내에서 라우팅 가능한 Path의 종류
-    enum Route: Identifiable, Hashable {
-        /// 나와의 모임활동 상세 보기
-        case historyReminder(friend: User)
-        
-        var id: String { String(describing: self) }
-        
-        static func == (lhs: Route, rhs: Route) -> Bool {
-            lhs.id == rhs.id
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-        }
-    }
     
     struct Cell: View {
-        @Binding var sheetItem: SheetType?
+        @Binding var sheetType: SheetType?
         
         private let friend: User
         private var isEditing: Bool
@@ -282,7 +265,7 @@ extension FriendsListView {
             isEditing: Bool,
             _ friend: User
         ) {
-            self._sheetItem = sheetItem
+            self._sheetType = sheetItem
             self.isEditing = isEditing
             self.friend = friend
         }
@@ -299,29 +282,19 @@ extension FriendsListView {
                 
                 Spacer()
                 
-                if isEditing {
-                    Button {
-                        sheetItem = .deleteFriend(friend: friend)
-                    } label: {
-                        Image(systemName: "trash")
-                            .foregroundStyle(Color(hex: 0x6B7280))
-                    }
-                    .transition(.move(edge: .trailing))
-                } else {
-                    Button {
-                        // TODO: 즐겨찾기 토글
-                    } label: {
-                        // TODO: 도메인 모델 WIP
-                        let isFavorite = false
-                        Image(systemName: isFavorite ? "star.fill" : "star")
-                            .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
-                    }
-                    .transition(.move(edge: .trailing))
+                Button {
+                    // TODO: 즐겨찾기 토글
+                    isEditing ? sheetType = .deleteFriend(friend: friend) : ()
+                } label: {
+                    let isFavorite = false
+                    Image(systemName: isEditing ? "trash" : isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(isEditing ? .where(hex: 0x6B7280) : isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
                 }
+                .transition(.move(edge: .trailing))
             }
             .contentShape(.rect)
             .onTapGesture {
-                sheetItem = .historyWithFriend(friend: friend)
+                sheetType = .historyWithFriend(friend: friend)
             }
         }
     }
