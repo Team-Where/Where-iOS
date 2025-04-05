@@ -76,9 +76,6 @@ struct MyMeetingView: View {
         .fullScreenCover(isPresented: $viewModel.isCompleteCreationViewPresented) {
             CompleteCreationView(isCompleteCreationViewPresented: $viewModel.isCompleteCreationViewPresented)
         }
-        .navigationDestination(isPresented: $viewModel.isMeetingInformationViewPresented) {
-            MeetingInformationView(resolver: resolver)
-        }
     }
     
     private var header: some View {
@@ -154,6 +151,9 @@ struct MyMeetingView: View {
         }
         .scrollIndicators(.never)
         .padding()
+        .navigationDestination(isPresented: $viewModel.isMeetingInformationViewPresented) {
+            MeetingInformationView(resolver: resolver)
+        }
     }
     
     @ViewBuilder private func meetingCell(_ meeting: Meeting) -> some View {
