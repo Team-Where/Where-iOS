@@ -25,6 +25,6 @@ struct Announcement: Identifiable {
 enum AnnouncementType: Int {
     /// 일반공지
     case common = 0
-    /// Q&A
-    case QandA
+    /// FAQ
+    case FAQ
 }
