@@ -9,6 +9,8 @@ import Foundation
 import Combine
 
 final class FriendsListViewModel: ObservableObject {
+    @Published var sheetType: SheetType?
+    @Published var route: Route?
     @Published var friends: [User] = []
     @Published var searchedFriends: [User] = []
     @Published var searchingText: String = String()
@@ -54,6 +56,50 @@ final class FriendsListViewModel: ObservableObject {
                 self?.searchedFriends = filtered
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: Nested Types
+extension FriendsListViewModel {
+    /// 친구목록 내에서 구분되는 섹션의 종류
+    enum SectionType {
+        /// 일반 친구
+        case common
+        /// 즐겨찾기 친구
+        case favorite
+        
+        var title: String {
+            switch self {
+            case .common: "친구"
+            case .favorite: "즐겨찾기"
+            }
+        }
+    }
+    
+    /// 친구목록 내에서 라우팅 가능한 시트의 종류
+    enum SheetType: Identifiable {
+        /// 친구삭제
+        case deleteFriend(friend: User)
+        /// 나와의 모임활동 보기
+        case historyWithFriend(friend: User)
+        
+        var id: String { String(describing: self) }
+    }
+    
+    /// 친구목록 내에서 라우팅 가능한 Path의 종류
+    enum Route: Identifiable, Hashable {
+        /// 나와의 모임활동 상세 보기
+        case historyReminder(friend: User)
+        
+        var id: String { String(describing: self) }
+        
+        static func == (lhs: Route, rhs: Route) -> Bool {
+            lhs.id == rhs.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
     }
 }
 
