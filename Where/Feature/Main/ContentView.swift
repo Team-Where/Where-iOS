@@ -23,9 +23,6 @@ struct ContentView: View {
         TabView(selection: $selectedTab) {
             // 내모임 뷰
             MyMeetingView($selectedTab, $isCreateMeetingSheetPresented, resolver: resolver)
-                .overlay(alignment: .bottom) {
-                    Divider()
-                }
                 .tabItem {
                     Label("내 모임", systemImage: "person.2")
                         .environment(\.symbolVariants, .none)
@@ -41,9 +38,6 @@ struct ContentView: View {
             
             // 친구목록 뷰
             FriendsListView(selected: $selectedTab, resolver: resolver)
-                .overlay(alignment: .bottom) {
-                    Divider()
-                }
                 .tabItem {
                     Label("친구목록", systemImage: "list.bullet")
                 }

@@ -47,6 +47,9 @@ struct MyMeetingView: View {
                 SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver)
             }
         }
+        .overlay(alignment: .bottom) {
+            Divider()
+        }
         .toolbar {
             if selectedTab == 0 {
                 ToolbarItem(placement: .topBarLeading) {

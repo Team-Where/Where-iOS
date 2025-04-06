@@ -43,6 +43,9 @@ struct FriendsListView: View {
             }
         }
         .padding()
+        .overlay(alignment: .bottom) {
+            Divider()
+        }
         .navigationBarBackButtonHidden()
         .toolbar {
             if selectedTab == 2 {
@@ -88,7 +91,7 @@ struct FriendsListView: View {
                 HistoryReminderSheet(sheetType: $viewModel.sheetType, route: $viewModel.route, friend: friend)
             }
         }
-        .navigationDestination(item: $viewModel.route) { route in
+        .navigationDestination(item: $viewModel.route) { route in // 이 수정자를 주석 처리하면 에러 로그가 발생하지 않으므로, 이 navigationDestination이 에러의 원인임
             switch route {
             case .historyReminder(let friend):
                 HistoryReminderView(friend: friend, resolver: resolver)
