@@ -22,12 +22,14 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             // 내모임 뷰
-            MyMeetingView($selectedTab, $isCreateMeetingSheetPresented, resolver: resolver)
-                .tabItem {
-                    Label("내 모임", systemImage: "person.2")
-                        .environment(\.symbolVariants, .none)
-                }
-                .tag(0)
+            NavigationStack {
+                MyMeetingView($isCreateMeetingSheetPresented, resolver: resolver)
+            }
+            .tabItem {
+                Label("내 모임", systemImage: "person.2")
+                    .environment(\.symbolVariants, .none)
+            }
+            .tag(0)
             
             // 새 모임 만들기
             Color.clear
@@ -37,11 +39,13 @@ struct ContentView: View {
                 .tag(1)
             
             // 친구목록 뷰
-            FriendsListView(selected: $selectedTab, resolver: resolver)
-                .tabItem {
-                    Label("친구목록", systemImage: "list.bullet")
-                }
-                .tag(2)
+            NavigationStack {
+                FriendsListView(resolver: resolver)
+            }
+            .tabItem {
+                Label("친구목록", systemImage: "list.bullet")
+            }
+            .tag(2)
         }
         .tint(.black) // 선택된 탭 아이템의 색상
         .onChange(of: selectedTab) { oldValue, newValue in
