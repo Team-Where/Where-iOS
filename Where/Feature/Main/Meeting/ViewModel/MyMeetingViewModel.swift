@@ -11,7 +11,6 @@ import Swinject
 
 final class MyMeetingViewModel: ObservableObject {
     @Published var sortType: MeetingSortType = .created
-    @Published var isCompleteCreationViewPresented = false
     @Published var isSideMenuPresented = false
     @Published var isMeetingInformationViewPresented = false
     @Published var isOnboardingViewPresented = false

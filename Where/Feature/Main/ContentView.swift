@@ -10,7 +10,9 @@ import Swinject
 
 struct ContentView: View {
     @State private var selectedTab: TabItem = .myMeeting
+    @State private var previousTab: TabItem = .myMeeting
     @State private var isCreateMeetingSheetPresented = false // sheet 표시 여부
+    @State private var isCompleteCreationViewPresented = false
     
     private let resolver: Resolver
     
@@ -22,7 +24,7 @@ struct ContentView: View {
         TabView(selection: $selectedTab) {
             // 내모임 뷰
             NavigationStack {
-                MyMeetingView($isCreateMeetingSheetPresented, resolver: resolver)
+                MyMeetingView(resolver: resolver)
             }
             .tabItem {
                 Label("내 모임", systemImage: "person.2")
@@ -48,8 +50,19 @@ struct ContentView: View {
         }
         .tint(.black) // 선택된 탭 아이템의 색상
         .onChange(of: selectedTab) { _, newValue in
-            guard newValue == .createMeeting else { return }
+            guard newValue == .createMeeting else {
+                return previousTab = newValue
+            }
             isCreateMeetingSheetPresented = true
+            selectedTab = previousTab
+        }
+        .sheet(isPresented: $isCreateMeetingSheetPresented) {
+            CreateMeetingView(resolver: resolver)
+                .presentationCornerRadius(24)
+                .presentationDetents([.fraction(0.99)])
+        }
+        .fullScreenCover(isPresented: $isCompleteCreationViewPresented) {
+            CompleteCreationView(isCompleteCreationViewPresented: $isCompleteCreationViewPresented)
         }
     }
 }

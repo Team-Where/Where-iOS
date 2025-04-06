@@ -9,17 +9,14 @@ import SwiftUI
 import Swinject
 
 struct MyMeetingView: View {
-    @Binding var isCreateMeetingSheetPresented: Bool
     @ObservedObject private var viewModel: MyMeetingViewModel
     @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     
     private let resolver: Resolver
     
     init(
-        _ isCreateMeetingSheetPresented: Binding<Bool>,
         resolver: Resolver
     ) {
-        self._isCreateMeetingSheetPresented = isCreateMeetingSheetPresented
         self.viewModel = resolver.resolve(MyMeetingViewModel.self)!
         self.resolver = resolver
     }
@@ -66,14 +63,6 @@ struct MyMeetingView: View {
                         .foregroundStyle(.black)
                 }
             }
-        }
-        .sheet(isPresented: $isCreateMeetingSheetPresented) {
-            CreateMeetingView(resolver: resolver)
-                .presentationCornerRadius(24)
-                .presentationDetents([.fraction(0.99)])
-        }
-        .fullScreenCover(isPresented: $viewModel.isCompleteCreationViewPresented) {
-            CompleteCreationView(isCompleteCreationViewPresented: $viewModel.isCompleteCreationViewPresented)
         }
         .navigationDestination(isPresented: $viewModel.isOnboardingViewPresented) {
             OnboardingView()
