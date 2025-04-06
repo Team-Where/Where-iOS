@@ -10,10 +10,6 @@ import Swinject
 
 @main
 struct WhereApp: App {
-    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
-    @State private var isOnboardingViewPresented: Bool = false
-    @State private var isLoginNeeded: Bool = true
-    
     private let resolver: Swinject.Resolver
     
     init() {
@@ -36,18 +32,7 @@ struct WhereApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                ContentView(resolver: resolver)
-                    .navigationDestination(isPresented: $isOnboardingViewPresented) {
-                        OnboardingView()
-                    }
-                    .fullScreenCover(isPresented: $isLoginNeeded) {
-                        LoginView($isLoginNeeded, resolver: resolver)
-                    }
-                    .onAppear {
-                        isOnboardingViewPresented = isOnboardingNeeded
-                    }
-            }
+            ContentView(resolver: resolver)
         }
     }
 }
