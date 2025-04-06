@@ -12,8 +12,6 @@ struct MyMeetingView: View {
     @Binding var isCreateMeetingSheetPresented: Bool
     @ObservedObject private var viewModel: MyMeetingViewModel
     @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
-    @State private var isOnboardingViewPresented: Bool = false
-    @State private var isLoginNeeded: Bool = true
     
     private let resolver: Resolver
     
@@ -77,14 +75,14 @@ struct MyMeetingView: View {
         .fullScreenCover(isPresented: $viewModel.isCompleteCreationViewPresented) {
             CompleteCreationView(isCompleteCreationViewPresented: $viewModel.isCompleteCreationViewPresented)
         }
-        .navigationDestination(isPresented: $isOnboardingViewPresented) {
+        .navigationDestination(isPresented: $viewModel.isOnboardingViewPresented) {
             OnboardingView()
         }
-        .fullScreenCover(isPresented: $isLoginNeeded) {
-            LoginView($isLoginNeeded, resolver: resolver)
+        .fullScreenCover(isPresented: $viewModel.isLoginNeeded) {
+            LoginView($viewModel.isLoginNeeded, resolver: resolver)
         }
         .onAppear {
-            isOnboardingViewPresented = isOnboardingNeeded
+            viewModel.isOnboardingViewPresented = isOnboardingNeeded
         }
     }
     

@@ -11,9 +11,11 @@ import Swinject
 
 final class MyMeetingViewModel: ObservableObject {
     @Published var sortType: MeetingSortType = .created
-    @Published var isCompleteCreationViewPresented: Bool = false
-    @Published var isSideMenuPresented: Bool = false
-    @Published var isMeetingInformationViewPresented: Bool = false
+    @Published var isCompleteCreationViewPresented = false
+    @Published var isSideMenuPresented = false
+    @Published var isMeetingInformationViewPresented = false
+    @Published var isOnboardingViewPresented = false
+    @Published var isLoginNeeded = false
     @Published var meetings: [Meeting] = []
     
     private let community: CommunityCoreProtocol
