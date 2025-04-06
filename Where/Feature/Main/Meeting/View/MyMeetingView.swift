@@ -9,18 +9,18 @@ import SwiftUI
 import Swinject
 
 struct MyMeetingView: View {
-    @Binding var selectedTab: Int
     @Binding var isCreateMeetingSheetPresented: Bool
     @ObservedObject private var viewModel: MyMeetingViewModel
+    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
+    @State private var isOnboardingViewPresented: Bool = false
+    @State private var isLoginNeeded: Bool = true
     
     private let resolver: Resolver
     
     init(
-        _ selectedTab: Binding<Int>,
         _ isCreateMeetingSheetPresented: Binding<Bool>,
         resolver: Resolver
     ) {
-        self._selectedTab = selectedTab
         self._isCreateMeetingSheetPresented = isCreateMeetingSheetPresented
         self.viewModel = resolver.resolve(MyMeetingViewModel.self)!
         self.resolver = resolver
@@ -51,23 +51,21 @@ struct MyMeetingView: View {
             Divider()
         }
         .toolbar {
-            if selectedTab == 0 {
-                ToolbarItem(placement: .topBarLeading) {
-                    Image("HomeLogo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 52, height: 24)
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        withAnimation {
-                            viewModel.toggleSideMenuPresentation()
-                        }
-                    } label: {
-                        Image(systemName: viewModel.isSideMenuPresented ? "xmark" : "line.3.horizontal")
-                            .foregroundStyle(.black)
+            ToolbarItem(placement: .topBarLeading) {
+                Image("HomeLogo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 52, height: 24)
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation {
+                        viewModel.toggleSideMenuPresentation()
                     }
+                } label: {
+                    Image(systemName: viewModel.isSideMenuPresented ? "xmark" : "line.3.horizontal")
+                        .foregroundStyle(.black)
                 }
             }
         }
@@ -78,6 +76,15 @@ struct MyMeetingView: View {
         }
         .fullScreenCover(isPresented: $viewModel.isCompleteCreationViewPresented) {
             CompleteCreationView(isCompleteCreationViewPresented: $viewModel.isCompleteCreationViewPresented)
+        }
+        .navigationDestination(isPresented: $isOnboardingViewPresented) {
+            OnboardingView()
+        }
+        .fullScreenCover(isPresented: $isLoginNeeded) {
+            LoginView($isLoginNeeded, resolver: resolver)
+        }
+        .onAppear {
+            isOnboardingViewPresented = isOnboardingNeeded
         }
     }
     

@@ -14,7 +14,6 @@ typealias Route = FriendsListViewModel.Route
 
 struct FriendsListView: View {
     @ObservedObject private var viewModel: FriendsListViewModel
-    @Binding var selectedTab: Int
     @FocusState private var isFocused: Bool
     
     private var friends: [User] { viewModel.friends }
@@ -23,11 +22,7 @@ struct FriendsListView: View {
     
     private let resolver: Resolver
     
-    init(
-        selected: Binding<Int>,
-        resolver: Resolver
-    ) {
-        self._selectedTab = selected
+    init(resolver: Resolver) {
         self.viewModel = resolver.resolve(FriendsListViewModel.self)!
         self.resolver = resolver
     }
@@ -48,38 +43,36 @@ struct FriendsListView: View {
         }
         .navigationBarBackButtonHidden()
         .toolbar {
-            if selectedTab == 2 {
-                ToolbarItem(placement: .topBarLeading) {
-                    if isEditing {
-                        BackButton {
-                            withAnimation {
-                                viewModel.toggleEditMode()
-                            }
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .navigation) {
-                    if isEditing {
-                        Text("목록편집")
-                            .whereFont(.subtitle18semibold)
-                            .foregroundStyle(Color(hex: 0x1F2937))
-                            .padding(.leading)
-                    } else {
-                        Text("친구목록")
-                            .whereFont(.title24semibold)
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+            ToolbarItem(placement: .topBarLeading) {
+                if isEditing {
+                    BackButton {
                         withAnimation {
                             viewModel.toggleEditMode()
                         }
-                    } label: {
-                        Text(isEditing ? "완료" : "편집")
-                            .whereFont(.body16medium)
                     }
+                }
+            }
+            
+            ToolbarItem(placement: .navigation) {
+                if isEditing {
+                    Text("목록편집")
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                        .padding(.leading)
+                } else {
+                    Text("친구목록")
+                        .whereFont(.title24semibold)
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation {
+                        viewModel.toggleEditMode()
+                    }
+                } label: {
+                    Text(isEditing ? "완료" : "편집")
+                        .whereFont(.body16medium)
                 }
             }
         }
