@@ -17,6 +17,7 @@
 		042A79F02DA3F5F8004105E2 /* NaverLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79EF2DA3F5F8004105E2 /* NaverLoginStrategy.swift */; };
 		042A79F22DA3FA38004105E2 /* AppleLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */; };
 		042A79F42DA3FC28004105E2 /* AuthentificationStrategyContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */; };
+		042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F52DA4124F004105E2 /* MeetingCore.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -151,6 +152,7 @@
 		042A79EF2DA3F5F8004105E2 /* NaverLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverLoginStrategy.swift; sourceTree = "<group>"; };
 		042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginStrategy.swift; sourceTree = "<group>"; };
 		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
+		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -336,6 +338,7 @@
 			children = (
 				042A79E72DA3EC49004105E2 /* Authentification */,
 				0450E85E2D9AC85B00DB029A /* CommunityCore.swift */,
+				042A79F52DA4124F004105E2 /* MeetingCore.swift */,
 				042A79DB2DA17644004105E2 /* SupportCore.swift */,
 			);
 			path = Core;
@@ -1201,6 +1204,7 @@
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
 				046833DD2D3B8DB8009D2357 /* RegistrationView.swift in Sources */,
 				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
+				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
