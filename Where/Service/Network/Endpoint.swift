@@ -24,6 +24,8 @@ enum Endpoint {
     case uploadProfileImage(userId: UInt64, image: Data)
     /// 네이버 로그인API - 사용자 정보 조회
     case readNaverUserInfo(token: String)
+    
+    // MARK: - Friends Related
     /// 친구 조회
     case readFriends(userId: UInt64)
     /// 친구 삭제
@@ -50,6 +52,8 @@ enum Endpoint {
     case acceptMeeetingInvitation(meetingId: UInt64)
     /// 모임 초대 수락 - 링크
     case acceptMeetingInvitationByLink(userId: UInt64, link: URL)
+    /// 초대장 링크로 모임 정보 조회
+    case readMeetingDetailForInvitationLink(inviteCode: String)
     
     // MARK: Schedule Related
     /// 모임 일정 등록
@@ -115,26 +119,133 @@ enum Endpoint {
 }
 
 // MARK: TargetType Confirmation
-//extension Endpoint: TargetType {
-//    var baseURL: URL {
-//        URL(string: "BaseURL")!
-//    }
-//    
-//    var path: String {
-//        
-//    }
-//    
-//    var method: Moya.Method {
-//        
-//    }
-//    
-//    var task: Moya.Task {
-//        
-//    }
-//    
-//    var headers: [String: String]? {
-//
-//    }
-//    
-//    var validationType: ValidationType { .successCodes }
-//}
+extension Endpoint: TargetType {
+    var baseURL: URL {
+        URL(string: "BaseURL")!
+    }
+    
+    var path: String {
+        switch self {
+            // MARK: - User Related
+        case .register:
+            return "\(basePath)/signup"
+        case .unregister(let userID):
+            return "\(basePath)/\(userID)"
+        case .login:
+            return "\(basePath)/login"
+        case .checkEmailDuplication:
+            return "\(basePath)/checkEmail"
+        case .readUserInfo(let userID):
+            return "\(basePath)/mypage/\(userID)"
+        case .uploadProfileImage(let userID, _):
+            return "\(basePath)/\(userID)/uploadProfile"
+        case .readNaverUserInfo:
+            return "/oauth2/authorization/naver"
+            
+            // MARK: - Friends Related
+        case .readFriends(let userID):
+            return "\(basePath)/\(userID)"
+        case .deleteFriend:
+            return "\(basePath)"
+        case .bookmarkFriend:
+            return "\(basePath)/bookmark"
+        case .createMeeting, .updateMeeting, .leaveMeeting:
+            return "\(basePath)"
+        case .endMeeting:
+            return "\(basePath)/finish"
+        case .readInvitationStatus(_, let meetingID):
+            return "\(basePath)/participant/\(meetingID)"
+        case .readMeetingDetail(let userID):
+            return "\(basePath)/\(userID)"
+        case .inviteFriends:
+            return "\(basePath)/invite"
+        case .acceptMeeetingInvitation:
+            return "\(basePath)/invite/ok"
+        case .acceptMeetingInvitationByLink:
+            return "\(basePath)/invite/ok/link"
+        case .readMeetingDetailForInvitationLink(let inviteCode):
+            return "\(basePath)/invite/\(inviteCode)"
+            
+            // MARK: - Schedule Related
+        case .createSchedule, .updateSchedule, .deleteSchedule:
+            return "\(basePath)"
+        case .readSchedule(let userID):
+            return "\(basePath)/\(userID)"
+            
+            // MARK: - Place Related
+        case .createPlace, .deletePlace, .readPlaceDetail:
+            return "\(basePath)"
+        case .pickPlace:
+            return "\(basePath)/pick"
+        case .togglePlaceLike:
+            return "\(basePath)/like"
+            
+            // MARK: - Place Comment
+        case .createComment, .updateComment, .deleteComment:
+            return "\(basePath)/comment"
+        case .readComments(let placeID):
+            return "\(basePath)/\(placeID)"
+            
+            // MARK: -  Document Related
+        case .readUserInquiries(let userID):
+            return "\(basePath)/\(userID)"
+        case .createUserInquiry:
+            return "\(basePath)"
+        case .readAdminInquiries(let criteria):
+            return "\(basePath)/inquiry\(criteria)"
+        case .createAdminInquiryReply:
+            return "\(basePath)/inquiry"
+            
+        case .readAnnouncements:
+            return "/notice"
+        case .createAnnouncement, .updateAnnouncement, .deleteAnnouncement:
+            return "\(basePath)/notice"
+        case .readFAQs:
+            return "/FAQ"
+        case .createFAQ, .updateFAQ, .deleteFAQ:
+            return "\(basePath)/FAQ"
+        }
+    }
+    
+    var method: Moya.Method {
+        switch self {
+        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readNaverUserInfo, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink: .get
+        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfileImage, .register: .post
+        case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend: .put
+        case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister: .delete
+        }
+    }
+    
+    var task: Moya.Task {
+        
+    }
+    
+    var headers: [String: String]? {
+
+    }
+    
+    var validationType: ValidationType { .successCodes }
+}
+
+private extension Endpoint {
+    var basePath: String {
+        switch self {
+        case .register, .unregister, .login, .checkEmailDuplication,.readUserInfo, .uploadProfileImage:
+            return "/user"
+        case .readFriends, .deleteFriend, .bookmarkFriend:
+            return "/friend"
+        case .createMeeting, .updateMeeting, .endMeeting, .leaveMeeting, .readInvitationStatus, .readMeetingDetail, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .readMeetingDetailForInvitationLink, .inviteFriends:
+            return "/meeting"
+        case .createSchedule, .readSchedule, .updateSchedule, .deleteSchedule:
+            return "/schedule"
+        case .createPlace, .readPlaceDetail, .deletePlace, .pickPlace, .togglePlaceLike, .createComment, .updateComment, .deleteComment, .readComments:
+            return "/place"
+        case .readUserInquiries, .createUserInquiry:
+            return "/inquiry"
+        case .readAdminInquiries, .createAdminInquiryReply, .createAnnouncement, .updateAnnouncement, .deleteAnnouncement, .createFAQ, .updateFAQ, .deleteFAQ:
+            return "/admin"
+        @unknown default:
+            return ""
+        }
+    }
+}
