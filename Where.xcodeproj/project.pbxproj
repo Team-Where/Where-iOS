@@ -12,6 +12,11 @@
 		042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D62D9EC37A004105E2 /* Endpoint.swift */; };
 		042A79DA2D9FACE8004105E2 /* CreateMeetingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D92D9FACE8004105E2 /* CreateMeetingViewModel.swift */; };
 		042A79DC2DA17644004105E2 /* SupportCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79DB2DA17644004105E2 /* SupportCore.swift */; };
+		042A79EA2DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79E92DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift */; };
+		042A79EE2DA3EE1D004105E2 /* KakaoLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79ED2DA3EE1D004105E2 /* KakaoLoginStrategy.swift */; };
+		042A79F02DA3F5F8004105E2 /* NaverLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79EF2DA3F5F8004105E2 /* NaverLoginStrategy.swift */; };
+		042A79F22DA3FA38004105E2 /* AppleLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */; };
+		042A79F42DA3FC28004105E2 /* AuthentificationStrategyContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -141,6 +146,11 @@
 		042A79D62D9EC37A004105E2 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		042A79D92D9FACE8004105E2 /* CreateMeetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingViewModel.swift; sourceTree = "<group>"; };
 		042A79DB2DA17644004105E2 /* SupportCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportCore.swift; sourceTree = "<group>"; };
+		042A79E92DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyProtocol.swift; sourceTree = "<group>"; };
+		042A79ED2DA3EE1D004105E2 /* KakaoLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoLoginStrategy.swift; sourceTree = "<group>"; };
+		042A79EF2DA3F5F8004105E2 /* NaverLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverLoginStrategy.swift; sourceTree = "<group>"; };
+		042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginStrategy.swift; sourceTree = "<group>"; };
+		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -284,10 +294,47 @@
 			path = Interceptors;
 			sourceTree = "<group>";
 		};
-		0438BA7A2D97DA86008C628F /* Core */ = {
+		042A79E72DA3EC49004105E2 /* Authentification */ = {
 			isa = PBXGroup;
 			children = (
 				04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */,
+				042A79E82DA3EC63004105E2 /* Strategy */,
+			);
+			path = Authentification;
+			sourceTree = "<group>";
+		};
+		042A79E82DA3EC63004105E2 /* Strategy */ = {
+			isa = PBXGroup;
+			children = (
+				042A79EB2DA3ED1D004105E2 /* Interface */,
+				042A79EC2DA3ED23004105E2 /* Implementation */,
+			);
+			path = Strategy;
+			sourceTree = "<group>";
+		};
+		042A79EB2DA3ED1D004105E2 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				042A79E92DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		042A79EC2DA3ED23004105E2 /* Implementation */ = {
+			isa = PBXGroup;
+			children = (
+				042A79ED2DA3EE1D004105E2 /* KakaoLoginStrategy.swift */,
+				042A79EF2DA3F5F8004105E2 /* NaverLoginStrategy.swift */,
+				042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */,
+				042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */,
+			);
+			path = Implementation;
+			sourceTree = "<group>";
+		};
+		0438BA7A2D97DA86008C628F /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				042A79E72DA3EC49004105E2 /* Authentification */,
 				0450E85E2D9AC85B00DB029A /* CommunityCore.swift */,
 				042A79DB2DA17644004105E2 /* SupportCore.swift */,
 			);
@@ -1083,6 +1130,7 @@
 				04A530A52D8EE31C004E58AD /* AnnouncementView.swift in Sources */,
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				04A4F4612D42189F0041FD02 /* Announcement.swift in Sources */,
+				042A79F42DA3FC28004105E2 /* AuthentificationStrategyContext.swift in Sources */,
 				046833E02D3B8DD1009D2357 /* FriendsListView.swift in Sources */,
 				91B7A1722D26DFDE003932B4 /* String.swift in Sources */,
 				046833E92D3B8E8E009D2357 /* MeetingInformationView.swift in Sources */,
@@ -1097,6 +1145,7 @@
 				046833F12D3B8F65009D2357 /* Place.swift in Sources */,
 				04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */,
 				046833F22D3B8F65009D2357 /* Meridiem.swift in Sources */,
+				042A79F02DA3F5F8004105E2 /* NaverLoginStrategy.swift in Sources */,
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
 				0450E85F2D9AC85B00DB029A /* CommunityCore.swift in Sources */,
 				04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */,
@@ -1133,6 +1182,7 @@
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
 				046455DF2D94036700B74A01 /* CharacterLimitTextField.swift in Sources */,
 				91446F3F2D4FB07F00C142B2 /* CommentSheetView.swift in Sources */,
+				042A79EA2DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift in Sources */,
 				04A4F43F2D3F92730041FD02 /* RegistrationViewModel.swift in Sources */,
 				04A4F4462D40D8E20041FD02 /* RegistrationTerminationStep.swift in Sources */,
 				046833DB2D3B8DB8009D2357 /* RegistrationTermView.swift in Sources */,
@@ -1140,6 +1190,7 @@
 				04854C452D954B02007AADE4 /* SideMenu.swift in Sources */,
 				0450E8562D99A2FA00DB029A /* ViewModelAssembly.swift in Sources */,
 				04F051902D424C01000892C0 /* TokenStorage.swift in Sources */,
+				042A79F22DA3FA38004105E2 /* AppleLoginStrategy.swift in Sources */,
 				04A530B72D926D9A004E58AD /* EditProfileView.swift in Sources */,
 				0450E8582D9A2CBB00DB029A /* SideMenuContentViewModel.swift in Sources */,
 				046833DC2D3B8DB8009D2357 /* SignInView.swift in Sources */,
@@ -1169,6 +1220,7 @@
 				04A530A72D8FB8D8004E58AD /* EditAnnouncementView.swift in Sources */,
 				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
+				042A79EE2DA3EE1D004105E2 /* KakaoLoginStrategy.swift in Sources */,
 				91446F412D57388400C142B2 /* CommentEditView.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* ContentView.swift in Sources */,
 			);
