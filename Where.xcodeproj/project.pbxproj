@@ -35,6 +35,10 @@
 		042A7A182DA56932004105E2 /* ReadFriendsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A172DA56932004105E2 /* ReadFriendsDTO.swift */; };
 		042A7A1A2DA56AE1004105E2 /* DeleteFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A192DA56AE1004105E2 /* DeleteFriendDTO.swift */; };
 		042A7A1C2DA56B35004105E2 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A1B2DA56B35004105E2 /* BookmarkFriendDTO.swift */; };
+		042A7A1F2DA56E74004105E2 /* ReadFAQsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A1E2DA56E74004105E2 /* ReadFAQsDTO.swift */; };
+		042A7A212DA56EC2004105E2 /* CreateFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A202DA56EC2004105E2 /* CreateFAQDTO.swift */; };
+		042A7A232DA56F1D004105E2 /* UpdateFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A222DA56F1D004105E2 /* UpdateFAQDTO.swift */; };
+		042A7A252DA56F93004105E2 /* DeleteFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A242DA56F93004105E2 /* DeleteFAQDTO.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -186,6 +190,10 @@
 		042A7A172DA56932004105E2 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
 		042A7A192DA56AE1004105E2 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
 		042A7A1B2DA56B35004105E2 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
+		042A7A1E2DA56E74004105E2 /* ReadFAQsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFAQsDTO.swift; sourceTree = "<group>"; };
+		042A7A202DA56EC2004105E2 /* CreateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFAQDTO.swift; sourceTree = "<group>"; };
+		042A7A222DA56F1D004105E2 /* UpdateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFAQDTO.swift; sourceTree = "<group>"; };
+		042A7A242DA56F93004105E2 /* DeleteFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFAQDTO.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -411,6 +419,17 @@
 			path = Friend;
 			sourceTree = "<group>";
 		};
+		042A7A1D2DA56E3A004105E2 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				042A7A1E2DA56E74004105E2 /* ReadFAQsDTO.swift */,
+				042A7A202DA56EC2004105E2 /* CreateFAQDTO.swift */,
+				042A7A222DA56F1D004105E2 /* UpdateFAQDTO.swift */,
+				042A7A242DA56F93004105E2 /* DeleteFAQDTO.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		0438BA7A2D97DA86008C628F /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -582,6 +601,7 @@
 		04A5307F2D858B03004E58AD /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				042A7A1D2DA56E3A004105E2 /* Support */,
 				042A7A162DA56916004105E2 /* Friend */,
 				042A7A0D2DA56756004105E2 /* Schedule */,
 				042A7A0C2DA5674A004105E2 /* Place */,
@@ -1227,6 +1247,7 @@
 				046833EA2D3B8E8E009D2357 /* InviteFriendsView.swift in Sources */,
 				042A7A112DA56808004105E2 /* ReadScheduleDTO.swift in Sources */,
 				04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */,
+				042A7A252DA56F93004105E2 /* DeleteFAQDTO.swift in Sources */,
 				0450E84B2D996E5D00DB029A /* LoginViewModel.swift in Sources */,
 				046833EB2D3B8E8E009D2357 /* MeetingPlacesView.swift in Sources */,
 				042A7A072DA56163004105E2 /* UpdateCommentDTO.swift in Sources */,
@@ -1249,6 +1270,7 @@
 				04A5309E2D8EDDD4004E58AD /* Notification.swift in Sources */,
 				04A530A22D8EE312004E58AD /* FAQView.swift in Sources */,
 				0450E8632D9B7BC200DB029A /* MeetingSortType.swift in Sources */,
+				042A7A1F2DA56E74004105E2 /* ReadFAQsDTO.swift in Sources */,
 				0450E8542D99A2F000DB029A /* ServiceAssembly.swift in Sources */,
 				042A79DC2DA17644004105E2 /* SupportCore.swift in Sources */,
 				04A530B12D913D28004E58AD /* MeetingAdditionGuideView.swift in Sources */,
@@ -1297,9 +1319,11 @@
 				042A79FF2DA55EF2004105E2 /* DeletePlaceDTO.swift in Sources */,
 				04A530B32D914BE4004E58AD /* InquiryView.swift in Sources */,
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
+				042A7A212DA56EC2004105E2 /* CreateFAQDTO.swift in Sources */,
 				042A7A1A2DA56AE1004105E2 /* DeleteFriendDTO.swift in Sources */,
 				046833DD2D3B8DB8009D2357 /* RegistrationView.swift in Sources */,
 				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
+				042A7A232DA56F1D004105E2 /* UpdateFAQDTO.swift in Sources */,
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
