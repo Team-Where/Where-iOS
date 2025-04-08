@@ -1,0 +1,22 @@
+//
+//  CreateFAQDTO.swift
+//  Where
+//
+//  Created by Swain Yun on 4/8/25.
+//
+
+import Foundation
+
+/// FAQ 등록
+enum CreateFAQDTO {
+    struct Request: Encodable {
+        let title: String
+        let content: String
+    }
+    
+    struct Response: Decodable {
+        let id: UInt64
+        let title: String
+        let content: String
+    }
+}
