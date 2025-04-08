@@ -5,8 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+/// 모임 초대 조회 DTO
 enum MeetingDetailFromLinkDTO {
-    /// 모임 초대 조회 RequestDTO
     struct Request: Encodable {
         let invitationCode: String
         
@@ -14,7 +14,7 @@ enum MeetingDetailFromLinkDTO {
             case invitationCode = "link"
         }
     }
-    /// 모임 초대 조회 ResponseDTO
+    
     struct Response: Decodable {
         let meetingID: UInt64
         let title: String

@@ -5,9 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
-import Foundation
+/// 모임 초대 현황 조회 DTO
 enum ReadInvitationStatusDTO {
-    /// 모임 초대 현황 조회 RequestDTO
     struct Request: Encodable {
         let meetingID: UInt64
         
@@ -16,7 +15,6 @@ enum ReadInvitationStatusDTO {
         }
     }
     
-    /// 모임 초대 현황 조회 ResponseDTO
     typealias Response = [InvitationInfo]
 }
 

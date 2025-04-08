@@ -5,8 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+/// 모임 생성 DTO
 enum CreateMeetingDTO {
-    /// 모임 생성 RequestDTO
     struct Request: Encodable {
         let title: String
         let creatorID: String
@@ -19,7 +19,6 @@ enum CreateMeetingDTO {
         }
     }
     
-    /// 모임 생성 ResponseDTO
     struct Response: Decodable {
         let meetingID: UInt64
         let title: String

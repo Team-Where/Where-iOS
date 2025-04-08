@@ -5,8 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+/// 모임 정보 조회 DTO
 enum ReadMeetingDetailDTO {
-    /// 모임 정보 조회 RequestDTO
     struct Request: Encodable {
         let userID: UInt64
         
@@ -15,7 +15,6 @@ enum ReadMeetingDetailDTO {
         }
     }
     
-    /// 모임 정보 조회 ResponseDTO
     typealias Response = [MeetingInfo]
 }
 

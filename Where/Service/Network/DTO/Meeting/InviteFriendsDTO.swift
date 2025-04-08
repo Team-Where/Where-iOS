@@ -5,8 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+/// 모임 초대 DTO
 enum InviteFriendsDTO {
-    /// 모임 초대 RequestDTO
     struct Request: Encodable {
         let meetingID: UInt64
         let hostID: UInt64
