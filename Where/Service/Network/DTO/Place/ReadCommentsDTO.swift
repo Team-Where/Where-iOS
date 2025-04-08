@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 코멘트 조회
 enum ReadCommentsDTO {
     struct Request: Encodable {
         let placeID: UInt64
