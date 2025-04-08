@@ -120,6 +120,10 @@
 		7F07AA452DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA442DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift */; };
 		7F07AA472DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA462DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift */; };
 		7F07AA492DA5678100095602 /* MeetingDetailFromLinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA482DA5678100095602 /* MeetingDetailFromLinkDTO.swift */; };
+		7F07AA4B2DA5692D00095602 /* ReadUserInquiriesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA4A2DA5692D00095602 /* ReadUserInquiriesDTO.swift */; };
+		7F07AA4D2DA56B0400095602 /* CreateUserInquiryDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA4C2DA56B0400095602 /* CreateUserInquiryDTO.swift */; };
+		7F07AA4F2DA56CD400095602 /* ReadAdminInquiriesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA4E2DA56CD400095602 /* ReadAdminInquiriesDTO.swift */; };
+		7F07AA512DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA502DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift */; };
 		91446F3D2D4FA3FA00C142B2 /* CommentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */; };
 		91446F3F2D4FB07F00C142B2 /* CommentSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */; };
 		91446F412D57388400C142B2 /* CommentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F402D57388400C142B2 /* CommentEditView.swift */; };
@@ -262,6 +266,10 @@
 		7F07AA442DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptMeeetingInvitationDTO.swift; sourceTree = "<group>"; };
 		7F07AA462DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptMeetingInvitationByLinkDTO.swift; sourceTree = "<group>"; };
 		7F07AA482DA5678100095602 /* MeetingDetailFromLinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetailFromLinkDTO.swift; sourceTree = "<group>"; };
+		7F07AA4A2DA5692D00095602 /* ReadUserInquiriesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserInquiriesDTO.swift; sourceTree = "<group>"; };
+		7F07AA4C2DA56B0400095602 /* CreateUserInquiryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserInquiryDTO.swift; sourceTree = "<group>"; };
+		7F07AA4E2DA56CD400095602 /* ReadAdminInquiriesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAdminInquiriesDTO.swift; sourceTree = "<group>"; };
+		7F07AA502DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAdminInquiryReplyDTO.swift; sourceTree = "<group>"; };
 		91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputView.swift; sourceTree = "<group>"; };
 		91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentSheetView.swift; sourceTree = "<group>"; };
 		91446F402D57388400C142B2 /* CommentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditView.swift; sourceTree = "<group>"; };
@@ -552,6 +560,10 @@
 				7F07AA442DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift */,
 				7F07AA462DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift */,
 				7F07AA482DA5678100095602 /* MeetingDetailFromLinkDTO.swift */,
+				7F07AA4A2DA5692D00095602 /* ReadUserInquiriesDTO.swift */,
+				7F07AA4C2DA56B0400095602 /* CreateUserInquiryDTO.swift */,
+				7F07AA4E2DA56CD400095602 /* ReadAdminInquiriesDTO.swift */,
+				7F07AA502DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift */,
 			);
 			path = DTO;
 			sourceTree = "<group>";
@@ -1161,6 +1173,7 @@
 				042A79DA2D9FACE8004105E2 /* CreateMeetingViewModel.swift in Sources */,
 				0450E8612D9AD36700DB029A /* TemporaryMeetingInfo.swift in Sources */,
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
+				7F07AA4F2DA56CD400095602 /* ReadAdminInquiriesDTO.swift in Sources */,
 				04A4F45B2D42105E0041FD02 /* Inquiry.swift in Sources */,
 				04A530A52D8EE31C004E58AD /* AnnouncementView.swift in Sources */,
 				7F07AA382DA5546100095602 /* UpdateMeetingDTO.swift in Sources */,
@@ -1206,6 +1219,7 @@
 				042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */,
 				91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
+				7F07AA4D2DA56B0400095602 /* CreateUserInquiryDTO.swift in Sources */,
 				91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */,
 				04A530AD2D8FF6BC004E58AD /* RoundedTextEditor.swift in Sources */,
 				0450E84D2D99708C00DB029A /* PreviewHelper.swift in Sources */,
@@ -1218,6 +1232,7 @@
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045685172D46067F004CB29F /* NetworkService.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
+				7F07AA4B2DA5692D00095602 /* ReadUserInquiriesDTO.swift in Sources */,
 				91A9EABA2D29AFD7005F09D2 /* MyMeetingView.swift in Sources */,
 				04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */,
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
@@ -1258,6 +1273,7 @@
 				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */,
+				7F07AA512DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift in Sources */,
 				04A4F45D2D4212020041FD02 /* Meeting.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
 				04A530A72D8FB8D8004E58AD /* EditAnnouncementView.swift in Sources */,
