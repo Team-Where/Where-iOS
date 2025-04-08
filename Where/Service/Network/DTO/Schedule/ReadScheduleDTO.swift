@@ -5,8 +5,6 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
-import Foundation
-
 /// 일정 조회
 enum ReadScheduleDTO {
     struct Request: Encodable {

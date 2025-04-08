@@ -5,8 +5,6 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
-import Foundation
-
 /// FAQ 조회
 enum ReadFAQsDTO {
     struct Response {
