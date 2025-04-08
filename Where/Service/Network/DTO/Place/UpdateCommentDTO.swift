@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 코멘트 수정
 enum UpdateCommentDTO {
     struct Request: Encodable {
         let id: UInt64

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 일정 조회
 enum ReadScheduleDTO {
     struct Request: Encodable {
         let meetingID: UInt64

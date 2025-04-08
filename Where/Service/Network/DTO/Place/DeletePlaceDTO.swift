@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 장소 삭제
 enum DeletePlaceDTO {
     struct Request: Encodable {
         let id: UInt64

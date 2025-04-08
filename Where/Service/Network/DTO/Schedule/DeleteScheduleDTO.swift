@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 일정 삭제
 enum DeleteScheduleDTO {
     struct Request: Encodable {
         let meetingID: UInt64

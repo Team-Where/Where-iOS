@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 친구 삭제
 enum DeleteFriendDTO {
     struct Request: Encodable {
         let userID: UInt64

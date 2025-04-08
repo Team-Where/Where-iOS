@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 코멘트 작성
 enum CreateCommentDTO {
     struct Request: Encodable {
         let placeID: UInt64

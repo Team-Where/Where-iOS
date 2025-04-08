@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 장소 선택
 enum PickPlaceDTO {
     struct Request: Encodable {
         let id: UInt64

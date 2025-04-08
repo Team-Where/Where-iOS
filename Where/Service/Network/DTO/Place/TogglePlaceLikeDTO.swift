@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 장소 좋아요 변경
 enum TogglePlaceLikeDTO {
     struct Request: Encodable {
         let id: UInt64

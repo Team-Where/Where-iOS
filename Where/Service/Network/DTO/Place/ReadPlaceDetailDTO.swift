@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 장소 조회
 enum ReadPlaceDetailDTO {
     struct Request: Encodable {
         let meetingID: UInt64

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 친구 즐겨찾기(북마크)
 enum BookmarkFriendDTO {
     struct Request: Encodable {
         let userID: UInt64

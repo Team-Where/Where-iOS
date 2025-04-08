@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 친구 목록 조회
 enum ReadFriendsDTO {
     struct Request: Encodable {
         let id: UInt64

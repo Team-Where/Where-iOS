@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 코멘트 삭제
 enum DeleteCommentDTO {
     struct Request: Encodable {
         let id: UInt64
