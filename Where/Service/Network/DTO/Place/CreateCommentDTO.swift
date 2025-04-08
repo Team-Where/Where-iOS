@@ -5,8 +5,6 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
-import Foundation
-
 /// 코멘트 작성
 enum CreateCommentDTO {
     struct Request: Encodable {
