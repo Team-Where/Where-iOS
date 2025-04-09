@@ -42,28 +42,32 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             return SideMenuContentViewModel(auth: auth)
         }
         container.register(MyMeetingViewModel.self) { resolver in
-            guard let community = resolver.resolve((any CommunityCoreProtocol).self) else {
-                fatalError("CommunityCoreProtocol not registered")
+            guard let meetingCore = resolver.resolve(MeetingCoreProtocol.self) else {
+                fatalError("MeetingCoreProtocol not registered")
             }
-            return MyMeetingViewModel(community: community)
+            return MyMeetingViewModel(meetingCore: meetingCore)
         }
         container.register(MeetingInformationDetailViewModel.self) { resolver in
-            guard let community = resolver.resolve(CommunityCoreProtocol.self) else {
-                fatalError("CommunityCoreProtocol not registered")
+            guard let communityCore = resolver.resolve(CommunityCoreProtocol.self),
+                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self)
+            else {
+                fatalError("CommunityCoreProtocol and MeetingCoreProtocol not registered")
             }
-            return MeetingInformationDetailViewModel(community: community)
+            return MeetingInformationDetailViewModel(communityCore: communityCore, meetingCore: meetingCore)
         }
         container.register(FriendsListViewModel.self) { resolver in
-            guard let community = resolver.resolve(CommunityCoreProtocol.self) else {
+            guard let communityCore = resolver.resolve(CommunityCoreProtocol.self) else {
                 fatalError("CommunityCoreProtocol not registered")
             }
-            return FriendsListViewModel(community: community)
+            return FriendsListViewModel(communityCore: communityCore)
         }
         container.register(CreateMeetingViewModel.self) { resolver in
-            guard let community = resolver.resolve(CommunityCoreProtocol.self) else {
-                fatalError("CommunityCoreProtocol not registered")
+            guard let communityCore = resolver.resolve(CommunityCoreProtocol.self),
+                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self)
+            else {
+                fatalError("CommunityCoreProtocol, MeetingCoreProtocol not registered")
             }
-            return CreateMeetingViewModel(community: community)
+            return CreateMeetingViewModel(communityCore: communityCore, meetingCore: meetingCore)
         }
     }
 }

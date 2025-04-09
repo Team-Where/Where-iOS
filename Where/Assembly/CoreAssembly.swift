@@ -27,5 +27,12 @@ struct CoreAssembly: Assembly {
             }
             return CommunityCore(networkService: networkService, tokenStorage: tokenStorage, auth: auth)
         }
+        container.register(MeetingCoreProtocol.self) { resolver in
+            guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self)
+            else {
+                fatalError("AuthentificationCoreProtocol not registered")
+            }
+            return MeetingCore(authCore: authCore)
+        }
     }
 }

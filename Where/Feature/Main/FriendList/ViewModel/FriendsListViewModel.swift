@@ -18,16 +18,16 @@ final class FriendsListViewModel: ObservableObject {
     
     var isSearching: Bool { searchingText.isEmpty == false }
     
-    private let community: CommunityCoreProtocol
+    private let communityCore: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(community: CommunityCoreProtocol) {
-        self.community = community
+    init(communityCore: CommunityCoreProtocol) {
+        self.communityCore = communityCore
         subscribe()
     }
     
     private func subscribe() {
-        community.friends
+        communityCore.friends
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -110,10 +110,10 @@ extension FriendsListViewModel {
     }
     
     func deleteFriend(by id: UInt64) {
-        community.deleteFriend(id: id)
+        communityCore.deleteFriend(id: id)
     }
     
     func toggleBookmark(by id: UInt64) {
-        community.toggleBookmarkFriend(id: id)
+        communityCore.toggleBookmarkFriend(id: id)
     }
 }

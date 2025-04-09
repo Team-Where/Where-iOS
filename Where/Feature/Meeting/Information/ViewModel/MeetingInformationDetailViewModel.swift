@@ -18,16 +18,21 @@ final class MeetingInformationDetailViewModel: ObservableObject {
         meeting?.isFinished ?? true
     }
     
-    private let community: CommunityCoreProtocol
+    private let communityCore: CommunityCoreProtocol
+    private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(community: CommunityCoreProtocol) {
-        self.community = community
+    init(
+        communityCore: CommunityCoreProtocol,
+        meetingCore: MeetingCoreProtocol
+    ) {
+        self.communityCore = communityCore
+        self.meetingCore = meetingCore
         subscribe()
     }
     
     private func subscribe() {
-        community.currentMeeting
+        meetingCore.currentMeeting
             .receive(on: DispatchQueue.main)
             .sink { [weak self] meeting in
                 self?.meeting = meeting
@@ -40,6 +45,6 @@ final class MeetingInformationDetailViewModel: ObservableObject {
 extension MeetingInformationDetailViewModel {
     func endMeeting() {
         guard let meetingId = meeting?.id else { return }
-        community.endMeeting(id: meetingId)
+        meetingCore.endMeeting(id: meetingId)
     }
 }

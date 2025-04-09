@@ -17,16 +17,16 @@ final class MyMeetingViewModel: ObservableObject {
     @Published var isLoginNeeded = false
     @Published var meetings: [Meeting] = []
     
-    private let community: CommunityCoreProtocol
+    private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(community: CommunityCoreProtocol) {
-        self.community = community
+    init(meetingCore: MeetingCoreProtocol) {
+        self.meetingCore = meetingCore
         subscribe()
     }
     
     private func subscribe() {
-        community.meetings
+        meetingCore.meetings
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -80,7 +80,7 @@ extension MyMeetingViewModel {
     }
     
     func routeToMeetingInformationView(meeting: Meeting) {
-        community.readCurrentMeeting(id: meeting.id)
+        meetingCore.readCurrentMeeting(id: meeting.id)
         isMeetingInformationViewPresented = true
     }
 }

@@ -13,10 +13,15 @@ final class CreateMeetingViewModel: ObservableObject {
     @Published var selectedImage: UIImage?
     @Published var tempMeetingInfo: TemporaryMeetingInfo?
     
-    private let community: CommunityCoreProtocol
+    private let communityCore: CommunityCoreProtocol
+    private let meetingCore: MeetingCoreProtocol
     
-    init(community: CommunityCoreProtocol) {
-        self.community = community
+    init(
+        communityCore: CommunityCoreProtocol,
+        meetingCore: MeetingCoreProtocol
+    ) {
+        self.communityCore = communityCore
+        self.meetingCore = meetingCore
     }
 }
 
@@ -30,6 +35,6 @@ extension CreateMeetingViewModel {
     
     func createMeeting() {
         guard let tempMeeting = tempMeetingInfo else { return }
-        community.createMeeting(info: tempMeeting)
+        meetingCore.createMeeting(info: tempMeeting)
     }
 }
