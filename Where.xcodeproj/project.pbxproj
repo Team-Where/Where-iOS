@@ -97,6 +97,7 @@
 		04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C3D2D950260007AADE4 /* FlowLayout.swift */; };
 		04854C452D954B02007AADE4 /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C442D954B02007AADE4 /* SideMenu.swift */; };
 		04854C472D958817007AADE4 /* CreateMeetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C462D958817007AADE4 /* CreateMeetingView.swift */; };
+		0497F6A32DA6B85F0037B1CC /* PlaceCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0497F6A22DA6B85F0037B1CC /* PlaceCore.swift */; };
 		04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04993AA52D50BA940058EAB8 /* ToolTip.swift */; };
 		04A4F43F2D3F92730041FD02 /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F43E2D3F92730041FD02 /* RegistrationViewModel.swift */; };
 		04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */; };
@@ -292,6 +293,7 @@
 		04854C422D95069F007AADE4 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		04854C442D954B02007AADE4 /* SideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenu.swift; sourceTree = "<group>"; };
 		04854C462D958817007AADE4 /* CreateMeetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingView.swift; sourceTree = "<group>"; };
+		0497F6A22DA6B85F0037B1CC /* PlaceCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceCore.swift; sourceTree = "<group>"; };
 		04993AA52D50BA940058EAB8 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		04A4F43E2D3F92730041FD02 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordView.swift; sourceTree = "<group>"; };
@@ -544,6 +546,7 @@
 				042A79E72DA3EC49004105E2 /* Authentification */,
 				0450E85E2D9AC85B00DB029A /* CommunityCore.swift */,
 				042A79F52DA4124F004105E2 /* MeetingCore.swift */,
+				0497F6A22DA6B85F0037B1CC /* PlaceCore.swift */,
 				042A79DB2DA17644004105E2 /* SupportCore.swift */,
 			);
 			path = Core;
@@ -1455,6 +1458,7 @@
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
+				0497F6A32DA6B85F0037B1CC /* PlaceCore.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
 				042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */,
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
