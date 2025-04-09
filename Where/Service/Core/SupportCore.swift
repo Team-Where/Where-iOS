@@ -68,10 +68,15 @@ final class SupportCore {
     private var userID: UInt64?
     
     private let authCore: AuthentificationCoreProtocol
+    private let tokenStorage: TokenStorageProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(authCore: AuthentificationCoreProtocol) {
+    init(
+        authCore: AuthentificationCoreProtocol,
+        tokenStorage: TokenStorageProtocol
+    ) {
         self.authCore = authCore
+        self.tokenStorage = tokenStorage
         subscribe()
     }
     

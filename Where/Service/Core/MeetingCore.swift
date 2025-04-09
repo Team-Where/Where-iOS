@@ -79,11 +79,16 @@ final class MeetingCore {
     
     private var userID: UInt64?
     
+    private let tokenStorage: TokenStorageProtocol
     private let authCore: AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(authCore: AuthentificationCoreProtocol) {
+    init(
+        authCore: AuthentificationCoreProtocol,
+        tokenStorage: TokenStorageProtocol
+    ) {
         self.authCore = authCore
+        self.tokenStorage = tokenStorage
         subscribe()
     }
     
