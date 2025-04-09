@@ -7,14 +7,6 @@
 
 /// 모임 초대 현황 조회 DTO
 enum ReadInvitationStatusDTO {
-    struct Request: Encodable {
-        let meetingID: UInt64
-        
-        enum CodingKeys: String, CodingKey {
-            case meetingID = "id"
-        }
-    }
-    
     typealias Response = [InvitationInfo]
 }
 
