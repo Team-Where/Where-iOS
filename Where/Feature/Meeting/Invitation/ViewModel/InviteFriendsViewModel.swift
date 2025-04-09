@@ -9,16 +9,17 @@ import Foundation
 import Combine
 
 final class InviteFriendsViewModel: ObservableObject {
-    @Published var friends: [User] = []
-    
+    @Published var friends = [User]()
+    @Published var searchedFriends = [User]()
     @Published var isFloaterPresented: Bool = false
     @Published var isSearching: Bool = false
     @Published var searchingText: String = String()
-    @Published var searchedFriends: [User] = []
     
+    private let communityCore: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    init(communityCore: CommunityCoreProtocol) {
+        self.communityCore = communityCore
         subscribe()
     }
     
@@ -35,6 +36,21 @@ final class InviteFriendsViewModel: ObservableObject {
                 }
                 
                 self?.searchedFriends = filtered
+            }
+            .store(in: &cancellables)
+        
+        communityCore.friends
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    #if DEBUG
+                    print("Error: \(error)")
+                    #endif
+                }
+            } receiveValue: { [weak self] dict in
+                self?.friends = dict.values.sorted { $0.nickname < $1.nickname }
             }
             .store(in: &cancellables)
     }
