@@ -7,14 +7,6 @@
 
 /// 모임 초대 조회 DTO
 enum MeetingDetailFromLinkDTO {
-    struct Request: Encodable {
-        let invitationCode: String
-        
-        enum CodingKeys: String, CodingKey {
-            case invitationCode = "link"
-        }
-    }
-    
     struct Response: Decodable {
         let meetingID: UInt64
         let title: String

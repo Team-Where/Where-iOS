@@ -6,15 +6,7 @@
 //
 
 /// 모임 정보 조회 DTO
-enum ReadMeetingDetailDTO {
-    struct Request: Encodable {
-        let userID: UInt64
-        
-        enum CodingKeys: String, CodingKey {
-            case userID = "id"
-        }
-    }
-    
+enum ReadMeetingDetailDTO {    
     typealias Response = [MeetingInfo]
 }
 
