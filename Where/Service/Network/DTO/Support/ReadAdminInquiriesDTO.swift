@@ -7,14 +7,6 @@
 
 /// 1:1문의 조회 - 관리자
 enum ReadAdminInquiriesDTO {
-    struct Request: Encodable {
-        let searchCriteria: UInt64
-        
-        enum CodingKeys: String, CodingKey {
-            case searchCriteria = "type"
-        }
-    }
-    
     typealias Response = [InquiryDetail]
 }
 

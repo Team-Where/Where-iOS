@@ -6,15 +6,7 @@
 //
 
 /// 일정 조회
-enum ReadScheduleDTO {
-    struct Request: Encodable {
-        let meetingID: UInt64
-        
-        enum CodingKeys: String, CodingKey {
-            case meetingID = "meetingId"
-        }
-    }
-    
+enum ReadScheduleDTO {    
     struct Response: Decodable {
         let date: String
         let time: String
