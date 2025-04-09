@@ -6,7 +6,7 @@
 //
 
 /// 모임 정보 조회 DTO
-enum ReadMeetingDetailDTO {    
+enum ReadMeetingDetailDTO {
     typealias Response = [MeetingInfo]
 }
 
