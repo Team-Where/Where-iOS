@@ -28,11 +28,20 @@ struct CoreAssembly: Assembly {
             return CommunityCore(networkService: networkService, tokenStorage: tokenStorage, auth: auth)
         }
         container.register(MeetingCoreProtocol.self) { resolver in
-            guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self)
+            guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self),
+                  let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
-                fatalError("AuthentificationCoreProtocol not registered")
+                fatalError("AuthentificationCoreProtocol, TokenStorageProtocol not registered")
             }
-            return MeetingCore(authCore: authCore)
+            return MeetingCore(authCore: authCore, tokenStorage: tokenStorage)
+        }
+        container.register(PlaceCoreProtocol.self) { resolver in
+            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self),
+                  let authCore = resolver.resolve(AuthentificationCoreProtocol.self)
+            else {
+                fatalError("TokenStorageProtocol, AuthentificationCoreProtocol not registered")
+            }
+            return PlaceCore(tokenStorage: tokenStorage, authCore: authCore)
         }
     }
 }
