@@ -69,5 +69,17 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             }
             return CreateMeetingViewModel(communityCore: communityCore, meetingCore: meetingCore)
         }
+        container.register(InviteFriendsViewModel.self) { resolver in
+            guard let communityCore = resolver.resolve(CommunityCoreProtocol.self) else {
+                fatalError("CommunityCoreProtocol not registered")
+            }
+            return InviteFriendsViewModel(communityCore: communityCore)
+        }
+        container.register(MeetingPlacesViewModel.self) { resolver in
+            guard let placeCore = resolver.resolve(PlaceCoreProtocol.self) else {
+                fatalError("PlaceCoreProtocol not registered")
+            }
+            return MeetingPlacesViewModel(placeCore: placeCore)
+        }
     }
 }
