@@ -24,13 +24,15 @@ struct Place: Identifiable {
     /// 장소정보수정일시
     let updatedAt: Date
     /// 좋아요 개수
-    let likesCount: UInt64
+    let likesCount: Int
     /// 장소 선택 여부
     let status: PickedState
     /// 외부 지도앱 장소 링크
 //    let links: PlaceLinks
     /// 장소에 대한 코멘트
     let comments: [Comment]
+    /// 동시 선택 여부
+    let isSimulaneouslyPicked: Bool
 }
 
 /// 장소 선택 여부
