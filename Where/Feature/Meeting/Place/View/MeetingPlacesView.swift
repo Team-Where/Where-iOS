@@ -6,23 +6,24 @@
 //
 
 import SwiftUI
+import Swinject
+
+fileprivate typealias PlaceSortOption = MeetingPlacesViewModel.PlaceSortOption
 
 struct MeetingPlacesView: View {
-    @State private var sortOption: PlaceSortOption = .all
-    @State private var isPickTipPresented: Bool = false
-    @State private var isShareTipPresented: Bool = false
+    @ObservedObject private var viewModel: MeetingPlacesViewModel
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing)
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(MeetingPlacesViewModel.self)!
+        self.resolver = resolver
+    }
     
     var body: some View {
         ScrollView(.vertical) {
-            pickedPlacesArea([
-                Place(id: 1, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)]),
-                
-                Place(id: 2, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)]),
-                
-                Place(id: 3, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)])
-            ])
+            pickedPlacesArea([])
             
             Rectangle()
                 .foregroundStyle(Color(hex: 0xF3F4F6))
@@ -30,7 +31,7 @@ struct MeetingPlacesView: View {
             
             sortOptions
             
-            candidatePlacesList(sortOption, users: [
+            candidatePlacesList(viewModel.sortOption, users: [
                 User(id: 1)
             ])
         }
@@ -39,8 +40,8 @@ struct MeetingPlacesView: View {
         .contentShape(.interaction, .containerRelative)
         .onTapGesture {
             withAnimation {
-                isPickTipPresented = false
-                isShareTipPresented = false
+                viewModel.isPickTipPresented = false
+                viewModel.isShareTipPresented = false
             }
         }
     }
@@ -78,13 +79,13 @@ struct MeetingPlacesView: View {
                 
                 Button {
                     withAnimation {
-                        isPickTipPresented.toggle()
+                        viewModel.isPickTipPresented.toggle()
                     }
                 } label: {
                     Image(systemName: "info.circle")
                         .foregroundStyle(Color(hex: 0x9CA3AF))
                 }
-                .whereTip($isPickTipPresented, configuration: tipConfiguration) {
+                .whereTip($viewModel.isPickTipPresented, configuration: tipConfiguration) {
                     Text("친구들과 가기로 결정한 장소 목록입니다")
                         .whereFont(.caption12regular)
                         .foregroundStyle(.white)
@@ -101,17 +102,17 @@ struct MeetingPlacesView: View {
         HStack(spacing: 8) {
             ForEach(PlaceSortOption.allCases, id: \.self) { option in
                 Button {
-                    sortOption = option
+                    viewModel.changeSortOption(option: option)
                 } label: {
                     Text(option.title)
                         .whereFont(.body14medium)
-                        .foregroundStyle(sortOption == option ? .black : Color(hex: 0x6B7280))
+                        .foregroundStyle(viewModel.sortOption == option ? .black : Color(hex: 0x6B7280))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.white)
-                                .strokeBorder(sortOption == option ? .black : .clear)
+                                .strokeBorder(viewModel.sortOption == option ? .black : .clear)
                         )
                 }
             }
@@ -126,13 +127,7 @@ struct MeetingPlacesView: View {
         case .all:
             LazyVStack {
                 ForEach(users, id: \.id) { user in
-                    sectionByUser(user, [
-                        Place(id: 1, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)]),
-                        
-                        Place(id: 2, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 0, status: .picked, comments: []),
-                        
-                        Place(id: 3, userId: 1, meetingId: 1, name: "TYPE", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, status: .picked, comments: [Comment(placeId: 1, description: "좋아요", writerId: 1, createdAt: .now, updatedAt: .now)])
-                    ])
+                    sectionByUser(user, [])
                 }
             }
         case .byLikesDescending:
@@ -176,7 +171,7 @@ struct MeetingPlacesView: View {
                                 .frame(width: 15, height: 15)
                         }
                     }
-                    .whereTip($isShareTipPresented, configuration: tipConfiguration) {
+                    .whereTip($viewModel.isShareTipPresented, configuration: tipConfiguration) {
                         Text("가장 먼저 장소를 공유해보세요!")
                             .whereFont(.caption12regular)
                             .foregroundStyle(.white)
@@ -188,7 +183,7 @@ struct MeetingPlacesView: View {
         }
         .padding([.horizontal, .top])
         .onAppear {
-            isShareTipPresented = places.isEmpty
+            viewModel.onAppear()
         }
     }
     
@@ -308,21 +303,6 @@ struct MeetingPlacesView: View {
 
 // MARK: Nested Types
 extension MeetingPlacesView {
-    /// 장소 목록 정렬 조건
-    enum PlaceSortOption: CaseIterable {
-        /// 전체보기
-        case all
-        /// Likes 수 내림차순, 3위까지
-        case byLikesDescending
-        
-        var title: String {
-            switch self {
-            case .all: "전체보기"
-            case .byLikesDescending: "BEST 순위"
-            }
-        }
-    }
-    
     struct PlaceCell: View {
         private let place: Place
         
@@ -412,5 +392,5 @@ extension MeetingPlacesView {
 }
 
 #Preview {
-    MeetingPlacesView()
+    MeetingPlacesView(resolver: PreviewHelper.shared.resolver)
 }
