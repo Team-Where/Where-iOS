@@ -6,10 +6,18 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct InviteFriendsView: View {
-    @ObservedObject private var viewModel = InviteFriendsViewModel()
+    @ObservedObject private var viewModel:InviteFriendsViewModel
     @FocusState private var isFocused: Bool
+    
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(InviteFriendsViewModel.self)!
+        self.resolver = resolver
+    }
     
     var body: some View {
         ZStack {
@@ -49,7 +57,6 @@ struct InviteFriendsView: View {
                         }
                     }
                 }
-                .padding()
             } else {
                 ScrollView(.vertical) {
                     invitedFriends(viewModel.friends)
@@ -244,6 +251,6 @@ struct InviteFriendsView: View {
 
 #Preview {
     NavigationStack {
-        InviteFriendsView()
+        InviteFriendsView(resolver: PreviewHelper.shared.resolver)
     }
 }

@@ -98,7 +98,7 @@ struct MeetingInformationDetailView: View {
         .navigationDestination(item: $navigationType) { type in
             switch type {
             case .inviteFriends:
-                InviteFriendsView()
+                InviteFriendsView(resolver: resolver)
             }
         }
     }
