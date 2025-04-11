@@ -98,6 +98,9 @@
 		04854C452D954B02007AADE4 /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C442D954B02007AADE4 /* SideMenu.swift */; };
 		04854C472D958817007AADE4 /* CreateMeetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04854C462D958817007AADE4 /* CreateMeetingView.swift */; };
 		0497F6A32DA6B85F0037B1CC /* PlaceCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0497F6A22DA6B85F0037B1CC /* PlaceCore.swift */; };
+		0497F6A62DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0497F6A52DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift */; };
+		0497F6A92DA93EE20037B1CC /* PlaceDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0497F6A82DA93EE20037B1CC /* PlaceDetailViewModel.swift */; };
+		0497F6AC2DA951100037B1CC /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0497F6AB2DA951100037B1CC /* CommentViewModel.swift */; };
 		04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04993AA52D50BA940058EAB8 /* ToolTip.swift */; };
 		04A4F43F2D3F92730041FD02 /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F43E2D3F92730041FD02 /* RegistrationViewModel.swift */; };
 		04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */; };
@@ -150,9 +153,6 @@
 		7F07AA552DA5714000095602 /* CreateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */; };
 		7F07AA572DA5726300095602 /* UpdateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */; };
 		7F07AA592DA5733D00095602 /* DeleteAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */; };
-		91446F3D2D4FA3FA00C142B2 /* CommentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */; };
-		91446F3F2D4FB07F00C142B2 /* CommentSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */; };
-		91446F412D57388400C142B2 /* CommentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F402D57388400C142B2 /* CommentEditView.swift */; };
 		91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F452D575BEE00C142B2 /* SideMenuContentView.swift */; };
 		91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */; };
 		91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */; };
@@ -164,10 +164,9 @@
 		91A9EABD2D29BA85005F09D2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EABC2D29BA85005F09D2 /* ContentView.swift */; };
 		91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A9EAC32D29C5D0005F09D2 /* Dismiss.swift */; };
 		91B7A1722D26DFDE003932B4 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B7A1712D26DFDE003932B4 /* String.swift */; };
-		91F1BFC72D3B7F95000B4C84 /* PlaceDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F1BFC62D3B7F95000B4C84 /* PlaceDetail.swift */; };
+		91F1BFC72D3B7F95000B4C84 /* PlaceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F1BFC62D3B7F95000B4C84 /* PlaceDetailView.swift */; };
 		91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F1BFC82D3B8093000B4C84 /* BackButton.swift */; };
 		91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */; };
-		91F6CE422D3D786F00BD24D1 /* PlaceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */; };
 		91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */; };
 /* End PBXBuildFile section */
 
@@ -193,26 +192,6 @@
 		042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginStrategy.swift; sourceTree = "<group>"; };
 		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
 		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
-		042A79FA2DA55520004105E2 /* CreatePlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePlace.swift; sourceTree = "<group>"; };
-		042A79FC2DA558F9004105E2 /* ReadPlaceDetailDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadPlaceDetailDTO.swift; sourceTree = "<group>"; };
-		042A79FE2DA55EF2004105E2 /* DeletePlaceDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletePlaceDTO.swift; sourceTree = "<group>"; };
-		042A7A002DA55FBC004105E2 /* PickPlaceDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickPlaceDTO.swift; sourceTree = "<group>"; };
-		042A7A022DA5604D004105E2 /* TogglePlaceLikeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TogglePlaceLikeDTO.swift; sourceTree = "<group>"; };
-		042A7A042DA560D4004105E2 /* CreateCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCommentDTO.swift; sourceTree = "<group>"; };
-		042A7A062DA56163004105E2 /* UpdateCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCommentDTO.swift; sourceTree = "<group>"; };
-		042A7A082DA56229004105E2 /* DeleteCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteCommentDTO.swift; sourceTree = "<group>"; };
-		042A7A0A2DA562CB004105E2 /* ReadCommentsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCommentsDTO.swift; sourceTree = "<group>"; };
-		042A7A0E2DA5677D004105E2 /* CreateScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A102DA56808004105E2 /* ReadScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A122DA56857004105E2 /* UpdateScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A142DA568E4004105E2 /* DeleteScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A172DA56932004105E2 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
-		042A7A192DA56AE1004105E2 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
-		042A7A1B2DA56B35004105E2 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
-		042A7A1E2DA56E74004105E2 /* ReadFAQsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFAQsDTO.swift; sourceTree = "<group>"; };
-		042A7A202DA56EC2004105E2 /* CreateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFAQDTO.swift; sourceTree = "<group>"; };
-		042A7A222DA56F1D004105E2 /* UpdateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFAQDTO.swift; sourceTree = "<group>"; };
-		042A7A242DA56F93004105E2 /* DeleteFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFAQDTO.swift; sourceTree = "<group>"; };
 		042A7A282DA57555004105E2 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
 		042A7A292DA57555004105E2 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
 		042A7A2A2DA57555004105E2 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
@@ -294,6 +273,9 @@
 		04854C442D954B02007AADE4 /* SideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenu.swift; sourceTree = "<group>"; };
 		04854C462D958817007AADE4 /* CreateMeetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingView.swift; sourceTree = "<group>"; };
 		0497F6A22DA6B85F0037B1CC /* PlaceCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceCore.swift; sourceTree = "<group>"; };
+		0497F6A52DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingPlacesViewModel.swift; sourceTree = "<group>"; };
+		0497F6A82DA93EE20037B1CC /* PlaceDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailViewModel.swift; sourceTree = "<group>"; };
+		0497F6AB2DA951100037B1CC /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		04993AA52D50BA940058EAB8 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		04A4F43E2D3F92730041FD02 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordView.swift; sourceTree = "<group>"; };
@@ -341,9 +323,6 @@
 		7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAnnouncementDTO.swift; sourceTree = "<group>"; };
 		7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnnouncementDTO.swift; sourceTree = "<group>"; };
 		7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAnnouncementDTO.swift; sourceTree = "<group>"; };
-		91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputView.swift; sourceTree = "<group>"; };
-		91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentSheetView.swift; sourceTree = "<group>"; };
-		91446F402D57388400C142B2 /* CommentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentEditView.swift; sourceTree = "<group>"; };
 		91446F452D575BEE00C142B2 /* SideMenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuContentView.swift; sourceTree = "<group>"; };
 		91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
@@ -355,10 +334,9 @@
 		91A9EABC2D29BA85005F09D2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		91A9EAC32D29C5D0005F09D2 /* Dismiss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dismiss.swift; sourceTree = "<group>"; };
 		91B7A1712D26DFDE003932B4 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		91F1BFC62D3B7F95000B4C84 /* PlaceDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetail.swift; sourceTree = "<group>"; };
+		91F1BFC62D3B7F95000B4C84 /* PlaceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailView.swift; sourceTree = "<group>"; };
 		91F1BFC82D3B8093000B4C84 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
-		91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceInfo.swift; sourceTree = "<group>"; };
 		91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDelete.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -431,40 +409,6 @@
 				042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */,
 			);
 			path = Implementation;
-			sourceTree = "<group>";
-		};
-		042A79F72DA53386004105E2 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		042A7A262DA574BC004105E2 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				042A7A002DA55FBC004105E2 /* PickPlaceDTO.swift */,
-				042A7A0A2DA562CB004105E2 /* ReadCommentsDTO.swift */,
-				042A79FA2DA55520004105E2 /* CreatePlace.swift */,
-				042A7A102DA56808004105E2 /* ReadScheduleDTO.swift */,
-				042A7A242DA56F93004105E2 /* DeleteFAQDTO.swift */,
-				042A7A062DA56163004105E2 /* UpdateCommentDTO.swift */,
-				042A7A122DA56857004105E2 /* UpdateScheduleDTO.swift */,
-				042A7A172DA56932004105E2 /* ReadFriendsDTO.swift */,
-				042A7A1E2DA56E74004105E2 /* ReadFAQsDTO.swift */,
-				042A7A142DA568E4004105E2 /* DeleteScheduleDTO.swift */,
-				042A7A0E2DA5677D004105E2 /* CreateScheduleDTO.swift */,
-				042A79FC2DA558F9004105E2 /* ReadPlaceDetailDTO.swift */,
-				042A7A042DA560D4004105E2 /* CreateCommentDTO.swift */,
-				042A79FE2DA55EF2004105E2 /* DeletePlaceDTO.swift */,
-				042A7A202DA56EC2004105E2 /* CreateFAQDTO.swift */,
-				042A7A192DA56AE1004105E2 /* DeleteFriendDTO.swift */,
-				042A7A222DA56F1D004105E2 /* UpdateFAQDTO.swift */,
-				042A7A1B2DA56B35004105E2 /* BookmarkFriendDTO.swift */,
-				042A7A022DA5604D004105E2 /* TogglePlaceLikeDTO.swift */,
-				042A7A082DA56229004105E2 /* DeleteCommentDTO.swift */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		042A7A272DA57511004105E2 /* Meeting */ = {
@@ -567,9 +511,7 @@
 			children = (
 				045B44A72D2150AF00514A27 /* Where */,
 				04832B452D266819003FFE3B /* WhereTests */,
-				042A79F72DA53386004105E2 /* Frameworks */,
 				045B44762D2146B000514A27 /* Products */,
-				042A7A262DA574BC004105E2 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -708,6 +650,30 @@
 				04832B442D266819003FFE3B /* WhereTests.swift */,
 			);
 			path = WhereTests;
+			sourceTree = "<group>";
+		};
+		0497F6A42DA7E0DC0037B1CC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				0497F6A52DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		0497F6A72DA93ED60037B1CC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				0497F6A82DA93EE20037B1CC /* PlaceDetailViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		0497F6AA2DA951060037B1CC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				0497F6AB2DA951100037B1CC /* CommentViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		04F0518E2D424BF1000892C0 /* Storage */ = {
@@ -1087,6 +1053,7 @@
 			children = (
 				7F7E67E62DA11B1C00833376 /* Comment */,
 				7F7E67E52DA11AF900833376 /* Detail */,
+				0497F6A42DA7E0DC0037B1CC /* ViewModel */,
 				7F7E67E42DA117BF00833376 /* View */,
 			);
 			path = Place;
@@ -1103,6 +1070,7 @@
 		7F7E67E52DA11AF900833376 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
+				0497F6A72DA93ED60037B1CC /* ViewModel */,
 				7F7E67E72DA11B6B00833376 /* View */,
 			);
 			path = Detail;
@@ -1111,6 +1079,7 @@
 		7F7E67E62DA11B1C00833376 /* Comment */ = {
 			isa = PBXGroup;
 			children = (
+				0497F6AA2DA951060037B1CC /* ViewModel */,
 				7F7E67E82DA11B7400833376 /* View */,
 			);
 			path = Comment;
@@ -1119,8 +1088,7 @@
 		7F7E67E72DA11B6B00833376 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				91F1BFC62D3B7F95000B4C84 /* PlaceDetail.swift */,
-				91F6CE412D3D786F00BD24D1 /* PlaceInfo.swift */,
+				91F1BFC62D3B7F95000B4C84 /* PlaceDetailView.swift */,
 				91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */,
 			);
 			path = View;
@@ -1130,9 +1098,6 @@
 			isa = PBXGroup;
 			children = (
 				91F6CE3F2D3D75DB00BD24D1 /* CommentView.swift */,
-				91446F3C2D4FA3FA00C142B2 /* CommentInputView.swift */,
-				91446F3E2D4FB07F00C142B2 /* CommentSheetView.swift */,
-				91446F402D57388400C142B2 /* CommentEditView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1336,7 +1301,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				91F6CE422D3D786F00BD24D1 /* PlaceInfo.swift in Sources */,
 				04854C472D958817007AADE4 /* CreateMeetingView.swift in Sources */,
 				91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */,
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
@@ -1364,6 +1328,7 @@
 				042A7A4F2DA57555004105E2 /* UpdateFAQDTO.swift in Sources */,
 				042A7A502DA57555004105E2 /* DeleteFAQDTO.swift in Sources */,
 				042A7A512DA57555004105E2 /* DeleteFriendDTO.swift in Sources */,
+				0497F6A62DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift in Sources */,
 				042A7A522DA57555004105E2 /* UpdateCommentDTO.swift in Sources */,
 				042A7A532DA57555004105E2 /* UpdateScheduleDTO.swift in Sources */,
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
@@ -1399,6 +1364,7 @@
 				04A530BA2D929D71004E58AD /* EditProfileViewModel.swift in Sources */,
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				04A5309E2D8EDDD4004E58AD /* Notification.swift in Sources */,
+				0497F6AC2DA951100037B1CC /* CommentViewModel.swift in Sources */,
 				04A530A22D8EE312004E58AD /* FAQView.swift in Sources */,
 				0450E8632D9B7BC200DB029A /* MeetingSortType.swift in Sources */,
 				0450E8542D99A2F000DB029A /* ServiceAssembly.swift in Sources */,
@@ -1417,7 +1383,6 @@
 				91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */,
 				04A530AD2D8FF6BC004E58AD /* RoundedTextEditor.swift in Sources */,
 				0450E84D2D99708C00DB029A /* PreviewHelper.swift in Sources */,
-				91446F3D2D4FA3FA00C142B2 /* CommentInputView.swift in Sources */,
 				0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */,
 				7F07AA552DA5714000095602 /* CreateAnnouncementDTO.swift in Sources */,
 				042A79D32D9EAD2F004105E2 /* AuthInterceptor.swift in Sources */,
@@ -1433,7 +1398,6 @@
 				04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */,
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
 				046455DF2D94036700B74A01 /* CharacterLimitTextField.swift in Sources */,
-				91446F3F2D4FB07F00C142B2 /* CommentSheetView.swift in Sources */,
 				7F07AA3F2DA558B700095602 /* ReadInvitationStatusDTO.swift in Sources */,
 				042A79EA2DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift in Sources */,
 				04A4F43F2D3F92730041FD02 /* RegistrationViewModel.swift in Sources */,
@@ -1448,6 +1412,7 @@
 				04A530B72D926D9A004E58AD /* EditProfileView.swift in Sources */,
 				0450E8582D9A2CBB00DB029A /* SideMenuContentViewModel.swift in Sources */,
 				046833DC2D3B8DB8009D2357 /* SignInView.swift in Sources */,
+				0497F6A92DA93EE20037B1CC /* PlaceDetailViewModel.swift in Sources */,
 				0450E85D2D9AC0FE00DB029A /* Tokens.swift in Sources */,
 				046833F62D3B8FB4009D2357 /* FriendsListViewModel.swift in Sources */,
 				04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */,
@@ -1466,7 +1431,7 @@
 				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
 				0450E84F2D99766900DB029A /* SignInViewModel.swift in Sources */,
 				046833D52D3B8D67009D2357 /* ImageSelectionPopupView.swift in Sources */,
-				91F1BFC72D3B7F95000B4C84 /* PlaceDetail.swift in Sources */,
+				91F1BFC72D3B7F95000B4C84 /* PlaceDetailView.swift in Sources */,
 				046833F52D3B8F99009D2357 /* User.swift in Sources */,
 				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
@@ -1480,7 +1445,6 @@
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
 				042A79EE2DA3EE1D004105E2 /* KakaoLoginStrategy.swift in Sources */,
 				7F07AA3D2DA556B700095602 /* LeaveMeetingDTO.swift in Sources */,
-				91446F412D57388400C142B2 /* CommentEditView.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
