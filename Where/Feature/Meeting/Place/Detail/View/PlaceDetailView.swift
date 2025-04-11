@@ -32,24 +32,6 @@ struct PlaceDetailView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 32)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    BackButton()
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.presentDeletionSheet()
-                    } label: {
-                        Text("삭제")
-                            .whereFont(.body16medium)
-                    }
-                }
-            }
-            .sheet(isPresented: $viewModel.isDeletionSheetPresented) {
-                PlaceDelete()
-                    .presentationDetents([.height(148)])
-                    .presentationCornerRadius(16)
-            }
             
             VStack {
                 Rectangle()
@@ -59,10 +41,28 @@ struct PlaceDetailView: View {
                     .padding(.vertical, 32)
             }
             
-            CommentView()
+            CommentView(resolver: resolver)
         }
         .onAppear {
             viewModel.onAppear()
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                BackButton()
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.presentDeletionSheet()
+                } label: {
+                    Text("삭제")
+                        .whereFont(.body16medium)
+                }
+            }
+        }
+        .sheet(isPresented: $viewModel.isDeletionSheetPresented) {
+            PlaceDelete()
+                .presentationDetents([.height(148)])
+                .presentationCornerRadius(16)
         }
     }
     

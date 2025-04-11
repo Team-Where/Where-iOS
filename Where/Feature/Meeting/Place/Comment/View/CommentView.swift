@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import Swinject
+
+fileprivate typealias SheetType = CommentViewModel.SheetType
 
 struct CommentView: View {
+    @ObservedObject private var viewModel: CommentViewModel
     @State private var comments: [String] = [] // 전체 코멘트 리스트
     @State private var myComment: String = "" // 내가 작성한 코멘트 (1개만 가능)
     @State private var isShowingCommentSheet: Bool = false // 코멘트 입력 Sheet 표시 여부
@@ -18,111 +22,98 @@ struct CommentView: View {
     var totalCommentCount: Int {
         return comments.count + (myComment.isEmpty ? 0 : 1)
     }
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(CommentViewModel.self)!
+    }
 
     var body: some View {
-        VStack(spacing: 0) {
+        Section {
+            sectionContentArea()
+        } header: {
             HStack(spacing: 4) {
                 Text("코멘트")
-                Text("\(totalCommentCount)") // 전체 코멘트 개수
-                    .foregroundStyle(Color(hex: 0x4F46E5))
+                Text("\(totalCommentCount)")
+                    .foregroundStyle(.where(hex: 0x4F46E5))
                 Spacer()
             }
             .whereFont(.body16medium)
-
-            // 내 코멘트 작성 (1개만 가능)
-            if myComment.isEmpty {
-                Button {
-                    isShowingCommentSheet = true
-                } label: {
-                    Text("코멘트 남기기")
-                        .whereFont(.body16medium)
-                        .foregroundStyle(Color(hex: 0x4F46E5))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 43)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color(hex: 0xDEE2E6), lineWidth: 1)
-                        )
-                }
-                .padding(.top, 16)
-            } else {
-                HStack {
-                    Text(myComment)
-                        .whereFont(.body14regular)
-                        .foregroundStyle(.black)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color(hex: 0x4F46E5), lineWidth: 1)
-                        )
-                        .onTapGesture {
-                            selectedComment = myComment
-                            isCommentSheet = true
-                        }
-                    Spacer()
-                }
-                .padding(.top, 16)
+        }
+        .padding(.horizontal, 20)
+        .sheet(item: $viewModel.sheetType) { type in
+            switch type {
+            case .create:
+                CommentCreationSheet(
+                    sheetType: $viewModel.sheetType,
+                    commentTextField: $viewModel.commentTextField
+                )
+            case .edit:
+                Text("fdfsd")
             }
+        }
+    }
+    
+    @ViewBuilder private func sectionContentArea() -> some View {
+        if comments.count == 0 {
+            createCommentButton
+        } else {
+            
+        }
+    }
+    
+    private var createCommentButton: some View {
+        Button {
+            viewModel.sheetType = .create
+        } label: {
+            Text("코멘트 남기기")
+                .whereFont(.body16medium)
+                .foregroundStyle(.accent)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.white)
+                        .strokeBorder(.where(hex: 0xDEE2E6))
+                )
+        }
+        .padding(.vertical, 20)
+    }
+}
 
-            // 다른 사람들의 코멘트 표시
+// MARK: - Nested Types
+extension CommentView {
+    struct CommentCreationSheet: View {
+        @Binding fileprivate var sheetType: SheetType?
+        @Binding var commentTextField: String
+        @FocusState private var commentFieldFocused: Bool
+        
+        private let headerTitle = "코멘트 남기기"
+        
+        var body: some View {
             VStack {
-                ForEach(comments, id: \.self) { comment in
-                    if comment != myComment { // 내 코멘트는 제외하고 표시
-                        HStack {
-                            Text(comment)
-                                .whereFont(.body14regular)
-                                .foregroundStyle(.gray)
-                                .padding(.vertical, 10)
-                                .padding(.horizontal, 16)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color(hex: 0xE3E4E9), lineWidth: 1)
-                                )
-                            Spacer()
-                        }
+                HStack {
+                    Text(headerTitle)
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(.where(.gray800))
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = nil
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.where(.gray800))
                     }
                 }
             }
-            .padding(.top, 16)
+            .padding()
+        }
+    }
+}
 
-            Spacer()
-        }
-        .padding(.horizontal, 20)
-
-        // 입력 Sheet (내 코멘트 추가)
-        .sheet(isPresented: $isShowingCommentSheet) {
-            CommentInputView(commentText: $myComment) {
-                isShowingCommentSheet = false
-            }
-            .presentationDetents([.fraction(0.5)])
-            .presentationCornerRadius(16)
-        }
-        
-        // 입력된 코멘트 보기 Sheet
-        .sheet(isPresented: $isCommentSheet) {
-            CommentSheetView(
-                selectedComment: $selectedComment,
-                onEdit: {
-                    isCommentSheet = false
-                    isEditingCommentMode = true // 코멘트 수정
-                },
-                onDelete: {
-                    myComment = "" // 내 코멘트 삭제
-                    isCommentSheet = false
-                }
-            )
-            .presentationDetents([.fraction(0.28)])
-            .presentationCornerRadius(16)
-        }
-
-        // 내 코멘트 수정 Sheet
-        .sheet(isPresented: $isEditingCommentMode) {
-            CommentEditView(commentText: $myComment, onUpdate: {
-                isEditingCommentMode = false
-            })
-            .presentationDetents([.fraction(0.5)])
-            .presentationCornerRadius(16)
-        }
+#Preview {
+    NavigationStack {
+        PlaceDetailView(resolver: PreviewHelper.shared.resolver)
     }
 }
