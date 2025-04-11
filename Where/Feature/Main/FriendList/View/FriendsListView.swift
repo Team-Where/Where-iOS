@@ -8,9 +8,9 @@
 import SwiftUI
 import Swinject
 
-typealias SectionType = FriendsListViewModel.SectionType
-typealias SheetType = FriendsListViewModel.SheetType
-typealias Route = FriendsListViewModel.Route
+fileprivate typealias SectionType = FriendsListViewModel.SectionType
+fileprivate typealias SheetType = FriendsListViewModel.SheetType
+fileprivate typealias Route = FriendsListViewModel.Route
 
 struct FriendsListView: View {
     @ObservedObject private var viewModel: FriendsListViewModel
@@ -184,8 +184,8 @@ extension FriendsListView {
     }
     
     struct HistoryReminderSheet: View {
-        @Binding var sheetType: SheetType?
-        @Binding var route: Route?
+        @Binding fileprivate var sheetType: SheetType?
+        @Binding fileprivate var route: Route?
         
         let friend: User
         
@@ -254,12 +254,12 @@ extension FriendsListView {
     }
     
     struct Cell: View {
-        @Binding var sheetType: SheetType?
+        @Binding fileprivate var sheetType: SheetType?
         
         private let friend: User
         private var isEditing: Bool
         
-        init(
+        fileprivate init(
             sheetItem: Binding<SheetType?>,
             isEditing: Bool,
             _ friend: User
