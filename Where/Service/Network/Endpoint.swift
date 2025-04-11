@@ -329,7 +329,12 @@ extension Endpoint: TargetType {
     }
     
     var headers: [String: String]? {
-        <#code#>
+        switch self {
+        case .unregister, .readUserInfo, .readNaverUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs:
+            return nil
+        default:
+            return ["Content-Type": "application/json"]
+        }
     }
     
     var validationType: ValidationType { .successCodes }
