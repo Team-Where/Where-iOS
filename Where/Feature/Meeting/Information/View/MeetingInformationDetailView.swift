@@ -414,7 +414,7 @@ extension MeetingInformationDetailView {
         var id: String { String(describing: self) }
     }
     
-    // MARK: 모임일정 편집 화면에서 라우팅 가능한 시트의 종류
+    /// 모임일정 편집 화면에서 라우팅 가능한 시트의 종류
     enum EditMeetingDateSheetType: Identifiable {
         case date, time
         
