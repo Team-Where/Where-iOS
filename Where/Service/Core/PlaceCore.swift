@@ -11,6 +11,8 @@ import Combine
 protocol PlaceCoreProtocol {
     /// 장소 목록
     var places: AnyPublisher<[UInt64: Place], PlaceCoreError> { get }
+    /// 최근 찾은 장소 정보
+    var currentPlace: AnyPublisher<Place, PlaceCoreError> { get }
     
     /// 장소 생성
     /// - Parameters:
@@ -39,6 +41,8 @@ protocol PlaceCoreProtocol {
     func updateComment(id: UInt64, description: String)
     /// 장소에 대한 코멘트 삭제
     func deleteComment(id: UInt64)
+    
+    func readCurrentPlace(id: UInt64)
 }
 
 enum PlaceCoreError: Error {
@@ -47,6 +51,7 @@ enum PlaceCoreError: Error {
 
 final class PlaceCore {
     @Published private var _places = [UInt64: Place]()
+    @Published private var _currentPlace: Place?
     
     private var userID: UInt64?
     
@@ -94,6 +99,13 @@ extension PlaceCore: PlaceCoreProtocol {
             .eraseToAnyPublisher()
     }
     
+    var currentPlace: AnyPublisher<Place, PlaceCoreError> {
+        $_currentPlace
+            .compactMap { $0 }
+            .setFailureType(to: PlaceCoreError.self)
+            .eraseToAnyPublisher()
+    }
+    
     func createPlace(meetingID: UInt64, name: String, address: String) {
         
     }
@@ -127,6 +139,10 @@ extension PlaceCore: PlaceCoreProtocol {
     }
     
     func deleteComment(id: UInt64) {
+        
+    }
+    
+    func readCurrentPlace(id: UInt64) {
         
     }
 }
