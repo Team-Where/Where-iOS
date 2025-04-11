@@ -26,7 +26,7 @@ struct Place: Identifiable {
     /// 좋아요 개수
     let likesCount: Int
     /// 장소 선택 여부
-    let status: PickedState
+    let pickedState: PickedState
     /// 외부 지도앱 장소 링크
 //    let links: PlaceLinks
     /// 장소에 대한 코멘트
