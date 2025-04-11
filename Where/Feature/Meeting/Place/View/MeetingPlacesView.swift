@@ -169,14 +169,14 @@ struct MeetingPlacesView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
+                                .whereTip($viewModel.isShareTipPresented, configuration: tipConfiguration) {
+                                    Text("가장 먼저 장소를 공유해보세요!")
+                                        .whereFont(.caption12regular)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 8)
+                                }
                         }
-                    }
-                    .whereTip($viewModel.isShareTipPresented, configuration: tipConfiguration) {
-                        Text("가장 먼저 장소를 공유해보세요!")
-                            .whereFont(.caption12regular)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 8)
                     }
                 }
             }
@@ -208,96 +208,99 @@ struct MeetingPlacesView: View {
     }
     
     @ViewBuilder private func placesSectionCell(_ place: Place) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // TODO: 2명 이상의 Pick을 받은 장소만 뱃지 노출
-            if true {
-                Text("같이 찾은 장소")
-                    .whereFont(.caption11regular)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 5)
-                    .padding(.vertical, 2)
-                    .background(.accent)
-                    .clipShape(.rect(cornerRadius: 17))
-            }
-            
-            HStack(spacing: 16) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(place.name)
-                        .whereFont(.subtitle18semibold)
-                        .foregroundStyle(Color(hex: 0x1F2937))
-                    
-                    Text(place.address)
-                        .whereFont(.body14regular)
-                        .foregroundStyle(Color(hex: 0x4B5563))
-                    
-                    HStack(spacing: 12) {
-                        HStack(spacing: 4) {
-                            Image(.bubbleIcon)
-                            
-                            if place.comments.count > 0 {
-                                Text("코멘트 \(place.comments.count)")
-                            } else {
-                                Text("코멘트")
-                            }
-                        }
-                        .foregroundStyle(Color(hex: 0x868E96))
+        NavigationLink {
+//            Place
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                if place.isSimulaneouslyPicked {
+                    Text("같이 찾은 장소")
+                        .whereFont(.caption11regular)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(.accent)
+                        .clipShape(.rect(cornerRadius: 17))
+                }
+                
+                HStack(spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(place.name)
+                            .whereFont(.subtitle18semibold)
+                            .foregroundStyle(Color(hex: 0x1F2937))
                         
-                        HStack(spacing: 4) {
-                            Image(systemName: "heart.fill")
-                            
-                            if place.likesCount > 0 {
-                                Text("좋아요 \(place.likesCount)")
-                            } else {
-                                Text("좋아요")
+                        Text(place.address)
+                            .whereFont(.body14regular)
+                            .foregroundStyle(Color(hex: 0x4B5563))
+                        
+                        HStack(spacing: 12) {
+                            HStack(spacing: 4) {
+                                Image(.bubbleIcon)
+                                
+                                if place.comments.count > 0 {
+                                    Text("코멘트 \(place.comments.count)")
+                                } else {
+                                    Text("코멘트")
+                                }
                             }
+                            .foregroundStyle(Color(hex: 0x868E96))
+                            
+                            HStack(spacing: 4) {
+                                Image(systemName: "heart.fill")
+                                
+                                if place.likesCount > 0 {
+                                    Text("좋아요 \(place.likesCount)")
+                                } else {
+                                    Text("좋아요")
+                                }
+                            }
+                            .foregroundStyle(place.likesCount > 0 ? .accent : Color(hex: 0x868E96))
                         }
-                        .foregroundStyle(place.likesCount > 0 ? .accent : Color(hex: 0x868E96))
+                        .whereFont(.caption12medium)
                     }
-                    .whereFont(.caption12medium)
+                    
+                    Spacer()
                 }
                 
-                Spacer()
-            }
-            
-            HStack(spacing: 8) {
-                HStack(spacing: 4) {
-                    Image(.colorNaverMapLogo)
+                HStack(spacing: 8) {
+                    HStack(spacing: 4) {
+                        Image(.colorNaverMapLogo)
+                        
+                        Text("네이버 지도")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        Capsule()
+                            .fill(.white)
+                            .strokeBorder(Color(hex: 0xE3E4E9))
+                    )
                     
-                    Text("네이버 지도")
+                    HStack(spacing: 4) {
+                        Image(.colorKakaoMapLogo)
+                        
+                        Text("카카오맵")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        Capsule()
+                            .fill(.white)
+                            .strokeBorder(Color(hex: 0xE3E4E9))
+                    )
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
-                .background(
-                    Capsule()
-                        .fill(.white)
-                        .strokeBorder(Color(hex: 0xE3E4E9))
-                )
-                
-                HStack(spacing: 4) {
-                    Image(.colorKakaoMapLogo)
-                    
-                    Text("카카오맵")
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
-                .background(
-                    Capsule()
-                        .fill(.white)
-                        .strokeBorder(Color(hex: 0xE3E4E9))
-                )
+                .whereFont(.caption12regular)
+                .foregroundStyle(Color(hex: 0x282828))
             }
-            .whereFont(.caption12regular)
-            .foregroundStyle(Color(hex: 0x282828))
+            .padding(.vertical, 24)
+            .padding(.horizontal, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.white)
+                    .shadow(color: .where(.gray200), radius: 4, y: 4)
+            )
         }
-        .padding(.vertical, 24)
-        .padding(.horizontal, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.white)
-                .shadow(color: .where(.gray200), radius: 4, y: 4)
-        )
     }
 }
 
