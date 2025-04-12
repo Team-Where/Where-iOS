@@ -60,9 +60,7 @@ struct PlaceDetailView: View {
             }
         }
         .sheet(isPresented: $viewModel.isDeletionSheetPresented) {
-            PlaceDelete()
-                .presentationDetents([.height(148)])
-                .presentationCornerRadius(16)
+            PlaceDelete { viewModel.deletePlace() }
         }
     }
     

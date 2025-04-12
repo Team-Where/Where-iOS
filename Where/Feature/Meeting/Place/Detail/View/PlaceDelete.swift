@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct PlaceDelete: View {
+    let onDelete: () -> Void
+    
     var body: some View {
         VStack(spacing: 16) {
             Button {
-            
+                onDelete()
             } label: {
                 Text("장소 삭제")
                     .foregroundStyle(.red)
@@ -22,9 +24,7 @@ struct PlaceDelete: View {
             }
             .padding(.horizontal, 20)
         }
+        .presentationDetents([.height(148)])
+        .presentationCornerRadius(16)
     }
-}
-
-#Preview {
-    PlaceDelete()
 }
