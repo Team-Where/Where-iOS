@@ -77,7 +77,7 @@ struct MyMeetingView: View {
     
     private var header: some View {
         HStack(alignment: .bottom) {
-            Text("내모임")
+            Text("내 모임")
                 .whereFont(.title24semibold)
             
             Spacer()
