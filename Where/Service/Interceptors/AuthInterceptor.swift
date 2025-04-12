@@ -7,7 +7,6 @@
 
 import Foundation
 import Alamofire
-import Moya
 
 final class AuthInterceptor: RequestInterceptor {
     private let key: UInt64
@@ -52,6 +51,6 @@ final class AuthInterceptor: RequestInterceptor {
             return completion(.doNotRetry)
         }
         
-//        let provider = MoyaProvider()
     }
 }
+
