@@ -88,8 +88,10 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             return PlaceDetailViewModel(placeCore: placeCore)
         }
         container.register(CommentViewModel.self) { resolver in
-            //
-            return CommentViewModel()
+            guard let placeCore = resolver.resolve(PlaceCoreProtocol.self) else {
+                fatalError("PlaceCoreProtocol not registered")
+            }
+            return CommentViewModel(placeCore: placeCore)
         }
     }
 }
