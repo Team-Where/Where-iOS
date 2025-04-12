@@ -32,6 +32,10 @@ struct AdjustPasswordView: View {
                         Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자에 부합하지 않습니다.")
                             .whereFont(.body14regular)
                             .foregroundStyle(Color(hex: 0xEF4444))
+                    } else if viewModel.passwordValidationState == .valid {
+                        Text("사용 가능한 비밀번호 입니다.")
+                            .whereFont(.body14regular)
+                            .foregroundStyle(Color(hex: 0x22C55E))
                     } else {
                         Text("영문+숫자+특수문자(!,\\~,@) 조합 8~32자")
                             .whereFont(.body14regular)
@@ -58,7 +62,7 @@ struct AdjustPasswordView: View {
                         Text("비밀번호가 올바르지 않습니다.")
                             .whereFont(.body14regular)
                             .foregroundStyle(Color(hex: 0xEF4444))
-                    } else {
+                    } else if viewModel.reInputPasswordFieldText.isEmpty {
                         Text("비밀번호를 한 번 더 입력해주세요.")
                             .whereFont(.body14regular)
                             .foregroundStyle(Color(hex: 0x374151))
@@ -76,6 +80,7 @@ struct AdjustPasswordView: View {
             }
             .buttonStyle(.whereRoundedProminent(disabled: viewModel.isDoneButtomDisabled))
         }
+        .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()
