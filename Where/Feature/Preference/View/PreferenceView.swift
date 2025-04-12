@@ -13,7 +13,7 @@ struct PreferenceView: View {
             LazyVStack(pinnedViews: .sectionHeaders) {
                 Section {
                     NavigationLink {
-                        // TODO: 비밀번호 변경
+                        AdjustPasswordView()
                     } label: {
                         HStack {
                             Text("비밀번호 변경")
@@ -50,6 +50,25 @@ struct PreferenceView: View {
                     }
                     .frame(width: 350, height: 50)
                     
+                    NavigationLink {
+                        UnregisterView()
+                    } label: {
+                        HStack {
+                            Text("계정 탈퇴")
+                                .whereFont(.body16medium)
+                                .foregroundStyle(.black)
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 12)
+                                .foregroundStyle(Color(hex: 0xADB58D))
+                        }
+                    }
+                    .frame(width: 350, height: 50)
+                    
                     Toggle(isOn: .constant(true)) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("알림")
@@ -63,6 +82,9 @@ struct PreferenceView: View {
                     }
                     .tint(.accent)
                     .frame(width: 350, height: 50)
+                    
+                   
+
                 } header: {
                     HStack {
                         Text("계정 설정")
