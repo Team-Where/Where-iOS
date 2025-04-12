@@ -13,6 +13,7 @@ final class AuthInterceptor: RequestInterceptor {
     private let tokenStorage: TokenStorageProtocol
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
+    private let apiProvider: APIServiceProvidable
     
     init(
         key: UInt64,
@@ -24,6 +25,7 @@ final class AuthInterceptor: RequestInterceptor {
         self.tokenStorage = tokenStorage
         self.decoder = decoder
         self.encoder = encoder
+        self.apiProvider = WithoutTokenAPIServiceProvider()
     }
     
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
@@ -51,6 +53,46 @@ final class AuthInterceptor: RequestInterceptor {
             return completion(.doNotRetry)
         }
         
+        let provider = apiProvider.makeProvider(Endpoint.self)
+        
+        provider.request(.readFAQs) {[weak self] result in
+            switch result {
+            case .success(let response):
+                guard let header = self?.hadleResponse(response.response),
+                      let tokens = self?.asTokens(with: header),
+                      self?.isTokenUpdated(tokens) == true
+                else {
+                    return completion(.doNotRetry)
+                }
+                session.session.configuration.headers.add(.authorization(bearerToken: tokens.accessToken))
+                completion(.retry)
+            case .failure(let error):
+                completion(.doNotRetryWithError(error))
+            }
+        }
     }
 }
 
+private extension AuthInterceptor {
+    func hadleResponse(_ response: HTTPURLResponse?) -> [String: String]? {
+        guard let response = response else { return nil }
+        guard (200..<300).contains(response.statusCode) else { return nil }
+        return response.allHeaderFields as? [String: String]
+    }
+    
+    func asTokens(with headers: [String: String]) -> Tokens {
+        let accessToken = headers["Authorization"] ?? String()
+        let refreshToken = headers["Authorization_refresh"] ?? String()
+        return Tokens(accessToken: accessToken, refreshToken: refreshToken)
+    }
+    
+    func isTokenUpdated(_ token: Tokens) -> Bool {
+        guard let encodedTokenData = try? encoder.encode(token),
+              (try? tokenStorage.store(encodedTokenData, by: key)) != nil
+        else {
+            return false
+        }
+        
+        return true
+    }
+}
