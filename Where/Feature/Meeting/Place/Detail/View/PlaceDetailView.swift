@@ -67,6 +67,8 @@ struct PlaceDetailView: View {
     @ViewBuilder private func placeInfoArea(_ place: Place) -> some View {
         VStack(spacing: 12) {
             VStack(spacing :4) {
+                // TODO: 기본 이미지 디자인 넣기 (장소사진 없어서 대체했음, 2025.04.12)
+                
                 Text(place.name)
                     .whereFont(.title24semibold)
                     .foregroundStyle(.where(.gray800))
