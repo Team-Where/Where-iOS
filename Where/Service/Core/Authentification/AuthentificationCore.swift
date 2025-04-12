@@ -78,7 +78,6 @@ final class AuthentificationCore: NSObject, ObservableObject {
         }
     }
     
-    private let networkService: NetworkServiceProtocol
     private let tokenStorage: TokenStorageProtocol
     private let strategyContext = AuthentificationStrategyContext()
     private let decoder: JSONDecoder = .init()
@@ -87,10 +86,8 @@ final class AuthentificationCore: NSObject, ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        networkService: NetworkServiceProtocol,
         tokenStorage: TokenStorageProtocol
     ) {
-        self.networkService = networkService
         self.tokenStorage = tokenStorage
         super.init()
         subscribe()

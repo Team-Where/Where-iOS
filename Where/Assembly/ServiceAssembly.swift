@@ -10,9 +10,6 @@ import Swinject
 
 struct ServiceAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(NetworkServiceProtocol.self) { _ in
-            NetworkService()
-        }
         container.register(TokenStorageProtocol.self) { _ in
             TokenStorage()
         }
