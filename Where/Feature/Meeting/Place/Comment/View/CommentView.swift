@@ -12,16 +12,6 @@ fileprivate typealias SheetType = CommentViewModel.SheetType
 
 struct CommentView: View {
     @ObservedObject private var viewModel: CommentViewModel
-    @State private var comments: [String] = [] // 전체 코멘트 리스트
-    @State private var myComment: String = "" // 내가 작성한 코멘트 (1개만 가능)
-    @State private var isShowingCommentSheet: Bool = false // 코멘트 입력 Sheet 표시 여부
-    @State private var selectedComment: String = "" // 선택한 코멘트 저장
-    @State private var isCommentSheet: Bool = false // 코멘트 보기 Sheet 표시 여부
-    @State private var isEditingCommentMode: Bool = false // 수정 모드 Sheet 표시 여부
-    
-    var totalCommentCount: Int {
-        return comments.count + (myComment.isEmpty ? 0 : 1)
-    }
     
     init(resolver: Resolver) {
         self.viewModel = resolver.resolve(CommentViewModel.self)!
@@ -33,7 +23,7 @@ struct CommentView: View {
         } header: {
             HStack(spacing: 4) {
                 Text("코멘트")
-                Text("\(totalCommentCount)")
+                Text("\(viewModel.comments.count)")
                     .foregroundStyle(.where(hex: 0x4F46E5))
                 Spacer()
             }
@@ -43,18 +33,27 @@ struct CommentView: View {
         .sheet(item: $viewModel.sheetType) { type in
             switch type {
             case .create:
-                CommentCreationSheet(
-                    sheetType: $viewModel.sheetType,
-                    commentTextField: $viewModel.commentTextField
-                )
+                CommentCreationSheet($viewModel.sheetType, commentTextField: $viewModel.commentTextField) {
+                    viewModel.createComment()
+                }
+                
+            case .read(let comment):
+                CommentReadingSheet($viewModel.sheetType, comment) { comment in
+                    viewModel.deleteComment(comment)
+                } onEdit: {
+                    viewModel.presentEditingSheet()
+                }
+                
             case .edit:
-                Text("fdfsd")
+                CommentEditingSheet($viewModel.sheetType, commentTextField: $viewModel.commentTextField) {
+                    viewModel.editComment()
+                }
             }
         }
     }
     
     @ViewBuilder private func sectionContentArea() -> some View {
-        if comments.count == 0 {
+        if viewModel.comments.count == 0 {
             createCommentButton
         } else {
             
@@ -87,11 +86,23 @@ extension CommentView {
         @Binding fileprivate var sheetType: SheetType?
         @Binding var commentTextField: String
         @FocusState private var commentFieldFocused: Bool
+        let onSubmit: () -> Void
         
         private let headerTitle = "코멘트 남기기"
+        private let presentationCornerRadius: CGFloat = 8
+        
+        fileprivate init(
+            _ sheetType: Binding<SheetType?>,
+            commentTextField: Binding<String>,
+            onSubmit: @escaping () -> Void
+        ) {
+            self._sheetType = sheetType
+            self._commentTextField = commentTextField
+            self.onSubmit = onSubmit
+        }
         
         var body: some View {
-            VStack {
+            VStack(spacing: 20) {
                 HStack {
                     Text(headerTitle)
                         .whereFont(.subtitle18semibold)
@@ -106,8 +117,221 @@ extension CommentView {
                             .foregroundStyle(.where(.gray800))
                     }
                 }
+                
+                TextField(text: $commentTextField) {
+                    Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
+                        .whereFont(.body16regular)
+                }
+                .focused($commentFieldFocused)
+                
+                Spacer()
+                
+                HStack(spacing: 12) {
+                    Button {
+                        commentFieldFocused = false
+                        commentTextField.removeAll()
+                        sheetType = .none
+                    } label: {
+                        Text("취소")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(Color(hex: 0x4B5563))
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(hex: 0xF3F4F6))
+                    )
+                    
+                    Button {
+                        commentFieldFocused = false
+                        onSubmit()
+                        sheetType = .none
+                    } label: {
+                        Text("확인")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.accent)
+                    )
+                    .disabled(commentTextField.isEmpty)
+                }
             }
             .padding()
+            .onAppear {
+                commentFieldFocused = true
+            }
+            .presentationCornerRadius(presentationCornerRadius)
+            .presentationDragIndicator(.hidden)
+            .interactiveDismissDisabled()
+            .presentationDetents(commentFieldFocused ? [.fraction(0.2)] : [.medium])
+        }
+    }
+    
+    struct CommentReadingSheet: View {
+        @Binding fileprivate var sheetType: SheetType?
+        
+        private let comment: Comment
+        private let onDelete: (Comment) -> Void
+        private let onEdit: () -> Void
+        private let headerTitle = "코멘트"
+        private let presentationCornerRadius: CGFloat = 8
+        
+        fileprivate init(
+            _ sheetType: Binding<SheetType?>,
+            _ comment: Comment,
+            onDelete: @escaping (Comment) -> Void,
+            onEdit: @escaping () -> Void
+        ) {
+            self._sheetType = sheetType
+            self.comment = comment
+            self.onDelete = onDelete
+            self.onEdit = onEdit
+        }
+        
+        var body: some View {
+            VStack(spacing: 20) {
+                HStack {
+                    Text(headerTitle)
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(.where(.gray800))
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = nil
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.where(.gray800))
+                    }
+                }
+                
+                Text(comment.description)
+                    .whereFont(.body16regular)
+                
+                Spacer()
+                
+                HStack(spacing: 12) {
+                    Button {
+                        onDelete(comment)
+                    } label: {
+                        Text("삭제")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.where(.red500))
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.where(.gray100))
+                    )
+                    
+                    Button {
+                        onEdit()
+                    } label: {
+                        Text("수정")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.accent)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.where(.gray100))
+                    )
+                }
+            }
+            .presentationCornerRadius(presentationCornerRadius)
+            .presentationDragIndicator(.hidden)
+            .interactiveDismissDisabled()
+            .presentationDetents([.fraction(0.3)])
+        }
+    }
+    
+    struct CommentEditingSheet: View {
+        @Binding fileprivate var sheetType: SheetType?
+        @Binding var commentTextField: String
+        @FocusState private var commentFieldFocused: Bool
+        private let onSubmit: () -> Void
+        private let headerTitle = "코멘트 수정"
+        private let presentationCornerRadius: CGFloat = 8
+        
+        fileprivate init(
+            _ sheetType: Binding<SheetType?>,
+            commentTextField: Binding<String>,
+            onSubmit: @escaping () -> Void
+        ) {
+            self._sheetType = sheetType
+            self._commentTextField = commentTextField
+            self.onSubmit = onSubmit
+        }
+        
+        var body: some View {
+            VStack(spacing: 20) {
+                HStack {
+                    Text(headerTitle)
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(.where(.gray800))
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = nil
+                        commentTextField.removeAll()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.where(.gray800))
+                    }
+                }
+                
+                TextField(text: $commentTextField) {
+                    Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
+                        .whereFont(.body16regular)
+                }
+                
+                Spacer()
+                
+                HStack(spacing: 12) {
+                    Button {
+                        onDismiss()
+                    } label: {
+                        Text("취소")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(Color(hex: 0x4B5563))
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(hex: 0xF3F4F6))
+                    )
+                    
+                    Button {
+                        onSubmit()
+                    } label: {
+                        Text("확인")
+                    }
+                    .whereFont(.body16medium)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.accent)
+                    )
+                    .disabled(commentTextField.isEmpty)
+                }
+            }
+        }
+        
+        private func onDismiss() {
+            commentFieldFocused = false
+            commentTextField.removeAll()
+            sheetType = .none
         }
     }
 }
