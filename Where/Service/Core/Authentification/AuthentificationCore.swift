@@ -56,25 +56,26 @@ enum AuthentificationCoreError: Error {
     case unknown(Error?)
 }
 
-final class AuthentificationCore: NSObject, ObservableObject {
-    struct Constants {
-        static let currentProviderUserDefaultsKey: String = "currentProvider"
-        static let currentUserIdUserDefaultsKey: String = "currentUserId"
+private extension AuthentificationCore {
+    enum Constants: String {
+        case currentUserIdUserDefaultsKey = "currentUserId"
     }
-    
+}
+
+final class AuthentificationCore: NSObject, ObservableObject {
     @Published var _user: User?
     
     var isLoginNeeded: Bool { _user == nil }
     
     private var currentProvider: AuthentificationProvider?
-    private var currentUserId: Int64? {
+    private var currentUserId: UInt64? {
         get {
-            guard let userIdString = UserDefaults.standard.string(forKey: Constants.currentUserIdUserDefaultsKey) else { return nil }
-            return Int64(userIdString)
+            guard let userIdString = UserDefaults.standard.string(forKey: Constants.currentUserIdUserDefaultsKey.rawValue) else { return nil }
+            return UInt64(userIdString)
         }
         
         set {
-            UserDefaults.standard.setValue(newValue?.description, forKey: Constants.currentUserIdUserDefaultsKey)
+            UserDefaults.standard.setValue(newValue?.description, forKey: Constants.currentUserIdUserDefaultsKey.rawValue)
         }
     }
     
