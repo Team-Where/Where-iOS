@@ -226,7 +226,6 @@
 		0450E8622D9B7BC200DB029A /* MeetingSortType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingSortType.swift; sourceTree = "<group>"; };
 		0450E8652D9B876E00DB029A /* MyMeetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMeetingViewModel.swift; sourceTree = "<group>"; };
 		045685162D46067F004CB29F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
-		045B44752D2146B000514A27 /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Where.app; path = "/Users/BOMBSGIE/Desktop/Project/Where-iOS/build/Debug-iphoneos/Where.app"; sourceTree = "<absolute>"; };
 		045B44A62D2150AF00514A27 /* WhereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereApp.swift; sourceTree = "<group>"; };
 		045B44B92D2164FA00514A27 /* Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pretendard.swift; sourceTree = "<group>"; };
 		045B44C42D21659700514A27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -265,7 +264,6 @@
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		04832B322D23EB93003FFE3B /* Floater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Floater.swift; sourceTree = "<group>"; };
-		04832B3B2D266813003FFE3B /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = WhereTests.xctest; path = "/Users/BOMBSGIE/Desktop/Project/Where-iOS/build/Debug-iphoneos/Where.app/PlugIns/WhereTests.xctest"; sourceTree = "<absolute>"; };
 		04832B442D266819003FFE3B /* WhereTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereTests.swift; sourceTree = "<group>"; };
 		04832B472D266F55003FFE3B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		04854C3D2D950260007AADE4 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
@@ -276,6 +274,8 @@
 		0497F6A52DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingPlacesViewModel.swift; sourceTree = "<group>"; };
 		0497F6A82DA93EE20037B1CC /* PlaceDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailViewModel.swift; sourceTree = "<group>"; };
 		0497F6AB2DA951100037B1CC /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
+		0497F6AF2DAA43CE0037B1CC /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Where.app; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app"; sourceTree = "<absolute>"; };
+		0497F6B02DAA43CE0037B1CC /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = WhereTests.xctest; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app/PlugIns/WhereTests.xctest"; sourceTree = "<absolute>"; };
 		04993AA52D50BA940058EAB8 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		04A4F43E2D3F92730041FD02 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordView.swift; sourceTree = "<group>"; };
@@ -1194,7 +1194,7 @@
 				042A79F82DA53386004105E2 /* KakaoSDKShare */,
 			);
 			productName = Where;
-			productReference = 045B44752D2146B000514A27 /* Where.app */;
+			productReference = 0497F6AF2DAA43CE0037B1CC /* Where.app */;
 			productType = "com.apple.product-type.application";
 		};
 		04832B3A2D266813003FFE3B /* WhereTests */ = {
@@ -1214,7 +1214,7 @@
 			packageProductDependencies = (
 			);
 			productName = WhereTests;
-			productReference = 04832B3B2D266813003FFE3B /* WhereTests.xctest */;
+			productReference = 0497F6B02DAA43CE0037B1CC /* WhereTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
