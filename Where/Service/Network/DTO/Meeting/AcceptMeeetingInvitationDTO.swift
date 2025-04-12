@@ -5,8 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+/// 모임 초대 수락 DTO
 struct AcceptMeeetingInvitationDTO {
-    /// 모임 초대 수락 RequestDTO
     struct Request: Encodable {
         let invitationID: String
         
@@ -15,7 +15,6 @@ struct AcceptMeeetingInvitationDTO {
         }
     }
     
-    /// 모임 초대 수락 Response
     struct Respnse: Decodable {
         let meetingID: UInt64
         let title: String

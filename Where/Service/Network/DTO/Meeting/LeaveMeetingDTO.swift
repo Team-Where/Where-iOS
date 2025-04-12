@@ -5,8 +5,9 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+/// 모임 탈퇴 DTO
 enum LeaveMeetingDTO {
-    /// 모임 탈퇴 RequestDTO
+    
     struct Request: Encodable {
         let meetingID: UInt64
         let userID: UInt64

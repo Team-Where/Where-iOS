@@ -5,8 +5,6 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
-import Foundation
-
 /// 장소 선택
 enum PickPlaceDTO {
     struct Request: Encodable {

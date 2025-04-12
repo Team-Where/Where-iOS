@@ -5,8 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+/// 모임 수정 DTO
 enum UpdateMeetingDTO {
-    /// 모임 수정 RequestDTO
     struct Request: Encodable {
         let meetingID: UInt64
         let title: String?
@@ -20,7 +20,6 @@ enum UpdateMeetingDTO {
         }
     }
     
-    /// 모임 수정 ResponseDTO
     struct Response: Decodable {
         let meetingID: UInt64
         let title: String

@@ -35,23 +35,23 @@ enum Endpoint {
     
     // MARK: Meeting Related
     /// 모임 생성
-    case createMeeting(userId: UInt64, temp: TemporaryMeetingInfo)
+    case createMeeting(encodedMeetingData: Data, imageData: Data?)
     /// 모임 수정
-    case updateMeeting(userId: UInt64, meetingId: UInt64, title: String?, description: String?, image: Data?)
+    case updateMeeting(encodedMeetingData: Data, imageData: Data?)
     /// 모임 종료
-    case endMeeting(userId: UInt64, meetingId: UInt64)
+    case endMeeting(dto: EndMeetingDTO.Request)
     /// 모임 탈퇴
-    case leaveMeeting(userId: UInt64, meetingId: UInt64)
+    case leaveMeeting(dto: LeaveMeetingDTO.Request)
     /// 모임 초대현황 조회
-    case readInvitationStatus(userId: UInt64, meetingId: UInt64)
+    case readInvitationStatus(meetingID: UInt64)
     /// 모임 정보 조회
-    case readMeetingDetail(userId: UInt64)
+    case readMeetingDetail(userID: UInt64)
     /// 모임 초대
-    case inviteFriends(userId: UInt64, meetingId: UInt64, friendId: UInt64)
+    case inviteFriends(dto: InviteFriendsDTO.Request)
     /// 모임 초대 수락
-    case acceptMeeetingInvitation(meetingId: UInt64)
+    case acceptMeeetingInvitation(dto: AcceptMeeetingInvitationDTO.Request)
     /// 모임 초대 수락 - 링크
-    case acceptMeetingInvitationByLink(userId: UInt64, link: URL)
+    case acceptMeetingInvitationByLink(dto: AcceptMeetingInvitationByLinkDTO.Request)
     /// 초대장 링크로 모임 정보 조회
     case readMeetingDetailForInvitationLink(inviteCode: String)
     
@@ -60,62 +60,62 @@ enum Endpoint {
     /// - Note:
     ///     - date: yyyy-MM-dd 형식
     ///     - time: HH:mm 형식
-    case createSchedule(userId: UInt64, meetingId: UInt64, date: String, time: String)
+    case createSchedule(dto: CreateScheduleDTO.Request)
     /// 모임 일정 조회
-    case readSchedule(meetingId: UInt64)
+    case readSchedule(meetingID: UInt64)
     /// 모임 일정 수정
     /// - Note:
     ///     - date: yyyy-MM-dd 형식
     ///     - time: HH:mm 형식
-    case updateSchedule(userId: UInt64, meetingId: UInt64, date: String?, time: String?)
+    case updateSchedule(dto: UpdateScheduleDTO.Request)
     /// 모임 일정 삭제
-    case deleteSchedule(userId: UInt64, meetingId: UInt64)
+    case deleteSchedule(dto: DeleteScheduleDTO.Request)
     
     // MARK: Place Related
     /// 장소 생성
-    case createPlace(userId: UInt64, meetingId: UInt64, name: String, address: String)
+    case createPlace(dto: CreatePlaceDTO.Request)
     /// 장소 조회
-    case readPlaceDetail(userId: UInt64, meetingId: UInt64)
+    case readPlaceDetail(userID: UInt64, meetingID: UInt64)
     /// 장소 삭제
-    case deletePlace(userId: UInt64, placeId: UInt64)
+    case deletePlace(dto: DeletePlaceDTO.Request)
     /// 장소 선택
-    case pickPlace(userId: UInt64, placeId: UInt64)
+    case pickPlace(dto: PickPlaceDTO.Request)
     /// 장소 좋아요 변경
-    case togglePlaceLike(userId: UInt64, placeId: UInt64, isLike: Bool)
+    case togglePlaceLike(dto: TogglePlaceLikeDTO.Request)
     /// 장소 코멘트 작성
-    case createComment(userId: UInt64, placeId: UInt64, description: String)
+    case createComment(dto: CreateCommentDTO.Request)
     /// 장소 코멘트 수정
-    case updateComment(userId: UInt64, commentId: UInt64, description: String)
+    case updateComment(dto: UpdateCommentDTO.Request)
     /// 장소 코멘트 삭제
-    case deleteComment(userId: UInt64, commentId: UInt64)
+    case deleteComment(dto: DeletePlaceDTO.Request)
     /// 장소 코멘트 조회
-    case readComments(placeId: UInt64)
+    case readComments(placeID: UInt64)
     
     // MARK: Document Related
     /// 1:1문의 조회 - 일반 사용자
-    case readUserInquiries(userId: UInt64)
+    case readUserInquiries(userID: UInt64)
     /// 1:1문의 작성 - 일반 사용자
-    case createUserInquiry(userId: UInt64, title: String, content: String)
+    case createUserInquiry(inquiryData: Data, imageDatas: [Data]?)
     /// 1:1문의 조회 - 관리자
     case readAdminInquiries(criteria: Int)
     /// 1:1문의 답변 등록 - 관리자
-    case createAdminInquiryReply(inquiryId: UInt64, content: String)
+    case createAdminInquiryReply(dto: CreateAdminInquiryReplyDTO.Request)
     /// 공지사항 조회
     case readAnnouncements
     /// 공지사항 등록
-    case createAnnouncement(title: String, content: String)
+    case createAnnouncement(dto: CreateAnnouncementDTO.Request)
     /// 공지사항 수정
-    case updateAnnouncement(announcementId: UInt64, title: String, content: String)
+    case updateAnnouncement(dto: UpdateAnnouncementDTO.Request)
     /// 공지사항 삭제
-    case deleteAnnouncement(announcementId: UInt64)
+    case deleteAnnouncement(dto: DeleteAnnouncementDTO.Request)
     /// FAQ 조회
     case readFAQs
     /// FAQ 등록
-    case createFAQ(title: String, content: String)
+    case createFAQ(dto: CreateFAQDTO.Request)
     /// FAQ 수정
-    case updateFAQ(inquiryId: UInt64, title: String, content: String)
+    case updateFAQ(dto: UpdateFAQDTO.Request)
     /// FAQ 삭제
-    case deleteFAQ(inquiryId: UInt64)
+    case deleteFAQ(dto: DeleteFAQDTO.Request)
 }
 
 // MARK: TargetType Confirmation
@@ -153,7 +153,7 @@ extension Endpoint: TargetType {
             return "\(basePath)"
         case .endMeeting:
             return "\(basePath)/finish"
-        case .readInvitationStatus(_, let meetingID):
+        case .readInvitationStatus(let meetingID):
             return "\(basePath)/participant/\(meetingID)"
         case .readMeetingDetail(let userID):
             return "\(basePath)/\(userID)"
@@ -217,11 +217,124 @@ extension Endpoint: TargetType {
     }
     
     var task: Moya.Task {
-        
+        switch self {
+        case .register:
+            <#code#>
+        case .unregister(userId: let userId):
+            <#code#>
+        case .login(email: let email, password: let password):
+            <#code#>
+        case .checkEmailDuplication(email: let email):
+            <#code#>
+        case .readUserInfo(userId: let userId):
+            <#code#>
+        case .uploadProfileImage(userId: let userId, image: let image):
+            <#code#>
+        case .readNaverUserInfo(token: let token):
+            <#code#>
+        case .readFriends(userId: let userId):
+            <#code#>
+        case .deleteFriend(userId: let userId, friendId: let friendId):
+            <#code#>
+        case .bookmarkFriend(userId: let userId, friendId: let friendId):
+            <#code#>
+        case .createMeeting(let encodedMeetingData, let imageData):
+            var formData = [MultipartFormData]()
+            formData.append(.init(provider: .data(encodedMeetingData), name: "data", mimeType: "application/json"))
+            if let imageData = imageData {
+                formData.append(.init(provider: .data(imageData), name: "image"))
+            }
+            return .uploadMultipart(formData)
+        case .updateMeeting(let encodedMeetingData, let imageData):
+            var formData = [MultipartFormData]()
+            formData.append(.init(provider: .data(encodedMeetingData), name: "data", mimeType: "application/json"))
+            formData.append(.init(provider: .data(imageData ?? Data()), name: "image"))
+            return .uploadMultipart(formData)
+        case .endMeeting(let dto):
+            return .requestJSONEncodable(dto)
+        case .leaveMeeting(let dto):
+            return .requestJSONEncodable(dto)
+        case .readInvitationStatus, .readMeetingDetail:
+            return .requestPlain
+        case .inviteFriends(let dto):
+            return .requestJSONEncodable(dto)
+        case .acceptMeeetingInvitation(let dto):
+            return .requestJSONEncodable(dto)
+        case .acceptMeetingInvitationByLink(let dto):
+            return .requestJSONEncodable(dto)
+        case .readMeetingDetailForInvitationLink:
+            return .requestPlain
+        case .createSchedule(let dto):
+            return .requestJSONEncodable(dto)
+        case .readSchedule:
+            return .requestPlain
+        case .updateSchedule(let dto):
+            return .requestJSONEncodable(dto)
+        case .deleteSchedule(let dto):
+            return .requestJSONEncodable(dto)
+        case .createPlace(let dto):
+            return .requestJSONEncodable(dto)
+        case .readPlaceDetail(let userID, let meetingID):
+            let parameters = ["meetingId": meetingID, "userId": userID]
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.queryString)
+        case .deletePlace(let dto):
+            return .requestJSONEncodable(dto)
+        case .pickPlace(let dto):
+            return .requestJSONEncodable(dto)
+        case .togglePlaceLike(let dto):
+            return .requestJSONEncodable(dto)
+        case .createComment(let dto):
+            return .requestJSONEncodable(dto)
+        case .updateComment(let dto):
+            return .requestJSONEncodable(dto)
+        case .deleteComment(let dto):
+            return .requestJSONEncodable(dto)
+        case .readComments:
+            return .requestPlain
+        case .readUserInquiries:
+            return .requestPlain
+        case .createUserInquiry(let inquiryData, let imageDatas):
+            var formData = [MultipartFormData]()
+            formData.append(.init(provider: .data(inquiryData), name: "data", mimeType: "application/json"))
+            
+            guard let imageDatas = imageDatas
+            else {
+                formData.append(.init(provider: .data(Data()), name: "image"))
+                return .uploadMultipart(formData)
+            }
+            
+            imageDatas.enumerated().forEach { formData.append(.init(provider: .data($0.element), name: "image\($0.offset)")) }
+            return .uploadMultipart(formData)
+        case .readAdminInquiries:
+            return .requestPlain
+        case .createAdminInquiryReply(let dto):
+            return .requestJSONEncodable(dto)
+        case .readAnnouncements:
+            return .requestPlain
+        case .createAnnouncement(let dto):
+            return .requestJSONEncodable(dto)
+        case .updateAnnouncement(let dto):
+            return .requestJSONEncodable(dto)
+        case .deleteAnnouncement(let dto):
+            return .requestJSONEncodable(dto)
+        case .readFAQs:
+            return .requestPlain
+        case .createFAQ(let dto):
+            return .requestJSONEncodable(dto)
+        case .updateFAQ(let dto):
+            return .requestJSONEncodable(dto)
+        case .deleteFAQ(let dto):
+            return .requestJSONEncodable(dto)
+        }
     }
     
     var headers: [String: String]? {
-
+        switch self {
+        case .unregister, .readUserInfo, .readNaverUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs:
+            return nil
+        default:
+            return ["Content-Type": "application/json"]
+        }
     }
     
     var validationType: ValidationType { .successCodes }

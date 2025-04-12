@@ -5,8 +5,6 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
-import Foundation
-
 /// 장소 좋아요 변경
 enum TogglePlaceLikeDTO {
     struct Request: Encodable {
