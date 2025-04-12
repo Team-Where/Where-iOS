@@ -66,8 +66,30 @@ struct PlaceDetailView: View {
     
     @ViewBuilder private func placeInfoArea(_ place: Place) -> some View {
         VStack(spacing: 12) {
-            VStack(spacing :4) {
-                // TODO: 기본 이미지 디자인 넣기 (장소사진 없어서 대체했음, 2025.04.12)
+            VStack(spacing: 16) {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.where(hex: 0xD9D9D9))
+                    .frame(width: 220, height: 220)
+                    .overlay {
+                        Image(.logoShortWhite)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 110, height: 89)
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if place.isSimulaneouslyPicked {
+                            Text("같이 찾은 장소")
+                                .whereFont(.caption11regular)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 17)
+                                        .fill(.accent)
+                                )
+                                .offset(x: 10, y: 10)
+                        }
+                    }
                 
                 Text(place.name)
                     .whereFont(.title24semibold)
