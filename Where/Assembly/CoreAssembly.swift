@@ -33,11 +33,12 @@ struct CoreAssembly: Assembly {
         
         container.register(MeetingCoreProtocol.self) { resolver in
             guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self),
+                  let placeCore = resolver.resolve(PlaceCoreProtocol.self),
                   let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
-                fatalError("AuthentificationCoreProtocol, TokenStorageProtocol not registered")
+                fatalError("AuthentificationCoreProtocol, PlaceCoreProtocol and TokenStorageProtocol not registered")
             }
-            return MeetingCore(authCore: authCore, tokenStorage: tokenStorage)
+            return MeetingCore(authCore: authCore, placeCore: placeCore, tokenStorage: tokenStorage)
         }
         .inObjectScope(.container)
         
