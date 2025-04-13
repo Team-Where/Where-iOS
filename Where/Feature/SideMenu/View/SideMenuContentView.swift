@@ -27,6 +27,10 @@ struct SideMenuContentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
             profileSection()
+            
+            if viewModel.user != nil {
+                meetingSummarySection()
+            }
 
             // 구분선
             VStack {
@@ -68,7 +72,7 @@ struct SideMenuContentView: View {
     
     @ViewBuilder private func profileSection() -> some View {
         HStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 16) {
                 Text(viewModel.user?.nickname ?? "로그인 해주세요")
                     .whereFont(.title24semibold)
                 
@@ -81,25 +85,23 @@ struct SideMenuContentView: View {
                 } label: {
                     if viewModel.isLoginNeeded {
                         Text("로그인")
-                            .whereFont(.body14medium)
-                            .foregroundStyle(Color(hex: 0x4F46E5))
                     } else {
                         HStack(spacing: 4) {
                             Image(systemName: "pencil.line")
                             
                             Text("프로필 수정")
                         }
-                        .whereFont(.body14medium)
-                        .foregroundStyle(Color(hex: 0x4F46E5))
                     }
                 }
-                .overlay(
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .whereFont(.body14medium)
+                .foregroundStyle(Color(hex: 0x4F46E5))
+                .background(
                     RoundedRectangle(cornerRadius: 50)
-                        .stroke(Color(hex: 0xDEE2E6), lineWidth: 1)
-                        .frame(width: 68, height: 33)
+                        .fill(.white)
+                        .strokeBorder(.where(hex: 0xDEE2E6))
                 )
-                .padding(.top, 16)
-                .padding(.horizontal)
             }
             
             Spacer()
@@ -108,6 +110,31 @@ struct SideMenuContentView: View {
                 .resizable()
                 .frame(width: 80, height: 80)
         }
+        .padding(.top, 40)
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder private func meetingSummarySection() -> some View {
+        HStack {
+            HStack(spacing: 10) {
+                Image(systemName: "calendar")
+                
+                Text("총 모임 횟수")
+            }
+            .whereFont(.body16medium)
+            .foregroundStyle(.where(.gray800))
+            
+            Spacer()
+            
+            Text("\(viewModel.totalMeetingsCount)")
+                .whereFont(.body16semibold)
+                .foregroundStyle(.accent)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.where(hex: 0xEEF2FF))
+        )
         .padding(.top, 40)
         .padding(.horizontal)
     }
@@ -179,6 +206,6 @@ extension SideMenuContentView {
 
 #Preview {
     NavigationStack {
-        ContentView(resolver: PreviewHelper.shared.resolver)
+        SideMenuContentView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }
