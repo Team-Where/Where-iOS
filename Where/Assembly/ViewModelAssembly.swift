@@ -36,10 +36,12 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             return EditProfileViewModel(auth: auth)
         }
         container.register(SideMenuContentViewModel.self) { resolver in
-            guard let auth = resolver.resolve(AuthentificationCoreProtocol.self) else {
-                fatalError("AuthentificationCoreProtocol not registered")
+            guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self),
+                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self)
+            else {
+                fatalError("AuthentificationCoreProtocol, MeetingCoreProtocol not registered")
             }
-            return SideMenuContentViewModel(auth: auth)
+            return SideMenuContentViewModel(authCore: authCore, meetingCore: meetingCore)
         }
         container.register(MyMeetingViewModel.self) { resolver in
             guard let meetingCore = resolver.resolve(MeetingCoreProtocol.self) else {
