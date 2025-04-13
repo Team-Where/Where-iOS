@@ -56,7 +56,7 @@ struct CommentView: View {
         if viewModel.comments.count == 0 {
             createCommentButton
         } else {
-            
+            commentList(viewModel.comments)
         }
     }
     
@@ -77,6 +77,33 @@ struct CommentView: View {
                 )
         }
         .padding(.vertical, 20)
+    }
+    
+    @ViewBuilder private func commentList(_ comments: [Comment]) -> some View {
+        LazyVStack(spacing: 12) {
+            ForEach(comments, id: \.self) { comment in
+                commentCell(comment)
+            }
+        }
+    }
+    
+    @ViewBuilder private func commentCell(_ comment: Comment) -> some View {
+        let isMine = viewModel.isMyComment(comment)
+        
+        Text(comment.description)
+            .whereFont(.body14regular)
+            .foregroundStyle(.where(.gray800))
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.white)
+                    .strokeBorder(isMine ? .accent : .where(.gray800))
+            )
+            .onTapGesture {
+                viewModel.presentReadingSheet(comment: comment)
+            }
     }
 }
 
