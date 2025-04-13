@@ -85,7 +85,7 @@ struct SideMenuContentView: View {
                             .foregroundStyle(Color(hex: 0x4F46E5))
                     } else {
                         HStack(spacing: 4) {
-                            Image("pencil.line")
+                            Image(systemName: "pencil.line")
                             
                             Text("프로필 수정")
                         }
