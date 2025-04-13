@@ -181,6 +181,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0429E3BA2DAA9BC90037AECB /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = WhereTests.xctest; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app/PlugIns/WhereTests.xctest"; sourceTree = "<absolute>"; };
+		0429E3BB2DAAA3830037AECB /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Where.app; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app"; sourceTree = "<absolute>"; };
 		042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthInterceptor.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
 		042A79D62D9EC37A004105E2 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
@@ -274,8 +276,6 @@
 		0497F6A52DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingPlacesViewModel.swift; sourceTree = "<group>"; };
 		0497F6A82DA93EE20037B1CC /* PlaceDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailViewModel.swift; sourceTree = "<group>"; };
 		0497F6AB2DA951100037B1CC /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
-		0497F6AF2DAA43CE0037B1CC /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Where.app; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app"; sourceTree = "<absolute>"; };
-		0497F6B02DAA43CE0037B1CC /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = WhereTests.xctest; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app/PlugIns/WhereTests.xctest"; sourceTree = "<absolute>"; };
 		04993AA52D50BA940058EAB8 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		04A4F43E2D3F92730041FD02 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		04A4F4402D40D7EC0041FD02 /* AdjustPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustPasswordView.swift; sourceTree = "<group>"; };
@@ -1194,7 +1194,7 @@
 				042A79F82DA53386004105E2 /* KakaoSDKShare */,
 			);
 			productName = Where;
-			productReference = 0497F6AF2DAA43CE0037B1CC /* Where.app */;
+			productReference = 0429E3BB2DAAA3830037AECB /* Where.app */;
 			productType = "com.apple.product-type.application";
 		};
 		04832B3A2D266813003FFE3B /* WhereTests */ = {
@@ -1214,7 +1214,7 @@
 			packageProductDependencies = (
 			);
 			productName = WhereTests;
-			productReference = 0497F6B02DAA43CE0037B1CC /* WhereTests.xctest */;
+			productReference = 0429E3BA2DAA9BC90037AECB /* WhereTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1579,6 +1579,7 @@
 		};
 		045B44842D2146B200514A27 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04854C422D95069F007AADE4 /* AppSecret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1619,6 +1620,7 @@
 		};
 		045B44852D2146B200514A27 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04854C422D95069F007AADE4 /* AppSecret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
