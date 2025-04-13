@@ -18,6 +18,8 @@ struct CoreAssembly: Assembly {
             }
             return AuthentificationCore(networkService: networkService, tokenStorage: tokenStorage)
         }
+        .inObjectScope(.container)
+        
         container.register(CommunityCoreProtocol.self) { resolver in
             guard let networkService = resolver.resolve(NetworkServiceProtocol.self),
                   let tokenStorage = resolver.resolve(TokenStorageProtocol.self),
@@ -27,6 +29,8 @@ struct CoreAssembly: Assembly {
             }
             return CommunityCore(networkService: networkService, tokenStorage: tokenStorage, auth: auth)
         }
+        .inObjectScope(.container)
+        
         container.register(MeetingCoreProtocol.self) { resolver in
             guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self),
                   let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
@@ -35,6 +39,8 @@ struct CoreAssembly: Assembly {
             }
             return MeetingCore(authCore: authCore, tokenStorage: tokenStorage)
         }
+        .inObjectScope(.container)
+        
         container.register(PlaceCoreProtocol.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self),
                   let authCore = resolver.resolve(AuthentificationCoreProtocol.self)
@@ -43,5 +49,16 @@ struct CoreAssembly: Assembly {
             }
             return PlaceCore(tokenStorage: tokenStorage, authCore: authCore)
         }
+        .inObjectScope(.container)
+        
+        container.register(SupportCoreProtocol.self) { resolver in
+            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self),
+                  let authCore = resolver.resolve(AuthentificationCoreProtocol.self)
+            else {
+                fatalError("TokenStorageProtocol, AuthentificationCoreProtocol not registered")
+            }
+            return SupportCore(authCore: authCore, tokenStorage: tokenStorage)
+        }
+        .inObjectScope(.container)
     }
 }

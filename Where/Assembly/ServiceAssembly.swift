@@ -13,8 +13,11 @@ struct ServiceAssembly: Assembly {
         container.register(NetworkServiceProtocol.self) { _ in
             NetworkService()
         }
+        .inObjectScope(.container)
+        
         container.register(TokenStorageProtocol.self) { _ in
             TokenStorage()
         }
+        .inObjectScope(.container)
     }
 }
