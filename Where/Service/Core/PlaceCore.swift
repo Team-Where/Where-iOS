@@ -10,15 +10,15 @@ import Combine
 
 protocol PlaceCoreProtocol {
     /// 장소 목록
-    var places: AnyPublisher<[UInt64: Place], PlaceCoreError> { get }
+    var placesSubject: CurrentValueSubject<[UInt64: Place], PlaceCoreError> { get }
     /// 최근 찾은 장소 정보
-    var currentPlace: AnyPublisher<Place, PlaceCoreError> { get }
+    var currentPlaceSubject: CurrentValueSubject<Place?, PlaceCoreError> { get }
     /// 장소별 코멘트 목록
     /// - Note:
     ///     - Key: 장소 식별자
     ///     - Value: 해당 장소의 코멘트들
     ///     - Error: `PlaceCoreError`
-    var currentComments: AnyPublisher<[UInt64: [Comment]], PlaceCoreError> { get }
+    var currentCommentsSubject: CurrentValueSubject<[Comment], PlaceCoreError> { get }
     
     /// 장소 생성
     /// - Parameters:
@@ -59,13 +59,14 @@ enum PlaceCoreError: Error {
 
 final class PlaceCore {
     @Published private var _places = [UInt64: Place]()
-    @Published private var _currentPlace: Place?
-    @Published private var _currentComments = [UInt64: [Comment]]()
     
     private var userID: UInt64?
     
     private let tokenStorage: TokenStorageProtocol
     private let authCore: AuthentificationCoreProtocol
+    let placesSubject = CurrentValueSubject<[UInt64 : Place], PlaceCoreError>([:])
+    let currentPlaceSubject = CurrentValueSubject<Place?, PlaceCoreError>(nil)
+    let currentCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -78,32 +79,35 @@ final class PlaceCore {
     }
     
     private func subscribe() {
-        authCore.user
+        authCore.userSubject
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    switch error {
+                    case .loginFailed, .notSupported, .socialAuthProviderAuthorizationFailed, .unknown, .userInfoFetchFailed:
+                        self?.userID = nil
+                        self?._places.removeAll()
+                    case .logoutFailed:
+                        break
+                    @unknown default: break
+                    }
+                }
+            } receiveValue: { [weak self] user in
+                self?.userID = user?.id
+            }
+            .store(in: &cancellables)
+        
+        placesSubject
             .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    #if DEBUG
-                    print(error)
-                    #endif
+                    // TODO: 에러 핸들링 강화
+                    break
                 }
-            } receiveValue: { [weak self] user in
-                guard let id = user?.id else {
-                    self?._places.removeAll()
-                    self?.userID = nil
-                    return
-                }
-                self?.userID = id
-            }
-            .store(in: &cancellables)
-        
-        $_currentPlace
-            .sink { [weak self] place in
-                guard let id = place?.id else {
-                    self?._currentComments.removeAll()
-                    return
-                }
-                self?.readComments(placeID: id)
+            } receiveValue: { [weak self] dict in
+                self?._places = dict
             }
             .store(in: &cancellables)
     }
@@ -111,25 +115,6 @@ final class PlaceCore {
 
 // MARK: - PlaceCoreProtocol Confirmation
 extension PlaceCore: PlaceCoreProtocol {
-    var places: AnyPublisher<[UInt64: Place], PlaceCoreError> {
-        $_places
-            .setFailureType(to: PlaceCoreError.self)
-            .eraseToAnyPublisher()
-    }
-    
-    var currentPlace: AnyPublisher<Place, PlaceCoreError> {
-        $_currentPlace
-            .compactMap { $0 }
-            .setFailureType(to: PlaceCoreError.self)
-            .eraseToAnyPublisher()
-    }
-    
-    var currentComments: AnyPublisher<[UInt64: [Comment]], PlaceCoreError> {
-        $_currentComments
-            .setFailureType(to: PlaceCoreError.self)
-            .eraseToAnyPublisher()
-    }
-    
     func createPlace(meetingID: UInt64, name: String, address: String) {
         
     }
@@ -155,7 +140,9 @@ extension PlaceCore: PlaceCoreProtocol {
     }
     
     func readComments(placeID: UInt64) {
-        
+        Task { @MainActor in
+            currentCommentsSubject.send(PreviewHelper.shared.mockComments)
+        }
     }
     
     func updateComment(id: UInt64, description: String) {
@@ -167,7 +154,9 @@ extension PlaceCore: PlaceCoreProtocol {
     }
     
     func readCurrentPlace(id: UInt64) {
-        
+        if let place = _places[id] {
+            currentPlaceSubject.send(place)
+        }
     }
     
     func isMyComment(comment: Comment) -> Bool {

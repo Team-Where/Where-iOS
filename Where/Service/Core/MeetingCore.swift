@@ -10,9 +10,9 @@ import Combine
 
 protocol MeetingCoreProtocol {
     /// 나와 연관된 모임 목록
-    var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> { get }
+    var meetingsSubject: CurrentValueSubject<[UInt64: Meeting], MeetingCoreError> { get }
     /// 최근 살펴본 모임 정보
-    var currentMeeting: AnyPublisher<Meeting?, Never> { get }
+    var currentMeetingSubject: CurrentValueSubject<Meeting?, Never> { get }
     
     /// 모임 일정 등록
     /// - Parameters:
@@ -75,12 +75,13 @@ enum MeetingCoreError: Error {
 
 final class MeetingCore {
     @Published private var _meetings = [UInt64: Meeting]()
-    @Published private var _currentMeeting: Meeting?
     
     private var userID: UInt64?
     
     private let tokenStorage: TokenStorageProtocol
     private let authCore: AuthentificationCoreProtocol
+    let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
+    let currentMeetingSubject = CurrentValueSubject<Meeting?, Never>(nil)
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -93,24 +94,36 @@ final class MeetingCore {
     }
     
     private func subscribe() {
-        authCore.user
+        authCore.userSubject
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    switch error {
+                    case .loginFailed, .notSupported, .socialAuthProviderAuthorizationFailed, .unknown, .userInfoFetchFailed:
+                        self?._meetings = [:]
+                        self?.userID = nil
+                    case .logoutFailed:
+                        break
+                    @unknown default: break
+                    }
+                }
+            } receiveValue: { [weak self] user in
+                self?.userID = user?.id
+                self?.readMeetings()
+            }
+            .store(in: &cancellables)
+        
+        meetingsSubject
             .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    #if DEBUG
-                    print(error)
-                    #endif
+                    // TODO: 에러 핸들링 강화
+                    break
                 }
-            } receiveValue: { [weak self] user in
-                guard let id = user?.id else {
-                    self?._meetings = [:]
-                    self?._currentMeeting = nil
-                    self?.userID = nil
-                    return
-                }
-                self?.userID = id
-                self?.readMeetings()
+            } receiveValue: { [weak self] dict in
+                self?._meetings = dict
             }
             .store(in: &cancellables)
     }
@@ -118,18 +131,6 @@ final class MeetingCore {
 
 // MARK: - MeetingCoreProtocol Confirmation
 extension MeetingCore: MeetingCoreProtocol {
-    var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> {
-        $_meetings
-            .map { $0 }
-            .setFailureType(to: MeetingCoreError.self)
-            .eraseToAnyPublisher()
-    }
-    
-    var currentMeeting: AnyPublisher<Meeting?, Never> {
-        $_currentMeeting
-            .eraseToAnyPublisher()
-    }
-    
     func createSchedule(id: UInt64) {
         
     }
@@ -151,7 +152,10 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func readMeetings() {
-        
+        Task { @MainActor in
+            let meeting = PreviewHelper.shared.mockMeeting
+            _meetings[meeting.id] = meeting
+        }
     }
     
     func updateMeeting(id: UInt64, title: String?, description: String?, image: UIImage?) {
@@ -179,6 +183,9 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func readCurrentMeeting(id: UInt64) {
-        
+        if let meeting = _meetings[id] {
+            currentMeetingSubject.send(meeting)
+            return
+        }
     }
 }

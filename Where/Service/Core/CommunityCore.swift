@@ -10,10 +10,7 @@ import Combine
 
 protocol CommunityCoreProtocol {
     /// 나의 친구 목록
-    var friends: AnyPublisher<[UInt64: User], CommunityCoreError> { get }
-    
-    /// 사용자 식별자
-    var userId: UInt64? { get }
+    var friendsSubject: CurrentValueSubject<[UInt64: User], CommunityCoreError> { get }
     
     /// 친구 추가
     func createFriend(friend: User)
@@ -35,11 +32,13 @@ enum CommunityCoreError: Error {
 
 final class CommunityCore {
     @Published private(set) var _friends: [UInt64: User] = [:]
-    @Published private(set) var userId: UInt64?
+    
+    private var userID: UInt64?
     
     private let networkService: NetworkServiceProtocol
     private let tokenStorage: TokenStorageProtocol
     private let auth: AuthentificationCoreProtocol
+    let friendsSubject = CurrentValueSubject<[UInt64: User], CommunityCoreError>([:])
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -54,22 +53,17 @@ final class CommunityCore {
     }
     
     private func subscribe() {
-        auth.user
+        auth.userSubject
             .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-#if DEBUG
+                    #if DEBUG
                     print(error)
-#endif
+                    #endif
                 }
             } receiveValue: { [weak self] user in
-                guard let userId = user?.id else {
-                    self?.userId = nil
-                    self?._friends = [:]
-                    return
-                }
-                self?.userId = userId
+                self?.userID = user?.id
                 self?.readFriends()
             }
             .store(in: &cancellables)
@@ -78,13 +72,6 @@ final class CommunityCore {
 
 // MARK: CommunityCoreProtocol Confirmation
 extension CommunityCore: CommunityCoreProtocol {
-    var friends: AnyPublisher<[UInt64: User], CommunityCoreError> {
-        $_friends
-            .map { $0 }
-            .setFailureType(to: CommunityCoreError.self)
-            .eraseToAnyPublisher()
-    }
-    
     func createFriend(friend: User) {
         
     }

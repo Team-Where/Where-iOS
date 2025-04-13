@@ -12,7 +12,7 @@ import Moya
 
 protocol AuthentificationCoreProtocol {
     /// 사용자 정보
-    var user: AnyPublisher<User?, AuthentificationCoreError> { get }
+    var userSubject: CurrentValueSubject<User?, AuthentificationCoreError> { get }
     
     /// 로그인 필요 여부
     var isLoginNeeded: Bool { get }
@@ -58,19 +58,19 @@ enum AuthentificationCoreError: Error {
 
 final class AuthentificationCore: NSObject, ObservableObject {
     struct Constants {
-        static let currentProviderUserDefaultsKey: String = "currentProvider"
         static let currentUserIdUserDefaultsKey: String = "currentUserId"
     }
     
-    @Published var _user: User?
+    private var _user: User?
+    let userSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
     
     var isLoginNeeded: Bool { _user == nil }
     
     private var currentProvider: AuthentificationProvider?
-    private var currentUserId: Int64? {
+    private var currentUserId: UInt64? {
         get {
             guard let userIdString = UserDefaults.standard.string(forKey: Constants.currentUserIdUserDefaultsKey) else { return nil }
-            return Int64(userIdString)
+            return UInt64(userIdString)
         }
         
         set {
@@ -83,7 +83,6 @@ final class AuthentificationCore: NSObject, ObservableObject {
     private let strategyContext = AuthentificationStrategyContext()
     private let decoder: JSONDecoder = .init()
     private let encoder: JSONEncoder = .init()
-    private let userSubject = PassthroughSubject<User?, Never>()
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -96,11 +95,23 @@ final class AuthentificationCore: NSObject, ObservableObject {
         subscribe()
     }
     
+    deinit {
+        
+    }
+    
     private func subscribe() {
         userSubject
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] user in
+            .sink { completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    #if DEBUG
+                    print("AuthentificationCore Error: \(error)")
+                    #endif
+                }
+            } receiveValue: { [weak self] user in
                 self?._user = user
+                self?.currentUserId = user?.id
             }
             .store(in: &cancellables)
         
@@ -109,23 +120,17 @@ final class AuthentificationCore: NSObject, ObservableObject {
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    self?.userSubject.send(nil)
+                    self?.userSubject.send(completion: .failure(error))
                 }
             } receiveValue: { [weak self] credential in
                 // TODO: 여기에 네트워킹 로직 작성
             }
+            .store(in: &cancellables)
     }
 }
 
 // MARK: AuthentificationCoreProtocol Conformation
 extension AuthentificationCore: AuthentificationCoreProtocol {
-    var user: AnyPublisher<User?, AuthentificationCoreError> {
-        $_user
-            .map { $0 }
-            .setFailureType(to: AuthentificationCoreError.self)
-            .eraseToAnyPublisher()
-    }
-    
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
         strategyContext.handleOpenURL(url)
     }
@@ -143,7 +148,12 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func login(email: String, password: String) {
-        strategyContext.login(by: .custom(email: email, password: password))
+        
+        
+        _Concurrency.Task { @MainActor in
+            userSubject.send(PreviewHelper.shared.mockUser)
+        }
+//        strategyContext.login(by: .custom(email: email, password: password))
     }
     
     func logout() {
