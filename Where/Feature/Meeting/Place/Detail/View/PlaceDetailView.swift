@@ -87,7 +87,7 @@ struct PlaceDetailView: View {
                                     RoundedRectangle(cornerRadius: 17)
                                         .fill(.accent)
                                 )
-                                .offset(x: 10, y: 10)
+                                .offset(x: 8, y: 8)
                         }
                     }
                 
