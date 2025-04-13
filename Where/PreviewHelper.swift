@@ -44,7 +44,7 @@ final class PreviewHelper {
     
     lazy var mockComments: [Comment] = [
         Comment(placeId: 0, description: "여기 웨이팅 있어서 미리 예약하고 가는게 좋을 듯", writerId: 0, createdAt: .now, updatedAt: .now),
-        Comment(placeId: 1, description: "야경 맛집임", writerId: 1, createdAt: .now, updatedAt: .now)
+        Comment(placeId: 0, description: "야경 맛집임", writerId: 1, createdAt: .now, updatedAt: .now)
     ]
     
     private init() {
