@@ -23,7 +23,7 @@ final class SideMenuContentViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        auth.user
+        auth.userSubject
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {

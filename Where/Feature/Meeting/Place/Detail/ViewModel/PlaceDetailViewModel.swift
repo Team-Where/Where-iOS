@@ -23,7 +23,7 @@ final class PlaceDetailViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        placeCore.currentPlace
+        placeCore.currentPlaceSubject
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -42,8 +42,9 @@ final class PlaceDetailViewModel: ObservableObject {
 
 // MARK: - Interfaces
 extension PlaceDetailViewModel {
-    func onAppear() {
-        isTipPresented = place?.pickedState == .unpicked
+    func onAppear(_ place: Place) {
+        placeCore.readCurrentPlace(id: place.id)
+        isTipPresented = place.pickedState == .unpicked
         
         guard isTipPresented == true else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {

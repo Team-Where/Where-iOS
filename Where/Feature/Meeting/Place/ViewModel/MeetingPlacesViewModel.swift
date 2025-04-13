@@ -24,7 +24,7 @@ final class MeetingPlacesViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        placeCore.places
+        placeCore.placesSubject
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {

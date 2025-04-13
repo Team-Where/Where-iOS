@@ -209,7 +209,7 @@ struct MeetingPlacesView: View {
     
     @ViewBuilder private func placesSectionCell(_ place: Place) -> some View {
         NavigationLink {
-//            Place
+            PlaceDetailView(place, resolver: resolver)
         } label: {
             VStack(alignment: .leading, spacing: 10) {
                 if place.isSimulaneouslyPicked {

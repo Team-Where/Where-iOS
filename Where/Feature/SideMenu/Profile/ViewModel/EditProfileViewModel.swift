@@ -25,7 +25,7 @@ final class EditProfileViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        auth.user
+        auth.userSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {

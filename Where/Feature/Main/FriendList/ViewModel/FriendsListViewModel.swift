@@ -27,7 +27,7 @@ final class FriendsListViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        communityCore.friends
+        communityCore.friendsSubject
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {

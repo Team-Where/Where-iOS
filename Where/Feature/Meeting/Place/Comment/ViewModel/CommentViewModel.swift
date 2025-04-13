@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class CommentViewModel: ObservableObject {
     @Published var sheetType: SheetType?
     @Published var comments = [Comment]()
@@ -26,8 +27,8 @@ final class CommentViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        placeCore.currentPlace
-            .combineLatest(placeCore.currentComments)
+        placeCore.currentPlaceSubject
+            .combineLatest(placeCore.currentCommentsSubject)
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -37,14 +38,8 @@ final class CommentViewModel: ObservableObject {
                     print(error)
                     #endif
                 }
-            } receiveValue: { [weak self] (place, commentsDict) in
+            } receiveValue: { [weak self] (place, comments) in
                 self?.currentPlace = place
-                
-                guard let comments = commentsDict[place.id] else {
-                    self?.comments.removeAll()
-                    return
-                }
-                
                 self?.comments = comments.sorted {
                     let date1 = $0.updatedAt > $0.createdAt ? $0.updatedAt : $0.createdAt
                     let date2 = $1.updatedAt > $1.createdAt ? $1.updatedAt : $1.createdAt

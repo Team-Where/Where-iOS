@@ -12,11 +12,14 @@ struct PlaceDetailView: View {
     @ObservedObject private var viewModel: PlaceDetailViewModel
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing, backgroundColor: .accent, cornerRadius: 4)
+    private let place: Place
     private let resolver: Resolver
     
-    private let place = Place(id: 0, userId: 0, meetingId: 0, name: "무드서울", address: "서울 용산구 한강대로21길 18 1층", createdAt: .now, updatedAt: .now, likesCount: 1, pickedState: .unpicked, comments: [.init(placeId: 0, description: "여기 웨이팅있어서 미리 예약하고 가는게 좋을 듯", writerId: 0, createdAt: .now, updatedAt: .now), .init(placeId: 0, description: "야경 맛집임", writerId: 1, createdAt: .now, updatedAt: .now)], isSimulaneouslyPicked: true)
-    
-    init(resolver: Resolver) {
+    init(
+        _ place: Place,
+        resolver: Resolver
+    ) {
+        self.place = place
         self.viewModel = resolver.resolve(PlaceDetailViewModel.self)!
         self.resolver = resolver
     }
@@ -43,8 +46,9 @@ struct PlaceDetailView: View {
             
             CommentView(resolver: resolver)
         }
+        .scrollIndicators(.never)
         .onAppear {
-            viewModel.onAppear()
+            viewModel.onAppear(place)
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -198,6 +202,10 @@ struct PlaceDetailView: View {
             }
             .whereTip($viewModel.isTipPresented, configuration: tipConfiguration) {
                 Text("이 장소로 정했다면 Pick을 눌러주세요!")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
             }
         }
         .whereFont(.body16medium)
@@ -212,6 +220,6 @@ struct PlaceDetailView: View {
 
 #Preview {
     NavigationStack {
-        PlaceDetailView(resolver: PreviewHelper.shared.resolver)
+        PlaceDetailView(PreviewHelper.shared.mockPlace, resolver: PreviewHelper.shared.resolver)
     }
 }

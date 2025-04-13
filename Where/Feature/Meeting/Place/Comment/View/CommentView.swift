@@ -16,7 +16,7 @@ struct CommentView: View {
     init(resolver: Resolver) {
         self.viewModel = resolver.resolve(CommentViewModel.self)!
     }
-
+    
     var body: some View {
         Section {
             sectionContentArea()
@@ -80,11 +80,12 @@ struct CommentView: View {
     }
     
     @ViewBuilder private func commentList(_ comments: [Comment]) -> some View {
-        LazyVStack(spacing: 12) {
+        LazyVStack(alignment: .leading, spacing: 12) {
             ForEach(comments, id: \.self) { comment in
                 commentCell(comment)
             }
         }
+        .padding(.vertical, 20)
     }
     
     @ViewBuilder private func commentCell(_ comment: Comment) -> some View {
@@ -95,7 +96,6 @@ struct CommentView: View {
             .foregroundStyle(.where(.gray800))
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(.white)
@@ -145,6 +145,7 @@ extension CommentView {
                             .foregroundStyle(.where(.gray800))
                     }
                 }
+                .padding(.top)
                 
                 TextField(text: $commentTextField) {
                     Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
@@ -189,10 +190,10 @@ extension CommentView {
                     .disabled(commentTextField.isEmpty)
                 }
             }
-            .padding()
             .onAppear {
                 commentFieldFocused = true
             }
+            .padding()
             .presentationCornerRadius(presentationCornerRadius)
             .presentationDragIndicator(.hidden)
             .interactiveDismissDisabled()
@@ -237,9 +238,11 @@ extension CommentView {
                             .foregroundStyle(.where(.gray800))
                     }
                 }
+                .padding(.top)
                 
                 Text(comment.description)
                     .whereFont(.body16regular)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Spacer()
                 
@@ -273,6 +276,7 @@ extension CommentView {
                     )
                 }
             }
+            .padding()
             .presentationCornerRadius(presentationCornerRadius)
             .presentationDragIndicator(.hidden)
             .interactiveDismissDisabled()
@@ -315,6 +319,7 @@ extension CommentView {
                             .foregroundStyle(.where(.gray800))
                     }
                 }
+                .padding(.top)
                 
                 TextField(text: $commentTextField) {
                     Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
@@ -354,6 +359,11 @@ extension CommentView {
                     .disabled(commentTextField.isEmpty)
                 }
             }
+            .padding()
+            .presentationCornerRadius(presentationCornerRadius)
+            .presentationDragIndicator(.hidden)
+            .interactiveDismissDisabled()
+            .presentationDetents(commentFieldFocused ? [.fraction(0.2)] : [.medium])
         }
         
         private func onDismiss() {
@@ -366,6 +376,6 @@ extension CommentView {
 
 #Preview {
     NavigationStack {
-        PlaceDetailView(resolver: PreviewHelper.shared.resolver)
+        PlaceDetailView(PreviewHelper.shared.mockPlace, resolver: PreviewHelper.shared.resolver)
     }
 }

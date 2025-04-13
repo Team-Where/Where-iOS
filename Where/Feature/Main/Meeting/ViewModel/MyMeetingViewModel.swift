@@ -26,7 +26,7 @@ final class MyMeetingViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        meetingCore.meetings
+        meetingCore.meetingsSubject
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
