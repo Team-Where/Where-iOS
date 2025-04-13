@@ -95,10 +95,6 @@ final class AuthentificationCore: NSObject, ObservableObject {
         subscribe()
     }
     
-    deinit {
-        
-    }
-    
     private func subscribe() {
         userSubject
             .sink { completion in
