@@ -79,6 +79,7 @@ final class MeetingCore {
     private var userID: UInt64?
     
     private let tokenStorage: TokenStorageProtocol
+    private let placeCore: PlaceCoreProtocol
     private let authCore: AuthentificationCoreProtocol
     let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
     let currentMeetingSubject = CurrentValueSubject<Meeting?, Never>(nil)
@@ -86,9 +87,11 @@ final class MeetingCore {
     
     init(
         authCore: AuthentificationCoreProtocol,
+        placeCore: PlaceCoreProtocol,
         tokenStorage: TokenStorageProtocol
     ) {
         self.authCore = authCore
+        self.placeCore = placeCore
         self.tokenStorage = tokenStorage
         subscribe()
     }
@@ -124,6 +127,13 @@ final class MeetingCore {
                 }
             } receiveValue: { [weak self] dict in
                 self?._meetings = dict
+            }
+            .store(in: &cancellables)
+        
+        currentMeetingSubject
+            .sink { [weak self] meeting in
+                guard let id = meeting?.id else { return }
+                self?.placeCore.readPlaces(meetingID: id)
             }
             .store(in: &cancellables)
     }
