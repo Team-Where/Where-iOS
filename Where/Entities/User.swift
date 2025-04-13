@@ -21,7 +21,7 @@ struct User: Identifiable {
     let imageURL: URL?
     
     init(
-        id: UInt64 = 1,
+        id: UInt64 = 0,
         nickname: String = "별명",
         smsVerificationToken: String? = nil,
         createdAt: Date = .now,
