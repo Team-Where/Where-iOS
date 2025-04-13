@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Comment {
+struct Comment: Hashable {
     /// 장소 식별자
     let placeId: UInt64
     /// 코멘트 내용
@@ -18,4 +18,12 @@ struct Comment {
     let createdAt: Date
     /// 코멘트 수정일시
     let updatedAt: Date
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(placeId)
+        hasher.combine(description)
+        hasher.combine(writerId)
+        hasher.combine(createdAt)
+        hasher.combine(updatedAt)
+    }
 }
