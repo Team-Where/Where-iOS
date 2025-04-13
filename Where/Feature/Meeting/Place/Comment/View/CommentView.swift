@@ -102,6 +102,7 @@ struct CommentView: View {
                     .strokeBorder(isMine ? .accent : .where(.gray800))
             )
             .onTapGesture {
+                guard isMine else { return }
                 viewModel.presentReadingSheet(comment: comment)
             }
     }
