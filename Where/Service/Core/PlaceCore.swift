@@ -13,6 +13,8 @@ protocol PlaceCoreProtocol {
     var places: AnyPublisher<[UInt64: Place], PlaceCoreError> { get }
     /// 최근 찾은 장소 정보
     var currentPlace: AnyPublisher<Place, PlaceCoreError> { get }
+    /// 최근 찾은 장소의 코멘트 목록
+    var currentComments: AnyPublisher<[UInt64: Comment], PlaceCoreError> { get }
     
     /// 장소 생성
     /// - Parameters:
@@ -36,7 +38,7 @@ protocol PlaceCoreProtocol {
     /// 장소에 대한 코멘트 조회
     /// - Parameters:
     ///     - placeID: 장소 식별자
-    func reateComments(placeID: UInt64)
+    func readComments(placeID: UInt64)
     /// 장소에 대한 코멘트 수정
     func updateComment(id: UInt64, description: String)
     /// 장소에 대한 코멘트 삭제
@@ -52,6 +54,7 @@ enum PlaceCoreError: Error {
 final class PlaceCore {
     @Published private var _places = [UInt64: Place]()
     @Published private var _currentPlace: Place?
+    @Published private var _currentComments = [UInt64: Comment]()
     
     private var userID: UInt64?
     
@@ -87,14 +90,23 @@ final class PlaceCore {
                 self?.userID = id
             }
             .store(in: &cancellables)
+        
+        $_currentPlace
+            .sink { [weak self] place in
+                guard let id = place?.id else {
+                    self?._currentComments.removeAll()
+                    return
+                }
+                self?.readComments(placeID: id)
+            }
+            .store(in: &cancellables)
     }
 }
 
 // MARK: - PlaceCoreProtocol Confirmation
 extension PlaceCore: PlaceCoreProtocol {
-    var places: AnyPublisher<[UInt64 : Place], PlaceCoreError> {
+    var places: AnyPublisher<[UInt64: Place], PlaceCoreError> {
         $_places
-            .map { $0 }
             .setFailureType(to: PlaceCoreError.self)
             .eraseToAnyPublisher()
     }
@@ -102,6 +114,12 @@ extension PlaceCore: PlaceCoreProtocol {
     var currentPlace: AnyPublisher<Place, PlaceCoreError> {
         $_currentPlace
             .compactMap { $0 }
+            .setFailureType(to: PlaceCoreError.self)
+            .eraseToAnyPublisher()
+    }
+    
+    var currentComments: AnyPublisher<[UInt64: Comment], PlaceCoreError> {
+        $_currentComments
             .setFailureType(to: PlaceCoreError.self)
             .eraseToAnyPublisher()
     }
@@ -130,7 +148,7 @@ extension PlaceCore: PlaceCoreProtocol {
         
     }
     
-    func reateComments(placeID: UInt64) {
+    func readComments(placeID: UInt64) {
         
     }
     
