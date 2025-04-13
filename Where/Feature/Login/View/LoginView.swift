@@ -98,7 +98,7 @@ struct LoginView: View {
                             .whereFont(.body14medium)
                         
                         NavigationLink {
-                            SignInView(resolver: resolver)
+                            SignInView($isPresented, resolver: resolver)
                         } label: {
                             Text("여기에 로그인하세요")
                                 .whereFont(.body14medium)

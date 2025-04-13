@@ -9,12 +9,17 @@ import SwiftUI
 import Swinject
 
 struct SignInView: View {
+    @Binding var isLoginViewPresented: Bool
     @FocusState private var textFieldFocus: KeyboardFocusState?
     @ObservedObject private var viewModel: SignInViewModel
     
     private let navigationTitle: String = "로그인을 해주세요"
     
-    init(resolver: Resolver) {
+    init(
+        _ isLoginViewPresented: Binding<Bool>,
+        resolver: Resolver
+    ) {
+        self._isLoginViewPresented = isLoginViewPresented
         self.viewModel = resolver.resolve(SignInViewModel.self)!
     }
     
@@ -49,16 +54,25 @@ struct SignInView: View {
             }
         }
         .padding(.top, 40)
+        .onChange(of: viewModel.state) { _, newValue in
+            guard newValue == .success else { return }
+            isLoginViewPresented = false
+        }
         .whereForm(navigationTitle) {
             Button {
                 // TODO: 로그인
                 viewModel.login()
             } label: {
-                Text("로그인")
-                    .whereFont(.body16semibold)
-                    .frame(width: 350, height: 48)
+                if viewModel.state == .processing {
+                    ProgressView()
+                        .frame(width: 350, height: 48)
+                } else {
+                    Text("로그인")
+                        .whereFont(.body16semibold)
+                        .frame(width: 350, height: 48)
+                }
             }
-            .buttonStyle(.whereRoundedProminent())
+            .buttonStyle(.whereRoundedProminent(disabled: viewModel.loginButtonDisabled))
         }
         .clipShape(.rect)
         .onTapGesture {
@@ -94,6 +108,6 @@ extension SignInView {
 
 #Preview {
     NavigationStack {
-        SignInView(resolver: PreviewHelper.shared.resolver)
+        SignInView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }
