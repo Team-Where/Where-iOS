@@ -13,7 +13,6 @@ final class CommentViewModel: ObservableObject {
     @Published var comments = [Comment]()
     @Published var currentComment: Comment?
     @Published var commentTextField = String()
-    private var userID: UInt64?
     private var currentPlace: Place?
     
     private let placeCore: PlaceCoreProtocol
@@ -28,6 +27,7 @@ final class CommentViewModel: ObservableObject {
     
     private func subscribe() {
         placeCore.currentPlace
+            .combineLatest(placeCore.currentComments)
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -37,8 +37,19 @@ final class CommentViewModel: ObservableObject {
                     print(error)
                     #endif
                 }
-            } receiveValue: { [weak self] place in
+            } receiveValue: { [weak self] (place, commentsDict) in
                 self?.currentPlace = place
+                
+                guard let comments = commentsDict[place.id] else {
+                    self?.comments.removeAll()
+                    return
+                }
+                
+                self?.comments = comments.sorted {
+                    let date1 = $0.updatedAt > $0.createdAt ? $0.updatedAt : $0.createdAt
+                    let date2 = $1.updatedAt > $1.createdAt ? $1.updatedAt : $1.createdAt
+                    return date1 < date2
+                }
             }
             .store(in: &cancellables)
     }
@@ -88,5 +99,9 @@ extension CommentViewModel {
     func editComment() {
         guard let currentComment else { return }
         placeCore.updateComment(id: currentComment.placeId, description: commentTextField)
+    }
+    
+    func isMyComment(_ comment: Comment) -> Bool {
+        placeCore.isMyComment(comment: comment)
     }
 }
