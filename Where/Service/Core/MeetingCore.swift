@@ -164,7 +164,7 @@ extension MeetingCore: MeetingCoreProtocol {
     func readMeetings() {
         Task { @MainActor in
             let meeting = PreviewHelper.shared.mockMeeting
-            _meetings[meeting.id] = meeting
+            meetingsSubject.send([meeting.id: meeting])
         }
     }
     
@@ -193,9 +193,6 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func readCurrentMeeting(id: UInt64) {
-        if let meeting = _meetings[id] {
-            currentMeetingSubject.send(meeting)
-            return
-        }
+        currentMeetingSubject.send(_meetings[id])
     }
 }

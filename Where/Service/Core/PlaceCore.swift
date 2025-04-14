@@ -120,7 +120,10 @@ extension PlaceCore: PlaceCoreProtocol {
     }
     
     func readPlaces(meetingID: UInt64) {
-        
+        Task { @MainActor in
+            let place = PreviewHelper.shared.mockPlace
+            placesSubject.send([place.id: place])
+        }
     }
     
     func deletePlace(id: UInt64) {
