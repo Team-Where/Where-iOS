@@ -66,11 +66,11 @@ final class AdjustPasswordViewModel: ObservableObject {
         guard (8...32).contains(password.count) else { return false }
         
         // 영문, 숫자, 특수문자("!", "~", "@") 포함
-        let hasUppercase = password.rangeOfCharacter(from: .uppercaseLetters) != nil
+//        let hasUppercase = password.rangeOfCharacter(from: .uppercaseLetters) != nil
         let hasLowercase = password.rangeOfCharacter(from: .lowercaseLetters) != nil
         let hasDigits = password.rangeOfCharacter(from: .decimalDigits) != nil
         let hasSpecialCharacters = password.rangeOfCharacter(from: CharacterSet(charactersIn: "!~@")) != nil
         
-        return hasUppercase && hasLowercase && hasDigits && hasSpecialCharacters
+        return hasLowercase && hasDigits && hasSpecialCharacters
     }
 }

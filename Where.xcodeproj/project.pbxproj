@@ -54,7 +54,6 @@
 		0450E8612D9AD36700DB029A /* TemporaryMeetingInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */; };
 		0450E8632D9B7BC200DB029A /* MeetingSortType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8622D9B7BC200DB029A /* MeetingSortType.swift */; };
 		0450E8662D9B876E00DB029A /* MyMeetingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8652D9B876E00DB029A /* MyMeetingViewModel.swift */; };
-		045685172D46067F004CB29F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045685162D46067F004CB29F /* NetworkService.swift */; };
 		045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A62D2150AF00514A27 /* WhereApp.swift */; };
 		045B44BA2D21650200514A27 /* Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44B92D2164FA00514A27 /* Pretendard.swift */; };
 		045B44C62D2166D000514A27 /* WhereFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44C52D2166D000514A27 /* WhereFont.swift */; };
@@ -153,6 +152,7 @@
 		7F07AA552DA5714000095602 /* CreateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */; };
 		7F07AA572DA5726300095602 /* UpdateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */; };
 		7F07AA592DA5733D00095602 /* DeleteAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */; };
+		7F07AA612DAA452D00095602 /* APIServiceProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */; };
 		91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F452D575BEE00C142B2 /* SideMenuContentView.swift */; };
 		91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */; };
 		91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */; };
@@ -227,7 +227,6 @@
 		0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryMeetingInfo.swift; sourceTree = "<group>"; };
 		0450E8622D9B7BC200DB029A /* MeetingSortType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingSortType.swift; sourceTree = "<group>"; };
 		0450E8652D9B876E00DB029A /* MyMeetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMeetingViewModel.swift; sourceTree = "<group>"; };
-		045685162D46067F004CB29F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		045B44A62D2150AF00514A27 /* WhereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereApp.swift; sourceTree = "<group>"; };
 		045B44B92D2164FA00514A27 /* Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pretendard.swift; sourceTree = "<group>"; };
 		045B44C42D21659700514A27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -323,6 +322,9 @@
 		7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAnnouncementDTO.swift; sourceTree = "<group>"; };
 		7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnnouncementDTO.swift; sourceTree = "<group>"; };
 		7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAnnouncementDTO.swift; sourceTree = "<group>"; };
+		7F07AA5E2DAA43E200095602 /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F07AA5F2DAA43E200095602 /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceProvidable.swift; sourceTree = "<group>"; };
 		91446F452D575BEE00C142B2 /* SideMenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuContentView.swift; sourceTree = "<group>"; };
 		91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
@@ -511,6 +513,8 @@
 			children = (
 				045B44A72D2150AF00514A27 /* Where */,
 				04832B452D266819003FFE3B /* WhereTests */,
+				7F07AA5E2DAA43E200095602 /* Where.app */,
+				7F07AA5F2DAA43E200095602 /* WhereTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -680,7 +684,7 @@
 			children = (
 				7F07AA312DA54C6900095602 /* DTO */,
 				042A79D62D9EC37A004105E2 /* Endpoint.swift */,
-				045685162D46067F004CB29F /* NetworkService.swift */,
+				7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1194,7 +1198,7 @@
 				042A79F82DA53386004105E2 /* KakaoSDKShare */,
 			);
 			productName = Where;
-			productReference = 0429E3BB2DAAA3830037AECB /* Where.app */;
+			productReference = 7F07AA5E2DAA43E200095602 /* Where.app */;
 			productType = "com.apple.product-type.application";
 		};
 		04832B3A2D266813003FFE3B /* WhereTests */ = {
@@ -1214,7 +1218,7 @@
 			packageProductDependencies = (
 			);
 			productName = WhereTests;
-			productReference = 0429E3BA2DAA9BC90037AECB /* WhereTests.xctest */;
+			productReference = 7F07AA5F2DAA43E200095602 /* WhereTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1381,7 +1385,6 @@
 				04F051882D423283000892C0 /* Bundle.swift in Sources */,
 				04A4F4442D40D82E0041FD02 /* AdjustPasswordViewModel.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
-				045685172D46067F004CB29F /* NetworkService.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				7F07AA4B2DA5692D00095602 /* ReadUserInquiriesDTO.swift in Sources */,
 				91A9EABA2D29AFD7005F09D2 /* MyMeetingView.swift in Sources */,
@@ -1413,6 +1416,7 @@
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
+				7F07AA612DAA452D00095602 /* APIServiceProvidable.swift in Sources */,
 				0497F6A32DA6B85F0037B1CC /* PlaceCore.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
 				042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */,

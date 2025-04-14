@@ -35,18 +35,15 @@ final class CommunityCore {
     
     private var userID: UInt64?
     
-    private let networkService: NetworkServiceProtocol
     private let tokenStorage: TokenStorageProtocol
     private let auth: AuthentificationCoreProtocol
     let friendsSubject = CurrentValueSubject<[UInt64: User], CommunityCoreError>([:])
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        networkService: NetworkServiceProtocol,
         tokenStorage: TokenStorageProtocol,
         auth: AuthentificationCoreProtocol
     ) {
-        self.networkService = networkService
         self.tokenStorage = tokenStorage
         self.auth = auth
         subscribe()
