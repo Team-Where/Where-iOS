@@ -52,11 +52,11 @@ final class AuthInterceptor: RequestInterceptor {
         
         //TODO: 토큰 구조화하여 비교 후, 저장 및 분기 처리
         guard let newToken = response.headers["Authorization"]?.split(separator: " ").last as? String else { return completion(.doNotRetry) }
-        guard let oldToken = try? fetchTokens() else { return completion(.doNotRetry) }
+        let oldToken = fetchTokens(completion)
         
         guard newToken == oldToken.accessToken
         else {
-            try? saveTokens(Tokens(accessToken: newToken, refreshToken: oldToken.refreshToken))
+            saveTokens(Tokens(accessToken: newToken, refreshToken: oldToken.refreshToken), completion)
             return completion(.doNotRetry)
         }
         
@@ -65,29 +65,29 @@ final class AuthInterceptor: RequestInterceptor {
             return completion(.doNotRetry)
         }
         
-        try? saveTokens(Tokens(accessToken: oldToken.refreshToken, refreshToken: oldToken.refreshToken))
+        saveTokens(Tokens(accessToken: oldToken.refreshToken, refreshToken: oldToken.refreshToken), completion)
         
         return completion(.retry)
     }
 }
 
 private extension AuthInterceptor {
-    func fetchTokens() throws -> Tokens {
+    func fetchTokens(_ completion: (RetryResult) -> Void) -> Tokens {
         do {
             let data = try tokenStorage.fetch(by: key)
             let tokens = try decoder.decode(Tokens.self, from: data)
             return tokens
         } catch let error {
-            throw error
+            completion(.doNotRetryWithError(error))
         }
     }
     
-    func saveTokens(_ tokens: Tokens) throws {
+    func saveTokens(_ tokens: Tokens, _ completion: (RetryResult) -> Void) {
         do {
             let data = try encoder.encode(tokens)
             try tokenStorage.store(data, by: key)
         } catch let error {
-            throw error
+            completion(.doNotRetryWithError(error))
         }
     }
 }
