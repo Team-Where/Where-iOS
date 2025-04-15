@@ -11,27 +11,25 @@ import Moya
 enum Endpoint {
     // MARK: User Related
     /// 회원가입
-    case register
+    case register(dto: RegisterDTO.Request)
     /// 회원탈퇴
-    case unregister(userId: UInt64)
+    case unregister(userID: UInt64)
     /// 로그인
-    case login(email: String, password: String)
+    case login(dto: LoginDTO.Request)
     /// 이메일 중복확인
-    case checkEmailDuplication(email: String)
+    case checkEmailDuplication(dto: CheckEmailDuplicationDTO.Request)
     /// 마이페이지 사용자 정보 조회
-    case readUserInfo(userId: UInt64)
+    case readUserInfo(userID: UInt64)
     /// 프로필이미지 등록
-    case uploadProfileImage(userId: UInt64, image: Data)
-    /// 네이버 로그인API - 사용자 정보 조회
-    case readNaverUserInfo(token: String)
+    case uploadProfileImage(userID: UInt64, image: Data)
     
     // MARK: - Friends Related
     /// 친구 조회
-    case readFriends(userId: UInt64)
+    case readFriends(userID: UInt64)
     /// 친구 삭제
-    case deleteFriend(userId: UInt64, friendId: UInt64)
+    case deleteFriend(dto: DeleteFriendDTO.Request)
     /// 친구 북마크
-    case bookmarkFriend(userId: UInt64, friendId: UInt64)
+    case bookmarkFriend(dto: BookmarkFriendDTO.Request)
     
     // MARK: Meeting Related
     /// 모임 생성
@@ -139,8 +137,6 @@ extension Endpoint: TargetType {
             return "\(basePath)/mypage/\(userID)"
         case .uploadProfileImage(let userID, _):
             return "\(basePath)/\(userID)/uploadProfile"
-        case .readNaverUserInfo:
-            return "/oauth2/authorization/naver"
             
             // MARK: - Friends Related
         case .readFriends(let userID):
@@ -209,7 +205,7 @@ extension Endpoint: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readNaverUserInfo, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink: .get
+        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink: .get
         case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfileImage, .register: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister: .delete
@@ -218,26 +214,26 @@ extension Endpoint: TargetType {
     
     var task: Moya.Task {
         switch self {
-        case .register:
-            <#code#>
-        case .unregister(userId: let userId):
-            <#code#>
-        case .login(email: let email, password: let password):
-            <#code#>
-        case .checkEmailDuplication(email: let email):
-            <#code#>
-        case .readUserInfo(userId: let userId):
-            <#code#>
-        case .uploadProfileImage(userId: let userId, image: let image):
-            <#code#>
-        case .readNaverUserInfo(token: let token):
-            <#code#>
-        case .readFriends(userId: let userId):
-            <#code#>
-        case .deleteFriend(userId: let userId, friendId: let friendId):
-            <#code#>
-        case .bookmarkFriend(userId: let userId, friendId: let friendId):
-            <#code#>
+        case .register(let dto):
+            return .requestJSONEncodable(dto)
+        case .unregister:
+            return .requestPlain
+        case .login(let dto):
+            return .requestJSONEncodable(dto)
+        case .checkEmailDuplication(let dto):
+            return .requestJSONEncodable(dto)
+        case .readUserInfo:
+            return .requestPlain
+        case .uploadProfileImage(userID: let userId, image: let image):
+            
+            // TODO: 현재 API가 나와있지 않은 상태, API 나오면 업데이트 예정
+            return .requestPlain
+        case .readFriends:
+            return .requestPlain
+        case .deleteFriend(let dto):
+            return .requestJSONEncodable(dto)
+        case .bookmarkFriend(let dto):
+            return .requestJSONEncodable(dto)
         case .createMeeting(let encodedMeetingData, let imageData):
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(encodedMeetingData), name: "data", mimeType: "application/json"))
@@ -325,12 +321,13 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .deleteFAQ(let dto):
             return .requestJSONEncodable(dto)
+            
         }
     }
     
     var headers: [String: String]? {
         switch self {
-        case .unregister, .readUserInfo, .readNaverUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs:
+        case .unregister, .readUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs:
             return nil
         default:
             return ["Content-Type": "application/json"]
