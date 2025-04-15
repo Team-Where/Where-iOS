@@ -153,6 +153,9 @@
 		7F07AA572DA5726300095602 /* UpdateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */; };
 		7F07AA592DA5733D00095602 /* DeleteAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */; };
 		7F07AA612DAA452D00095602 /* APIServiceProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */; };
+		7F716C832DAE94CD0076D4DD /* RegisterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F716C822DAE94CD0076D4DD /* RegisterDTO.swift */; };
+		7F716C872DAE96A50076D4DD /* LoginDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F716C862DAE96A50076D4DD /* LoginDTO.swift */; };
+		7F716C892DAE97290076D4DD /* CheckEmailDuplicationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F716C882DAE97290076D4DD /* CheckEmailDuplicationDTO.swift */; };
 		91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F452D575BEE00C142B2 /* SideMenuContentView.swift */; };
 		91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */; };
 		91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */; };
@@ -320,9 +323,12 @@
 		7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAnnouncementDTO.swift; sourceTree = "<group>"; };
 		7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnnouncementDTO.swift; sourceTree = "<group>"; };
 		7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAnnouncementDTO.swift; sourceTree = "<group>"; };
-		7F07AA5E2DAA43E200095602 /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Where.app; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app"; sourceTree = "<absolute>"; };
-		7F07AA5F2DAA43E200095602 /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = WhereTests.xctest; path = "/Users/swain/Desktop/Project/Where/build/Debug-iphoneos/Where.app/PlugIns/WhereTests.xctest"; sourceTree = "<absolute>"; };
 		7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceProvidable.swift; sourceTree = "<group>"; };
+		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F716C822DAE94CD0076D4DD /* RegisterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDTO.swift; sourceTree = "<group>"; };
+		7F716C862DAE96A50076D4DD /* LoginDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDTO.swift; sourceTree = "<group>"; };
+		7F716C882DAE97290076D4DD /* CheckEmailDuplicationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckEmailDuplicationDTO.swift; sourceTree = "<group>"; };
 		91446F452D575BEE00C142B2 /* SideMenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuContentView.swift; sourceTree = "<group>"; };
 		91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
@@ -511,6 +517,8 @@
 			children = (
 				045B44A72D2150AF00514A27 /* Where */,
 				04832B452D266819003FFE3B /* WhereTests */,
+				7F716C7F2DAE86B10076D4DD /* Where.app */,
+				7F716C802DAE86B10076D4DD /* WhereTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -688,6 +696,7 @@
 		7F07AA312DA54C6900095602 /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				7F716C812DAE94310076D4DD /* User */,
 				042A7A2B2DA57555004105E2 /* Friend */,
 				042A7A352DA57555004105E2 /* Place */,
 				042A7A3A2DA57555004105E2 /* Schedule */,
@@ -695,6 +704,16 @@
 				042A7A272DA57511004105E2 /* Meeting */,
 			);
 			path = DTO;
+			sourceTree = "<group>";
+		};
+		7F716C812DAE94310076D4DD /* User */ = {
+			isa = PBXGroup;
+			children = (
+				7F716C822DAE94CD0076D4DD /* RegisterDTO.swift */,
+				7F716C862DAE96A50076D4DD /* LoginDTO.swift */,
+				7F716C882DAE97290076D4DD /* CheckEmailDuplicationDTO.swift */,
+			);
+			path = User;
 			sourceTree = "<group>";
 		};
 		7F7E67BC2DA105B500833376 /* Feature */ = {
@@ -1194,7 +1213,7 @@
 				042A79F82DA53386004105E2 /* KakaoSDKShare */,
 			);
 			productName = Where;
-			productReference = 7F07AA5E2DAA43E200095602 /* Where.app */;
+			productReference = 7F716C7F2DAE86B10076D4DD /* Where.app */;
 			productType = "com.apple.product-type.application";
 		};
 		04832B3A2D266813003FFE3B /* WhereTests */ = {
@@ -1214,7 +1233,7 @@
 			packageProductDependencies = (
 			);
 			productName = WhereTests;
-			productReference = 7F07AA5F2DAA43E200095602 /* WhereTests.xctest */;
+			productReference = 7F716C802DAE86B10076D4DD /* WhereTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1321,6 +1340,7 @@
 				0497F6A62DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift in Sources */,
 				042A7A522DA57555004105E2 /* UpdateCommentDTO.swift in Sources */,
 				042A7A532DA57555004105E2 /* UpdateScheduleDTO.swift in Sources */,
+				7F716C832DAE94CD0076D4DD /* RegisterDTO.swift in Sources */,
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
 				7F07AA4F2DA56CD400095602 /* ReadAdminInquiriesDTO.swift in Sources */,
 				04A4F45B2D42105E0041FD02 /* Inquiry.swift in Sources */,
@@ -1348,9 +1368,11 @@
 				042A79F02DA3F5F8004105E2 /* NaverLoginStrategy.swift in Sources */,
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
 				0450E85F2D9AC85B00DB029A /* CommunityCore.swift in Sources */,
+				7F716C892DAE97290076D4DD /* CheckEmailDuplicationDTO.swift in Sources */,
 				04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */,
 				046455D52D93E2A100B74A01 /* EditInquiryView.swift in Sources */,
 				046455D92D93EF5000B74A01 /* Text.swift in Sources */,
+				7F716C872DAE96A50076D4DD /* LoginDTO.swift in Sources */,
 				04A530BA2D929D71004E58AD /* EditProfileViewModel.swift in Sources */,
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				04A5309E2D8EDDD4004E58AD /* Notification.swift in Sources */,
