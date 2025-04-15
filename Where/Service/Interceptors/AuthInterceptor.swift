@@ -13,7 +13,6 @@ final class AuthInterceptor: RequestInterceptor {
     private let tokenStorage: TokenStorageProtocol
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
-    private let apiProvider: APIServiceProvidable
     private let retryLimit: Int = 2
     
     init(
@@ -26,7 +25,6 @@ final class AuthInterceptor: RequestInterceptor {
         self.tokenStorage = tokenStorage
         self.decoder = decoder
         self.encoder = encoder
-        self.apiProvider = WithoutTokenAPIServiceProvider()
     }
     
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {

@@ -121,7 +121,7 @@ enum Endpoint {
 // MARK: TargetType Confirmation
 extension Endpoint: TargetType {
     var baseURL: URL {
-        URL(string: "https://audiwhere.codns.com")!
+        URL(string: "https://audiwhere.codns.com/api")!
     }
     
     var path: String {
