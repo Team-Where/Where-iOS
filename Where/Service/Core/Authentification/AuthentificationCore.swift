@@ -65,6 +65,7 @@ private extension AuthentificationCore {
 final class AuthentificationCore: NSObject, ObservableObject {
     @Published var _user: User?
     
+    let userSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
     var isLoginNeeded: Bool { _user == nil }
     
     private var currentProvider: AuthentificationProvider?
