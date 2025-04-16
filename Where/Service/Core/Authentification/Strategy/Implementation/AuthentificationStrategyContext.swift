@@ -12,22 +12,15 @@ final class AuthentificationStrategyContext {
     private var strategies = [AuthentificationProvider: AuthentificationStrategyProtocol]()
     private var currentProvider: AuthentificationProvider?
     
-    var credential: AnyPublisher<UserCredential, AuthentificationCoreError> {
-        guard let provider = currentProvider,
-              let strategy = strategies[provider]
-        else {
-            return Empty<UserCredential, AuthentificationCoreError>().eraseToAnyPublisher()
-        }
-        return strategy.credential.eraseToAnyPublisher()
-    }
+    let credentialSubject = PassthroughSubject<UserCredential, AuthentificationCoreError>()
     
     private func cache(by provider: AuthentificationProvider) {
         guard strategies[provider] == nil else { return }
         
         switch provider {
-        case .apple: strategies[provider] = AppleLoginStrategy()
-        case .kakao: strategies[provider] = KakaoLoginStrategy()
-        case .naver: strategies[provider] = NaverLoginStrategy()
+        case .apple: strategies[provider] = AppleLoginStrategy(credentialSubject: credentialSubject)
+        case .kakao: strategies[provider] = KakaoLoginStrategy(credentialSubject: credentialSubject)
+        case .naver: strategies[provider] = NaverLoginStrategy(credentialSubject: credentialSubject)
             // TODO: 자체로그인 전략 구현체
         case .custom: break
         }

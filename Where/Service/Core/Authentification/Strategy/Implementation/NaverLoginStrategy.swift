@@ -11,13 +11,10 @@ import NidThirdPartyLogin
 
 final class NaverLoginStrategy: NSObject {
     private let naverAPI: NidOAuth = .shared
-    private let credentialSubject = PassthroughSubject<UserCredential, AuthentificationCoreError>()
+    private let credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>
     
-    var credential: AnyPublisher<UserCredential, AuthentificationCoreError> {
-        credentialSubject.eraseToAnyPublisher()
-    }
-    
-    override init() {
+    init(credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>) {
+        self.credentialSubject = credentialSubject
         super.init()
         _configureNaverAPI(naverAPI)
     }

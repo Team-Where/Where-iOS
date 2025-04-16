@@ -10,10 +10,10 @@ import Combine
 import AuthenticationServices
 
 final class AppleLoginStrategy {
-    private let credentialSubject = PassthroughSubject<UserCredential, AuthentificationCoreError>()
+    private let credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>
     
-    var credential: AnyPublisher<UserCredential, AuthentificationCoreError> {
-        credentialSubject.eraseToAnyPublisher()
+    init(credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>) {
+        self.credentialSubject = credentialSubject
     }
 }
 

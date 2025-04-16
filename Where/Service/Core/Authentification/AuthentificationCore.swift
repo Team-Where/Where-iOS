@@ -110,7 +110,7 @@ final class AuthentificationCore: NSObject, ObservableObject {
             }
             .store(in: &cancellables)
         
-        strategyContext.credential
+        strategyContext.credentialSubject
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
