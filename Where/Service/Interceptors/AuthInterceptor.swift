@@ -27,15 +27,6 @@ final class AuthInterceptor {
         self.encoder = encoder
     }
     
-    private func extractTokens(from header: HTTPHeaders) throws -> Tokens {
-        guard let accessToken = header["AccessToken"],
-              let refreshToken = header["RefreshToken"]
-        else {
-            throw AuthInterceptorError.headerMissing
-        }
-        return Tokens(accessToken: accessToken, refreshToken: refreshToken)
-    }
-    
     private func fetchTokens() throws -> Tokens {
         guard let data = try? tokenStorage.fetch(by: key),
               let tokens = try? decoder.decode(Tokens.self, from: data)
@@ -52,37 +43,20 @@ final class AuthInterceptor {
             throw AuthInterceptorError.saveTokenFailed
         }
     }
-    
-    private func handleTokens(new: Tokens, old: Tokens) throws {
-        if new == old {
-            // 토큰이 같다는 건 재발급 전이라는 의미이므로 refreshToken 저장하고 재시도
-            let tokens = Tokens(accessToken: old.refreshToken, refreshToken: old.refreshToken)
-            try saveTokens(tokens)
-        } else {
-            // 토큰이 다르다는 건 accessToken, refreshToken 모두 실패하여 재발급한 경우이므로 새 토큰을 저장
-            try saveTokens(new)
-        }
-    }
-    
-    private func performResponse(_ response: HTTPURLResponse) throws {
-        guard response.statusCode == 401 else {
-            throw AuthInterceptorError.anotherResponse(statusCode: response.statusCode)
-        }
-    }
 }
 
 // MARK: - Nested Types
+
 private extension AuthInterceptor {
     enum AuthInterceptorError: Error {
-        case anotherResponse(statusCode: Int)
-        case headerMissing
         case saveTokenFailed
         case tokenNotFound
         case refreshTokenExpired
     }
 }
 
-/// MARK: - Interfaces
+// MARK: - Interfaces
+
 extension AuthInterceptor: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, any Error>) -> Void) {
         do {
@@ -101,47 +75,20 @@ extension AuthInterceptor: RequestInterceptor {
             return completion(.doNotRetryWithError(AuthInterceptorError.refreshTokenExpired))
         }
         
-        guard let response = request.task?.response as? HTTPURLResponse
+        guard let response = request.task?.response as? HTTPURLResponse,
+              response.statusCode == 401
         else {
             return completion(.doNotRetryWithError(error))
         }
         
         do {
-            try performResponse(response)
-            
-            
-            
-            let newToken = try extractTokens(from: response.headers)
-            
-            
-            
             let oldToken = try fetchTokens()
-            
-            
-            
-            try handleTokens(new: newToken, old: oldToken)
-            
-            
+            try saveTokens(Tokens(accessToken: oldToken.refreshToken, refreshToken: oldToken.refreshToken))
             
             completion(.retry)
             
-            
-            
-        } catch AuthInterceptorError.headerMissing {
-            completion(.doNotRetry)
         } catch let error {
             completion(.doNotRetryWithError(error))
         }
     }
 }
-
-/*
- 장소가져오기(토큰필요)
- 
- 1. 성공 200~300
- 2. 만료 401
- 
- 1트: 401 / 헤더없음 / 바디없음
- 2트:
- 
- */
