@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041DF3BD2DB000C100A0E51F /* NotificationCore.swift */; };
 		042A79D32D9EAD2F004105E2 /* AuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */; };
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
 		042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D62D9EC37A004105E2 /* Endpoint.swift */; };
@@ -184,6 +185,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		041DF3BD2DB000C100A0E51F /* NotificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCore.swift; sourceTree = "<group>"; };
 		042A79D12D9EAD2F004105E2 /* AuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthInterceptor.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
 		042A79D62D9EC37A004105E2 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				042A79F52DA4124F004105E2 /* MeetingCore.swift */,
 				0497F6A22DA6B85F0037B1CC /* PlaceCore.swift */,
 				042A79DB2DA17644004105E2 /* SupportCore.swift */,
+				041DF3BD2DB000C100A0E51F /* NotificationCore.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1452,6 +1455,7 @@
 				04A4F45D2D4212020041FD02 /* Meeting.swift in Sources */,
 				7F07AA592DA5733D00095602 /* DeleteAnnouncementDTO.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
+				041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */,
 				04A530A72D8FB8D8004E58AD /* EditAnnouncementView.swift in Sources */,
 				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
