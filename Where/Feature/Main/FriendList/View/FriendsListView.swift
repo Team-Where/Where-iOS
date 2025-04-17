@@ -82,9 +82,9 @@ struct FriendsListView: View {
         .sheet(item: $viewModel.sheetType) { type in
             switch type {
             case .deleteFriend(let friend):
-                DeleteFriendSheet { viewModel.deleteFriend(by: friend.id) }
+                DeleteFriendSheet(viewModel: viewModel, friend: friend)
             case .historyWithFriend(let user, let friend):
-                HistoryReminderSheet(sheetType: $viewModel.sheetType, route: $viewModel.route, user: user, friend: friend)
+                HistoryReminderSheet(viewModel: viewModel, user: user, friend: friend)
             }
         }
         .navigationDestination(item: $viewModel.route) { route in
@@ -130,7 +130,7 @@ struct FriendsListView: View {
                     LazyVStack {
                         ForEach(friends) { friend in
                             // TODO: 강제 언래핑 개선하기
-                            Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, viewModel.user!, friend)
+                            Cell(viewModel: viewModel, friend)
                         }
                     }
                 } header: {
@@ -142,8 +142,7 @@ struct FriendsListView: View {
             Section {
                 LazyVStack {
                     ForEach(friends) { friend in
-                        // TODO: 강제 언래핑 개선하기
-                        Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, viewModel.user!, friend)
+                        Cell(viewModel: viewModel, friend)
                     }
                 }
             } header: {
@@ -165,11 +164,21 @@ struct FriendsListView: View {
 // MARK: Nested Types
 extension FriendsListView {
     struct DeleteFriendSheet: View {
-        let action: () -> Void
+        @ObservedObject private var viewModel: FriendsListViewModel
+        
+        private let friend: FriendRelationship
+        
+        init(
+            viewModel: FriendsListViewModel,
+            friend: FriendRelationship
+        ) {
+            self.viewModel = viewModel
+            self.friend = friend
+        }
         
         var body: some View {
             Button {
-                action()
+                viewModel.deleteFriend(by: friend.id)
             } label: {
                 Text("친구 삭제")
                     .whereFont(.body16medium)
@@ -186,17 +195,26 @@ extension FriendsListView {
     }
     
     struct HistoryReminderSheet: View {
-        @Binding fileprivate var sheetType: SheetType?
-        @Binding fileprivate var route: Route?
+        @ObservedObject private var viewModel: FriendsListViewModel
         
         let user: User
         let friend: FriendRelationship
+        
+        init(
+            viewModel: FriendsListViewModel,
+            user: User,
+            friend: FriendRelationship
+        ) {
+            self.viewModel = viewModel
+            self.user = user
+            self.friend = friend
+        }
         
         var body: some View {
             VStack {
                 HStack {
                     Button {
-                        sheetType = nil
+                        viewModel.dismissSheet()
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -235,8 +253,7 @@ extension FriendsListView {
                 }
                 
                 Button {
-                    sheetType = .none
-                    route = .historyReminder(user: user, friend: friend)
+                    viewModel.presentHistoryReminder(friend: friend)
                 } label: {
                     Text("나와의 모임활동 보기")
                         .whereFont(.body16medium)
@@ -254,21 +271,15 @@ extension FriendsListView {
     }
     
     struct Cell: View {
-        @Binding fileprivate var sheetType: SheetType?
-        
-        private let user: User?
+        @ObservedObject private var viewModel: FriendsListViewModel
+
         private let friend: FriendRelationship
-        private var isEditing: Bool
         
         fileprivate init(
-            sheetItem: Binding<SheetType?>,
-            isEditing: Bool,
-            _ user: User,
+            viewModel: FriendsListViewModel,
             _ friend: FriendRelationship
         ) {
-            self._sheetType = sheetItem
-            self.isEditing = isEditing
-            self.user = user
+            self.viewModel = viewModel
             self.friend = friend
         }
         
@@ -286,17 +297,17 @@ extension FriendsListView {
                 
                 Button {
                     // TODO: 즐겨찾기 토글
-                    isEditing ? sheetType = .deleteFriend(friend: friend) : ()
+                    viewModel.isEditing ? viewModel.deleteFriend(by: friend.id) : viewModel.toggleFavorite(by: friend.id)
                 } label: {
                     let isFavorite = false
-                    Image(systemName: isEditing ? "trash" : isFavorite ? "star.fill" : "star")
-                        .foregroundStyle(isEditing ? .where(hex: 0x6B7280) : isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
+                    Image(systemName: viewModel.isEditing ? "trash" : isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(viewModel.isEditing ? .where(hex: 0x6B7280) : isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
                 }
                 .transition(.move(edge: .trailing))
             }
             .contentShape(.rect)
             .onTapGesture {
-                sheetType = .historyWithFriend(user: <#User#>, friend: friend)
+                viewModel.presentHistoryWithFriend(friend: friend)
             }
         }
     }
