@@ -11,8 +11,8 @@ import Combine
 final class FriendsListViewModel: ObservableObject {
     @Published var sheetType: SheetType?
     @Published var route: Route?
-    @Published var friends: [User] = []
-    @Published var searchedFriends: [User] = []
+    @Published var friends: [FriendRelationship] = []
+    @Published var searchedFriends: [FriendRelationship] = []
     @Published var searchingText: String = String()
     @Published var isEditing: Bool = false
     
@@ -79,9 +79,9 @@ extension FriendsListViewModel {
     /// 친구목록 내에서 라우팅 가능한 시트의 종류
     enum SheetType: Identifiable {
         /// 친구삭제
-        case deleteFriend(friend: User)
+        case deleteFriend(friend: FriendRelationship)
         /// 나와의 모임활동 보기
-        case historyWithFriend(friend: User)
+        case historyWithFriend(friend: FriendRelationship)
         
         var id: String { String(describing: self) }
     }
@@ -89,7 +89,7 @@ extension FriendsListViewModel {
     /// 친구목록 내에서 라우팅 가능한 Path의 종류
     enum Route: Identifiable, Hashable {
         /// 나와의 모임활동 상세 보기
-        case historyReminder(friend: User)
+        case historyReminder(friend: FriendRelationship)
         
         var id: String { String(describing: self) }
         

@@ -16,8 +16,8 @@ struct FriendsListView: View {
     @ObservedObject private var viewModel: FriendsListViewModel
     @FocusState private var isFocused: Bool
     
-    private var friends: [User] { viewModel.friends }
-    private var searchedFriends: [User] { viewModel.searchedFriends }
+    private var friends: [FriendRelationship] { viewModel.friends }
+    private var searchedFriends: [FriendRelationship] { viewModel.searchedFriends }
     private var isEditing: Bool { viewModel.isEditing }
     
     private let resolver: Resolver
@@ -187,7 +187,7 @@ extension FriendsListView {
         @Binding fileprivate var sheetType: SheetType?
         @Binding fileprivate var route: Route?
         
-        let friend: User
+        let friend: FriendRelationship
         
         var body: some View {
             VStack {
@@ -256,13 +256,13 @@ extension FriendsListView {
     struct Cell: View {
         @Binding fileprivate var sheetType: SheetType?
         
-        private let friend: User
+        private let friend: FriendRelationship
         private var isEditing: Bool
         
         fileprivate init(
             sheetItem: Binding<SheetType?>,
             isEditing: Bool,
-            _ friend: User
+            _ friend: FriendRelationship
         ) {
             self._sheetType = sheetItem
             self.isEditing = isEditing
