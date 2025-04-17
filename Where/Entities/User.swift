@@ -35,8 +35,14 @@ struct User: Identifiable {
     }
 }
 
-// TODO: 도메인 모델 설계 중 (WIP)
 /// 사용자 친구 관계
-struct FriendRelationship {
-    
+struct FriendRelationship: Identifiable {
+    /// 고유 식별자
+    let id: UInt64
+    /// 친구 닉네임
+    let nickname: String
+    /// 친구 대표 이미지 URL
+    let imageURL: URL? = nil
+    /// 즐겨찾기 여부
+    let isFavorite: Bool
 }
