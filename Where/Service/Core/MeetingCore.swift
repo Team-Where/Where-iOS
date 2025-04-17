@@ -10,9 +10,9 @@ import Combine
 
 protocol MeetingCoreProtocol {
     /// 나와 연관된 모임 목록
-    var meetingsSubject: CurrentValueSubject<[UInt64: Meeting], MeetingCoreError> { get }
+    var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> { get }
     /// 최근 살펴본 모임 정보
-    var currentMeetingSubject: CurrentValueSubject<Meeting?, Never> { get }
+    var currentMeeting: AnyPublisher<Meeting?, Never> { get }
     
     /// 모임 일정 등록
     /// - Parameters:
@@ -81,8 +81,8 @@ final class MeetingCore {
     private let tokenStorage: TokenStorageProtocol
     private let placeCore: PlaceCoreProtocol
     private let authCore: AuthentificationCoreProtocol
-    let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
-    let currentMeetingSubject = CurrentValueSubject<Meeting?, Never>(nil)
+    private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
+    private let currentMeetingSubject = CurrentValueSubject<Meeting?, Never>(nil)
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -97,7 +97,7 @@ final class MeetingCore {
     }
     
     private func subscribe() {
-        authCore.userSubject
+        authCore.user
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
@@ -141,6 +141,14 @@ final class MeetingCore {
 
 // MARK: - MeetingCoreProtocol Confirmation
 extension MeetingCore: MeetingCoreProtocol {
+    var meetings: AnyPublisher<[UInt64 : Meeting], MeetingCoreError> {
+        meetingsSubject.eraseToAnyPublisher()
+    }
+    
+    var currentMeeting: AnyPublisher<Meeting?, Never> {
+        currentMeetingSubject.eraseToAnyPublisher()
+    }
+    
     func createSchedule(id: UInt64) {
         
     }

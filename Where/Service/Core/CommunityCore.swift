@@ -10,7 +10,7 @@ import Combine
 
 protocol CommunityCoreProtocol {
     /// 나의 친구 목록
-    var friendsSubject: CurrentValueSubject<[UInt64: User], CommunityCoreError> { get }
+    var friends: AnyPublisher<[UInt64: User], CommunityCoreError> { get }
     
     /// 친구 추가
     func createFriend(friend: User)
@@ -37,7 +37,7 @@ final class CommunityCore {
     
     private let tokenStorage: TokenStorageProtocol
     private let auth: AuthentificationCoreProtocol
-    let friendsSubject = CurrentValueSubject<[UInt64: User], CommunityCoreError>([:])
+    private let friendsSubject = CurrentValueSubject<[UInt64: User], CommunityCoreError>([:])
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -50,7 +50,7 @@ final class CommunityCore {
     }
     
     private func subscribe() {
-        auth.userSubject
+        auth.user
             .sink { completion in
                 switch completion {
                 case .finished: break
@@ -69,6 +69,10 @@ final class CommunityCore {
 
 // MARK: CommunityCoreProtocol Confirmation
 extension CommunityCore: CommunityCoreProtocol {
+    var friends: AnyPublisher<[UInt64 : User], CommunityCoreError> {
+        friendsSubject.eraseToAnyPublisher()
+    }
+    
     func createFriend(friend: User) {
         
     }
