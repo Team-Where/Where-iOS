@@ -9,23 +9,23 @@ import SwiftUI
 import Swinject
 
 struct HistoryReminderView: View {
-    let friend: User
+    private let user: User
+    private let friend: FriendRelationship
     private let resolver: Resolver
     
     init(
-        friend: User,
+        user: User,
+        friend: FriendRelationship,
         resolver: Resolver
     ) {
+        self.user = user
         self.friend = friend
         self.resolver = resolver
     }
     
     var body: some View {
         VStack {
-            ProfilesArea(
-                user: .init(),
-                opponentUser: .init()
-            )
+            ProfilesArea(user: user, friend: friend)
             
             Rectangle()
                 .fill(Color(hex: 0xF3F4F6))
@@ -56,28 +56,28 @@ struct HistoryReminderView: View {
 extension HistoryReminderView {
     struct ProfilesArea: View {
         let user: User
-        let opponentUser: User
+        let friend: FriendRelationship
         
         var body: some View {
             VStack {
                 ZStack(alignment: .top) {
-                    profile(user, isMine: true)
+                    profile(nickname: user.nickname, imageURL: user.imageURL, isMine: true)
                         .padding(.trailing, 80)
                     
-                    profile(opponentUser, isMine: false)
+                    profile(nickname: friend.nickname, imageURL: friend.imageURL, isMine: false)
                         .padding(.leading, 80)
                 }
                 
-                Text("\(opponentUser.nickname)님과 함께한 모임을 확인해보세요.")
+                Text("\(friend.nickname)님과 함께한 모임을 확인해보세요.")
                     .whereFont(.body14regular)
                     .foregroundStyle(Color(hex: 0x4B5563))
                     .padding(.vertical, 8)
             }
         }
         
-        @ViewBuilder private func profile(_ user: User, isMine: Bool) -> some View {
+        @ViewBuilder private func profile(nickname: String, imageURL: URL?, isMine: Bool) -> some View {
             VStack {
-                AsyncImage(url: user.imageURL)
+                AsyncImage(url: imageURL)
                     .frame(width: 100, height: 100)
                     .clipShape(.circle)
                     .overlay(
@@ -85,7 +85,7 @@ extension HistoryReminderView {
                             .stroke(.white, lineWidth: isMine ? 0 : 3)
                     )
                 
-                Text(isMine ? "나" : user.nickname)
+                Text(isMine ? "나" : nickname)
                     .whereFont(.body16semibold)
                     .foregroundStyle(isMine ? Color(hex: 0x495057) : .black)
                     .multilineTextAlignment(.center)
@@ -205,6 +205,6 @@ extension HistoryReminderView {
 
 #Preview {
     NavigationStack {
-        HistoryReminderView(friend: .init(), resolver: PreviewHelper.shared.resolver)
+        HistoryReminderView(user: .init(), friend: PreviewHelper.shared.mockFriends.first!, resolver: PreviewHelper.shared.resolver)
     }
 }

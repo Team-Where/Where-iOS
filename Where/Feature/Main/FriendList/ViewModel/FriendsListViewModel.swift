@@ -11,23 +11,45 @@ import Combine
 final class FriendsListViewModel: ObservableObject {
     @Published var sheetType: SheetType?
     @Published var route: Route?
-    @Published var friends: [User] = []
-    @Published var searchedFriends: [User] = []
+    @Published var user: User?
+    @Published var friends: [FriendRelationship] = []
+    @Published var searchedFriends: [FriendRelationship] = []
     @Published var searchingText: String = String()
     @Published var isEditing: Bool = false
     
     var isSearching: Bool { searchingText.isEmpty == false }
     
+    private let authCore: AuthentificationCoreProtocol
     private let communityCore: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(communityCore: CommunityCoreProtocol) {
+    init(
+        authCore: AuthentificationCoreProtocol,
+        communityCore: CommunityCoreProtocol
+    ) {
+        self.authCore = authCore
         self.communityCore = communityCore
         subscribe()
     }
     
     private func subscribe() {
-        communityCore.friendsSubject
+        authCore.user
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    // TODO: 에러 핸들링
+                    #if DEBUG
+                    print(error)
+                    #endif
+                }
+            } receiveValue: { [weak self] user in
+                self?.user = user
+            }
+            .store(in: &cancellables)
+        
+        communityCore.friends
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -81,7 +103,7 @@ extension FriendsListViewModel {
         /// 친구삭제
         case deleteFriend(friend: User)
         /// 나와의 모임활동 보기
-        case historyWithFriend(friend: User)
+        case historyWithFriend(user: User, friend: FriendRelationship)
         
         var id: String { String(describing: self) }
     }
@@ -89,7 +111,7 @@ extension FriendsListViewModel {
     /// 친구목록 내에서 라우팅 가능한 Path의 종류
     enum Route: Identifiable, Hashable {
         /// 나와의 모임활동 상세 보기
-        case historyReminder(friend: User)
+        case historyReminder(user: User, friend: FriendRelationship)
         
         var id: String { String(describing: self) }
         

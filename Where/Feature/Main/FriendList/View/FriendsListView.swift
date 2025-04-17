@@ -37,6 +37,9 @@ struct FriendsListView: View {
                 content()
             }
         }
+        .onTapGesture {
+            isFocused = false
+        }
         .padding()
         .overlay(alignment: .bottom) {
             Divider()
@@ -80,14 +83,14 @@ struct FriendsListView: View {
             switch type {
             case .deleteFriend(let friend):
                 DeleteFriendSheet { viewModel.deleteFriend(by: friend.id) }
-            case .historyWithFriend(let friend):
-                HistoryReminderSheet(sheetType: $viewModel.sheetType, route: $viewModel.route, friend: friend)
+            case .historyWithFriend(let user, let friend):
+                HistoryReminderSheet(sheetType: $viewModel.sheetType, route: $viewModel.route, user: user, friend: friend)
             }
         }
-        .navigationDestination(item: $viewModel.route) { route in // 이 수정자를 주석 처리하면 에러 로그가 발생하지 않으므로, 이 navigationDestination이 에러의 원인임
+        .navigationDestination(item: $viewModel.route) { route in
             switch route {
-            case .historyReminder(let friend):
-                HistoryReminderView(friend: friend, resolver: resolver)
+            case .historyReminder(let user, let friend):
+                HistoryReminderView(user: user, friend: friend, resolver: resolver)
             }
         }
     }
@@ -126,7 +129,8 @@ struct FriendsListView: View {
                 Section {
                     LazyVStack {
                         ForEach(friends) { friend in
-                            Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, friend)
+                            // TODO: 강제 언래핑 개선하기
+                            Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, viewModel.user!, friend)
                         }
                     }
                 } header: {
@@ -138,10 +142,8 @@ struct FriendsListView: View {
             Section {
                 LazyVStack {
                     ForEach(friends) { friend in
-                        Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, friend)
-                            .onTapGesture {
-                                isFocused = false
-                            }
+                        // TODO: 강제 언래핑 개선하기
+                        Cell(sheetItem: $viewModel.sheetType, isEditing: isEditing, viewModel.user!, friend)
                     }
                 }
             } header: {
@@ -187,14 +189,12 @@ extension FriendsListView {
         @Binding fileprivate var sheetType: SheetType?
         @Binding fileprivate var route: Route?
         
-        let friend: User
+        let user: User
+        let friend: FriendRelationship
         
         var body: some View {
             VStack {
                 HStack {
-                    // TODO: 도메인 모델 WIP
-                    let isFavorite = true
-                    
                     Button {
                         sheetType = nil
                     } label: {
@@ -207,11 +207,11 @@ extension FriendsListView {
                     
                     Spacer()
                     
-                    Image(systemName: isFavorite ? "star.fill" : "star")
+                    Image(systemName: friend.isFavorite ? "star.fill" : "star")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
+                        .foregroundStyle(friend.isFavorite ? Color(hex: 0xFBBF24) : Color(hex: 0xD1D5D8))
                 }
                 
                 VStack(spacing: 18) {
@@ -236,7 +236,7 @@ extension FriendsListView {
                 
                 Button {
                     sheetType = .none
-                    route = .historyReminder(friend: friend)
+                    route = .historyReminder(user: user, friend: friend)
                 } label: {
                     Text("나와의 모임활동 보기")
                         .whereFont(.body16medium)
@@ -256,16 +256,19 @@ extension FriendsListView {
     struct Cell: View {
         @Binding fileprivate var sheetType: SheetType?
         
-        private let friend: User
+        private let user: User?
+        private let friend: FriendRelationship
         private var isEditing: Bool
         
         fileprivate init(
             sheetItem: Binding<SheetType?>,
             isEditing: Bool,
-            _ friend: User
+            _ user: User,
+            _ friend: FriendRelationship
         ) {
             self._sheetType = sheetItem
             self.isEditing = isEditing
+            self.user = user
             self.friend = friend
         }
         
@@ -293,7 +296,7 @@ extension FriendsListView {
             }
             .contentShape(.rect)
             .onTapGesture {
-                sheetType = .historyWithFriend(friend: friend)
+                sheetType = .historyWithFriend(user: <#User#>, friend: friend)
             }
         }
     }
