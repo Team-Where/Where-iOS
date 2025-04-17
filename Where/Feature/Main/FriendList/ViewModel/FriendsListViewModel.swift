@@ -101,7 +101,7 @@ extension FriendsListViewModel {
     /// 친구목록 내에서 라우팅 가능한 시트의 종류
     enum SheetType: Identifiable {
         /// 친구삭제
-        case deleteFriend(friend: User)
+        case deleteFriend(friend: FriendRelationship)
         /// 나와의 모임활동 보기
         case historyWithFriend(user: User, friend: FriendRelationship)
         

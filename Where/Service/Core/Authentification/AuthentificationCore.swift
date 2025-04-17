@@ -12,7 +12,7 @@ import Moya
 
 protocol AuthentificationCoreProtocol {
     /// 사용자 정보
-    var userSubject: CurrentValueSubject<User?, AuthentificationCoreError> { get }
+    var user: AnyPublisher<User?, AuthentificationCoreError> { get }
     
     /// 로그인 필요 여부
     var isLoginNeeded: Bool { get }
@@ -65,6 +65,7 @@ private extension AuthentificationCore {
 final class AuthentificationCore: NSObject, ObservableObject {
     @Published var _user: User?
     
+    private let userSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
     var isLoginNeeded: Bool { _user == nil }
     
     private var currentProvider: AuthentificationProvider?
@@ -109,7 +110,7 @@ final class AuthentificationCore: NSObject, ObservableObject {
             }
             .store(in: &cancellables)
         
-        strategyContext.credential
+        strategyContext.credentialSubject
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
@@ -125,6 +126,10 @@ final class AuthentificationCore: NSObject, ObservableObject {
 
 // MARK: AuthentificationCoreProtocol Conformation
 extension AuthentificationCore: AuthentificationCoreProtocol {
+    var user: AnyPublisher<User?, AuthentificationCoreError> {
+        userSubject.eraseToAnyPublisher()
+    }
+    
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
         strategyContext.handleOpenURL(url)
     }

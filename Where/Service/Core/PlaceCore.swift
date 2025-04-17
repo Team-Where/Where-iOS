@@ -10,15 +10,15 @@ import Combine
 
 protocol PlaceCoreProtocol {
     /// 장소 목록
-    var placesSubject: CurrentValueSubject<[UInt64: Place], PlaceCoreError> { get }
+    var places: AnyPublisher<[UInt64: Place], PlaceCoreError> { get }
     /// 최근 찾은 장소 정보
-    var currentPlaceSubject: CurrentValueSubject<Place?, PlaceCoreError> { get }
+    var currentPlace: AnyPublisher<Place?, PlaceCoreError> { get }
     /// 장소별 코멘트 목록
     /// - Note:
     ///     - Key: 장소 식별자
     ///     - Value: 해당 장소의 코멘트들
     ///     - Error: `PlaceCoreError`
-    var currentCommentsSubject: CurrentValueSubject<[Comment], PlaceCoreError> { get }
+    var currentComments: AnyPublisher<[Comment], PlaceCoreError> { get }
     
     /// 장소 생성
     /// - Parameters:
@@ -64,9 +64,9 @@ final class PlaceCore {
     
     private let tokenStorage: TokenStorageProtocol
     private let authCore: AuthentificationCoreProtocol
-    let placesSubject = CurrentValueSubject<[UInt64 : Place], PlaceCoreError>([:])
-    let currentPlaceSubject = CurrentValueSubject<Place?, PlaceCoreError>(nil)
-    let currentCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
+    private let placesSubject = CurrentValueSubject<[UInt64 : Place], PlaceCoreError>([:])
+    private let currentPlaceSubject = CurrentValueSubject<Place?, PlaceCoreError>(nil)
+    private let currentCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -79,7 +79,7 @@ final class PlaceCore {
     }
     
     private func subscribe() {
-        authCore.userSubject
+        authCore.user
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
@@ -115,6 +115,18 @@ final class PlaceCore {
 
 // MARK: - PlaceCoreProtocol Confirmation
 extension PlaceCore: PlaceCoreProtocol {
+    var places: AnyPublisher<[UInt64 : Place], PlaceCoreError> {
+        placesSubject.eraseToAnyPublisher()
+    }
+    
+    var currentPlace: AnyPublisher<Place?, PlaceCoreError> {
+        currentPlaceSubject.eraseToAnyPublisher()
+    }
+    
+    var currentComments: AnyPublisher<[Comment], PlaceCoreError> {
+        currentCommentsSubject.eraseToAnyPublisher()
+    }
+    
     func createPlace(meetingID: UInt64, name: String, address: String) {
         
     }

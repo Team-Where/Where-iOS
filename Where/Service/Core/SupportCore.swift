@@ -10,9 +10,9 @@ import Combine
 
 protocol SupportCoreProtocol {
     /// 1:1 문의 목록
-    var inquiriesSubject: CurrentValueSubject<[UInt64: Inquiry], SupportCoreError> { get }
+    var inquiries: AnyPublisher<[UInt64: Inquiry], SupportCoreError> { get }
     /// 공지사항 목록
-    var announcementsSubject: CurrentValueSubject<[UInt64: Announcement], SupportCoreError> { get }
+    var announcements: AnyPublisher<[UInt64: Announcement], SupportCoreError> { get }
     
     /// 1:1문의 조회 - 사용자
     func readInquiries()
@@ -67,8 +67,8 @@ final class SupportCore {
     
     private let authCore: AuthentificationCoreProtocol
     private let tokenStorage: TokenStorageProtocol
-    let inquiriesSubject = CurrentValueSubject<[UInt64: Inquiry], SupportCoreError>([:])
-    let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], SupportCoreError>([:])
+    private let inquiriesSubject = CurrentValueSubject<[UInt64: Inquiry], SupportCoreError>([:])
+    private let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], SupportCoreError>([:])
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -81,7 +81,7 @@ final class SupportCore {
     }
     
     private func subscribe() {
-        authCore.userSubject
+        authCore.user
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
@@ -125,6 +125,14 @@ final class SupportCore {
 
 // MARK: - SupportCoreProtocol Confirmation
 extension SupportCore: SupportCoreProtocol {
+    var inquiries: AnyPublisher<[UInt64 : Inquiry], SupportCoreError> {
+        inquiriesSubject.eraseToAnyPublisher()
+    }
+    
+    var announcements: AnyPublisher<[UInt64 : Announcement], SupportCoreError> {
+        announcementsSubject.eraseToAnyPublisher()
+    }
+    
     func readInquiries() {
         
     }

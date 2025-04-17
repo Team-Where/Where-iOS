@@ -39,7 +39,7 @@ final class InviteFriendsViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        communityCore.friendsSubject
+        communityCore.friends
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {

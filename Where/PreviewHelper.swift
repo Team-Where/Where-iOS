@@ -16,6 +16,13 @@ final class PreviewHelper {
     
     lazy var mockUser = User()
     
+    lazy var mockFriends: [FriendRelationship] = [
+        FriendRelationship(id: 11, nickname: "냠냠쩝쩝", isFavorite: true),
+        FriendRelationship(id: 12, nickname: "또구몬", isFavorite: true),
+        FriendRelationship(id: 13, nickname: "진키22", isFavorite: true),
+        FriendRelationship(id: 14, nickname: "이초홍", isFavorite: false),
+    ]
+    
     lazy var mockMeeting = Meeting(
         id: 0,
         title: "2024 연말파티",

@@ -16,8 +16,8 @@ struct FriendsListView: View {
     @ObservedObject private var viewModel: FriendsListViewModel
     @FocusState private var isFocused: Bool
     
-    private var friends: [User] { viewModel.friends }
-    private var searchedFriends: [User] { viewModel.searchedFriends }
+    private var friends: [FriendRelationship] { viewModel.friends }
+    private var searchedFriends: [FriendRelationship] { viewModel.searchedFriends }
     private var isEditing: Bool { viewModel.isEditing }
     
     private let resolver: Resolver

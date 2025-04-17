@@ -10,8 +10,6 @@ import Combine
 import AuthenticationServices
 
 protocol AuthentificationStrategyProtocol: AnyObject {
-    var credential: AnyPublisher<UserCredential, AuthentificationCoreError> { get }
-    
     func login(provider: AuthentificationProvider)
 }
 
