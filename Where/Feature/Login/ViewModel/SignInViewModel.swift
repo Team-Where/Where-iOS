@@ -26,7 +26,7 @@ final class SignInViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        auth.userSubject
+        auth.user
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {

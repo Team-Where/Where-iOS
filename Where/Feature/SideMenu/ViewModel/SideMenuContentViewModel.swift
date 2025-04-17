@@ -29,7 +29,7 @@ final class SideMenuContentViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        authCore.userSubject
+        authCore.user
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -45,7 +45,7 @@ final class SideMenuContentViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        meetingCore.meetingsSubject
+        meetingCore.meetings
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {

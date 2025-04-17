@@ -23,7 +23,7 @@ final class PlaceDetailViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        placeCore.currentPlaceSubject
+        placeCore.currentPlace
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
