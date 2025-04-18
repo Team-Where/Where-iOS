@@ -124,6 +124,8 @@
 		04A530B52D914C82004E58AD /* SelectionTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A530B42D914C7E004E58AD /* SelectionTab.swift */; };
 		04A530B72D926D9A004E58AD /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A530B62D926D9A004E58AD /* EditProfileView.swift */; };
 		04A530BA2D929D71004E58AD /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A530B92D929D71004E58AD /* EditProfileViewModel.swift */; };
+		04C6F22E2DB26F6A0099874F /* CoreMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F22D2DB26F6A0099874F /* CoreMediator.swift */; };
+		04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2312DB2715F0099874F /* CoreProtocol.swift */; };
 		04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */; };
 		04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18D2D72E32D002CA364 /* UserCredential.swift */; };
 		04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */; };
@@ -301,6 +303,8 @@
 		04A530B42D914C7E004E58AD /* SelectionTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTab.swift; sourceTree = "<group>"; };
 		04A530B62D926D9A004E58AD /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		04A530B92D929D71004E58AD /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
+		04C6F22D2DB26F6A0099874F /* CoreMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMediator.swift; sourceTree = "<group>"; };
+		04C6F2312DB2715F0099874F /* CoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreProtocol.swift; sourceTree = "<group>"; };
 		04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationCore.swift; sourceTree = "<group>"; };
 		04CBC18D2D72E32D002CA364 /* UserCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredential.swift; sourceTree = "<group>"; };
 		04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereFormModifier.swift; sourceTree = "<group>"; };
@@ -495,6 +499,8 @@
 		0438BA7A2D97DA86008C628F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				04C6F22D2DB26F6A0099874F /* CoreMediator.swift */,
+				04C6F2312DB2715F0099874F /* CoreProtocol.swift */,
 				042A79E72DA3EC49004105E2 /* Authentification */,
 				0450E85E2D9AC85B00DB029A /* CommunityCore.swift */,
 				042A79F52DA4124F004105E2 /* MeetingCore.swift */,
@@ -1358,12 +1364,14 @@
 				046833E92D3B8E8E009D2357 /* MeetingInformationView.swift in Sources */,
 				0450E8662D9B876E00DB029A /* MyMeetingViewModel.swift in Sources */,
 				046833EA2D3B8E8E009D2357 /* InviteFriendsView.swift in Sources */,
+				04C6F22E2DB26F6A0099874F /* CoreMediator.swift in Sources */,
 				04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */,
 				0450E84B2D996E5D00DB029A /* LoginViewModel.swift in Sources */,
 				046833EB2D3B8E8E009D2357 /* MeetingPlacesView.swift in Sources */,
 				046833EC2D3B8E8E009D2357 /* MeetingInformationDetailView.swift in Sources */,
 				046833F02D3B8F65009D2357 /* DayOfWeek+Day+Month.swift in Sources */,
 				04A530A92D8FB9E6004E58AD /* RadioButton.swift in Sources */,
+				04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */,
 				7F07AA432DA5626D00095602 /* InviteFriendsDTO.swift in Sources */,
 				046833F12D3B8F65009D2357 /* Place.swift in Sources */,
 				04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */,
