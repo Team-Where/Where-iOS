@@ -126,6 +126,7 @@
 		04A530BA2D929D71004E58AD /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A530B92D929D71004E58AD /* EditProfileViewModel.swift */; };
 		04C6F22E2DB26F6A0099874F /* CoreMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F22D2DB26F6A0099874F /* CoreMediator.swift */; };
 		04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2312DB2715F0099874F /* CoreProtocol.swift */; };
+		04C6F2342DB297B80099874F /* CoreEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2332DB297B80099874F /* CoreEvent.swift */; };
 		04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */; };
 		04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18D2D72E32D002CA364 /* UserCredential.swift */; };
 		04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */; };
@@ -305,6 +306,7 @@
 		04A530B92D929D71004E58AD /* EditProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewModel.swift; sourceTree = "<group>"; };
 		04C6F22D2DB26F6A0099874F /* CoreMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMediator.swift; sourceTree = "<group>"; };
 		04C6F2312DB2715F0099874F /* CoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreProtocol.swift; sourceTree = "<group>"; };
+		04C6F2332DB297B80099874F /* CoreEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreEvent.swift; sourceTree = "<group>"; };
 		04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationCore.swift; sourceTree = "<group>"; };
 		04CBC18D2D72E32D002CA364 /* UserCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredential.swift; sourceTree = "<group>"; };
 		04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereFormModifier.swift; sourceTree = "<group>"; };
@@ -499,6 +501,7 @@
 		0438BA7A2D97DA86008C628F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				04C6F2332DB297B80099874F /* CoreEvent.swift */,
 				04C6F22D2DB26F6A0099874F /* CoreMediator.swift */,
 				04C6F2312DB2715F0099874F /* CoreProtocol.swift */,
 				042A79E72DA3EC49004105E2 /* Authentification */,
@@ -1444,6 +1447,7 @@
 				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
+				04C6F2342DB297B80099874F /* CoreEvent.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
 				7F07AA612DAA452D00095602 /* APIServiceProvidable.swift in Sources */,
 				0497F6A32DA6B85F0037B1CC /* PlaceCore.swift in Sources */,
