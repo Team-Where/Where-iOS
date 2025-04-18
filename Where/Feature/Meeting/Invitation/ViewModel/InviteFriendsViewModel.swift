@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class InviteFriendsViewModel: ObservableObject {
     @Published var friends = [User]()
@@ -18,8 +19,8 @@ final class InviteFriendsViewModel: ObservableObject {
     private let communityCore: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(communityCore: CommunityCoreProtocol) {
-        self.communityCore = communityCore
+    init(resolver: Resolver) {
+        self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
         subscribe()
     }
     

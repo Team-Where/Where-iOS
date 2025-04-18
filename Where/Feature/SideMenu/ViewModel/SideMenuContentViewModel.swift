@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class SideMenuContentViewModel: ObservableObject {
     @Published var user: User?
@@ -19,12 +20,9 @@ final class SideMenuContentViewModel: ObservableObject {
     private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(
-        authCore: AuthentificationCoreProtocol,
-        meetingCore: MeetingCoreProtocol
-    ) {
-        self.authCore = authCore
-        self.meetingCore = meetingCore
+    init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         subscribe()
     }
     

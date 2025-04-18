@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 @MainActor
 final class CommentViewModel: ObservableObject {
@@ -19,10 +20,8 @@ final class CommentViewModel: ObservableObject {
     private let placeCore: PlaceCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(
-        placeCore: PlaceCoreProtocol
-    ) {
-        self.placeCore = placeCore
+    init(resolver: Resolver) {
+        self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
         subscribe()
     }
     

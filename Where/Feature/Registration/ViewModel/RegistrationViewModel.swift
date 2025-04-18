@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import Swinject
 
 @MainActor
 final class RegistrationViewModel: ObservableObject {
@@ -28,7 +29,7 @@ final class RegistrationViewModel: ObservableObject {
     var nicknameValidationState: NicknameValidationState = .beforeValidate
     var registrationStep: RegistrationTerminationStep = .email
     
-    private let auth: AuthentificationCoreProtocol
+    private let authCore: AuthentificationCoreProtocol
     
     var navigationTitle: String {
         switch registrationStep {
@@ -55,8 +56,8 @@ final class RegistrationViewModel: ObservableObject {
     private var timer: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     
-    init(auth: AuthentificationCoreProtocol) {
-        self.auth = auth
+    init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
         subscribe()
     }
     

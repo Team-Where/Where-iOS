@@ -8,33 +8,34 @@
 import Foundation
 import AuthenticationServices
 import Combine
+import Swinject
 
 @MainActor
 final class LoginViewModel: ObservableObject {
     @Published private(set) var isProcessing: Bool = false
     
-    private let auth: AuthentificationCoreProtocol
+    private let authCore: AuthentificationCoreProtocol
     
-    init(auth: AuthentificationCoreProtocol) {
-        self.auth = auth
+    init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
     }
 }
 
 // MARK: Interfaces
 extension LoginViewModel {
     func handleOpenURL(_ provider: AuthentificationProvider, url: URL) {
-        auth.handleOpenURL(provider, url)
+        authCore.handleOpenURL(provider, url)
     }
     
     func loginWithNaver() {
-        auth.loginWithNaver()
+        authCore.loginWithNaver()
     }
     
     func loginWithKakao() {
-        auth.loginWithKakao()
+        authCore.loginWithKakao()
     }
     
     func loginWithApple(auth: ASAuthorization) {
-        self.auth.loginWithApple(auth: auth)
+        authCore.loginWithApple(auth: auth)
     }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class FriendsListViewModel: ObservableObject {
     @Published var sheetType: SheetType?
@@ -23,12 +24,9 @@ final class FriendsListViewModel: ObservableObject {
     private let communityCore: CommunityCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(
-        authCore: AuthentificationCoreProtocol,
-        communityCore: CommunityCoreProtocol
-    ) {
-        self.authCore = authCore
-        self.communityCore = communityCore
+    init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
+        self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
         subscribe()
     }
     

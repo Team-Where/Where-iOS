@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import Swinject
 
 final class CreateMeetingViewModel: ObservableObject {
     @Published var isPopupPresented: Bool = false
@@ -16,12 +17,9 @@ final class CreateMeetingViewModel: ObservableObject {
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
     
-    init(
-        communityCore: CommunityCoreProtocol,
-        meetingCore: MeetingCoreProtocol
-    ) {
-        self.communityCore = communityCore
-        self.meetingCore = meetingCore
+    init(resolver: Resolver) {
+        self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
     }
 }
 

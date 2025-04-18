@@ -12,90 +12,55 @@ import Swinject
 struct ViewModelAssembly: @preconcurrency Assembly {
     func assemble(container: Container) {
         container.register(LoginViewModel.self) { resolver in
-            guard let auth = resolver.resolve(AuthentificationCoreProtocol.self) else {
-                fatalError("AuthentificationCoreProtocol not registered")
-            }
-            return LoginViewModel(auth: auth)
+            return LoginViewModel(resolver: resolver)
         }
+        
         container.register(SignInViewModel.self) { resolver in
-            guard let auth = resolver.resolve(AuthentificationCoreProtocol.self) else {
-                fatalError("AuthentificationCoreProtocol not registered")
-            }
-            return SignInViewModel(auth: auth)
+            return SignInViewModel(resolver: resolver)
         }
+        
         container.register(RegistrationViewModel.self) { resolver in
-            guard let auth = resolver.resolve(AuthentificationCoreProtocol.self) else {
-                fatalError("AuthentificationCoreProtocol not registered")
-            }
-            return RegistrationViewModel(auth: auth)
+            return RegistrationViewModel(resolver: resolver)
         }
+        
         container.register(EditProfileViewModel.self) { resolver in
-            guard let auth = resolver.resolve(AuthentificationCoreProtocol.self) else {
-                fatalError("AuthentificationCoreProtocol not registered")
-            }
-            return EditProfileViewModel(auth: auth)
+            return EditProfileViewModel(resolver: resolver)
         }
+        
         container.register(SideMenuContentViewModel.self) { resolver in
-            guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self),
-                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self)
-            else {
-                fatalError("AuthentificationCoreProtocol, MeetingCoreProtocol not registered")
-            }
-            return SideMenuContentViewModel(authCore: authCore, meetingCore: meetingCore)
+            return SideMenuContentViewModel(resolver: resolver)
         }
+        
         container.register(MyMeetingViewModel.self) { resolver in
-            guard let meetingCore = resolver.resolve(MeetingCoreProtocol.self) else {
-                fatalError("MeetingCoreProtocol not registered")
-            }
-            return MyMeetingViewModel(meetingCore: meetingCore)
+            return MyMeetingViewModel(resolver: resolver)
         }
+        
         container.register(MeetingInformationDetailViewModel.self) { resolver in
-            guard let communityCore = resolver.resolve(CommunityCoreProtocol.self),
-                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self)
-            else {
-                fatalError("CommunityCoreProtocol and MeetingCoreProtocol not registered")
-            }
-            return MeetingInformationDetailViewModel(communityCore: communityCore, meetingCore: meetingCore)
+            return MeetingInformationDetailViewModel(resolver: resolver)
         }
+        
         container.register(FriendsListViewModel.self) { resolver in
-            guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self),
-                  let communityCore = resolver.resolve(CommunityCoreProtocol.self)
-            else {
-                fatalError("AuthentificationCoreProtocol and CommunityCoreProtocol not registered")
-            }
-            return FriendsListViewModel(authCore: authCore, communityCore: communityCore)
+            return FriendsListViewModel(resolver: resolver)
         }
+        
         container.register(CreateMeetingViewModel.self) { resolver in
-            guard let communityCore = resolver.resolve(CommunityCoreProtocol.self),
-                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self)
-            else {
-                fatalError("CommunityCoreProtocol, MeetingCoreProtocol not registered")
-            }
-            return CreateMeetingViewModel(communityCore: communityCore, meetingCore: meetingCore)
+            return CreateMeetingViewModel(resolver: resolver)
         }
+        
         container.register(InviteFriendsViewModel.self) { resolver in
-            guard let communityCore = resolver.resolve(CommunityCoreProtocol.self) else {
-                fatalError("CommunityCoreProtocol not registered")
-            }
-            return InviteFriendsViewModel(communityCore: communityCore)
+            return InviteFriendsViewModel(resolver: resolver)
         }
+        
         container.register(MeetingPlacesViewModel.self) { resolver in
-            guard let placeCore = resolver.resolve(PlaceCoreProtocol.self) else {
-                fatalError("PlaceCoreProtocol not registered")
-            }
-            return MeetingPlacesViewModel(placeCore: placeCore)
+            return MeetingPlacesViewModel(resolver: resolver)
         }
+        
         container.register(PlaceDetailViewModel.self) { resolver in
-            guard let placeCore = resolver.resolve(PlaceCoreProtocol.self) else {
-                fatalError("PlaceCoreProtocol not registered")
-            }
-            return PlaceDetailViewModel(placeCore: placeCore)
+            return PlaceDetailViewModel(resolver: resolver)
         }
+        
         container.register(CommentViewModel.self) { resolver in
-            guard let placeCore = resolver.resolve(PlaceCoreProtocol.self) else {
-                fatalError("PlaceCoreProtocol not registered")
-            }
-            return CommentViewModel(placeCore: placeCore)
+            return CommentViewModel(resolver: resolver)
         }
     }
 }

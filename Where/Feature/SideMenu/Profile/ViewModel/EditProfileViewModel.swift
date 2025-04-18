@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import Swinject
 
 final class EditProfileViewModel: ObservableObject {
     @Published var isPopupPresented: Bool = false
@@ -16,16 +17,16 @@ final class EditProfileViewModel: ObservableObject {
     @Published var step: EditProfileStep = .beforeUpdate
     @Published var isFloaterPresented: Bool = false
     
-    private let auth: AuthentificationCoreProtocol
+    private let authCore: AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(auth: AuthentificationCoreProtocol) {
-        self.auth = auth
+    init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
         subscribe()
     }
     
     private func subscribe() {
-        auth.user
+        authCore.user
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {

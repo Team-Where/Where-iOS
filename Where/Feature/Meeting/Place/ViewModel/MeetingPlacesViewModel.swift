@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class MeetingPlacesViewModel: ObservableObject {
     @Published var sortOption: PlaceSortOption = .all
@@ -18,8 +19,8 @@ final class MeetingPlacesViewModel: ObservableObject {
     private let placeCore: PlaceCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(placeCore: PlaceCoreProtocol) {
-        self.placeCore = placeCore
+    init(resolver: Resolver) {
+        self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
         subscribe()
     }
     

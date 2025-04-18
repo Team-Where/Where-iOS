@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class PlaceDetailViewModel: ObservableObject {
     @Published var isDeletionSheetPresented = false
@@ -17,8 +18,8 @@ final class PlaceDetailViewModel: ObservableObject {
     private let placeCore: PlaceCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(placeCore: PlaceCoreProtocol) {
-        self.placeCore = placeCore
+    init(resolver: Resolver) {
+        self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
         subscribe()
     }
     

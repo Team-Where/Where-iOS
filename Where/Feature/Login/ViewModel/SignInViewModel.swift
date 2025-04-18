@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class SignInViewModel: ObservableObject {
     @Published var emailFieldText: String = String()
@@ -17,16 +18,16 @@ final class SignInViewModel: ObservableObject {
         state == .processing || emailFieldText.isEmpty || passwordFieldText.isEmpty
     }
     
-    private let auth: AuthentificationCoreProtocol
+    private let authCore: AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(auth: AuthentificationCoreProtocol) {
-        self.auth = auth
+    init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
         subscribe()
     }
     
     private func subscribe() {
-        auth.user
+        authCore.user
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
@@ -83,6 +84,6 @@ extension SignInViewModel {
     
     func login() {
         state = .processing
-        auth.login(email: emailFieldText, password: passwordFieldText)
+        authCore.login(email: emailFieldText, password: passwordFieldText)
     }
 }

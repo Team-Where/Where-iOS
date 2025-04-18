@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 @MainActor
 final class MeetingInformationDetailViewModel: ObservableObject {
@@ -22,12 +23,9 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(
-        communityCore: CommunityCoreProtocol,
-        meetingCore: MeetingCoreProtocol
-    ) {
-        self.communityCore = communityCore
-        self.meetingCore = meetingCore
+    init(resolver: Resolver) {
+        self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         subscribe()
     }
     
