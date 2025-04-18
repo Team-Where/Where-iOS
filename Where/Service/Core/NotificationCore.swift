@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol NotificationCoreProtocol {
+protocol NotificationCoreProtocol: CoreProtocol {
     
 }

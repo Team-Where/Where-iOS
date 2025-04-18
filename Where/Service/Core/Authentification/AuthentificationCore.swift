@@ -10,7 +10,7 @@ import AuthenticationServices
 import Combine
 import Moya
 
-protocol AuthentificationCoreProtocol {
+protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 사용자 정보
     var user: AnyPublisher<User?, AuthentificationCoreError> { get }
     
@@ -80,6 +80,8 @@ final class AuthentificationCore: NSObject, ObservableObject {
         }
     }
     
+    weak var mediator: CoreMediatorProtocol?
+    
     private let tokenStorage: TokenStorageProtocol
     private let strategyContext = AuthentificationStrategyContext()
     private let decoder: JSONDecoder = .init()
@@ -106,7 +108,17 @@ final class AuthentificationCore: NSObject, ObservableObject {
                 }
             } receiveValue: { [weak self] user in
                 self?._user = user
-                self?.currentUserId = user?.id
+                
+                guard let user else {
+                    // TODO: 로그아웃 상황 중재
+                    // self?.mediator?.notify(event: .userDidLogout(id: ))
+                    self?._user = nil
+                    self?.currentUserId = nil
+                    return
+                }
+                
+                self?.currentUserId = user.id
+                self?.mediator?.notify(event: .userDidLogin(id: user.id))
             }
             .store(in: &cancellables)
         

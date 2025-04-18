@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-protocol SupportCoreProtocol {
+protocol SupportCoreProtocol: CoreProtocol {
     /// 1:1 문의 목록
     var inquiries: AnyPublisher<[UInt64: Inquiry], SupportCoreError> { get }
     /// 공지사항 목록
@@ -63,48 +63,21 @@ final class SupportCore {
     @Published private var _inquiries = [UInt64: Inquiry]()
     @Published private var _announcements = [UInt64: Announcement]()
     
-    private var userID: UInt64?
+    weak var mediator: CoreMediatorProtocol?
     
-    private let authCore: AuthentificationCoreProtocol
     private let tokenStorage: TokenStorageProtocol
     private let inquiriesSubject = CurrentValueSubject<[UInt64: Inquiry], SupportCoreError>([:])
     private let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], SupportCoreError>([:])
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        authCore: AuthentificationCoreProtocol,
         tokenStorage: TokenStorageProtocol
     ) {
-        self.authCore = authCore
         self.tokenStorage = tokenStorage
         subscribe()
     }
     
     private func subscribe() {
-        authCore.user
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    switch error {
-                    case .loginFailed, .notSupported, .socialAuthProviderAuthorizationFailed, .unknown, .userInfoFetchFailed:
-                        self?.userID = nil
-                        self?._inquiries.removeAll()
-                        self?._announcements.removeAll()
-                    case .logoutFailed:
-                        break
-                    @unknown default: break
-                    }
-                }
-            } receiveValue: { [weak self] user in
-                self?.userID = user?.id
-                // TODO: 관리자 계정일 때는 동작 방식이 상이하니 추후 수정할 것
-                self?.readInquiries()
-                // self?.readAdminInquiries()
-                self?.readAnnouncements()
-            }
-            .store(in: &cancellables)
-        
         inquiriesSubject
             .sink { completion in
                 // TODO: 에러 핸들링 강화

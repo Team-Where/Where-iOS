@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-protocol PlaceCoreProtocol {
+protocol PlaceCoreProtocol: CoreProtocol {
     /// 장소 목록
     var places: AnyPublisher<[UInt64: Place], PlaceCoreError> { get }
     /// 최근 찾은 장소 정보
@@ -60,44 +60,22 @@ enum PlaceCoreError: Error {
 final class PlaceCore {
     @Published private var _places = [UInt64: Place]()
     
-    private var userID: UInt64?
+    weak var mediator: CoreMediatorProtocol?
     
     private let tokenStorage: TokenStorageProtocol
-    private let authCore: AuthentificationCoreProtocol
     private let placesSubject = CurrentValueSubject<[UInt64 : Place], PlaceCoreError>([:])
     private let currentPlaceSubject = CurrentValueSubject<Place?, PlaceCoreError>(nil)
     private let currentCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        tokenStorage: TokenStorageProtocol,
-        authCore: AuthentificationCoreProtocol
+        tokenStorage: TokenStorageProtocol
     ) {
         self.tokenStorage = tokenStorage
-        self.authCore = authCore
         subscribe()
     }
     
     private func subscribe() {
-        authCore.user
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    switch error {
-                    case .loginFailed, .notSupported, .socialAuthProviderAuthorizationFailed, .unknown, .userInfoFetchFailed:
-                        self?.userID = nil
-                        self?._places.removeAll()
-                    case .logoutFailed:
-                        break
-                    @unknown default: break
-                    }
-                }
-            } receiveValue: { [weak self] user in
-                self?.userID = user?.id
-            }
-            .store(in: &cancellables)
-        
         placesSubject
             .sink { completion in
                 switch completion {

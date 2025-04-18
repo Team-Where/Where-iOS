@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-protocol CommunityCoreProtocol {
+protocol CommunityCoreProtocol: CoreProtocol {
     /// 나의 친구 목록
     var friends: AnyPublisher<[UInt64: FriendRelationship], CommunityCoreError> { get }
     
@@ -33,35 +33,25 @@ enum CommunityCoreError: Error {
 final class CommunityCore {
     @Published private(set) var _friends: [UInt64: FriendRelationship] = [:]
     
-    private var userID: UInt64?
+    weak var mediator: CoreMediatorProtocol?
     
     private let tokenStorage: TokenStorageProtocol
-    private let auth: AuthentificationCoreProtocol
     private let friendsSubject = CurrentValueSubject<[UInt64: FriendRelationship], CommunityCoreError>([:])
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        tokenStorage: TokenStorageProtocol,
-        auth: AuthentificationCoreProtocol
+        tokenStorage: TokenStorageProtocol
     ) {
         self.tokenStorage = tokenStorage
-        self.auth = auth
         subscribe()
     }
     
     private func subscribe() {
-        auth.user
+        friendsSubject
             .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print(error)
-                    #endif
-                }
-            } receiveValue: { [weak self] user in
-                self?.userID = user?.id
-                self?.readFriends()
+                // TODO: 에러 핸들링 강화
+            } receiveValue: { [weak self] dict in
+                self?._friends = dict
             }
             .store(in: &cancellables)
     }

@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-protocol MeetingCoreProtocol {
+protocol MeetingCoreProtocol: CoreProtocol {
     /// 나와 연관된 모임 목록
     var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> { get }
     /// 최근 살펴본 모임 정보
@@ -76,64 +76,26 @@ enum MeetingCoreError: Error {
 final class MeetingCore {
     @Published private var _meetings = [UInt64: Meeting]()
     
-    private var userID: UInt64?
+    weak var mediator: CoreMediatorProtocol?
     
     private let tokenStorage: TokenStorageProtocol
-    private let placeCore: PlaceCoreProtocol
-    private let authCore: AuthentificationCoreProtocol
     private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
     private let currentMeetingSubject = CurrentValueSubject<Meeting?, Never>(nil)
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        authCore: AuthentificationCoreProtocol,
-        placeCore: PlaceCoreProtocol,
         tokenStorage: TokenStorageProtocol
     ) {
-        self.authCore = authCore
-        self.placeCore = placeCore
         self.tokenStorage = tokenStorage
         subscribe()
     }
     
     private func subscribe() {
-        authCore.user
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    switch error {
-                    case .loginFailed, .notSupported, .socialAuthProviderAuthorizationFailed, .unknown, .userInfoFetchFailed:
-                        self?._meetings = [:]
-                        self?.userID = nil
-                    case .logoutFailed:
-                        break
-                    @unknown default: break
-                    }
-                }
-            } receiveValue: { [weak self] user in
-                self?.userID = user?.id
-                self?.readMeetings()
-            }
-            .store(in: &cancellables)
-        
         meetingsSubject
             .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    // TODO: 에러 핸들링 강화
-                    break
-                }
+                // TODO: 에러 핸들링 강화
             } receiveValue: { [weak self] dict in
                 self?._meetings = dict
-            }
-            .store(in: &cancellables)
-        
-        currentMeetingSubject
-            .sink { [weak self] meeting in
-                guard let id = meeting?.id else { return }
-                self?.placeCore.readPlaces(meetingID: id)
             }
             .store(in: &cancellables)
     }
