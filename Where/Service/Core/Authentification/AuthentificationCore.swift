@@ -34,6 +34,13 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     
     /// 로그아웃
     func logout()
+    
+    /// 최근 로그인 정보로 자동 로그인
+    func autoLogin()
+}
+
+protocol AuthentificationMediationProtocol {
+    
 }
 
 enum AuthentificationCoreError: Error {
@@ -63,10 +70,11 @@ private extension AuthentificationCore {
 }
 
 final class AuthentificationCore: NSObject, ObservableObject {
+    weak var mediator: CoreMediatorProtocol?
+    
     @Published var _user: User?
     
     private let userSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
-    var isLoginNeeded: Bool { _user == nil }
     
     private var currentProvider: AuthentificationProvider?
     private var currentUserId: UInt64? {
@@ -80,12 +88,10 @@ final class AuthentificationCore: NSObject, ObservableObject {
         }
     }
     
-    weak var mediator: CoreMediatorProtocol?
-    
     private let tokenStorage: TokenStorageProtocol
     private let strategyContext = AuthentificationStrategyContext()
-    private let decoder: JSONDecoder = .init()
-    private let encoder: JSONEncoder = .init()
+    private let decoder = JSONDecoder()
+    private let encoder = JSONEncoder()
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -108,17 +114,11 @@ final class AuthentificationCore: NSObject, ObservableObject {
                 }
             } receiveValue: { [weak self] user in
                 self?._user = user
+                self?.currentUserId = user?.id
                 
-                guard let user else {
-                    // TODO: 로그아웃 상황 중재
-                    // self?.mediator?.notify(event: .userDidLogout(id: ))
-                    self?._user = nil
-                    self?.currentUserId = nil
-                    return
+                if let user = user {
+                    self?.mediator?.notify(event: .userDidLogin(id: user.id))
                 }
-                
-                self?.currentUserId = user.id
-                self?.mediator?.notify(event: .userDidLogin(id: user.id))
             }
             .store(in: &cancellables)
         
@@ -140,6 +140,10 @@ final class AuthentificationCore: NSObject, ObservableObject {
 extension AuthentificationCore: AuthentificationCoreProtocol {
     var user: AnyPublisher<User?, AuthentificationCoreError> {
         userSubject.eraseToAnyPublisher()
+    }
+    
+    var isLoginNeeded: Bool {
+        _user == nil
     }
     
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
@@ -170,4 +174,13 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     func logout() {
         
     }
+    
+    func autoLogin() {
+        
+    }
+}
+
+// MARK: - AuthentificationMediationProtocol Conformation
+extension AuthentificationCore: AuthentificationMediationProtocol {
+    
 }
