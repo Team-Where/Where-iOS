@@ -18,46 +18,91 @@ struct CoreAssembly: Assembly {
             return AuthentificationCore(tokenStorage: tokenStorage)
         }
         .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
         
         container.register(CommunityCoreProtocol.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self),
-                  let auth = resolver.resolve(AuthentificationCoreProtocol.self)
+            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
-                fatalError("TokenStorageProtocol and AuthentificationCoreProtocol not registered")
+                fatalError("TokenStorageProtocol not registered")
             }
-            return CommunityCore(tokenStorage: tokenStorage, auth: auth)
+            return CommunityCore(tokenStorage: tokenStorage)
         }
         .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
         
         container.register(MeetingCoreProtocol.self) { resolver in
-            guard let authCore = resolver.resolve(AuthentificationCoreProtocol.self),
-                  let placeCore = resolver.resolve(PlaceCoreProtocol.self),
-                  let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
+            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
-                fatalError("AuthentificationCoreProtocol, PlaceCoreProtocol and TokenStorageProtocol not registered")
+                fatalError("TokenStorageProtocol not registered")
             }
-            return MeetingCore(authCore: authCore, placeCore: placeCore, tokenStorage: tokenStorage)
+            return MeetingCore(tokenStorage: tokenStorage)
         }
         .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
         
         container.register(PlaceCoreProtocol.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self),
-                  let authCore = resolver.resolve(AuthentificationCoreProtocol.self)
+            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
-                fatalError("TokenStorageProtocol, AuthentificationCoreProtocol not registered")
+                fatalError("TokenStorageProtocol not registered")
             }
-            return PlaceCore(tokenStorage: tokenStorage, authCore: authCore)
+            return PlaceCore(tokenStorage: tokenStorage)
         }
         .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
         
         container.register(SupportCoreProtocol.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self),
-                  let authCore = resolver.resolve(AuthentificationCoreProtocol.self)
+            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
-                fatalError("TokenStorageProtocol, AuthentificationCoreProtocol not registered")
+                fatalError("TokenStorageProtocol not registered")
             }
-            return SupportCore(authCore: authCore, tokenStorage: tokenStorage)
+            return SupportCore(tokenStorage: tokenStorage)
         }
         .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(CoreMediatorProtocol.self) { _ in
+            return CoreMediator()
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, mediator in
+            guard let authentificationCore = resolver.resolve(AuthentificationCoreProtocol.self),
+                  let communityCore = resolver.resolve(CommunityCoreProtocol.self),
+                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self),
+                  let placeCore = resolver.resolve(PlaceCoreProtocol.self),
+                  let supportCore = resolver.resolve(SupportCoreProtocol.self)
+            else {
+                fatalError("Major cores are not registered")
+            }
+            mediator.attachAuthentificationCore(authentificationCore)
+            mediator.attachCommunityCore(communityCore)
+            mediator.attachMeetingCore(meetingCore)
+            mediator.attachPlaceCore(placeCore)
+            mediator.attachSupportCore(supportCore)
+        }
     }
 }
