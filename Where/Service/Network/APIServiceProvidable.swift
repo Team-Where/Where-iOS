@@ -10,11 +10,12 @@ import Moya
 import Alamofire
 
 protocol APIServiceProvidable: Sendable {
-    func makeProvider<T: TargetType>(_ endpoint: T.Type) -> MoyaProvider<T>
+    associatedtype T: TargetType
+    func makeProvider() -> MoyaProvider<T>
 }
 
 /// 토큰이 필요한 MoyaProvider 제공자
-struct WithTokenAPIServiceProvider: APIServiceProvidable {
+struct WithTokenAPIServiceProvider<T: TargetType>: APIServiceProvidable {
     private let key: UInt64
     private let tokenStorage: TokenStorageProtocol
     private let decoder: JSONDecoder
@@ -32,7 +33,7 @@ struct WithTokenAPIServiceProvider: APIServiceProvidable {
         self.encoder = encoder
     }
     
-    func makeProvider<T: TargetType>(_ endpoint: T.Type) -> MoyaProvider<T> {
+    func makeProvider() -> MoyaProvider<T> {
         let authenticator = WhereAuthenticator(key: key, tokenStorage: tokenStorage, encoder: encoder)
         let interceptor = AuthenticationInterceptor(authenticator: authenticator)
         let session = Session(interceptor: interceptor)
@@ -40,8 +41,8 @@ struct WithTokenAPIServiceProvider: APIServiceProvidable {
     }
 }
 
-struct WithoutTokenAPIServiceProvider: APIServiceProvidable {
-    func makeProvider<T: TargetType>(_ endpoint: T.Type) -> MoyaProvider<T> {
+struct WithoutTokenAPIServiceProvider<T: TargetType>: APIServiceProvidable {
+    func makeProvider() -> MoyaProvider<T> {
         return .init()
     }
 }
