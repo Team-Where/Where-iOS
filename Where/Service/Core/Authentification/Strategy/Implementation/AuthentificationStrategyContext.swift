@@ -21,8 +21,7 @@ final class AuthentificationStrategyContext {
         case .apple: strategies[provider] = AppleLoginStrategy(credentialSubject: credentialSubject)
         case .kakao: strategies[provider] = KakaoLoginStrategy(credentialSubject: credentialSubject)
         case .naver: strategies[provider] = NaverLoginStrategy(credentialSubject: credentialSubject)
-            // TODO: 자체로그인 전략 구현체
-        case .custom: break
+        case .custom: strategies[provider] = CustomLoginStrategy(credentialSubject: credentialSubject)
         }
     }
     
