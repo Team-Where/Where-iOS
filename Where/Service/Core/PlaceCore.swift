@@ -18,7 +18,7 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - Key: 장소 식별자
     ///     - Value: 해당 장소의 코멘트들
     ///     - Error: `PlaceCoreError`
-    var currentComments: AnyPublisher<[Comment], PlaceCoreError> { get }
+    var currentPlaceComments: AnyPublisher<[Comment], PlaceCoreError> { get }
     
     /// 장소 생성
     /// - Parameters:
@@ -26,8 +26,8 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - name: 장소명
     ///     - address: 장소 주소
     func createPlace(meetingID: UInt64, name: String, address: String)
-    /// 장소 조회
-    func readPlaces(meetingID: UInt64)
+    /// 특정 장소 조회
+    func fetchPlace(id: UInt64) -> Place?
     /// 장소 삭제
     func deletePlace(id: UInt64)
     /// 장소 선택
@@ -39,33 +39,47 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - placeID: 장소 식별자
     ///     - description: 코멘트 내용
     func createComment(placeID: UInt64, description: String)
-    /// 장소에 대한 코멘트 조회
-    /// - Parameters:
-    ///     - placeID: 장소 식별자
-    func readComments(placeID: UInt64)
+    /// 특정 코멘트 조회
+    func fetchComment(id: UInt64) -> Comment?
     /// 장소에 대한 코멘트 수정
     func updateComment(id: UInt64, description: String)
     /// 장소에 대한 코멘트 삭제
     func deleteComment(id: UInt64)
-    /// 최근 본 장소 정보
-    func readCurrentPlace(id: UInt64)
     /// 사용자가 작성한 코멘트 여부 확인
     func isMyComment(comment: Comment) -> Bool
 }
 
+protocol PlaceMediationProtocol {
+    /// 특정 모임의 장소 목록 로드를 지시, 중재자에 의해 호출됨
+    func loadPlaces(meetingID: UInt64)
+    /// 최근 본 장소 정보 로드를 지시, 중재자에 의해 호출됨
+    func loadCurrentPlace(id: UInt64)
+    /// 특정 장소의 코멘트 로드를 지시, 중재자에 의해 호출됨
+    func loadComments(placeID: UInt64)
+    /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
+    func setCurrentUserID(_ id: UInt64?)
+}
+
 enum PlaceCoreError: Error {
-    
+    case networkingError(Error)
+    case userIDNotSet
 }
 
 final class PlaceCore {
-    @Published private var _places = [UInt64: Place]()
-    
     weak var mediator: CoreMediatorProtocol?
     
-    private let tokenStorage: TokenStorageProtocol
+    private var _places = [UInt64: Place]()
+    private var _meetingPlaceIDs = [UInt64: Set<UInt64>]()
+    private var _comments = [UInt64: Comment]()
+    
     private let placesSubject = CurrentValueSubject<[UInt64 : Place], PlaceCoreError>([:])
+    private let meetingPlaceIDsSubject = CurrentValueSubject<[UInt64: Set<UInt64>], PlaceCoreError>([:])
+    private let commentsSubject = CurrentValueSubject<[UInt64: Comment], PlaceCoreError>([:])
     private let currentPlaceSubject = CurrentValueSubject<Place?, PlaceCoreError>(nil)
-    private let currentCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
+    private let currentPlaceCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
+    
+    private var currentUserID: UInt64?
+    private let tokenStorage: TokenStorageProtocol
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -88,6 +102,53 @@ final class PlaceCore {
                 self?._places = dict
             }
             .store(in: &cancellables)
+        
+        meetingPlaceIDsSubject
+            .sink { completion in
+                // TODO: 에러 핸들링 강화
+            } receiveValue: { [weak self] mapping in
+                self?._meetingPlaceIDs = mapping
+            }
+            .store(in: &cancellables)
+        
+        currentPlaceSubject
+            .sink { completion in
+                // TODO: 에러 핸들링 강화
+            } receiveValue: { [weak self] place in
+                guard let place else {
+                    self?._comments.removeAll()
+                    return
+                }
+                self?.mediator?.notify(event: .placeSelected(id: place.id))
+            }
+            .store(in: &cancellables)
+        
+        currentPlaceSubject
+            .combineLatest(commentsSubject)
+            .map { place, commentsDict -> [Comment] in
+                guard let place else { return [] }
+                return commentsDict.values.filter { $0.placeId == place.id }
+            }
+            .catch { error -> AnyPublisher<[Comment], PlaceCoreError> in
+                Just([])
+                    .setFailureType(to: PlaceCoreError.self)
+                    .mapError { _ in error }
+                    .eraseToAnyPublisher()
+            }
+            .sink { completion in
+                // TODO: 에러 핸들링 강화
+            } receiveValue: { [weak self] comments in
+                self?.currentPlaceCommentsSubject.send(comments)
+            }
+            .store(in: &cancellables)
+        
+        commentsSubject
+            .sink { completion in
+                // TODO: 에러 핸들링 강화
+            } receiveValue: { [weak self] dict in
+                self?._comments = dict
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -101,19 +162,16 @@ extension PlaceCore: PlaceCoreProtocol {
         currentPlaceSubject.eraseToAnyPublisher()
     }
     
-    var currentComments: AnyPublisher<[Comment], PlaceCoreError> {
-        currentCommentsSubject.eraseToAnyPublisher()
+    var currentPlaceComments: AnyPublisher<[Comment], PlaceCoreError> {
+        currentPlaceCommentsSubject.eraseToAnyPublisher()
     }
     
     func createPlace(meetingID: UInt64, name: String, address: String) {
         
     }
     
-    func readPlaces(meetingID: UInt64) {
-        Task { @MainActor in
-            let place = PreviewHelper.shared.mockPlace
-            placesSubject.send([place.id: place])
-        }
+    func fetchPlace(id: UInt64) -> Place? {
+        _places[id]
     }
     
     func deletePlace(id: UInt64) {
@@ -132,10 +190,8 @@ extension PlaceCore: PlaceCoreProtocol {
         
     }
     
-    func readComments(placeID: UInt64) {
-        Task { @MainActor in
-            currentCommentsSubject.send(PreviewHelper.shared.mockComments)
-        }
+    func fetchComment(id: UInt64) -> Comment? {
+        _comments[id]
     }
     
     func updateComment(id: UInt64, description: String) {
@@ -146,13 +202,36 @@ extension PlaceCore: PlaceCoreProtocol {
         
     }
     
-    func readCurrentPlace(id: UInt64) {
-        if let place = _places[id] {
-            currentPlaceSubject.send(place)
-        }
+    func isMyComment(comment: Comment) -> Bool {
+        guard let userID = currentUserID else { return false }
+        return comment.writerId == userID
+    }
+}
+
+// MARK: - PlaceMediationProtocol Conformation
+extension PlaceCore: PlaceMediationProtocol {
+    func loadPlaces(meetingID: UInt64) {
+        // TODO: 장소 조회 로직 구현
+        // 1. 캐시 확인, 없다면 네트워크 요청
+        
+        // placesSubject.send(<#T##input: [UInt64 : Place]##[UInt64 : Place]#>)
     }
     
-    func isMyComment(comment: Comment) -> Bool {
-        comment.writerId == userID
+    func loadCurrentPlace(id: UInt64) {
+        // TODO: 장소 상세 정보 조회 로직 구현
+        // 1. 캐시 확인, 없다면 네트워크 요청
+        
+        // currentPlaceSubject.send(<#T##input: Place?##Place?#>)
+    }
+    
+    func loadComments(placeID: UInt64) {
+        // TODO: 코멘트 목록 조회 로직 구현
+        // 1. 캐시 확인, 없다면 네트워크 요청
+        
+        // commentsSubject.send(<#T##input: [UInt64 : Comment]##[UInt64 : Comment]#>)
+    }
+    
+    func setCurrentUserID(_ id: UInt64?) {
+        currentUserID = id
     }
 }

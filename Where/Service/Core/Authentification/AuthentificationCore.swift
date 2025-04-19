@@ -12,7 +12,7 @@ import Moya
 
 protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 사용자 정보
-    var user: AnyPublisher<User?, AuthentificationCoreError> { get }
+    var currentUser: AnyPublisher<User?, AuthentificationCoreError> { get }
     
     /// 로그인 필요 여부
     var isLoginNeeded: Bool { get }
@@ -34,13 +34,10 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     
     /// 로그아웃
     func logout()
-    
-    /// 최근 로그인 정보로 자동 로그인
-    func autoLogin()
 }
 
 protocol AuthentificationMediationProtocol {
-    
+    func loadCurrentUser()
 }
 
 enum AuthentificationCoreError: Error {
@@ -69,12 +66,12 @@ private extension AuthentificationCore {
     }
 }
 
-final class AuthentificationCore: NSObject, ObservableObject {
+final class AuthentificationCore {
     weak var mediator: CoreMediatorProtocol?
     
-    @Published var _user: User?
+    private var _currentUser: User?
     
-    private let userSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
+    private let currentUserSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
     
     private var currentProvider: AuthentificationProvider?
     private var currentUserId: UInt64? {
@@ -98,12 +95,11 @@ final class AuthentificationCore: NSObject, ObservableObject {
         tokenStorage: TokenStorageProtocol
     ) {
         self.tokenStorage = tokenStorage
-        super.init()
         subscribe()
     }
     
     private func subscribe() {
-        userSubject
+        currentUserSubject
             .sink { completion in
                 switch completion {
                 case .finished: break
@@ -113,12 +109,16 @@ final class AuthentificationCore: NSObject, ObservableObject {
                     #endif
                 }
             } receiveValue: { [weak self] user in
-                self?._user = user
-                self?.currentUserId = user?.id
-                
-                if let user = user {
-                    self?.mediator?.notify(event: .userDidLogin(id: user.id))
+                guard let user else {
+                    // 로그아웃 로직 작성
+                    // 1. 사용자가 로그아웃하여 사용자 정보가 없어졌음을 중재자를 통해 알림
+                    // 2. 토큰 및 내부 데이터풀 정리
+                    if let currentUserID = self?.currentUserId {
+                        self?.mediator?.notify(event: .userDidLogout(id: currentUserID))
+                    }
+                    return
                 }
+                self?.mediator?.notify(event: .userDidLogin(id: user.id))
             }
             .store(in: &cancellables)
         
@@ -127,7 +127,7 @@ final class AuthentificationCore: NSObject, ObservableObject {
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    self?.userSubject.send(completion: .failure(error))
+                    self?.currentUserSubject.send(completion: .failure(error))
                 }
             } receiveValue: { [weak self] credential in
                 // TODO: 여기에 네트워킹 로직 작성
@@ -138,12 +138,12 @@ final class AuthentificationCore: NSObject, ObservableObject {
 
 // MARK: AuthentificationCoreProtocol Conformation
 extension AuthentificationCore: AuthentificationCoreProtocol {
-    var user: AnyPublisher<User?, AuthentificationCoreError> {
-        userSubject.eraseToAnyPublisher()
+    var currentUser: AnyPublisher<User?, AuthentificationCoreError> {
+        currentUserSubject.eraseToAnyPublisher()
     }
     
     var isLoginNeeded: Bool {
-        _user == nil
+        _currentUser == nil
     }
     
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
@@ -163,24 +163,21 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func login(email: String, password: String) {
-        
-        
-        _Concurrency.Task { @MainActor in
-            userSubject.send(PreviewHelper.shared.mockUser)
-        }
-//        strategyContext.login(by: .custom(email: email, password: password))
+        strategyContext.login(by: .custom(email: email, password: password))
     }
     
     func logout() {
-        
-    }
-    
-    func autoLogin() {
-        
+        currentUserSubject.send(nil)
     }
 }
 
 // MARK: - AuthentificationMediationProtocol Conformation
 extension AuthentificationCore: AuthentificationMediationProtocol {
-    
+    func loadCurrentUser() {
+        // TODO: 로직 구현
+        // <추가>: UserDefaults에 저장했던 최근 로그인 정보(currentUserId)를 사용해 자동 로그인 구현
+        // 1. 캐시 확인
+        // 2. 서버로부터 사용자 정보와 토큰을 얻어 저장
+        // 3. 결과에 따라 currentUserSubject에 send하여 추가적인 동작을 촉발
+    }
 }

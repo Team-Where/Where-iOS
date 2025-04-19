@@ -29,11 +29,12 @@ protocol CommunityMediationProtocol {
     func loadFriends()
     
     /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
-    func setCurrentUserID(_ id: UInt64)
+    func setCurrentUserID(_ id: UInt64?)
 }
 
 enum CommunityCoreError: Error {
-    case networkingError
+    case networkingError(Error)
+    case userIDNotSet
 }
 
 final class CommunityCore {
@@ -94,10 +95,12 @@ extension CommunityCore: CommunityCoreProtocol {
 // MARK: - CommunityMediationProtocol Conformation
 extension CommunityCore: CommunityMediationProtocol {
     func loadFriends() {
-        
+        // TODO: 현재 사용자 식별자를 사용하여 친구 목록 로직 구현
+        // 1. 캐시 확인, 없다면 네트워크 요청
+        // 2. 결과에 따라 friendsSubject로 send
     }
     
-    func setCurrentUserID(_ id: UInt64) {
+    func setCurrentUserID(_ id: UInt64?) {
         currentUserID = id
     }
 }
