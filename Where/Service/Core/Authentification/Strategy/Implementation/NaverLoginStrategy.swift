@@ -40,11 +40,11 @@ final class NaverLoginStrategy: NSObject {
                     let nickname = entity["nickname"]
                     let userCredential = UserCredential(provider: .naver, ci: id, email: email, nickname: nickname)
                     self?.credentialSubject.send(userCredential)
-                case .failure(let error):
+                case .failure:
                     self?.credentialSubject.send(completion: .failure(.userInfoFetchFailed))
                 }
             }
-        case .failure(let error):
+        case .failure:
             self.credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
         }
     }

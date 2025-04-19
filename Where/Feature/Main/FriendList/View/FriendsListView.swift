@@ -299,9 +299,8 @@ extension FriendsListView {
                     // TODO: 즐겨찾기 토글
                     viewModel.isEditing ? viewModel.deleteFriend(by: friend.id) : viewModel.toggleFavorite(by: friend.id)
                 } label: {
-                    let isFavorite = false
-                    Image(systemName: viewModel.isEditing ? "trash" : isFavorite ? "star.fill" : "star")
-                        .foregroundStyle(viewModel.isEditing ? .where(hex: 0x6B7280) : isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
+                    Image(systemName: viewModel.isEditing ? "trash" : friend.isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(viewModel.isEditing ? .where(hex: 0x6B7280) : friend.isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
                 }
                 .transition(.move(edge: .trailing))
             }

@@ -224,7 +224,7 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .readUserInfo:
             return .requestPlain
-        case .uploadProfileImage(userID: let userId, image: let image):
+        case .uploadProfileImage(let userId, let image):
             
             // TODO: 현재 API가 나와있지 않은 상태, API 나오면 업데이트 예정
             return .requestPlain
