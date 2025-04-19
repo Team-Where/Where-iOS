@@ -57,7 +57,7 @@ enum SupportCoreError: Error {
 }
 
 final class SupportCore {
-    weak var mediator: CoreMediatorProtocol?
+    weak var mediator: Notifiable?
     
     private var _inquiries = [UInt64: Inquiry]()
     private var _announcements = [UInt64: Announcement]()

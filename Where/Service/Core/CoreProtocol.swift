@@ -8,5 +8,5 @@
 import Foundation
 
 protocol CoreProtocol: AnyObject {
-    var mediator: CoreMediatorProtocol? { get set }
+    var mediator: Notifiable? { get set }
 }

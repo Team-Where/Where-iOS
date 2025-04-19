@@ -80,7 +80,7 @@ enum MeetingCoreError: Error {
 }
 
 final class MeetingCore {
-    weak var mediator: CoreMediatorProtocol?
+    weak var mediator: Notifiable?
     
     private var _meetings = [UInt64: Meeting]()
     private var _meetingPariticipantIDs = [UInt64: Set<UInt64>]()

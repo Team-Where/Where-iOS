@@ -38,7 +38,7 @@ enum CommunityCoreError: Error {
 }
 
 final class CommunityCore {
-    weak var mediator: CoreMediatorProtocol?
+    weak var mediator: Notifiable?
     
     private var _friends = [UInt64: FriendRelationship]()
     

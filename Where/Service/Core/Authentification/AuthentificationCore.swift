@@ -67,7 +67,7 @@ private extension AuthentificationCore {
 }
 
 final class AuthentificationCore {
-    weak var mediator: CoreMediatorProtocol?
+    weak var mediator: Notifiable?
     
     private var _currentUser: User?
     

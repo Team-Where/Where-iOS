@@ -66,7 +66,7 @@ enum PlaceCoreError: Error {
 }
 
 final class PlaceCore {
-    weak var mediator: CoreMediatorProtocol?
+    weak var mediator: Notifiable?
     
     private var _places = [UInt64: Place]()
     private var _meetingPlaceIDs = [UInt64: Set<UInt64>]()
