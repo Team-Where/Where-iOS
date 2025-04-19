@@ -7,6 +7,7 @@
 
 import Foundation
 import Moya
+import Alamofire
 
 protocol APIServiceProvidable: Sendable {
     func makeProvider<T: TargetType>(_ endpoint: T.Type) -> MoyaProvider<T>
@@ -32,7 +33,8 @@ struct WithTokenAPIServiceProvider: APIServiceProvidable {
     }
     
     func makeProvider<T: TargetType>(_ endpoint: T.Type) -> MoyaProvider<T> {
-        let interceptor = AuthInterceptor(key: key, tokenStorage: tokenStorage, decoder, encoder)
+        let authenticator = WhereAuthenticator(key: key, tokenStorage: tokenStorage, encoder: encoder)
+        let interceptor = AuthenticationInterceptor(authenticator: authenticator)
         let session = Session(interceptor: interceptor)
         return .init(session: session)
     }
