@@ -15,12 +15,12 @@ struct UserCredential {
     
     init(
         provider: AuthentificationProvider,
-        ci: String,
-        email: String?,
-        nickname: String?
+        ci: String? = nil,
+        email: String? = nil,
+        nickname: String = nil?
     ) {
         self.provider = provider
-        self.ci = ci
+        self.ci = ci ?? ""
         self.email = email ?? ""
         self.nickname = nickname ?? ""
     }
