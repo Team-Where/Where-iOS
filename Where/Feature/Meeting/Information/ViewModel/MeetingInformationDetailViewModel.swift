@@ -32,7 +32,9 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     private func subscribe() {
         meetingCore.currentMeeting
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] meeting in
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] meeting in
                 self?.meeting = meeting
             }
             .store(in: &cancellables)

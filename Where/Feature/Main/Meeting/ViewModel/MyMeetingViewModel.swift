@@ -80,7 +80,6 @@ extension MyMeetingViewModel {
     }
     
     func routeToMeetingInformationView(meeting: Meeting) {
-        meetingCore.readCurrentMeeting(id: meeting.id)
         isMeetingInformationViewPresented = true
     }
 }

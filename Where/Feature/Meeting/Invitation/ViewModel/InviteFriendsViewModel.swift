@@ -10,8 +10,8 @@ import Combine
 import Swinject
 
 final class InviteFriendsViewModel: ObservableObject {
-    @Published var friends = [User]()
-    @Published var searchedFriends = [User]()
+    @Published var friends = [FriendRelationship]()
+    @Published var searchedFriends = [FriendRelationship]()
     @Published var isFloaterPresented: Bool = false
     @Published var isSearching: Bool = false
     @Published var searchingText: String = String()

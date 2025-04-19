@@ -27,7 +27,7 @@ final class CommentViewModel: ObservableObject {
     
     private func subscribe() {
         placeCore.currentPlace
-            .combineLatest(placeCore.currentComments)
+            .combineLatest(placeCore.currentPlaceComments)
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {

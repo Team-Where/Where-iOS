@@ -109,7 +109,7 @@ struct InviteFriendsView: View {
         .padding([.top, .horizontal])
     }
     
-    @ViewBuilder private func invitedFriends(_ friends: [User]) -> some View {
+    @ViewBuilder private func invitedFriends(_ friends: [FriendRelationship]) -> some View {
         VStack(spacing: 16) {
             HStack {
                 Text("초대된 친구 \(3)")
@@ -159,7 +159,7 @@ struct InviteFriendsView: View {
         )
     }
     
-    @ViewBuilder private func friendsList(_ friends: [User]) -> some View {
+    @ViewBuilder private func friendsList(_ friends: [FriendRelationship]) -> some View {
         LazyVStack(spacing: 20) {
             Section {
                 ForEach(friends, id: \.id) { friend in
@@ -190,7 +190,7 @@ struct InviteFriendsView: View {
         .padding(.top)
     }
     
-    @ViewBuilder private func friendsListCell(_ friend: User) -> some View {
+    @ViewBuilder private func friendsListCell(_ friend: FriendRelationship) -> some View {
         HStack(spacing: 12) {
             AsyncImage(url: nil)
                 .frame(width: 40, height: 40)

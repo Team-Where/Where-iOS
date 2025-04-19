@@ -44,7 +44,6 @@ final class PlaceDetailViewModel: ObservableObject {
 // MARK: - Interfaces
 extension PlaceDetailViewModel {
     func onAppear(_ place: Place) {
-        placeCore.readCurrentPlace(id: place.id)
         isTipPresented = place.pickedState == .unpicked
         
         guard isTipPresented == true else { return }
