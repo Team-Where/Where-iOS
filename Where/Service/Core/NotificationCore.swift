@@ -10,3 +10,7 @@ import Foundation
 protocol NotificationCoreProtocol: CoreProtocol {
     
 }
+
+protocol NotificationMediationProtocol {
+    
+}
