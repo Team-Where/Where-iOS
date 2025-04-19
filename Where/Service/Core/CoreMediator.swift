@@ -10,12 +10,12 @@ import Foundation
 typealias CoreMediatorProtocol = CoreLinkageProtocol & Notifiable
 
 protocol CoreLinkageProtocol: AnyObject {
-    func attachAuthentificationCore(_ core: AuthentificationCoreProtocol)
-    func attachCommunityCore(_ core: CommunityCoreProtocol)
-    func attachMeetingCore(_ core: MeetingCoreProtocol)
-    func attachPlaceCore(_ core: PlaceCoreProtocol)
-    func attachSupportCore(_ core: SupportCoreProtocol)
-    func attachNotificationCore(_ core: NotificationCoreProtocol)
+    func attachAuthentificationCore(_ core: AuthentificationMediationProtocol)
+    func attachCommunityCore(_ core: CommunityMediationProtocol)
+    func attachMeetingCore(_ core: MeetingMediationProtocol)
+    func attachPlaceCore(_ core: PlaceMediationProtocol)
+    func attachSupportCore(_ core: SupportMediationProtocol)
+    func attachNotificationCore(_ core: NotificationMediationProtocol)
 }
 
 protocol Notifiable: AnyObject {
@@ -23,37 +23,37 @@ protocol Notifiable: AnyObject {
 }
 
 final class CoreMediator {
-    private var authentificationCore: AuthentificationCoreProtocol!
-    private var communityCore: CommunityCoreProtocol!
-    private var meetingCore: MeetingCoreProtocol!
-    private var placeCore: PlaceCoreProtocol!
-    private var supportCore: SupportCoreProtocol!
-    private var notificationCore: NotificationCoreProtocol!
+    private var authentificationCore: AuthentificationMediationProtocol!
+    private var communityCore: CommunityMediationProtocol!
+    private var meetingCore: MeetingMediationProtocol!
+    private var placeCore: PlaceMediationProtocol!
+    private var supportCore: SupportMediationProtocol!
+    private var notificationCore: NotificationMediationProtocol!
 }
 
 // MARK: - CoreLinkageProtocol Conformation
 extension CoreMediator: CoreLinkageProtocol {
-    func attachAuthentificationCore(_ core: AuthentificationCoreProtocol) {
+    func attachAuthentificationCore(_ core: AuthentificationMediationProtocol) {
         authentificationCore = core
     }
     
-    func attachCommunityCore(_ core: CommunityCoreProtocol) {
+    func attachCommunityCore(_ core: CommunityMediationProtocol) {
         communityCore = core
     }
     
-    func attachMeetingCore(_ core: MeetingCoreProtocol) {
+    func attachMeetingCore(_ core: MeetingMediationProtocol) {
         meetingCore = core
     }
     
-    func attachPlaceCore(_ core: PlaceCoreProtocol) {
+    func attachPlaceCore(_ core: PlaceMediationProtocol) {
         placeCore = core
     }
     
-    func attachSupportCore(_ core: SupportCoreProtocol) {
+    func attachSupportCore(_ core: SupportMediationProtocol) {
         supportCore = core
     }
     
-    func attachNotificationCore(_ core: NotificationCoreProtocol) {
+    func attachNotificationCore(_ core: NotificationMediationProtocol) {
         notificationCore = core
     }
 }
