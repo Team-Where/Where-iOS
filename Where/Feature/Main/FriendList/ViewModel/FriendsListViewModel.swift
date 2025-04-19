@@ -31,7 +31,7 @@ final class FriendsListViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        authCore.user
+        authCore.currentUser
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
