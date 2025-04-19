@@ -10,7 +10,7 @@ import Swinject
 
 struct CoreAssembly: Assembly {
     func assemble(container: Swinject.Container) {
-        container.register(AuthentificationCoreProtocol.self) { resolver in
+        container.register(AuthentificationCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
                 fatalError("TokenStorageProtocol not registered")
@@ -25,7 +25,7 @@ struct CoreAssembly: Assembly {
             core.mediator = mediator
         }
         
-        container.register(CommunityCoreProtocol.self) { resolver in
+        container.register(CommunityCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
                 fatalError("TokenStorageProtocol not registered")
@@ -40,7 +40,7 @@ struct CoreAssembly: Assembly {
             core.mediator = mediator
         }
         
-        container.register(MeetingCoreProtocol.self) { resolver in
+        container.register(MeetingCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
                 fatalError("TokenStorageProtocol not registered")
@@ -55,7 +55,7 @@ struct CoreAssembly: Assembly {
             core.mediator = mediator
         }
         
-        container.register(PlaceCoreProtocol.self) { resolver in
+        container.register(PlaceCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
                 fatalError("TokenStorageProtocol not registered")
@@ -70,7 +70,7 @@ struct CoreAssembly: Assembly {
             core.mediator = mediator
         }
         
-        container.register(SupportCoreProtocol.self) { resolver in
+        container.register(SupportCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
                 fatalError("TokenStorageProtocol not registered")
@@ -90,11 +90,11 @@ struct CoreAssembly: Assembly {
         }
         .inObjectScope(.container)
         .initCompleted { resolver, mediator in
-            guard let authentificationCore = resolver.resolve(AuthentificationCoreProtocol.self),
-                  let communityCore = resolver.resolve(CommunityCoreProtocol.self),
-                  let meetingCore = resolver.resolve(MeetingCoreProtocol.self),
-                  let placeCore = resolver.resolve(PlaceCoreProtocol.self),
-                  let supportCore = resolver.resolve(SupportCoreProtocol.self)
+            guard let authentificationCore = resolver.resolve(AuthentificationMediationProtocol.self),
+                  let communityCore = resolver.resolve(CommunityMediationProtocol.self),
+                  let meetingCore = resolver.resolve(MeetingMediationProtocol.self),
+                  let placeCore = resolver.resolve(PlaceMediationProtocol.self),
+                  let supportCore = resolver.resolve(SupportMediationProtocol.self)
             else {
                 fatalError("Major cores are not registered")
             }
