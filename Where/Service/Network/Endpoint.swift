@@ -22,6 +22,8 @@ enum Endpoint {
     case readUserInfo(userID: UInt64)
     /// 프로필이미지 등록
     case uploadProfileImage(userID: UInt64, image: Data)
+    /// accessToken 재발급
+    case reissueAccessToken(refreshToken: String)
     
     // MARK: - Friends Related
     /// 친구 조회
@@ -137,6 +139,8 @@ extension Endpoint: TargetType {
             return "\(basePath)/mypage/\(userID)"
         case .uploadProfileImage(let userID, _):
             return "\(basePath)/\(userID)/uploadProfile"
+        case .reissueAccessToken:
+            return "\(basePath)/refresh"
             
             // MARK: - Friends Related
         case .readFriends(let userID):
@@ -206,7 +210,7 @@ extension Endpoint: TargetType {
     var method: Moya.Method {
         switch self {
         case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink: .get
-        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfileImage, .register: .post
+        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfileImage, .register, .reissueAccessToken: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister: .delete
         }
@@ -228,6 +232,11 @@ extension Endpoint: TargetType {
             
             // TODO: 현재 API가 나와있지 않은 상태, API 나오면 업데이트 예정
             return .requestPlain
+            
+        case .reissueAccessToken(let refreshToken):
+            var formData = [MultipartFormData]()
+            formData.append(.init(provider: .data(refreshToken.data(using: .utf8) ?? Data()), name: "refreshToken", mimeType: "application/json"))
+            return .uploadMultipart(formData)
         case .readFriends:
             return .requestPlain
         case .deleteFriend(let dto):
@@ -354,6 +363,8 @@ private extension Endpoint {
             return "/inquiry"
         case .readAdminInquiries, .createAdminInquiryReply, .createAnnouncement, .updateAnnouncement, .deleteAnnouncement, .createFAQ, .updateFAQ, .deleteFAQ:
             return "/admin"
+        case .reissueAccessToken:
+            return "/token"
         @unknown default:
             return ""
         }
