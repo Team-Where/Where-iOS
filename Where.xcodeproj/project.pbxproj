@@ -127,6 +127,7 @@
 		04C6F22E2DB26F6A0099874F /* CoreMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F22D2DB26F6A0099874F /* CoreMediator.swift */; };
 		04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2312DB2715F0099874F /* CoreProtocol.swift */; };
 		04C6F2342DB297B80099874F /* CoreEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2332DB297B80099874F /* CoreEvent.swift */; };
+		04C6F2362DB3CD800099874F /* CustomLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2352DB3CD800099874F /* CustomLoginStrategy.swift */; };
 		04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */; };
 		04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18D2D72E32D002CA364 /* UserCredential.swift */; };
 		04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */; };
@@ -307,6 +308,7 @@
 		04C6F22D2DB26F6A0099874F /* CoreMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMediator.swift; sourceTree = "<group>"; };
 		04C6F2312DB2715F0099874F /* CoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreProtocol.swift; sourceTree = "<group>"; };
 		04C6F2332DB297B80099874F /* CoreEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreEvent.swift; sourceTree = "<group>"; };
+		04C6F2352DB3CD800099874F /* CustomLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLoginStrategy.swift; sourceTree = "<group>"; };
 		04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationCore.swift; sourceTree = "<group>"; };
 		04CBC18D2D72E32D002CA364 /* UserCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredential.swift; sourceTree = "<group>"; };
 		04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereFormModifier.swift; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 				042A79ED2DA3EE1D004105E2 /* KakaoLoginStrategy.swift */,
 				042A79EF2DA3F5F8004105E2 /* NaverLoginStrategy.swift */,
 				042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */,
+				04C6F2352DB3CD800099874F /* CustomLoginStrategy.swift */,
 				042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */,
 			);
 			path = Implementation;
@@ -1354,6 +1357,7 @@
 				042A7A532DA57555004105E2 /* UpdateScheduleDTO.swift in Sources */,
 				7F716C832DAE94CD0076D4DD /* RegisterDTO.swift in Sources */,
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
+				04C6F2362DB3CD800099874F /* CustomLoginStrategy.swift in Sources */,
 				7F07AA4F2DA56CD400095602 /* ReadAdminInquiriesDTO.swift in Sources */,
 				04A4F45B2D42105E0041FD02 /* Inquiry.swift in Sources */,
 				04A530A52D8EE31C004E58AD /* AnnouncementView.swift in Sources */,
