@@ -17,7 +17,7 @@ struct UserCredential {
         provider: AuthentificationProvider,
         ci: String? = nil,
         email: String? = nil,
-        nickname: String = nil?
+        nickname: String? = nil
     ) {
         self.provider = provider
         self.ci = ci ?? ""
