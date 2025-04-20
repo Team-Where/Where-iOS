@@ -25,6 +25,20 @@ struct CoreAssembly: Assembly {
             core.mediator = mediator
         }
         
+        container.register(AuthentificationCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(AuthentificationCore.self) else {
+                fatalError("AuthentificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(AuthentificationMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(AuthentificationCore.self) else {
+                fatalError("AuthentificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
         container.register(CommunityCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
@@ -38,6 +52,20 @@ struct CoreAssembly: Assembly {
                 fatalError("CoreMediatorProtocol not registered")
             }
             core.mediator = mediator
+        }
+        
+        container.register(CommunityCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(CommunityCore.self) else {
+                fatalError("CommunityCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(CommunityMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(CommunityCore.self) else {
+                fatalError("CommunityCore concrete type not resolvable")
+            }
+            return core
         }
         
         container.register(MeetingCore.self) { resolver in
@@ -55,6 +83,20 @@ struct CoreAssembly: Assembly {
             core.mediator = mediator
         }
         
+        container.register(MeetingCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(MeetingCore.self) else {
+                fatalError("MeetingCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(MeetingMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(MeetingCore.self) else {
+                fatalError("MeetingCore concrete type not resolvable")
+            }
+            return core
+        }
+        
         container.register(PlaceCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
@@ -70,6 +112,20 @@ struct CoreAssembly: Assembly {
             core.mediator = mediator
         }
         
+        container.register(PlaceCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(PlaceCore.self) else {
+                fatalError("PlaceCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(PlaceMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(PlaceCore.self) else {
+                fatalError("PlaceCore concrete type not resolvable")
+            }
+            return core
+        }
+        
         container.register(SupportCore.self) { resolver in
             guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
@@ -83,6 +139,20 @@ struct CoreAssembly: Assembly {
                 fatalError("CoreMediatorProtocol not registered")
             }
             core.mediator = mediator
+        }
+        
+        container.register(SupportCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(SupportCore.self) else {
+                fatalError("SupportCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(SupportMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(SupportCore.self) else {
+                fatalError("SupportCore concrete type not resolvable")
+            }
+            return core
         }
         
         container.register(CoreMediatorProtocol.self) { _ in
