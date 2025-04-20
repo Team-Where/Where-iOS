@@ -22,8 +22,8 @@ struct MeetingPlacesView: View {
     }
     
     var body: some View {
-        ScrollView(.vertical) {
-            pickedPlacesArea([])
+        VStack {
+            pickedPlacesArea(viewModel.pickedPlaces)
             
             Rectangle()
                 .foregroundStyle(Color(hex: 0xF3F4F6))
@@ -31,9 +31,7 @@ struct MeetingPlacesView: View {
             
             sortOptions
             
-            candidatePlacesList(viewModel.sortOption, users: [
-                User(id: 1)
-            ])
+            candidatePlacesList(viewModel.sortOption, places: viewModel.places)
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -102,7 +100,9 @@ struct MeetingPlacesView: View {
         HStack(spacing: 8) {
             ForEach(PlaceSortOption.allCases, id: \.self) { option in
                 Button {
-                    viewModel.changeSortOption(option: option)
+                    withAnimation {
+                        viewModel.changeSortOption(option: option)
+                    }
                 } label: {
                     Text(option.title)
                         .whereFont(.body14medium)
@@ -118,79 +118,71 @@ struct MeetingPlacesView: View {
             }
             
             Spacer()
+            
+            Button {
+                // TODO: 장소 공유 시트 연결
+            } label: {
+                Label {
+                    Text("장소 공유")
+                        .whereFont(.body14medium)
+                } icon: {
+                    Image(systemName: "plus.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 15, height: 15)
+                        .whereTip($viewModel.isShareTipPresented, configuration: tipConfiguration) {
+                            Text("가장 먼저 장소를 공유해보세요!")
+                                .whereFont(.caption12regular)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 8)
+                        }
+                }
+            }
         }
         .padding()
-    }
-    
-    @ViewBuilder private func candidatePlacesList(_ sortOption: PlaceSortOption, users: [User]) -> some View {
-        switch sortOption {
-        case .all:
-            LazyVStack {
-                ForEach(users, id: \.id) { user in
-                    sectionByUser(user, [])
-                }
-            }
-        case .byLikesDescending:
-            LazyVStack {
-                ForEach(1...3, id: \.self) { index in
-                    sectionByLikes(index: index, [])
-                }
-            }
+        .onAppear {
+            viewModel.onAppear()
         }
     }
     
-    @ViewBuilder private func sectionByUser(_ user: User, _ places: [Place]) -> some View {
-        Section {
-            ForEach(places, id: \.id) { place in
-                placesSectionCell(place)
-            }
-        } header: {
-            HStack(spacing: 12) {
-                AsyncImage(url: user.imageURL)
-                    .frame(width: 40, height: 40)
-                    .clipShape(.circle)
-                
-                Text(user.nickname)
-                    .whereFont(.body16medium)
-                    .foregroundStyle(Color(hex: 0x1F2937))
-                
-                Spacer()
-                
-                // TODO: "나" 일 때만 장소 공유 인터랙션 가능
-                if true {
-                    Button {
-                        // TODO: 장소 공유 시트 연결
-                    } label: {
-                        Label {
-                            Text("장소 공유")
-                                .whereFont(.body14medium)
-                        } icon: {
-                            Image(systemName: "plus.circle.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 15, height: 15)
-                                .whereTip($viewModel.isShareTipPresented, configuration: tipConfiguration) {
-                                    Text("가장 먼저 장소를 공유해보세요!")
-                                        .whereFont(.caption12regular)
-                                        .foregroundStyle(.white)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 8)
-                                }
+    @ViewBuilder private func candidatePlacesList(_ sortOption: PlaceSortOption, places: [Place]) -> some View {
+        Group {
+            if places.isEmpty {
+                VStack {
+                    Spacer()
+                    
+                    Text("아직 공유된 장소가 없어요.")
+                        .whereFont(.body14regular)
+                        .foregroundStyle(.where(.gray700))
+                    
+                    Spacer()
+                }
+            } else {
+                ScrollView(.vertical) {
+                    switch sortOption {
+                    case .all:
+                        LazyVStack {
+                            ForEach(places) { place in
+                                placeListCell(place)
+                            }
+                        }
+                    case .byLikesDescending:
+                        LazyVStack {
+                            ForEach(1...3, id: \.self) { index in
+                                sectionByLikes(index: index, [])
+                            }
                         }
                     }
                 }
             }
-        }
-        .padding([.horizontal, .top])
-        .onAppear {
-            viewModel.onAppear()
         }
     }
     
     @ViewBuilder private func sectionByLikes(index: Int, _ places: [Place]) -> some View {
         Section {
             ForEach(places, id: \.id) { place in
-                placesSectionCell(place)
+                placeListCell(place)
             }
         } header: {
             VStack {
@@ -207,7 +199,7 @@ struct MeetingPlacesView: View {
         .padding([.horizontal, .top])
     }
     
-    @ViewBuilder private func placesSectionCell(_ place: Place) -> some View {
+    @ViewBuilder private func placeListCell(_ place: Place) -> some View {
         NavigationLink {
             PlaceDetailView(place, resolver: resolver)
         } label: {
