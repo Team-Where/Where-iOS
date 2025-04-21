@@ -42,7 +42,19 @@ struct FriendRelationship: Identifiable {
     /// 친구 닉네임
     let nickname: String
     /// 친구 대표 이미지 URL
-    let imageURL: URL? = nil
+    let imageURL: URL?
     /// 즐겨찾기 여부
     let isFavorite: Bool
+    
+    init(
+        id: UInt64,
+        nickname: String,
+        imageURL: URL? = nil,
+        isFavorite: Bool
+    ) {
+        self.id = id
+        self.nickname = nickname
+        self.imageURL = imageURL
+        self.isFavorite = isFavorite
+    }
 }
