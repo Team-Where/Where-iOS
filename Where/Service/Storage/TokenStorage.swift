@@ -11,8 +11,8 @@ import Security
 protocol TokenStorageProtocol: Sendable {
     typealias Query = [String: Any]
     
-    func store(_ tokens: Data) throws
-    func fetch() throws -> Data
+    func store(_ tokens: Tokens) throws
+    func fetch() throws -> Tokens
     func delete() throws
 }
 
@@ -24,13 +24,20 @@ private enum TokenStorageError: Error {
 
 final class TokenStorage {
     private let bundleIdentifier: String? = Bundle.main.bundleIdentifier
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
     private let key = "com.where.token"
-
-    init() {
-        
+    
+    init(
+        _ encoder: JSONEncoder,
+        _ decoder: JSONDecoder
+    ) {
+        self.encoder = encoder
+        self.decoder = decoder
     }
     
-    private func _create(_ data: Data, in query: Query) throws {
+    private func _create(_ tokens: Tokens, in query: Query) throws {
+        let data = try encoder.encode(tokens)
         var query = query
         query[kSecValueData as String] = data
         
@@ -50,7 +57,8 @@ final class TokenStorage {
         return dataTypeRef
     }
     
-    private func _update(_ data: Data, in query: Query) throws {
+    private func _update(_ tokens: Tokens, in query: Query) throws {
+        let data = try encoder.encode(tokens)
         let queryToUpdate: Query = [kSecValueData as String: data]
 
         let status = SecItemUpdate(query as CFDictionary, queryToUpdate as CFDictionary)
@@ -86,7 +94,7 @@ extension TokenStorage {
         }
     }
     
-    private func convert(_ ref: CFTypeRef?) throws -> Data {
+    private func convert(_ ref: CFTypeRef?) throws -> Tokens {
         guard let data = ref else {
             throw TokenStorageError.failedFindToken
         }
@@ -94,18 +102,18 @@ extension TokenStorage {
         guard let data = data as? Data else {
             throw TokenStorageError.failedCasting
         }
-        
-        return data
+        let tokens = try decoder.decode(Tokens.self, from: data)
+        return tokens
     }
 }
 
 // MARK: TokenStorage Conformation
 extension TokenStorage: TokenStorageProtocol {
-    func store(_ tokens: Data) throws {
+    func store(_ tokens: Tokens) throws {
         let query = try makeQuery()
         
         do {
-            if let _ =  try _read(query) {
+            if let _ =  try _read(query){
                 try _update(tokens, in: query)
             }
         } catch TokenStorageError.failedFindToken {
@@ -113,7 +121,7 @@ extension TokenStorage: TokenStorageProtocol {
         }
     }
     
-    func fetch() throws -> Data {
+    func fetch() throws -> Tokens {
         let query = try makeQuery()
         let reference = try _read(query)
         let data = try convert(reference)

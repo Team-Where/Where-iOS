@@ -10,11 +10,6 @@ import Swinject
 
 struct ServiceAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(TokenStorageProtocol.self) { _ in
-            TokenStorage()
-        }
-        .inObjectScope(.container)
-        
         container.register(JSONDecoder.self) { _ in
             JSONDecoder()
         }
@@ -25,12 +20,24 @@ struct ServiceAssembly: Assembly {
         }
         .inObjectScope(.container)
         
+        container.register(TokenStorageProtocol.self) { resolver in
+            guard let encoder = resolver.resolve(JSONEncoder.self),
+                  let decoder = resolver.resolve(JSONDecoder.self)
+            else {
+                fatalError("Failed Initializing TokenStorage")
+                
+            }
+            return TokenStorage(encoder, decoder)
+        }
+        .inObjectScope(.container)
+        
+        
         container.register(APIServable.self) { resolver in
             guard let decoder = resolver.resolve(JSONDecoder.self),
                   let encoder = resolver.resolve(JSONEncoder.self),
                   let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
             else {
-                fatalError("JSONDecoder Not Initialized")
+                fatalError("Failed Initializing APIService")
             }
             return APIService(decoder, encoder, tokenStorage)
         }
