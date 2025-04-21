@@ -11,14 +11,9 @@ import Moya
 
 final class WhereAuthenticator {
     private let tokenStorage: TokenStorageProtocol
-    private let encoder: JSONEncoder
     
-    init(
-        tokenStorage: TokenStorageProtocol,
-        encoder: JSONEncoder
-    ) {
+    init(tokenStorage: TokenStorageProtocol) {
         self.tokenStorage = tokenStorage
-        self.encoder = encoder
     }
 }
 
@@ -53,7 +48,7 @@ extension WhereAuthenticator: Authenticator {
                     let newToken = Tokens(accessToken: access, refreshToken: credential.refreshToken)
                     
                     do {
-                        try self?.saveToken(newToken)
+                        try self?.tokenStorage.store(newToken)
                     } catch {
                         completion(.failure(AuthenticatorError.saveTokenFailed))
                     }
@@ -69,10 +64,5 @@ private extension WhereAuthenticator {
     enum AuthenticatorError: Error {
         case saveTokenFailed
         case tokenNotFound
-    }
-    
-    func saveToken(_ token: Credential) throws {
-        let encodedData = try encoder.encode(token)
-        try tokenStorage.store(encodedData)
     }
 }

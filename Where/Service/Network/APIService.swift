@@ -26,10 +26,11 @@ final class APIService: APIServable {
         _ tokenStorage: TokenStorageProtocol
     ) {
         self.decoder = decoder
-        let authenticator = WhereAuthenticator(tokenStorage: tokenStorage, encoder: encoder)
+        let authenticator = WhereAuthenticator(tokenStorage: tokenStorage)
         let interceptor = AuthenticationInterceptor(authenticator: authenticator)
         let session = Session(interceptor: interceptor)
-        provider = .init(session: session)
+        
+        provider = .init(session: session, plugins: [TokenPlugin(tokenStorage: tokenStorage)])
     }
     
     func requestPublisher<T, D>(_ targetType: T) -> AnyPublisher<D, any Error> where T : TargetType, D : Decodable {
