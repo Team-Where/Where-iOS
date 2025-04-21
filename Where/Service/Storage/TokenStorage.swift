@@ -10,11 +10,10 @@ import Security
 
 protocol TokenStorageProtocol: Sendable {
     typealias Query = [String: Any]
-    typealias Key = UInt64
     
-    func store(_ tokens: Data, by key: Key) throws
-    func fetch(by key: Key) throws -> Data
-    func delete(by key: Key) throws
+    func store(_ tokens: Data) throws
+    func fetch() throws -> Data
+    func delete() throws
 }
 
 private enum TokenStorageError: Error {
@@ -25,7 +24,8 @@ private enum TokenStorageError: Error {
 
 final class TokenStorage {
     private let bundleIdentifier: String? = Bundle.main.bundleIdentifier
-    
+    private let key = "com.where.token"
+
     init() {
         
     }
@@ -65,7 +65,7 @@ final class TokenStorage {
 
 // MARK: Utility Methods for CRUD
 extension TokenStorage {
-    private func makeQuery(by key: Key) throws -> Query {
+    private func makeQuery() throws -> Query {
         [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: bundleIdentifier ?? "",
@@ -101,8 +101,8 @@ extension TokenStorage {
 
 // MARK: TokenStorage Conformation
 extension TokenStorage: TokenStorageProtocol {
-    func store(_ tokens: Data, by key: Key) throws {
-        let query = try makeQuery(by: key)
+    func store(_ tokens: Data) throws {
+        let query = try makeQuery()
         
         do {
             if let _ =  try _read(query) {
@@ -113,15 +113,15 @@ extension TokenStorage: TokenStorageProtocol {
         }
     }
     
-    func fetch(by key: Key) throws -> Data {
-        let query = try makeQuery(by: key)
+    func fetch() throws -> Data {
+        let query = try makeQuery()
         let reference = try _read(query)
         let data = try convert(reference)
         return data
     }
     
-    func delete(by key: Key) throws {
-        let query = try makeQuery(by: key)
+    func delete() throws {
+        let query = try makeQuery()
         try _delete(query)
     }
 }
