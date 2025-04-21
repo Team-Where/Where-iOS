@@ -26,8 +26,10 @@ struct PlaceDetailView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 32) {
+            VStack(spacing: 20) {
                 placeInfoArea(place)
+                
+                profileImagesArea(viewModel.pickedFriends)
                 
                 mapButtonsArea
                 
@@ -121,6 +123,51 @@ struct PlaceDetailView: View {
             }
             .whereFont(.body14medium)
         }
+    }
+    
+    @ViewBuilder private func profileImagesArea(_ friends: [FriendRelationship]) -> some View {
+        let spacing: CGFloat = 26
+        let maxDisplayCount: Int = 5
+        let displayCount: Int = maxDisplayCount - 1
+        
+        ZStack(alignment: .leading) {
+            ForEach(friends.prefix(maxDisplayCount).indices, id: \.self) { index in
+                profileImageCell(
+                    url: friends[index].imageURL,
+                    index: index,
+                    displayCount: displayCount,
+                    cellCount: friends.count
+                )
+                .offset(x: CGFloat(index) * spacing)
+            }
+        }
+        .frame(
+            width: min(friends.count, maxDisplayCount) > 0 ?
+            CGFloat(min(friends.count, maxDisplayCount) - 1) * spacing + 40 :
+                40, alignment: .leading
+        )
+    }
+    
+    @ViewBuilder private func profileImageCell(url: URL?, index: Int, displayCount: Int, cellCount: Int) -> some View {
+        AsyncImage(url: url)
+            .frame(width: 40, height: 40)
+            .clipShape(.circle)
+            .overlay {
+                Circle()
+                    .stroke(.white, lineWidth: 2)
+                
+                if index == displayCount, cellCount > displayCount {
+                    Text("+\(cellCount - displayCount)")
+                        .whereFont(.body16medium)
+                        .foregroundStyle(.white)
+                        .clipShape(.circle)
+                        .frame(width: 40, height: 40)
+                        .background(
+                            Circle()
+                                .fill(.black.opacity(0.6))
+                        )
+                }
+            }
     }
     
     private var mapButtonsArea: some View {
