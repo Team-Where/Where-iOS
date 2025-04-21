@@ -7,7 +7,7 @@
 
 /// FAQ 조회
 enum ReadFAQsDTO {
-    struct Response {
+    struct Response: Decodable {
         let id: UInt64
         let title: String
         let content: String
