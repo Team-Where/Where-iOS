@@ -116,6 +116,15 @@ enum Endpoint {
     case updateFAQ(dto: UpdateFAQDTO.Request)
     /// FAQ 삭제
     case deleteFAQ(dto: DeleteFAQDTO.Request)
+    
+    var isTokenRequired: Bool {
+        switch self {
+        case .readAnnouncements, .readFAQs:
+            return false
+        default:
+            return true
+        }
+    }
 }
 
 // MARK: TargetType Confirmation
