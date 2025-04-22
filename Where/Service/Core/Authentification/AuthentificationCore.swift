@@ -85,16 +85,14 @@ final class AuthentificationCore {
         }
     }
     
-    private let tokenStorage: TokenStorageProtocol
+    private let apiService: APIServable
     private let strategyContext = AuthentificationStrategyContext()
-    private let decoder = JSONDecoder()
-    private let encoder = JSONEncoder()
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        tokenStorage: TokenStorageProtocol
+        apiService: APIServable
     ) {
-        self.tokenStorage = tokenStorage
+        self.apiService = apiService
         subscribe()
     }
     

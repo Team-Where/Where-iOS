@@ -79,13 +79,13 @@ final class PlaceCore {
     private let currentPlaceCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
     
     private var currentUserID: UInt64?
-    private let tokenStorage: TokenStorageProtocol
+    private let apiService: APIServable
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        tokenStorage: TokenStorageProtocol
+        apiService: APIServable
     ) {
-        self.tokenStorage = tokenStorage
+        self.apiService = apiService
         subscribe()
     }
     

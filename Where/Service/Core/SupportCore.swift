@@ -66,13 +66,13 @@ final class SupportCore {
     private let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], SupportCoreError>([:])
     
     private var currentUserID: UInt64?
-    private let tokenStorage: TokenStorageProtocol
+    private let apiService: APIServable
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        tokenStorage: TokenStorageProtocol
+        apiService: APIServable
     ) {
-        self.tokenStorage = tokenStorage
+        self.apiService = apiService
         subscribe()
     }
     
