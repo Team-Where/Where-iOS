@@ -78,7 +78,6 @@ final class PlaceCore {
     private let currentPlaceSubject = CurrentValueSubject<Place?, PlaceCoreError>(nil)
     private let currentPlaceCommentsSubject = CurrentValueSubject<[Comment], PlaceCoreError>([])
     
-    private var currentUserID: UInt64?
     private let apiService: APIServable
     private var cancellables = Set<AnyCancellable>()
     

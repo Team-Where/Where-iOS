@@ -89,7 +89,6 @@ final class MeetingCore {
     private let currentMeetingSubject = CurrentValueSubject<Meeting?, MeetingCoreError>(nil)
     private let meetingParticipantIDsSubject = CurrentValueSubject<[UInt64: Set<UInt64>], MeetingCoreError>([:])
     
-    private var currentUserID: UInt64?
     private let apiService: APIServable
     private var cancellables = Set<AnyCancellable>()
     

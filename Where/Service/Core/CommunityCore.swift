@@ -44,7 +44,6 @@ final class CommunityCore {
     
     private let friendsSubject = CurrentValueSubject<[UInt64: FriendRelationship], CommunityCoreError>([:])
     
-    private var currentUserID: UInt64?
     private let apiService: APIServable
     private var cancellables = Set<AnyCancellable>()
     

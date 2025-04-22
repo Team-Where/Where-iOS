@@ -73,18 +73,6 @@ final class AuthentificationCore {
     
     private let currentUserSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
     
-    private var currentProvider: AuthentificationProvider?
-    private var currentUserId: UInt64? {
-        get {
-            guard let userIdString = UserDefaults.standard.string(forKey: Constants.currentUserIdUserDefaultsKey.rawValue) else { return nil }
-            return UInt64(userIdString)
-        }
-        
-        set {
-            UserDefaults.standard.setValue(newValue?.description, forKey: Constants.currentUserIdUserDefaultsKey.rawValue)
-        }
-    }
-    
     private let apiService: APIServable
     private let strategyContext = AuthentificationStrategyContext()
     private var cancellables = Set<AnyCancellable>()
@@ -111,9 +99,9 @@ final class AuthentificationCore {
                     // 로그아웃 로직 작성
                     // 1. 사용자가 로그아웃하여 사용자 정보가 없어졌음을 중재자를 통해 알림
                     // 2. 토큰 및 내부 데이터풀 정리
-                    if let currentUserID = self?.currentUserId {
-                        self?.mediator?.notify(event: .userDidLogout(id: currentUserID))
-                    }
+//                    if let currentUserID = self?.currentUserId {
+//                        self?.mediator?.notify(event: .userDidLogout(id: currentUserID))
+//                    }
                     return
                 }
                 self?.mediator?.notify(event: .userDidLogin(id: user.id))

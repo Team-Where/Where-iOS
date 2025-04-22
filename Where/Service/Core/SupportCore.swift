@@ -65,7 +65,6 @@ final class SupportCore {
     private let inquiriesSubject = CurrentValueSubject<[UInt64: Inquiry], SupportCoreError>([:])
     private let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], SupportCoreError>([:])
     
-    private var currentUserID: UInt64?
     private let apiService: APIServable
     private var cancellables = Set<AnyCancellable>()
     
