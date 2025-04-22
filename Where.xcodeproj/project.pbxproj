@@ -386,14 +386,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		042A79D22D9EAD2F004105E2 /* Interceptors */ = {
-			isa = PBXGroup;
-			children = (
-				042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */,
-			);
-			path = Interceptors;
-			sourceTree = "<group>";
-		};
 		042A79E72DA3EC49004105E2 /* Authentification */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,7 +485,6 @@
 		045B449D2D2150AF00514A27 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				042A79D22D9EAD2F004105E2 /* Interceptors */,
 				0438BA7A2D97DA86008C628F /* Core */,
 				7FE7BD942DB68E160097CC30 /* Network */,
 				04F0518E2D424BF1000892C0 /* Storage */,
@@ -1174,6 +1165,7 @@
 			children = (
 				7FE7BD912DB68E160097CC30 /* DTO */,
 				7FE7BD922DB68E160097CC30 /* APIService.swift */,
+				042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */,
 				7FE7BD932DB68E160097CC30 /* Endpoint.swift */,
 				7FE7BDC02DB68E460097CC30 /* TokenPlugin.swift */,
 			);
