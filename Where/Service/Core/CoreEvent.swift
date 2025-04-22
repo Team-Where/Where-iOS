@@ -5,8 +5,6 @@
 //  Created by Swain Yun on 4/18/25.
 //
 
-import Foundation
-
 enum CoreEvent {
     // MARK: - Authentification Related
     case userDidLogin(id: UInt64)
