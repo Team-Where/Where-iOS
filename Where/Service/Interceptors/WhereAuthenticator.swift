@@ -7,27 +7,20 @@
 
 import Foundation
 import Alamofire
+import Moya
 
 final class WhereAuthenticator {
-    private let key: UInt64
     private let tokenStorage: TokenStorageProtocol
-    private let encoder: JSONEncoder
     
-    init(
-        key: UInt64,
-        tokenStorage: TokenStorageProtocol,
-        encoder: JSONEncoder
-    ) {
-        self.key = key
+    init(tokenStorage: TokenStorageProtocol) {
         self.tokenStorage = tokenStorage
-        self.encoder = encoder
     }
 }
 
 extension WhereAuthenticator: Authenticator {
     typealias Credential = Tokens
     func apply(_ credential: Tokens, to urlRequest: inout URLRequest) {
-        urlRequest.headers.add(.authorization(bearerToken: credential.accessToken))
+        return
     }
     
     func didRequest(_ urlRequest: URLRequest, with response: HTTPURLResponse, failDueToAuthenticationError error: any Error)
@@ -44,9 +37,7 @@ extension WhereAuthenticator: Authenticator {
     func refresh(
         _ credential: Tokens, for session: Alamofire.Session, completion: @escaping @Sendable (Result<Tokens, any Error>) -> Void
     ) {
-        
-        WithoutTokenAPIServiceProvider()
-            .makeProvider(Endpoint.self)
+        MoyaProvider<Endpoint>()
             .request(.reissueAccessToken(refreshToken: credential.refreshToken)) { [weak self] result in
                 switch result {
                 case .success(let response):
@@ -57,7 +48,7 @@ extension WhereAuthenticator: Authenticator {
                     let newToken = Tokens(accessToken: access, refreshToken: credential.refreshToken)
                     
                     do {
-                        try self?.saveToken(newToken)
+                        try self?.tokenStorage.store(newToken)
                     } catch {
                         completion(.failure(AuthenticatorError.saveTokenFailed))
                     }
@@ -73,10 +64,5 @@ private extension WhereAuthenticator {
     enum AuthenticatorError: Error {
         case saveTokenFailed
         case tokenNotFound
-    }
-    
-    func saveToken(_ token: Credential) throws {
-        let encodedData = try encoder.encode(token)
-        try tokenStorage.store(encodedData, by: key)
     }
 }

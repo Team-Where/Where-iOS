@@ -10,7 +10,6 @@
 		041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041DF3BD2DB000C100A0E51F /* NotificationCore.swift */; };
 		042A79D32D9EAD2F004105E2 /* WhereAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */; };
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
-		042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D62D9EC37A004105E2 /* Endpoint.swift */; };
 		042A79DA2D9FACE8004105E2 /* CreateMeetingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D92D9FACE8004105E2 /* CreateMeetingViewModel.swift */; };
 		042A79DC2DA17644004105E2 /* SupportCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79DB2DA17644004105E2 /* SupportCore.swift */; };
 		042A79EA2DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79E92DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift */; };
@@ -20,26 +19,6 @@
 		042A79F42DA3FC28004105E2 /* AuthentificationStrategyContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */; };
 		042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F52DA4124F004105E2 /* MeetingCore.swift */; };
 		042A79F92DA53386004105E2 /* KakaoSDKShare in Frameworks */ = {isa = PBXBuildFile; productRef = 042A79F82DA53386004105E2 /* KakaoSDKShare */; };
-		042A7A402DA57555004105E2 /* CreateFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A3B2DA57555004105E2 /* CreateFAQDTO.swift */; };
-		042A7A412DA57555004105E2 /* DeleteCommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A2E2DA57555004105E2 /* DeleteCommentDTO.swift */; };
-		042A7A422DA57555004105E2 /* PickPlaceDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A302DA57555004105E2 /* PickPlaceDTO.swift */; };
-		042A7A432DA57555004105E2 /* ReadScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A382DA57555004105E2 /* ReadScheduleDTO.swift */; };
-		042A7A442DA57555004105E2 /* ReadFAQsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A3D2DA57555004105E2 /* ReadFAQsDTO.swift */; };
-		042A7A452DA57555004105E2 /* DeletePlaceDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A2F2DA57555004105E2 /* DeletePlaceDTO.swift */; };
-		042A7A462DA57555004105E2 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A282DA57555004105E2 /* BookmarkFriendDTO.swift */; };
-		042A7A472DA57555004105E2 /* CreateCommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A2C2DA57555004105E2 /* CreateCommentDTO.swift */; };
-		042A7A482DA57555004105E2 /* TogglePlaceLikeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A332DA57555004105E2 /* TogglePlaceLikeDTO.swift */; };
-		042A7A492DA57555004105E2 /* CreateScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A362DA57555004105E2 /* CreateScheduleDTO.swift */; };
-		042A7A4A2DA57555004105E2 /* DeleteScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A372DA57555004105E2 /* DeleteScheduleDTO.swift */; };
-		042A7A4B2DA57555004105E2 /* ReadFriendsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A2A2DA57555004105E2 /* ReadFriendsDTO.swift */; };
-		042A7A4C2DA57555004105E2 /* ReadCommentsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A312DA57555004105E2 /* ReadCommentsDTO.swift */; };
-		042A7A4D2DA57555004105E2 /* ReadPlaceDetailDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A322DA57555004105E2 /* ReadPlaceDetailDTO.swift */; };
-		042A7A4E2DA57555004105E2 /* CreatePlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A2D2DA57555004105E2 /* CreatePlace.swift */; };
-		042A7A4F2DA57555004105E2 /* UpdateFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A3E2DA57555004105E2 /* UpdateFAQDTO.swift */; };
-		042A7A502DA57555004105E2 /* DeleteFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A3C2DA57555004105E2 /* DeleteFAQDTO.swift */; };
-		042A7A512DA57555004105E2 /* DeleteFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A292DA57555004105E2 /* DeleteFriendDTO.swift */; };
-		042A7A522DA57555004105E2 /* UpdateCommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A342DA57555004105E2 /* UpdateCommentDTO.swift */; };
-		042A7A532DA57555004105E2 /* UpdateScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A7A392DA57555004105E2 /* UpdateScheduleDTO.swift */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
@@ -139,28 +118,51 @@
 		04F051882D423283000892C0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F051872D423283000892C0 /* Bundle.swift */; };
 		04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F051892D42332D000892C0 /* AuthentificationProvider.swift */; };
 		04F051902D424C01000892C0 /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0518F2D424C01000892C0 /* TokenStorage.swift */; };
-		7F07AA362DA54DA600095602 /* CreateMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA352DA54DA600095602 /* CreateMeetingDTO.swift */; };
-		7F07AA382DA5546100095602 /* UpdateMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA372DA5546100095602 /* UpdateMeetingDTO.swift */; };
-		7F07AA3B2DA5561A00095602 /* EndMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA3A2DA5561A00095602 /* EndMeetingDTO.swift */; };
-		7F07AA3D2DA556B700095602 /* LeaveMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA3C2DA556B700095602 /* LeaveMeetingDTO.swift */; };
-		7F07AA3F2DA558B700095602 /* ReadInvitationStatusDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA3E2DA558B700095602 /* ReadInvitationStatusDTO.swift */; };
-		7F07AA412DA55FC000095602 /* ReadMeetingDetailDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA402DA55FC000095602 /* ReadMeetingDetailDTO.swift */; };
-		7F07AA432DA5626D00095602 /* InviteFriendsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA422DA5626D00095602 /* InviteFriendsDTO.swift */; };
-		7F07AA452DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA442DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift */; };
-		7F07AA472DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA462DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift */; };
-		7F07AA492DA5678100095602 /* MeetingDetailFromLinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA482DA5678100095602 /* MeetingDetailFromLinkDTO.swift */; };
-		7F07AA4B2DA5692D00095602 /* ReadUserInquiriesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA4A2DA5692D00095602 /* ReadUserInquiriesDTO.swift */; };
-		7F07AA4D2DA56B0400095602 /* CreateUserInquiryDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA4C2DA56B0400095602 /* CreateUserInquiryDTO.swift */; };
-		7F07AA4F2DA56CD400095602 /* ReadAdminInquiriesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA4E2DA56CD400095602 /* ReadAdminInquiriesDTO.swift */; };
-		7F07AA512DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA502DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift */; };
-		7F07AA532DA570A700095602 /* ReadAnnouncementsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA522DA570A700095602 /* ReadAnnouncementsDTO.swift */; };
-		7F07AA552DA5714000095602 /* CreateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */; };
-		7F07AA572DA5726300095602 /* UpdateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */; };
-		7F07AA592DA5733D00095602 /* DeleteAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */; };
-		7F07AA612DAA452D00095602 /* APIServiceProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */; };
-		7F716C832DAE94CD0076D4DD /* RegisterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F716C822DAE94CD0076D4DD /* RegisterDTO.swift */; };
-		7F716C872DAE96A50076D4DD /* LoginDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F716C862DAE96A50076D4DD /* LoginDTO.swift */; };
-		7F716C892DAE97290076D4DD /* CheckEmailDuplicationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F716C882DAE97290076D4DD /* CheckEmailDuplicationDTO.swift */; };
+		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
+		7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */; };
+		7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */; };
+		7FE7BD972DB68E160097CC30 /* ReadFriendsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD642DB68E160097CC30 /* ReadFriendsDTO.swift */; };
+		7FE7BD982DB68E160097CC30 /* AcceptMeeetingInvitationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD662DB68E160097CC30 /* AcceptMeeetingInvitationDTO.swift */; };
+		7FE7BD992DB68E160097CC30 /* AcceptMeetingInvitationByLinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD672DB68E160097CC30 /* AcceptMeetingInvitationByLinkDTO.swift */; };
+		7FE7BD9A2DB68E160097CC30 /* CreateMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD682DB68E160097CC30 /* CreateMeetingDTO.swift */; };
+		7FE7BD9B2DB68E160097CC30 /* EndMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD692DB68E160097CC30 /* EndMeetingDTO.swift */; };
+		7FE7BD9C2DB68E160097CC30 /* InviteFriendsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD6A2DB68E160097CC30 /* InviteFriendsDTO.swift */; };
+		7FE7BD9D2DB68E160097CC30 /* LeaveMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD6B2DB68E160097CC30 /* LeaveMeetingDTO.swift */; };
+		7FE7BD9E2DB68E160097CC30 /* MeetingDetailFromLinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD6C2DB68E160097CC30 /* MeetingDetailFromLinkDTO.swift */; };
+		7FE7BD9F2DB68E160097CC30 /* ReadInvitationStatusDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD6D2DB68E160097CC30 /* ReadInvitationStatusDTO.swift */; };
+		7FE7BDA02DB68E160097CC30 /* ReadMeetingDetailDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD6E2DB68E160097CC30 /* ReadMeetingDetailDTO.swift */; };
+		7FE7BDA12DB68E160097CC30 /* UpdateMeetingDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD6F2DB68E160097CC30 /* UpdateMeetingDTO.swift */; };
+		7FE7BDA22DB68E160097CC30 /* CreateCommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD712DB68E160097CC30 /* CreateCommentDTO.swift */; };
+		7FE7BDA32DB68E160097CC30 /* CreatePlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD722DB68E160097CC30 /* CreatePlace.swift */; };
+		7FE7BDA42DB68E160097CC30 /* DeleteCommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD732DB68E160097CC30 /* DeleteCommentDTO.swift */; };
+		7FE7BDA52DB68E160097CC30 /* DeletePlaceDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD742DB68E160097CC30 /* DeletePlaceDTO.swift */; };
+		7FE7BDA62DB68E160097CC30 /* PickPlaceDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD752DB68E160097CC30 /* PickPlaceDTO.swift */; };
+		7FE7BDA72DB68E160097CC30 /* ReadCommentsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD762DB68E160097CC30 /* ReadCommentsDTO.swift */; };
+		7FE7BDA82DB68E160097CC30 /* ReadPlaceDetailDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD772DB68E160097CC30 /* ReadPlaceDetailDTO.swift */; };
+		7FE7BDA92DB68E160097CC30 /* TogglePlaceLikeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD782DB68E160097CC30 /* TogglePlaceLikeDTO.swift */; };
+		7FE7BDAA2DB68E160097CC30 /* UpdateCommentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD792DB68E160097CC30 /* UpdateCommentDTO.swift */; };
+		7FE7BDAB2DB68E160097CC30 /* CreateScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD7B2DB68E160097CC30 /* CreateScheduleDTO.swift */; };
+		7FE7BDAC2DB68E160097CC30 /* DeleteScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD7C2DB68E160097CC30 /* DeleteScheduleDTO.swift */; };
+		7FE7BDAD2DB68E160097CC30 /* ReadScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD7D2DB68E160097CC30 /* ReadScheduleDTO.swift */; };
+		7FE7BDAE2DB68E160097CC30 /* UpdateScheduleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD7E2DB68E160097CC30 /* UpdateScheduleDTO.swift */; };
+		7FE7BDAF2DB68E160097CC30 /* CreateAdminInquiryReplyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD802DB68E160097CC30 /* CreateAdminInquiryReplyDTO.swift */; };
+		7FE7BDB02DB68E160097CC30 /* CreateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD812DB68E160097CC30 /* CreateAnnouncementDTO.swift */; };
+		7FE7BDB12DB68E160097CC30 /* CreateFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD822DB68E160097CC30 /* CreateFAQDTO.swift */; };
+		7FE7BDB22DB68E160097CC30 /* CreateUserInquiryDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD832DB68E160097CC30 /* CreateUserInquiryDTO.swift */; };
+		7FE7BDB32DB68E160097CC30 /* DeleteAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD842DB68E160097CC30 /* DeleteAnnouncementDTO.swift */; };
+		7FE7BDB42DB68E160097CC30 /* DeleteFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD852DB68E160097CC30 /* DeleteFAQDTO.swift */; };
+		7FE7BDB52DB68E160097CC30 /* ReadAdminInquiriesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD862DB68E160097CC30 /* ReadAdminInquiriesDTO.swift */; };
+		7FE7BDB62DB68E160097CC30 /* ReadAnnouncementsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD872DB68E160097CC30 /* ReadAnnouncementsDTO.swift */; };
+		7FE7BDB72DB68E160097CC30 /* ReadFAQsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD882DB68E160097CC30 /* ReadFAQsDTO.swift */; };
+		7FE7BDB82DB68E160097CC30 /* ReadUserInquiriesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD892DB68E160097CC30 /* ReadUserInquiriesDTO.swift */; };
+		7FE7BDB92DB68E160097CC30 /* UpdateAnnouncementDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD8A2DB68E160097CC30 /* UpdateAnnouncementDTO.swift */; };
+		7FE7BDBA2DB68E160097CC30 /* UpdateFAQDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD8B2DB68E160097CC30 /* UpdateFAQDTO.swift */; };
+		7FE7BDBB2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD8D2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift */; };
+		7FE7BDBC2DB68E160097CC30 /* LoginDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD8E2DB68E160097CC30 /* LoginDTO.swift */; };
+		7FE7BDBD2DB68E160097CC30 /* RegisterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD8F2DB68E160097CC30 /* RegisterDTO.swift */; };
+		7FE7BDBE2DB68E160097CC30 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD922DB68E160097CC30 /* APIService.swift */; };
+		7FE7BDBF2DB68E160097CC30 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD932DB68E160097CC30 /* Endpoint.swift */; };
+		7FE7BDC12DB68E460097CC30 /* TokenPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BDC02DB68E460097CC30 /* TokenPlugin.swift */; };
 		91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91446F452D575BEE00C142B2 /* SideMenuContentView.swift */; };
 		91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */; };
 		91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 91A9EAA92D26EE45005F09D2 /* Pretendard-Regular.otf */; };
@@ -192,7 +194,6 @@
 		041DF3BD2DB000C100A0E51F /* NotificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCore.swift; sourceTree = "<group>"; };
 		042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereAuthenticator.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
-		042A79D62D9EC37A004105E2 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		042A79D92D9FACE8004105E2 /* CreateMeetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingViewModel.swift; sourceTree = "<group>"; };
 		042A79DB2DA17644004105E2 /* SupportCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportCore.swift; sourceTree = "<group>"; };
 		042A79E92DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyProtocol.swift; sourceTree = "<group>"; };
@@ -201,26 +202,6 @@
 		042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginStrategy.swift; sourceTree = "<group>"; };
 		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
 		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
-		042A7A282DA57555004105E2 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
-		042A7A292DA57555004105E2 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
-		042A7A2A2DA57555004105E2 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
-		042A7A2C2DA57555004105E2 /* CreateCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCommentDTO.swift; sourceTree = "<group>"; };
-		042A7A2D2DA57555004105E2 /* CreatePlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePlace.swift; sourceTree = "<group>"; };
-		042A7A2E2DA57555004105E2 /* DeleteCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteCommentDTO.swift; sourceTree = "<group>"; };
-		042A7A2F2DA57555004105E2 /* DeletePlaceDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletePlaceDTO.swift; sourceTree = "<group>"; };
-		042A7A302DA57555004105E2 /* PickPlaceDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickPlaceDTO.swift; sourceTree = "<group>"; };
-		042A7A312DA57555004105E2 /* ReadCommentsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCommentsDTO.swift; sourceTree = "<group>"; };
-		042A7A322DA57555004105E2 /* ReadPlaceDetailDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadPlaceDetailDTO.swift; sourceTree = "<group>"; };
-		042A7A332DA57555004105E2 /* TogglePlaceLikeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TogglePlaceLikeDTO.swift; sourceTree = "<group>"; };
-		042A7A342DA57555004105E2 /* UpdateCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCommentDTO.swift; sourceTree = "<group>"; };
-		042A7A362DA57555004105E2 /* CreateScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A372DA57555004105E2 /* DeleteScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A382DA57555004105E2 /* ReadScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A392DA57555004105E2 /* UpdateScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateScheduleDTO.swift; sourceTree = "<group>"; };
-		042A7A3B2DA57555004105E2 /* CreateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFAQDTO.swift; sourceTree = "<group>"; };
-		042A7A3C2DA57555004105E2 /* DeleteFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFAQDTO.swift; sourceTree = "<group>"; };
-		042A7A3D2DA57555004105E2 /* ReadFAQsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFAQsDTO.swift; sourceTree = "<group>"; };
-		042A7A3E2DA57555004105E2 /* UpdateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFAQDTO.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -315,30 +296,52 @@
 		04F051872D423283000892C0 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		04F051892D42332D000892C0 /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
-		7F07AA352DA54DA600095602 /* CreateMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingDTO.swift; sourceTree = "<group>"; };
-		7F07AA372DA5546100095602 /* UpdateMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateMeetingDTO.swift; sourceTree = "<group>"; };
-		7F07AA3A2DA5561A00095602 /* EndMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndMeetingDTO.swift; sourceTree = "<group>"; };
-		7F07AA3C2DA556B700095602 /* LeaveMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveMeetingDTO.swift; sourceTree = "<group>"; };
-		7F07AA3E2DA558B700095602 /* ReadInvitationStatusDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadInvitationStatusDTO.swift; sourceTree = "<group>"; };
-		7F07AA402DA55FC000095602 /* ReadMeetingDetailDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadMeetingDetailDTO.swift; sourceTree = "<group>"; };
-		7F07AA422DA5626D00095602 /* InviteFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsDTO.swift; sourceTree = "<group>"; };
-		7F07AA442DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptMeeetingInvitationDTO.swift; sourceTree = "<group>"; };
-		7F07AA462DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptMeetingInvitationByLinkDTO.swift; sourceTree = "<group>"; };
-		7F07AA482DA5678100095602 /* MeetingDetailFromLinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetailFromLinkDTO.swift; sourceTree = "<group>"; };
-		7F07AA4A2DA5692D00095602 /* ReadUserInquiriesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserInquiriesDTO.swift; sourceTree = "<group>"; };
-		7F07AA4C2DA56B0400095602 /* CreateUserInquiryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserInquiryDTO.swift; sourceTree = "<group>"; };
-		7F07AA4E2DA56CD400095602 /* ReadAdminInquiriesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAdminInquiriesDTO.swift; sourceTree = "<group>"; };
-		7F07AA502DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAdminInquiryReplyDTO.swift; sourceTree = "<group>"; };
-		7F07AA522DA570A700095602 /* ReadAnnouncementsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAnnouncementsDTO.swift; sourceTree = "<group>"; };
-		7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAnnouncementDTO.swift; sourceTree = "<group>"; };
-		7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnnouncementDTO.swift; sourceTree = "<group>"; };
-		7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAnnouncementDTO.swift; sourceTree = "<group>"; };
-		7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceProvidable.swift; sourceTree = "<group>"; };
 		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7F716C822DAE94CD0076D4DD /* RegisterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDTO.swift; sourceTree = "<group>"; };
-		7F716C862DAE96A50076D4DD /* LoginDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDTO.swift; sourceTree = "<group>"; };
-		7F716C882DAE97290076D4DD /* CheckEmailDuplicationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckEmailDuplicationDTO.swift; sourceTree = "<group>"; };
+		7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
+		7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
+		7FE7BD642DB68E160097CC30 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
+		7FE7BD662DB68E160097CC30 /* AcceptMeeetingInvitationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptMeeetingInvitationDTO.swift; sourceTree = "<group>"; };
+		7FE7BD672DB68E160097CC30 /* AcceptMeetingInvitationByLinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptMeetingInvitationByLinkDTO.swift; sourceTree = "<group>"; };
+		7FE7BD682DB68E160097CC30 /* CreateMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingDTO.swift; sourceTree = "<group>"; };
+		7FE7BD692DB68E160097CC30 /* EndMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndMeetingDTO.swift; sourceTree = "<group>"; };
+		7FE7BD6A2DB68E160097CC30 /* InviteFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsDTO.swift; sourceTree = "<group>"; };
+		7FE7BD6B2DB68E160097CC30 /* LeaveMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveMeetingDTO.swift; sourceTree = "<group>"; };
+		7FE7BD6C2DB68E160097CC30 /* MeetingDetailFromLinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDetailFromLinkDTO.swift; sourceTree = "<group>"; };
+		7FE7BD6D2DB68E160097CC30 /* ReadInvitationStatusDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadInvitationStatusDTO.swift; sourceTree = "<group>"; };
+		7FE7BD6E2DB68E160097CC30 /* ReadMeetingDetailDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadMeetingDetailDTO.swift; sourceTree = "<group>"; };
+		7FE7BD6F2DB68E160097CC30 /* UpdateMeetingDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateMeetingDTO.swift; sourceTree = "<group>"; };
+		7FE7BD712DB68E160097CC30 /* CreateCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCommentDTO.swift; sourceTree = "<group>"; };
+		7FE7BD722DB68E160097CC30 /* CreatePlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePlace.swift; sourceTree = "<group>"; };
+		7FE7BD732DB68E160097CC30 /* DeleteCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteCommentDTO.swift; sourceTree = "<group>"; };
+		7FE7BD742DB68E160097CC30 /* DeletePlaceDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeletePlaceDTO.swift; sourceTree = "<group>"; };
+		7FE7BD752DB68E160097CC30 /* PickPlaceDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickPlaceDTO.swift; sourceTree = "<group>"; };
+		7FE7BD762DB68E160097CC30 /* ReadCommentsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCommentsDTO.swift; sourceTree = "<group>"; };
+		7FE7BD772DB68E160097CC30 /* ReadPlaceDetailDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadPlaceDetailDTO.swift; sourceTree = "<group>"; };
+		7FE7BD782DB68E160097CC30 /* TogglePlaceLikeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TogglePlaceLikeDTO.swift; sourceTree = "<group>"; };
+		7FE7BD792DB68E160097CC30 /* UpdateCommentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCommentDTO.swift; sourceTree = "<group>"; };
+		7FE7BD7B2DB68E160097CC30 /* CreateScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateScheduleDTO.swift; sourceTree = "<group>"; };
+		7FE7BD7C2DB68E160097CC30 /* DeleteScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteScheduleDTO.swift; sourceTree = "<group>"; };
+		7FE7BD7D2DB68E160097CC30 /* ReadScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadScheduleDTO.swift; sourceTree = "<group>"; };
+		7FE7BD7E2DB68E160097CC30 /* UpdateScheduleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateScheduleDTO.swift; sourceTree = "<group>"; };
+		7FE7BD802DB68E160097CC30 /* CreateAdminInquiryReplyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAdminInquiryReplyDTO.swift; sourceTree = "<group>"; };
+		7FE7BD812DB68E160097CC30 /* CreateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAnnouncementDTO.swift; sourceTree = "<group>"; };
+		7FE7BD822DB68E160097CC30 /* CreateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFAQDTO.swift; sourceTree = "<group>"; };
+		7FE7BD832DB68E160097CC30 /* CreateUserInquiryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserInquiryDTO.swift; sourceTree = "<group>"; };
+		7FE7BD842DB68E160097CC30 /* DeleteAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAnnouncementDTO.swift; sourceTree = "<group>"; };
+		7FE7BD852DB68E160097CC30 /* DeleteFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFAQDTO.swift; sourceTree = "<group>"; };
+		7FE7BD862DB68E160097CC30 /* ReadAdminInquiriesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAdminInquiriesDTO.swift; sourceTree = "<group>"; };
+		7FE7BD872DB68E160097CC30 /* ReadAnnouncementsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAnnouncementsDTO.swift; sourceTree = "<group>"; };
+		7FE7BD882DB68E160097CC30 /* ReadFAQsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFAQsDTO.swift; sourceTree = "<group>"; };
+		7FE7BD892DB68E160097CC30 /* ReadUserInquiriesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserInquiriesDTO.swift; sourceTree = "<group>"; };
+		7FE7BD8A2DB68E160097CC30 /* UpdateAnnouncementDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnnouncementDTO.swift; sourceTree = "<group>"; };
+		7FE7BD8B2DB68E160097CC30 /* UpdateFAQDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateFAQDTO.swift; sourceTree = "<group>"; };
+		7FE7BD8D2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckEmailDuplicationDTO.swift; sourceTree = "<group>"; };
+		7FE7BD8E2DB68E160097CC30 /* LoginDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDTO.swift; sourceTree = "<group>"; };
+		7FE7BD8F2DB68E160097CC30 /* RegisterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDTO.swift; sourceTree = "<group>"; };
+		7FE7BD922DB68E160097CC30 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		7FE7BD932DB68E160097CC30 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		7FE7BDC02DB68E460097CC30 /* TokenPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPlugin.swift; sourceTree = "<group>"; };
 		91446F452D575BEE00C142B2 /* SideMenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuContentView.swift; sourceTree = "<group>"; };
 		91A9EAA72D26EE45005F09D2 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		91A9EAA82D26EE45005F09D2 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
@@ -363,6 +366,7 @@
 			files = (
 				04F051842D422B01000892C0 /* KakaoSDKUser in Frameworks */,
 				042A79F92DA53386004105E2 /* KakaoSDKShare in Frameworks */,
+				7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */,
 				04F051802D422B01000892C0 /* KakaoSDKCommon in Frameworks */,
 				0450E8522D998CC800DB029A /* Swinject in Frameworks */,
 				0450E83B2D990B6D00DB029A /* Moya in Frameworks */,
@@ -428,79 +432,6 @@
 			path = Implementation;
 			sourceTree = "<group>";
 		};
-		042A7A272DA57511004105E2 /* Meeting */ = {
-			isa = PBXGroup;
-			children = (
-				7F07AA352DA54DA600095602 /* CreateMeetingDTO.swift */,
-				7F07AA372DA5546100095602 /* UpdateMeetingDTO.swift */,
-				7F07AA3A2DA5561A00095602 /* EndMeetingDTO.swift */,
-				7F07AA3C2DA556B700095602 /* LeaveMeetingDTO.swift */,
-				7F07AA3E2DA558B700095602 /* ReadInvitationStatusDTO.swift */,
-				7F07AA402DA55FC000095602 /* ReadMeetingDetailDTO.swift */,
-				7F07AA422DA5626D00095602 /* InviteFriendsDTO.swift */,
-				7F07AA442DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift */,
-				7F07AA462DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift */,
-				7F07AA482DA5678100095602 /* MeetingDetailFromLinkDTO.swift */,
-			);
-			path = Meeting;
-			sourceTree = "<group>";
-		};
-		042A7A2B2DA57555004105E2 /* Friend */ = {
-			isa = PBXGroup;
-			children = (
-				042A7A282DA57555004105E2 /* BookmarkFriendDTO.swift */,
-				042A7A292DA57555004105E2 /* DeleteFriendDTO.swift */,
-				042A7A2A2DA57555004105E2 /* ReadFriendsDTO.swift */,
-			);
-			path = Friend;
-			sourceTree = "<group>";
-		};
-		042A7A352DA57555004105E2 /* Place */ = {
-			isa = PBXGroup;
-			children = (
-				042A7A2C2DA57555004105E2 /* CreateCommentDTO.swift */,
-				042A7A2D2DA57555004105E2 /* CreatePlace.swift */,
-				042A7A2E2DA57555004105E2 /* DeleteCommentDTO.swift */,
-				042A7A2F2DA57555004105E2 /* DeletePlaceDTO.swift */,
-				042A7A302DA57555004105E2 /* PickPlaceDTO.swift */,
-				042A7A312DA57555004105E2 /* ReadCommentsDTO.swift */,
-				042A7A322DA57555004105E2 /* ReadPlaceDetailDTO.swift */,
-				042A7A332DA57555004105E2 /* TogglePlaceLikeDTO.swift */,
-				042A7A342DA57555004105E2 /* UpdateCommentDTO.swift */,
-			);
-			path = Place;
-			sourceTree = "<group>";
-		};
-		042A7A3A2DA57555004105E2 /* Schedule */ = {
-			isa = PBXGroup;
-			children = (
-				042A7A362DA57555004105E2 /* CreateScheduleDTO.swift */,
-				042A7A372DA57555004105E2 /* DeleteScheduleDTO.swift */,
-				042A7A382DA57555004105E2 /* ReadScheduleDTO.swift */,
-				042A7A392DA57555004105E2 /* UpdateScheduleDTO.swift */,
-			);
-			path = Schedule;
-			sourceTree = "<group>";
-		};
-		042A7A3F2DA57555004105E2 /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				042A7A3B2DA57555004105E2 /* CreateFAQDTO.swift */,
-				042A7A3C2DA57555004105E2 /* DeleteFAQDTO.swift */,
-				042A7A3D2DA57555004105E2 /* ReadFAQsDTO.swift */,
-				042A7A3E2DA57555004105E2 /* UpdateFAQDTO.swift */,
-				7F07AA4A2DA5692D00095602 /* ReadUserInquiriesDTO.swift */,
-				7F07AA4C2DA56B0400095602 /* CreateUserInquiryDTO.swift */,
-				7F07AA4E2DA56CD400095602 /* ReadAdminInquiriesDTO.swift */,
-				7F07AA502DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift */,
-				7F07AA522DA570A700095602 /* ReadAnnouncementsDTO.swift */,
-				7F07AA542DA5714000095602 /* CreateAnnouncementDTO.swift */,
-				7F07AA562DA5726300095602 /* UpdateAnnouncementDTO.swift */,
-				7F07AA582DA5733D00095602 /* DeleteAnnouncementDTO.swift */,
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
 		0438BA7A2D97DA86008C628F /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -534,6 +465,7 @@
 				04832B452D266819003FFE3B /* WhereTests */,
 				7F716C7F2DAE86B10076D4DD /* Where.app */,
 				7F716C802DAE86B10076D4DD /* WhereTests.xctest */,
+				7FE7BCA22DB673550097CC30 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -563,7 +495,7 @@
 			children = (
 				042A79D22D9EAD2F004105E2 /* Interceptors */,
 				0438BA7A2D97DA86008C628F /* Core */,
-				04F051912D424C65000892C0 /* Network */,
+				7FE7BD942DB68E160097CC30 /* Network */,
 				04F0518E2D424BF1000892C0 /* Storage */,
 			);
 			path = Service;
@@ -696,39 +628,6 @@
 				0450E85C2D9AC0F000DB029A /* Tokens.swift */,
 			);
 			path = Storage;
-			sourceTree = "<group>";
-		};
-		04F051912D424C65000892C0 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				7F07AA312DA54C6900095602 /* DTO */,
-				042A79D62D9EC37A004105E2 /* Endpoint.swift */,
-				7F07AA602DAA452D00095602 /* APIServiceProvidable.swift */,
-			);
-			path = Network;
-			sourceTree = "<group>";
-		};
-		7F07AA312DA54C6900095602 /* DTO */ = {
-			isa = PBXGroup;
-			children = (
-				7F716C812DAE94310076D4DD /* User */,
-				042A7A2B2DA57555004105E2 /* Friend */,
-				042A7A352DA57555004105E2 /* Place */,
-				042A7A3A2DA57555004105E2 /* Schedule */,
-				042A7A3F2DA57555004105E2 /* Support */,
-				042A7A272DA57511004105E2 /* Meeting */,
-			);
-			path = DTO;
-			sourceTree = "<group>";
-		};
-		7F716C812DAE94310076D4DD /* User */ = {
-			isa = PBXGroup;
-			children = (
-				7F716C822DAE94CD0076D4DD /* RegisterDTO.swift */,
-				7F716C862DAE96A50076D4DD /* LoginDTO.swift */,
-				7F716C882DAE97290076D4DD /* CheckEmailDuplicationDTO.swift */,
-			);
-			path = User;
 			sourceTree = "<group>";
 		};
 		7F7E67BC2DA105B500833376 /* Feature */ = {
@@ -1167,6 +1066,120 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		7FE7BCA22DB673550097CC30 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7FE7BD652DB68E160097CC30 /* Friend */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */,
+				7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */,
+				7FE7BD642DB68E160097CC30 /* ReadFriendsDTO.swift */,
+			);
+			path = Friend;
+			sourceTree = "<group>";
+		};
+		7FE7BD702DB68E160097CC30 /* Meeting */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD662DB68E160097CC30 /* AcceptMeeetingInvitationDTO.swift */,
+				7FE7BD672DB68E160097CC30 /* AcceptMeetingInvitationByLinkDTO.swift */,
+				7FE7BD682DB68E160097CC30 /* CreateMeetingDTO.swift */,
+				7FE7BD692DB68E160097CC30 /* EndMeetingDTO.swift */,
+				7FE7BD6A2DB68E160097CC30 /* InviteFriendsDTO.swift */,
+				7FE7BD6B2DB68E160097CC30 /* LeaveMeetingDTO.swift */,
+				7FE7BD6C2DB68E160097CC30 /* MeetingDetailFromLinkDTO.swift */,
+				7FE7BD6D2DB68E160097CC30 /* ReadInvitationStatusDTO.swift */,
+				7FE7BD6E2DB68E160097CC30 /* ReadMeetingDetailDTO.swift */,
+				7FE7BD6F2DB68E160097CC30 /* UpdateMeetingDTO.swift */,
+			);
+			path = Meeting;
+			sourceTree = "<group>";
+		};
+		7FE7BD7A2DB68E160097CC30 /* Place */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD712DB68E160097CC30 /* CreateCommentDTO.swift */,
+				7FE7BD722DB68E160097CC30 /* CreatePlace.swift */,
+				7FE7BD732DB68E160097CC30 /* DeleteCommentDTO.swift */,
+				7FE7BD742DB68E160097CC30 /* DeletePlaceDTO.swift */,
+				7FE7BD752DB68E160097CC30 /* PickPlaceDTO.swift */,
+				7FE7BD762DB68E160097CC30 /* ReadCommentsDTO.swift */,
+				7FE7BD772DB68E160097CC30 /* ReadPlaceDetailDTO.swift */,
+				7FE7BD782DB68E160097CC30 /* TogglePlaceLikeDTO.swift */,
+				7FE7BD792DB68E160097CC30 /* UpdateCommentDTO.swift */,
+			);
+			path = Place;
+			sourceTree = "<group>";
+		};
+		7FE7BD7F2DB68E160097CC30 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD7B2DB68E160097CC30 /* CreateScheduleDTO.swift */,
+				7FE7BD7C2DB68E160097CC30 /* DeleteScheduleDTO.swift */,
+				7FE7BD7D2DB68E160097CC30 /* ReadScheduleDTO.swift */,
+				7FE7BD7E2DB68E160097CC30 /* UpdateScheduleDTO.swift */,
+			);
+			path = Schedule;
+			sourceTree = "<group>";
+		};
+		7FE7BD8C2DB68E160097CC30 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD802DB68E160097CC30 /* CreateAdminInquiryReplyDTO.swift */,
+				7FE7BD812DB68E160097CC30 /* CreateAnnouncementDTO.swift */,
+				7FE7BD822DB68E160097CC30 /* CreateFAQDTO.swift */,
+				7FE7BD832DB68E160097CC30 /* CreateUserInquiryDTO.swift */,
+				7FE7BD842DB68E160097CC30 /* DeleteAnnouncementDTO.swift */,
+				7FE7BD852DB68E160097CC30 /* DeleteFAQDTO.swift */,
+				7FE7BD862DB68E160097CC30 /* ReadAdminInquiriesDTO.swift */,
+				7FE7BD872DB68E160097CC30 /* ReadAnnouncementsDTO.swift */,
+				7FE7BD882DB68E160097CC30 /* ReadFAQsDTO.swift */,
+				7FE7BD892DB68E160097CC30 /* ReadUserInquiriesDTO.swift */,
+				7FE7BD8A2DB68E160097CC30 /* UpdateAnnouncementDTO.swift */,
+				7FE7BD8B2DB68E160097CC30 /* UpdateFAQDTO.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		7FE7BD902DB68E160097CC30 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD8D2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift */,
+				7FE7BD8E2DB68E160097CC30 /* LoginDTO.swift */,
+				7FE7BD8F2DB68E160097CC30 /* RegisterDTO.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		7FE7BD912DB68E160097CC30 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD652DB68E160097CC30 /* Friend */,
+				7FE7BD702DB68E160097CC30 /* Meeting */,
+				7FE7BD7A2DB68E160097CC30 /* Place */,
+				7FE7BD7F2DB68E160097CC30 /* Schedule */,
+				7FE7BD8C2DB68E160097CC30 /* Support */,
+				7FE7BD902DB68E160097CC30 /* User */,
+			);
+			path = DTO;
+			sourceTree = "<group>";
+		};
+		7FE7BD942DB68E160097CC30 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				7FE7BD912DB68E160097CC30 /* DTO */,
+				7FE7BD922DB68E160097CC30 /* APIService.swift */,
+				7FE7BD932DB68E160097CC30 /* Endpoint.swift */,
+				7FE7BDC02DB68E460097CC30 /* TokenPlugin.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		91A9EAAB2D26EE45005F09D2 /* PretendardFont */ = {
 			isa = PBXGroup;
 			children = (
@@ -1226,6 +1239,7 @@
 				0450E83A2D990B6D00DB029A /* Moya */,
 				0450E8512D998CC800DB029A /* Swinject */,
 				042A79F82DA53386004105E2 /* KakaoSDKShare */,
+				7FE7BCA32DB673550097CC30 /* CombineMoya */,
 			);
 			productName = Where;
 			productReference = 7F716C7F2DAE86B10076D4DD /* Where.app */;
@@ -1329,45 +1343,19 @@
 				91F1BFC92D3B8093000B4C84 /* BackButton.swift in Sources */,
 				04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */,
 				04A5309C2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift in Sources */,
-				7F07AA412DA55FC000095602 /* ReadMeetingDetailDTO.swift in Sources */,
 				046833F42D3B8F77009D2357 /* DateFormat.swift in Sources */,
-				7F07AA452DA562FE00095602 /* AcceptMeeetingInvitationDTO.swift in Sources */,
 				042A79DA2D9FACE8004105E2 /* CreateMeetingViewModel.swift in Sources */,
 				0450E8612D9AD36700DB029A /* TemporaryMeetingInfo.swift in Sources */,
-				042A7A402DA57555004105E2 /* CreateFAQDTO.swift in Sources */,
-				042A7A412DA57555004105E2 /* DeleteCommentDTO.swift in Sources */,
-				042A7A422DA57555004105E2 /* PickPlaceDTO.swift in Sources */,
-				042A7A432DA57555004105E2 /* ReadScheduleDTO.swift in Sources */,
-				042A7A442DA57555004105E2 /* ReadFAQsDTO.swift in Sources */,
-				042A7A452DA57555004105E2 /* DeletePlaceDTO.swift in Sources */,
-				042A7A462DA57555004105E2 /* BookmarkFriendDTO.swift in Sources */,
-				042A7A472DA57555004105E2 /* CreateCommentDTO.swift in Sources */,
-				042A7A482DA57555004105E2 /* TogglePlaceLikeDTO.swift in Sources */,
-				042A7A492DA57555004105E2 /* CreateScheduleDTO.swift in Sources */,
-				042A7A4A2DA57555004105E2 /* DeleteScheduleDTO.swift in Sources */,
-				042A7A4B2DA57555004105E2 /* ReadFriendsDTO.swift in Sources */,
-				042A7A4C2DA57555004105E2 /* ReadCommentsDTO.swift in Sources */,
-				042A7A4D2DA57555004105E2 /* ReadPlaceDetailDTO.swift in Sources */,
-				042A7A4E2DA57555004105E2 /* CreatePlace.swift in Sources */,
-				042A7A4F2DA57555004105E2 /* UpdateFAQDTO.swift in Sources */,
-				042A7A502DA57555004105E2 /* DeleteFAQDTO.swift in Sources */,
-				042A7A512DA57555004105E2 /* DeleteFriendDTO.swift in Sources */,
 				0497F6A62DA7E0EE0037B1CC /* MeetingPlacesViewModel.swift in Sources */,
-				042A7A522DA57555004105E2 /* UpdateCommentDTO.swift in Sources */,
-				042A7A532DA57555004105E2 /* UpdateScheduleDTO.swift in Sources */,
-				7F716C832DAE94CD0076D4DD /* RegisterDTO.swift in Sources */,
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
 				04C6F2362DB3CD800099874F /* CustomLoginStrategy.swift in Sources */,
-				7F07AA4F2DA56CD400095602 /* ReadAdminInquiriesDTO.swift in Sources */,
 				04A4F45B2D42105E0041FD02 /* Inquiry.swift in Sources */,
 				04A530A52D8EE31C004E58AD /* AnnouncementView.swift in Sources */,
-				7F07AA382DA5546100095602 /* UpdateMeetingDTO.swift in Sources */,
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				04A4F4612D42189F0041FD02 /* Announcement.swift in Sources */,
 				042A79F42DA3FC28004105E2 /* AuthentificationStrategyContext.swift in Sources */,
 				046833E02D3B8DD1009D2357 /* FriendsListView.swift in Sources */,
 				91B7A1722D26DFDE003932B4 /* String.swift in Sources */,
-				7F07AA3B2DA5561A00095602 /* EndMeetingDTO.swift in Sources */,
 				046833E92D3B8E8E009D2357 /* MeetingInformationView.swift in Sources */,
 				0450E8662D9B876E00DB029A /* MyMeetingViewModel.swift in Sources */,
 				046833EA2D3B8E8E009D2357 /* InviteFriendsView.swift in Sources */,
@@ -1379,18 +1367,15 @@
 				046833F02D3B8F65009D2357 /* DayOfWeek+Day+Month.swift in Sources */,
 				04A530A92D8FB9E6004E58AD /* RadioButton.swift in Sources */,
 				04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */,
-				7F07AA432DA5626D00095602 /* InviteFriendsDTO.swift in Sources */,
 				046833F12D3B8F65009D2357 /* Place.swift in Sources */,
 				04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */,
 				046833F22D3B8F65009D2357 /* Meridiem.swift in Sources */,
 				042A79F02DA3F5F8004105E2 /* NaverLoginStrategy.swift in Sources */,
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
 				0450E85F2D9AC85B00DB029A /* CommunityCore.swift in Sources */,
-				7F716C892DAE97290076D4DD /* CheckEmailDuplicationDTO.swift in Sources */,
 				04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */,
 				046455D52D93E2A100B74A01 /* EditInquiryView.swift in Sources */,
 				046455D92D93EF5000B74A01 /* Text.swift in Sources */,
-				7F716C872DAE96A50076D4DD /* LoginDTO.swift in Sources */,
 				04A530BA2D929D71004E58AD /* EditProfileViewModel.swift in Sources */,
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				04A5309E2D8EDDD4004E58AD /* Notification.swift in Sources */,
@@ -1400,39 +1385,29 @@
 				0450E8542D99A2F000DB029A /* ServiceAssembly.swift in Sources */,
 				042A79DC2DA17644004105E2 /* SupportCore.swift in Sources */,
 				04A530B12D913D28004E58AD /* MeetingAdditionGuideView.swift in Sources */,
-				7F07AA472DA564D900095602 /* AcceptMeetingInvitationByLinkDTO.swift in Sources */,
 				04A530A32D8EE312004E58AD /* NotificationListView.swift in Sources */,
 				04A530B52D914C82004E58AD /* SelectionTab.swift in Sources */,
-				7F07AA492DA5678100095602 /* MeetingDetailFromLinkDTO.swift in Sources */,
-				7F07AA362DA54DA600095602 /* CreateMeetingDTO.swift in Sources */,
 				046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */,
-				042A79D72D9EC37A004105E2 /* Endpoint.swift in Sources */,
 				91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
-				7F07AA4D2DA56B0400095602 /* CreateUserInquiryDTO.swift in Sources */,
 				91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */,
 				04A530AD2D8FF6BC004E58AD /* RoundedTextEditor.swift in Sources */,
 				0450E84D2D99708C00DB029A /* PreviewHelper.swift in Sources */,
 				0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */,
-				7F07AA552DA5714000095602 /* CreateAnnouncementDTO.swift in Sources */,
 				042A79D32D9EAD2F004105E2 /* WhereAuthenticator.swift in Sources */,
-				7F07AA532DA570A700095602 /* ReadAnnouncementsDTO.swift in Sources */,
 				046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */,
 				04F051882D423283000892C0 /* Bundle.swift in Sources */,
 				04A4F4442D40D82E0041FD02 /* AdjustPasswordViewModel.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
-				7F07AA4B2DA5692D00095602 /* ReadUserInquiriesDTO.swift in Sources */,
 				91A9EABA2D29AFD7005F09D2 /* MyMeetingView.swift in Sources */,
 				04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */,
 				04832B482D266F55003FFE3B /* SearchBar.swift in Sources */,
 				046455DF2D94036700B74A01 /* CharacterLimitTextField.swift in Sources */,
-				7F07AA3F2DA558B700095602 /* ReadInvitationStatusDTO.swift in Sources */,
 				042A79EA2DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift in Sources */,
 				04A4F43F2D3F92730041FD02 /* RegistrationViewModel.swift in Sources */,
 				04A4F4462D40D8E20041FD02 /* RegistrationTerminationStep.swift in Sources */,
 				046833DB2D3B8DB8009D2357 /* RegistrationTermView.swift in Sources */,
-				7F07AA572DA5726300095602 /* UpdateAnnouncementDTO.swift in Sources */,
 				04A530AF2D900251004E58AD /* UnregisterView.swift in Sources */,
 				04854C452D954B02007AADE4 /* SideMenu.swift in Sources */,
 				0450E8562D99A2FA00DB029A /* ViewModelAssembly.swift in Sources */,
@@ -1444,6 +1419,7 @@
 				0497F6A92DA93EE20037B1CC /* PlaceDetailViewModel.swift in Sources */,
 				0450E85D2D9AC0FE00DB029A /* Tokens.swift in Sources */,
 				046833F62D3B8FB4009D2357 /* FriendsListViewModel.swift in Sources */,
+				7FE7BDC12DB68E460097CC30 /* TokenPlugin.swift in Sources */,
 				04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */,
 				04A530B32D914BE4004E58AD /* InquiryView.swift in Sources */,
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
@@ -1453,7 +1429,6 @@
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				04C6F2342DB297B80099874F /* CoreEvent.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
-				7F07AA612DAA452D00095602 /* APIServiceProvidable.swift in Sources */,
 				0497F6A32DA6B85F0037B1CC /* PlaceCore.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
 				042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */,
@@ -1465,18 +1440,58 @@
 				91F1BFC72D3B7F95000B4C84 /* PlaceDetailView.swift in Sources */,
 				046833F52D3B8F99009D2357 /* User.swift in Sources */,
 				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
+				7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */,
+				7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */,
+				7FE7BD972DB68E160097CC30 /* ReadFriendsDTO.swift in Sources */,
+				7FE7BD982DB68E160097CC30 /* AcceptMeeetingInvitationDTO.swift in Sources */,
+				7FE7BD992DB68E160097CC30 /* AcceptMeetingInvitationByLinkDTO.swift in Sources */,
+				7FE7BD9A2DB68E160097CC30 /* CreateMeetingDTO.swift in Sources */,
+				7FE7BD9B2DB68E160097CC30 /* EndMeetingDTO.swift in Sources */,
+				7FE7BD9C2DB68E160097CC30 /* InviteFriendsDTO.swift in Sources */,
+				7FE7BD9D2DB68E160097CC30 /* LeaveMeetingDTO.swift in Sources */,
+				7FE7BD9E2DB68E160097CC30 /* MeetingDetailFromLinkDTO.swift in Sources */,
+				7FE7BD9F2DB68E160097CC30 /* ReadInvitationStatusDTO.swift in Sources */,
+				7FE7BDA02DB68E160097CC30 /* ReadMeetingDetailDTO.swift in Sources */,
+				7FE7BDA12DB68E160097CC30 /* UpdateMeetingDTO.swift in Sources */,
+				7FE7BDA22DB68E160097CC30 /* CreateCommentDTO.swift in Sources */,
+				7FE7BDA32DB68E160097CC30 /* CreatePlace.swift in Sources */,
+				7FE7BDA42DB68E160097CC30 /* DeleteCommentDTO.swift in Sources */,
+				7FE7BDA52DB68E160097CC30 /* DeletePlaceDTO.swift in Sources */,
+				7FE7BDA62DB68E160097CC30 /* PickPlaceDTO.swift in Sources */,
+				7FE7BDA72DB68E160097CC30 /* ReadCommentsDTO.swift in Sources */,
+				7FE7BDA82DB68E160097CC30 /* ReadPlaceDetailDTO.swift in Sources */,
+				7FE7BDA92DB68E160097CC30 /* TogglePlaceLikeDTO.swift in Sources */,
+				7FE7BDAA2DB68E160097CC30 /* UpdateCommentDTO.swift in Sources */,
+				7FE7BDAB2DB68E160097CC30 /* CreateScheduleDTO.swift in Sources */,
+				7FE7BDAC2DB68E160097CC30 /* DeleteScheduleDTO.swift in Sources */,
+				7FE7BDAD2DB68E160097CC30 /* ReadScheduleDTO.swift in Sources */,
+				7FE7BDAE2DB68E160097CC30 /* UpdateScheduleDTO.swift in Sources */,
+				7FE7BDAF2DB68E160097CC30 /* CreateAdminInquiryReplyDTO.swift in Sources */,
+				7FE7BDB02DB68E160097CC30 /* CreateAnnouncementDTO.swift in Sources */,
+				7FE7BDB12DB68E160097CC30 /* CreateFAQDTO.swift in Sources */,
+				7FE7BDB22DB68E160097CC30 /* CreateUserInquiryDTO.swift in Sources */,
+				7FE7BDB32DB68E160097CC30 /* DeleteAnnouncementDTO.swift in Sources */,
+				7FE7BDB42DB68E160097CC30 /* DeleteFAQDTO.swift in Sources */,
+				7FE7BDB52DB68E160097CC30 /* ReadAdminInquiriesDTO.swift in Sources */,
+				7FE7BDB62DB68E160097CC30 /* ReadAnnouncementsDTO.swift in Sources */,
+				7FE7BDB72DB68E160097CC30 /* ReadFAQsDTO.swift in Sources */,
+				7FE7BDB82DB68E160097CC30 /* ReadUserInquiriesDTO.swift in Sources */,
+				7FE7BDB92DB68E160097CC30 /* UpdateAnnouncementDTO.swift in Sources */,
+				7FE7BDBA2DB68E160097CC30 /* UpdateFAQDTO.swift in Sources */,
+				7FE7BDBB2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift in Sources */,
+				7FE7BDBC2DB68E160097CC30 /* LoginDTO.swift in Sources */,
+				7FE7BDBD2DB68E160097CC30 /* RegisterDTO.swift in Sources */,
+				7FE7BDBE2DB68E160097CC30 /* APIService.swift in Sources */,
+				7FE7BDBF2DB68E160097CC30 /* Endpoint.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */,
-				7F07AA512DA56F3100095602 /* CreateAdminInquiryReplyDTO.swift in Sources */,
 				04A4F45D2D4212020041FD02 /* Meeting.swift in Sources */,
-				7F07AA592DA5733D00095602 /* DeleteAnnouncementDTO.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
 				041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */,
 				04A530A72D8FB8D8004E58AD /* EditAnnouncementView.swift in Sources */,
 				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
 				042A79EE2DA3EE1D004105E2 /* KakaoLoginStrategy.swift in Sources */,
-				7F07AA3D2DA556B700095602 /* LeaveMeetingDTO.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1844,6 +1859,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 04F0517C2D422B01000892C0 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
 			productName = KakaoSDKUser;
+		};
+		7FE7BCA32DB673550097CC30 /* CombineMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0450E8392D990B6D00DB029A /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = CombineMoya;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
