@@ -13,7 +13,7 @@ import Moya
 import CombineMoya
 
 protocol APIServable {
-    func requestPublisher<T: TargetType, D: Decodable>(_ targetType: T) -> AnyPublisher<D, Error>
+    func requestPublisher<T: TargetType, D: Decodable>(_ targetType: T, _ DTO: D.Type) -> AnyPublisher<D, Error>
 }
 
 final class APIService: APIServable {
@@ -33,7 +33,7 @@ final class APIService: APIServable {
         provider = .init(session: session, plugins: [TokenPlugin(tokenStorage: tokenStorage)])
     }
     
-    func requestPublisher<T, D>(_ targetType: T) -> AnyPublisher<D, any Error> where T : TargetType, D : Decodable {
+    func requestPublisher<T: TargetType, D: Decodable>(_ targetType: T, _ DTO: D.Type) -> AnyPublisher<D, Error> {
         
         return provider.requestPublisher(MultiTarget(targetType))
             .tryMap { response in
