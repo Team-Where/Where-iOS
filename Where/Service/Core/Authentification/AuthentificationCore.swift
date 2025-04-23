@@ -37,6 +37,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
 }
 
 protocol AuthentificationMediationProtocol {
+    /// 최근 사용자 정보 로드를 지시, 중재자에 의해 호출됨
     func loadCurrentUser()
 }
 
