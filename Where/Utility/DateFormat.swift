@@ -93,8 +93,8 @@ extension DateFormat {
      * DateFormatter를 매번 생성하지 않고 재사용 하려는 목적으로 사용
      
      */
-    static func cachedFormatter(dateFormat: String) async -> DateFormatter {
-        await dateFormatterCached.cachedFormatter(for: dateFormat)
+    static func cachedFormatter(dateFormat: String) -> DateFormatter {
+        dateFormatterCached.cachedFormatter(for: dateFormat)
     }
     
     /**
@@ -103,8 +103,8 @@ extension DateFormat {
      * DateFormatter를 매번 생성하지 않고 재사용 하려는 목적으로 사용
      
      */
-    static func cachedFormatter(dateFormat: DateFormat) async -> DateFormatter {
-        await dateFormatterCached.cachedFormatter(for: dateFormat.rawValue)
+    static func cachedFormatter(dateFormat: DateFormat) -> DateFormatter {
+        dateFormatterCached.cachedFormatter(for: dateFormat.rawValue)
     }
     
     static func toDate(iso8601String: String) -> Date? {
@@ -114,7 +114,7 @@ extension DateFormat {
     }
 }
 
-actor DateFormatterCached {
+final class DateFormatterCached {
     private var cachedFormatters = [String: DateFormatter]()
     
     func cachedFormatter(for dateFormat: String) -> DateFormatter {
@@ -140,21 +140,21 @@ actor DateFormatterCached {
 
 // MARK: Date+Format
 extension Date {
-    func toString(by dateFormat: DateFormat) async -> String {
-        let formatter = await DateFormat.cachedFormatter(dateFormat: dateFormat)
+    func toString(by dateFormat: DateFormat) -> String {
+        let formatter = DateFormat.cachedFormatter(dateFormat: dateFormat)
         return formatter.string(from: self)
     }
     
     /// DateFormat에서 제공하는 형태와 다른 날짜 형식일 경우 사용
-    func toString(by dateFormat: String) async -> String {
-        let formatter = await DateFormat.cachedFormatter(dateFormat: dateFormat)
+    func toString(by dateFormat: String) -> String {
+        let formatter = DateFormat.cachedFormatter(dateFormat: dateFormat)
         return formatter.string(from: self)
     }
 }
 
 extension String {
-    func toDate(by dateFormat: DateFormat) async -> Date? {
-        let formatter = await DateFormat.cachedFormatter(dateFormat: dateFormat)
+    func toDate(by dateFormat: DateFormat) -> Date? {
+        let formatter = DateFormat.cachedFormatter(dateFormat: dateFormat)
         return formatter.date(from: self)
     }
 }
