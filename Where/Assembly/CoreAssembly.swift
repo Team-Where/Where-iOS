@@ -11,11 +11,11 @@ import Swinject
 struct CoreAssembly: Assembly {
     func assemble(container: Swinject.Container) {
         container.register(AuthentificationCore.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
+            guard let apiService = resolver.resolve(APIServable.self)
             else {
-                fatalError("TokenStorageProtocol not registered")
+                fatalError("Failed Initializing AuthentificationCore")
             }
-            return AuthentificationCore(tokenStorage: tokenStorage)
+            return AuthentificationCore(apiService: apiService)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
@@ -40,11 +40,11 @@ struct CoreAssembly: Assembly {
         }
         
         container.register(CommunityCore.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
+            guard let apiService = resolver.resolve(APIServable.self)
             else {
-                fatalError("TokenStorageProtocol not registered")
+                fatalError("Failed Initializing CommunityCore")
             }
-            return CommunityCore(tokenStorage: tokenStorage)
+            return CommunityCore(apiService: apiService)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
@@ -69,11 +69,12 @@ struct CoreAssembly: Assembly {
         }
         
         container.register(MeetingCore.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
+            guard let encoder = resolver.resolve(JSONEncoder.self),
+                  let apiService = resolver.resolve(APIServable.self)
             else {
-                fatalError("TokenStorageProtocol not registered")
+                fatalError("Failed Initializing MeetingCore")
             }
-            return MeetingCore(tokenStorage: tokenStorage)
+            return MeetingCore(apiService: apiService, encoder: encoder)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
@@ -98,11 +99,11 @@ struct CoreAssembly: Assembly {
         }
         
         container.register(PlaceCore.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
+            guard let apiService = resolver.resolve(APIServable.self)
             else {
-                fatalError("TokenStorageProtocol not registered")
+                fatalError("Failed Initializing PlaceCore")
             }
-            return PlaceCore(tokenStorage: tokenStorage)
+            return PlaceCore(apiService: apiService)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
@@ -127,11 +128,11 @@ struct CoreAssembly: Assembly {
         }
         
         container.register(SupportCore.self) { resolver in
-            guard let tokenStorage = resolver.resolve(TokenStorageProtocol.self)
+            guard let apiService = resolver.resolve(APIServable.self)
             else {
                 fatalError("TokenStorageProtocol not registered")
             }
-            return SupportCore(tokenStorage: tokenStorage)
+            return SupportCore(apiService: apiService)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
