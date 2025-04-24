@@ -23,6 +23,15 @@ extension ReadFriendsDTO {
         let imageURLString: String?
         let isBookmarked: Bool
         let relatedMeetingDetails: [MeetingDetail]?
+        
+        func asEntity() -> FriendRelationship {
+            return .init(
+                id: id,
+                nickname: name,
+                imageURL: URL(string: imageURLString ?? ""),
+                isFavorite: isBookmarked
+            )
+        }
     }
 }
 
@@ -39,6 +48,16 @@ extension ReadFriendsDTO.Friend {
             case id = "meetingId"
             case imageURLString = "meetingImage"
             case title = "meetingName"
+        }
+        
+        func asEntity() -> MeetingSummary {
+            .init(
+                id: id,
+                title: title,
+                description: description,
+                imageURL: URL(string: imageURLString ?? ""),
+                finishedAt: date.toDate(by: .yyyyMMddHyphen) ?? .now
+            )
         }
     }
 }
