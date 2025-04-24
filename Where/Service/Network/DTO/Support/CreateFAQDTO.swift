@@ -5,6 +5,8 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
+import Foundation
+
 /// FAQ 등록
 enum CreateFAQDTO {
     struct Request: Encodable {
@@ -16,5 +18,11 @@ enum CreateFAQDTO {
         let id: UInt64
         let title: String
         let content: String
+        let modifiedAt: Date
+        
+        enum CodingKeys: String, CodingKey {
+            case id, title, content
+            case modifiedAt = "date"
+        }
     }
 }
