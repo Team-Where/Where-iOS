@@ -24,5 +24,15 @@ extension ReadAnnouncementsDTO {
             case title, content
             case modifiedAt = "date"
         }
+        
+        func toEntity() -> Announcement {
+            .init(
+                id: announcementID,
+                title: title,
+                content: content,
+                date: modifiedAt,
+                type: .common
+            )
+        }
     }
 }

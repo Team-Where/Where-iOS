@@ -24,5 +24,15 @@ enum CreateFAQDTO {
             case id, title, content
             case modifiedAt = "date"
         }
+        
+        func toEntity() -> Announcement {
+            .init(
+                id: id,
+                title: title,
+                content: content,
+                date: modifiedAt,
+                type: .FAQ
+            )
+        }
     }
 }

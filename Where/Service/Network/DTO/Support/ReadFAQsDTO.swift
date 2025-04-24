@@ -9,7 +9,11 @@ import Foundation
 
 /// FAQ 조회
 enum ReadFAQsDTO {
-    struct Response: Decodable {
+    typealias Response = [FAQDetail]
+}
+
+extension ReadFAQsDTO {
+    struct FAQDetail: Decodable {
         let id: UInt64
         let title: String
         let content: String
@@ -18,6 +22,16 @@ enum ReadFAQsDTO {
         enum CodingKeys: String, CodingKey {
             case id, title, content
             case modifiedAt = "date"
+        }
+        
+        func toEntity() -> Announcement {
+            .init(
+                id: id,
+                title: title,
+                content: content,
+                date: modifiedAt,
+                type: .FAQ
+            )
         }
     }
 }
