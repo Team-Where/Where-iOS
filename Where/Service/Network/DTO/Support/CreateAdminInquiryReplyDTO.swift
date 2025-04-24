@@ -5,6 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+import Foundation
+
 /// 1:1 답변등록 - 관리자
 enum CreateAdminInquiryReplyDTO {
     struct Request: Encodable {
@@ -26,6 +28,8 @@ enum CreateAdminInquiryReplyDTO {
         let imageURLStrings: [String]?
         let isAnswered: Bool
         let answerContent: String?
+        let modifiedAt: Date
+        let answerDate: Date?
         
         enum CodingKeys: String, CodingKey {
             case inquiryID = "id"
@@ -33,6 +37,20 @@ enum CreateAdminInquiryReplyDTO {
             case imageURLStrings = "iamges"
             case isAnswered = "answered"
             case userName, title, content,answerContent
+            case modifiedAt = "inquiryDate"
+            case answerDate = "answerDate"
+        }
+        
+        func toEntity() -> Inquiry {
+            .init(
+                id: inquiryID,
+                modifiedAt: modifiedAt,
+                title: title,
+                content: content,
+                imageURLs: (imageURLStrings ?? []).compactMap { URL(string: $0) },
+                isAnswered: isAnswered,
+                answerContent: answerContent
+            )
         }
     }
 }
