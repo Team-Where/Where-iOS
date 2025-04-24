@@ -119,6 +119,7 @@
 		04F051882D423283000892C0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F051872D423283000892C0 /* Bundle.swift */; };
 		04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F051892D42332D000892C0 /* AuthentificationProvider.swift */; };
 		04F051902D424C01000892C0 /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0518F2D424C01000892C0 /* TokenStorage.swift */; };
+		7F831B1A2DBA8F75006FFAA0 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B192DBA8F75006FFAA0 /* Image.swift */; };
 		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
 		7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */; };
 		7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */; };
@@ -300,6 +301,7 @@
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
 		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F831B192DBA8F75006FFAA0 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD642DB68E160097CC30 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
@@ -1205,6 +1207,7 @@
 				04F051872D423283000892C0 /* Bundle.swift */,
 				046455D82D93EF5000B74A01 /* Text.swift */,
 				046455DE2D94036700B74A01 /* CharacterLimitTextField.swift */,
+				7F831B192DBA8F75006FFAA0 /* Image.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1431,6 +1434,7 @@
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045CA1612D27D22D001B5CEE /* HistoryReminderView.swift in Sources */,
 				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
+				7F831B1A2DBA8F75006FFAA0 /* Image.swift in Sources */,
 				0450E84F2D99766900DB029A /* SignInViewModel.swift in Sources */,
 				046833D52D3B8D67009D2357 /* ImageSelectionPopupView.swift in Sources */,
 				91F1BFC72D3B7F95000B4C84 /* PlaceDetailView.swift in Sources */,
