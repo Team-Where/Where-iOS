@@ -107,6 +107,7 @@
 		04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2312DB2715F0099874F /* CoreProtocol.swift */; };
 		04C6F2342DB297B80099874F /* CoreEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2332DB297B80099874F /* CoreEvent.swift */; };
 		04C6F2362DB3CD800099874F /* CustomLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2352DB3CD800099874F /* CustomLoginStrategy.swift */; };
+		04C6F23D2DB923080099874F /* MeetingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F23C2DB923080099874F /* MeetingSummary.swift */; };
 		04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */; };
 		04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18D2D72E32D002CA364 /* UserCredential.swift */; };
 		04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */; };
@@ -290,6 +291,7 @@
 		04C6F2312DB2715F0099874F /* CoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreProtocol.swift; sourceTree = "<group>"; };
 		04C6F2332DB297B80099874F /* CoreEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreEvent.swift; sourceTree = "<group>"; };
 		04C6F2352DB3CD800099874F /* CustomLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLoginStrategy.swift; sourceTree = "<group>"; };
+		04C6F23C2DB923080099874F /* MeetingSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingSummary.swift; sourceTree = "<group>"; };
 		04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationCore.swift; sourceTree = "<group>"; };
 		04CBC18D2D72E32D002CA364 /* UserCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredential.swift; sourceTree = "<group>"; };
 		04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereFormModifier.swift; sourceTree = "<group>"; };
@@ -467,6 +469,7 @@
 				045CA1622D27E3EE001B5CEE /* User.swift */,
 				04A4F45A2D42105E0041FD02 /* Inquiry.swift */,
 				04A4F45C2D4212020041FD02 /* Meeting.swift */,
+				04C6F23C2DB923080099874F /* MeetingSummary.swift */,
 				046833ED2D3B8F65009D2357 /* DayOfWeek+Day+Month.swift */,
 				046833EE2D3B8F65009D2357 /* Meridiem.swift */,
 				046833EF2D3B8F65009D2357 /* Place.swift */,
@@ -1418,6 +1421,7 @@
 				046833DD2D3B8DB8009D2357 /* RegistrationView.swift in Sources */,
 				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
+				04C6F23D2DB923080099874F /* MeetingSummary.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				04C6F2342DB297B80099874F /* CoreEvent.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
