@@ -81,6 +81,9 @@ enum DateFormat: String {
     
     /// 서버 날짜, 시간 (년-월-일 시:분:초)
     case serverDateTime2 = "yyyy-MM-dd HH:mm:ss"
+    
+    /// 서버 날짜, 시간 밀리초 (년-월-일 시:분:초.밀리초)
+    case serverDateTimeWithMS = "yyyy-MM-dd HH:mm:ss.SSS"
 }
 
 // MARK: DateFormatter 관련
