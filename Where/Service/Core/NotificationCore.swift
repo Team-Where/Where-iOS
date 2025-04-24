@@ -14,11 +14,13 @@ protocol NotificationCoreProtocol: CoreProtocol {
     
     /// 알림 읽음 처리
     func markNotificationAsRead(id: UInt64)
+    
+    /// FCM/APNs로부터 전달된 원시 페이로드 처리
+    func handleReceivedNotificaitonPayload(_ payload: [AnyHashable: Any])
 }
 
 protocol NotificationMediationProtocol {
-    /// 수신된 알림 저장을 지시, 중재자에 의해 호출됨
-    func saveNotification(_ notification: Notification)
+    
 }
 
 enum NotificationCoreError: Error {
@@ -56,8 +58,9 @@ extension NotificationCore: NotificationCoreProtocol {
     }
     
     func markNotificationAsRead(id: UInt64) {
-        guard let notification =  notificationsSubject.value[id] else { return }
-        _notifications[id] = Notification(
+        guard let notification = notificationsSubject.value[id] else { return }
+        var notifications = notificationsSubject.value
+        notifications[id] = Notification(
             id: notification.id,
             title: notification.title,
             content: notification.content,
@@ -65,6 +68,17 @@ extension NotificationCore: NotificationCoreProtocol {
             isRead: true,
             type: notification.type
         )
-        notificationsSubject.send(_notifications)
+        notificationsSubject.send(notifications)
+    }
+    
+    func handleReceivedNotificaitonPayload(_ payload: [AnyHashable: Any]) {
+        
+    }
+}
+
+// MARK: - NotificationMediationProtocol Conformation
+extension NotificationCore: NotificationMediationProtocol {
+    func saveNotification(_ notification: Notification) {
+        
     }
 }
