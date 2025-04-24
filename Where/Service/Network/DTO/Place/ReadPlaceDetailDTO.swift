@@ -5,13 +5,15 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
+import Foundation
+
 /// 장소 조회
 enum ReadPlaceDetailDTO {
-    typealias Response = [Place]
+    typealias Response = [PlaceDetail]
 }
 
 extension ReadPlaceDetailDTO {
-    struct Place: Decodable {
+    struct PlaceDetail: Decodable {
         let id: UInt64
         let meetingID: UInt64
         let naverLinkString: String
@@ -30,6 +32,19 @@ extension ReadPlaceDetailDTO {
             case likingUserIDs = "likes"
             case pickedState = "placeStatus"
             case isSimulaneouslyPicked = "together"
+        }
+        
+        func toEntity() -> Place {
+            .init(
+                id: id,
+                meetingId: meetingID,
+                name: name,
+                address: address,
+                likesCount: likingUserIDs.count,
+                pickedState: .init(pickedState),
+                links: .init(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
+                isSimulaneouslyPicked: isSimulaneouslyPicked
+            )
         }
     }
 }

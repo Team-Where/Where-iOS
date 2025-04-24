@@ -5,6 +5,8 @@
 //  Created by Swain Yun on 4/8/25.
 //
 
+import Foundation
+
 /// 장소 생성
 enum CreatePlaceDTO {
     struct Request: Encodable {
@@ -40,6 +42,19 @@ enum CreatePlaceDTO {
             case likingUserIDs = "likes"
             case pickedState = "placeStatus"
             case isSimulaneouslyPicked = "together"
+        }
+        
+        func toEntity() -> Place {
+            .init(
+                id: placeID,
+                meetingId: meetingID,
+                name: name,
+                address: address,
+                likesCount: likingUserIDs.count,
+                pickedState: PickedState(pickedState),
+                links: PlaceLinks(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
+                isSimulaneouslyPicked: isSimulaneouslyPicked
+            )
         }
     }
 }
