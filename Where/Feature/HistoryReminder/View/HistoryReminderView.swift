@@ -8,7 +8,12 @@
 import SwiftUI
 import Swinject
 
+fileprivate typealias MonthGroup = HistoryReminderViewModel.MonthGroup
+fileprivate typealias YearGroup = HistoryReminderViewModel.YearGroup
+
 struct HistoryReminderView: View {
+    @ObservedObject private var viewModel: HistoryReminderViewModel
+    
     private let user: User
     private let friend: FriendRelationship
     private let resolver: Resolver
@@ -20,6 +25,7 @@ struct HistoryReminderView: View {
     ) {
         self.user = user
         self.friend = friend
+        self.viewModel = resolver.resolve(HistoryReminderViewModel.self)!
         self.resolver = resolver
     }
     
@@ -97,26 +103,33 @@ extension HistoryReminderView {
     }
     
     struct HistoryArea: View {
+        @ObservedObject private var viewModel: HistoryReminderViewModel
+        
         private let resolver: Resolver
         
         init(resolver: Resolver) {
+            self.viewModel = resolver.resolve(HistoryReminderViewModel.self)!
             self.resolver = resolver
         }
         
         var body: some View {
-            section()
+            LazyVStack {
+                ForEach(viewModel.yearGroups) { yearGroup in
+                    section(yearGroup)
+                }
+            }
         }
         
-        @ViewBuilder private func section() -> some View {
+        @ViewBuilder private func section(_ yearGroup: YearGroup) -> some View {
             Section {
                 LazyVStack {
-                    ForEach(1...12, id: \.self) { month in
-                        cell(month)
+                    ForEach(yearGroup.months) { monthGroup in
+                        cell(monthGroup)
                     }
                 }
             } header: {
                 HStack {
-                    Text("2024")
+                    Text("\(yearGroup.year)")
                         .whereFont(.title24semibold)
                     
                     Spacer()
@@ -130,7 +143,7 @@ extension HistoryReminderView {
             .padding(.top)
         }
         
-        @ViewBuilder private func cell(_ month: Int) -> some View {
+        @ViewBuilder private func cell(_ monthGroup: MonthGroup) -> some View {
             HStack(alignment: .top) {
                 VStack(spacing: 38) {
                     HStack(spacing: 7) {
@@ -143,7 +156,7 @@ extension HistoryReminderView {
                                     .frame(width: 10, height: 10)
                             )
                         
-                        Text("\(month)월")
+                        Text("\(monthGroup.month)월")
                             .whereFont(.body16medium)
                     }
                     .frame(maxWidth: 45)
@@ -154,57 +167,59 @@ extension HistoryReminderView {
                         .frame(height: 116)
                 }
                 
-                VStack {
-                    HStack {
-                        AsyncImage(url: nil)
-                            .frame(width: 65, height: 65)
-                            .clipShape(.rect(cornerRadius: 12))
-                            .padding(.trailing, 10)
-                        
-                        VStack(alignment: .leading) {
-                            Text("2024.11.26")
-                            
-                            Text("2024 연말파티")
-                                .whereFont(.body16semibold)
-                                .foregroundStyle(Color(hex: 0x111827))
-                            
-                            Text("벌써 연말이다 신나게 놀아보장~~")
-                        }
-                        .whereFont(.caption12regular)
-                        .foregroundStyle(Color(hex: 0x6B7280))
-                        
-                        Spacer()
-                    }
-                    .padding(.bottom, 10)
-                    
-                    NavigationLink {
-                        MeetingInformationView(resolver: resolver)
-                    } label: {
-                        Text("자세히 보기")
-                            .whereFont(.body14medium)
-                            .foregroundColor(Color(hex: 0x343A40))
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(.white)
-                                    .strokeBorder(Color(hex: 0xDEE2E6))
-                            )
-                            .clipShape(.rect(cornerRadius: 8))
+                LazyVStack {
+                    ForEach(monthGroup.meetings, id: \.id) { meeting in
+                        meetingRow(meeting)
                     }
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(hex: 0xEEF2FF))
-                )
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        HistoryReminderView(user: .init(), friend: PreviewHelper.shared.mockFriends.first!, resolver: PreviewHelper.shared.resolver)
+        
+        @ViewBuilder private func meetingRow(_ meeting: MeetingSummary) -> some View {
+            VStack {
+                HStack {
+                    AsyncImage(url: meeting.imageURL)
+                        .frame(width: 65, height: 65)
+                        .clipShape(.rect(cornerRadius: 12))
+                        .padding(.trailing, 10)
+                    
+                    VStack(alignment: .leading) {
+                        Text(meeting.finishedAt.toString(by: .yyyyMMdd))
+                        
+                        Text(meeting.title)
+                            .whereFont(.body16semibold)
+                            .foregroundStyle(Color(hex: 0x111827))
+                        
+                        Text(meeting.description)
+                    }
+                    .whereFont(.caption12regular)
+                    .foregroundStyle(Color(hex: 0x6B7280))
+                    
+                    Spacer()
+                }
+                .padding(.bottom, 10)
+                
+                NavigationLink {
+                    MeetingInformationView(resolver: resolver)
+                } label: {
+                    Text("자세히 보기")
+                        .whereFont(.body14medium)
+                        .foregroundColor(Color(hex: 0x343A40))
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(.white)
+                                .strokeBorder(Color(hex: 0xDEE2E6))
+                        )
+                        .clipShape(.rect(cornerRadius: 8))
+                }
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(hex: 0xEEF2FF))
+            )
+        }
     }
 }
