@@ -109,6 +109,7 @@
 		04C6F2362DB3CD800099874F /* CustomLoginStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2352DB3CD800099874F /* CustomLoginStrategy.swift */; };
 		04C6F23D2DB923080099874F /* MeetingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F23C2DB923080099874F /* MeetingSummary.swift */; };
 		04C6F2402DBA656A0099874F /* HistoryReminderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F23F2DBA656A0099874F /* HistoryReminderViewModel.swift */; };
+		04C6F2422DBA9B6C0099874F /* EmptyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C6F2412DBA9B6C0099874F /* EmptyDTO.swift */; };
 		04CBC18C2D71A6B6002CA364 /* AuthentificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */; };
 		04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC18D2D72E32D002CA364 /* UserCredential.swift */; };
 		04CBC19F2D74543C002CA364 /* WhereFormModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */; };
@@ -294,6 +295,7 @@
 		04C6F2352DB3CD800099874F /* CustomLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLoginStrategy.swift; sourceTree = "<group>"; };
 		04C6F23C2DB923080099874F /* MeetingSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingSummary.swift; sourceTree = "<group>"; };
 		04C6F23F2DBA656A0099874F /* HistoryReminderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryReminderViewModel.swift; sourceTree = "<group>"; };
+		04C6F2412DBA9B6C0099874F /* EmptyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDTO.swift; sourceTree = "<group>"; };
 		04CBC18B2D71A6B6002CA364 /* AuthentificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationCore.swift; sourceTree = "<group>"; };
 		04CBC18D2D72E32D002CA364 /* UserCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCredential.swift; sourceTree = "<group>"; };
 		04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereFormModifier.swift; sourceTree = "<group>"; };
@@ -1170,6 +1172,7 @@
 				7FE7BD7F2DB68E160097CC30 /* Schedule */,
 				7FE7BD8C2DB68E160097CC30 /* Support */,
 				7FE7BD902DB68E160097CC30 /* User */,
+				04C6F2412DBA9B6C0099874F /* EmptyDTO.swift */,
 			);
 			path = DTO;
 			sourceTree = "<group>";
@@ -1493,6 +1496,7 @@
 				7FE7BDBF2DB68E160097CC30 /* Endpoint.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */,
+				04C6F2422DBA9B6C0099874F /* EmptyDTO.swift in Sources */,
 				04A4F45D2D4212020041FD02 /* Meeting.swift in Sources */,
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
 				041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */,
