@@ -5,6 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+import Foundation
+
 /// 1:1문의 조회 - 관리자
 enum ReadAdminInquiriesDTO {
     typealias Response = [InquiryDetail]
@@ -20,6 +22,8 @@ extension ReadAdminInquiriesDTO {
         let imageURLStrings: [String]?
         let isAnswered: Bool
         let answerContent: String?
+        let modifiedAt: Date
+        let answerDate: Date
         
         enum CodingKeys: String, CodingKey {
             case inquiryID = "id"
@@ -27,6 +31,20 @@ extension ReadAdminInquiriesDTO {
             case imageURLStrings = "images"
             case isAnswered = "answered"
             case userName, title, content, answerContent
+            case modifiedAt = "inquiryDate"
+            case answerDate = "answerDate"
+        }
+        
+        func toEntity() -> Inquiry {
+            .init(
+                id: inquiryID,
+                modifiedAt: modifiedAt,
+                title: title,
+                content: content,
+                imageURLs: (imageURLStrings ?? []).compactMap { URL(string: $0) },
+                isAnswered: isAnswered,
+                answerContent: answerContent
+            )
         }
     }
 }
