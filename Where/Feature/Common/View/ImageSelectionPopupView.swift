@@ -11,14 +11,17 @@ import PhotosUI
 struct ImageSelectionPopupView: View {
     @Binding var isPopupPresented: Bool
     @State private var selectedItem: PhotosPickerItem?
-    let onSelected: (UIImage) -> Void
+    @State var isSeleted = false
+    @Binding var isImageSelected: Bool
+    
+    let onSelected: (Data?) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
             Button("기본 이미지로 설정") {
-                guard let defaultImage = UIImage(named: "person") else { return }
-                onSelected(defaultImage)
+                onSelected(nil)
                 isPopupPresented = false
+                isImageSelected = true
             }
             
             PhotosPicker(
@@ -30,10 +33,10 @@ struct ImageSelectionPopupView: View {
             }
             .onChange(of: selectedItem) { oldItem, newItem in
                 Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
-                        onSelected(uiImage)
+                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                        onSelected(data)
                         isPopupPresented = false
+                        isImageSelected = true
                     }
                 }
             }
