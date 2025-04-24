@@ -27,6 +27,28 @@ struct Meeting: Identifiable {
     let shareLink: URL?
     /// 활성화 여부
     let isFinished: Bool
+    
+    init(
+        id: UInt64,
+        title: String,
+        description: String,
+        imageURL: URL? = nil,
+        createdAt: Date,
+        updatedAt: Date? = nil,
+        schedule: Date? = nil,
+        shareLink: URL? = nil,
+        isFinished: Bool
+    ) {
+        self.id = id
+        self.title = title
+        self.description = description
+        self.imageURL = imageURL
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.schedule = schedule
+        self.shareLink = shareLink
+        self.isFinished = isFinished
+    }
 }
 
 /// 모임 참여 인원
