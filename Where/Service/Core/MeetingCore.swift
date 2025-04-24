@@ -34,7 +34,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 생성
     /// - Parameters:
     ///     - info: 생성 중인 모임의 임시 정보
-    func createMeeting(info: TemporaryMeetingInfo, userID: UInt64)
+    func createMeeting(info: TemporaryMeetingInfo)
     /// 특정 모임 조회
     func fetchMeeting(id: UInt64) -> Meeting?
     /// 모임 수정
@@ -140,7 +140,9 @@ extension MeetingCore: MeetingCoreProtocol {
         
     }
     
-    func createMeeting(info: TemporaryMeetingInfo, userID: UInt64) {
+    func createMeeting(info: TemporaryMeetingInfo) {
+        guard let userID = currentUserID else { return }
+        
         do {
             let dto = CreateMeetingDTO.Request(title: info.title, creatorID: userID, description: info.description, participants: info.participants)
             let encodedMeeting = try encoder.encode(dto)
