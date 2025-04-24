@@ -67,7 +67,9 @@ extension CoreMediator: Notifiable {
         case .userDidLogout(let userID):
             
         case .friendsListUpdated(let meetingIDs, let summaries):
-            meetingCore.loadMeetingSummaries(meetingIDs: meetingIDs, summaries: summaries)
+            meetingCore.updateRelatedMeetings(meetingIDs: meetingIDs, summaries: summaries)
+        case .historyWithFriendWillUpdate(let friendID):
+            meetingCore.loadCurrentMeetingsWithFriend(friendID: friendID)
         }
     }
 }
