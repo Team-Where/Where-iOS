@@ -34,7 +34,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 생성
     /// - Parameters:
     ///     - info: 생성 중인 모임의 임시 정보
-    func createMeeting(info: TemporaryMeetingInfo)
+    func createMeeting(info: TemporaryMeetingInfo, userID: UInt64)
     /// 특정 모임 조회
     func fetchMeeting(id: UInt64) -> Meeting?
     /// 모임 수정
@@ -75,6 +75,7 @@ protocol MeetingMediationProtocol {
 enum MeetingCoreError: Error {
     case networkingError(Error)
     case userIDNotSet
+    case encodingError
 }
 
 final class MeetingCore {
@@ -90,12 +91,15 @@ final class MeetingCore {
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
     
     private let apiService: APIServable
+    private let encoder: JSONEncoder
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        apiService: APIServable
+        apiService: APIServable,
+        encoder: JSONEncoder
     ) {
         self.apiService = apiService
+        self.encoder = encoder
         subscribe()
     }
     
@@ -136,8 +140,25 @@ extension MeetingCore: MeetingCoreProtocol {
         
     }
     
-    func createMeeting(info: TemporaryMeetingInfo) {
-        
+    func createMeeting(info: TemporaryMeetingInfo, userID: UInt64) {
+        do {
+            let dto = CreateMeetingDTO.Request(title: info.title, creatorID: userID, description: info.description, participants: info.participants)
+            let encodedMeeting = try encoder.encode(dto)
+            let imageData = info.imageData
+            
+            apiService.requestPublisher(Endpoint.createMeeting(encodedMeetingData: encodedMeeting, imageData: imageData), CreateMeetingDTO.Response.self)
+                .sink { completion in
+                    // TODO: error handling
+                } receiveValue: { [weak self] response in
+                    guard let self else { return }
+                    let meeting = response.toEntity()
+                    self._meetings[meeting.id] = meeting
+                    self.meetingsSubject.send(self._meetings)
+                }
+                .store(in: &cancellables)
+        } catch {
+            meetingsSubject.send(completion: .failure(.encodingError))
+        }
     }
     
     func fetchMeeting(id: UInt64) -> Meeting? {
@@ -167,6 +188,10 @@ extension MeetingCore: MeetingCoreProtocol {
 
 // MARK: - MeetingMediationProtocol Conformation
 extension MeetingCore: MeetingMediationProtocol {
+    func updateRelatedMeetings(meetingIDs: [UInt64 : [UInt64]], summaries: [UInt64 : MeetingSummary]) {
+        return
+    }
+    
     func friendListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary]) {
         relatedMeetingIDsSubject.send(meetingIDs)
         _summaries = summaries
