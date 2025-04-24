@@ -65,9 +65,9 @@ protocol MeetingCoreProtocol: CoreProtocol {
 
 protocol MeetingMediationProtocol {
     /// 친구와 함께한 모임 목록 갱신을 지시, 중재자에 의해 호출됨
-    func friendListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary])
+    func updateRelatedMeetings(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary])
     /// 특정 친구와 함께한 모임 목록 로드를 지시, 중재자에 의해 호출됨
-    func loadCurrentMeetingWithFriend(friendID: UInt64)
+    func loadCurrentMeetingsWithFriend(friendID: UInt64)
     /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
     func setCurrentUserID(_ id: UInt64?)
 }
@@ -172,26 +172,10 @@ extension MeetingCore: MeetingMediationProtocol {
         _summaries = summaries
     }
     
-    func loadCurrentMeetingWithFriend(friendID: UInt64) {
+    func loadCurrentMeetingsWithFriend(friendID: UInt64) {
         guard let relatedMeetingIDs = relatedMeetingIDsSubject.value[friendID] else { return }
         let summaries = relatedMeetingIDs.reduce(into: [:]) { $0[$1] = _summaries[$1] }
         meetingSummariesSubject.send(summaries)
-    }
-    
-    func loadCurrentMeeting(id: UInt64) {
-        // TODO: 모임 상세 정보 조회 로직 구현
-        // 1. 캐시 확인, 없다면 네트워크 요청
-        // 2. 데이터풀에 캐싱
-        
-        // currentMeetingSubject.send(<#T##input: Meeting?##Meeting?#>)
-    }
-    
-    func loadMeetingParticipants(meetingID: UInt64) {
-        // TODO: 해당 모임의 참가자 정보 조회 로직 구현
-        // 1. meetingID를 사용해 참가자 목록 조회 네트워크 요청
-        // 2. 데이터풀에 캐싱
-        
-        // meetingParticipantIDsSubject.send(<#T##input: [UInt64 : Set<UInt64>]##[UInt64 : Set<UInt64>]#>)
     }
     
     func setCurrentUserID(_ id: UInt64?) {

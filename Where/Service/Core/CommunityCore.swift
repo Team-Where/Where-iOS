@@ -14,8 +14,8 @@ protocol CommunityCoreProtocol: CoreProtocol {
     
     /// 친구 추가
     func createFriend(friend: FriendRelationship)
-    /// 특정 친구 조회
-    func fetchFriend(id: UInt64) -> FriendRelationship?
+    /// 특정 친구와 함께한 모임 조회
+    func readHistoryWithFriend(id: UInt64)
     /// 친구 삭제
     func deleteFriend(id: UInt64)
     /// 친구 즐겨찾기 토글
@@ -72,10 +72,8 @@ extension CommunityCore: CommunityCoreProtocol {
         
     }
     
-    func fetchFriend(id: UInt64) -> FriendRelationship? {
-        _friends[id]
-        
-        self?.mediator.updateSummary(_ friendID)
+    func readHistoryWithFriend(id: UInt64) {
+        mediator?.notify(event: .historyWithFriendWillUpdate(friendID: id))
     }
     
     func deleteFriend(id: UInt64) {
