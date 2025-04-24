@@ -11,8 +11,8 @@ import Combine
 protocol MeetingCoreProtocol: CoreProtocol {
     /// 나와 연관된 모임 목록
     var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> { get }
-    /// 최근 살펴본 모임 정보
-    var currentMeeting: AnyPublisher<Meeting?, MeetingCoreError> { get }
+    /// 친구와 함께한 모임 목록
+    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> { get }
     
     /// 모임 일정 등록
     /// - Parameters:
@@ -64,12 +64,10 @@ protocol MeetingCoreProtocol: CoreProtocol {
 }
 
 protocol MeetingMediationProtocol {
-    /// 현재 사용자의 모든 모임 로드를 지시, 중재자에 의해 호출됨
-    func loadUserMeetings()
-    /// 최근 본 모임 정보 로드를 지시, 중재자에 의해 호출됨
-    func loadCurrentMeeting(id: UInt64)
-    /// 특정 모임의 참가자 정보 로드를 지시, 중재자에 의해 호출됨
-    func loadMeetingParticipants(meetingID: UInt64)
+    /// 친구와 함께한 모임 목록 갱신을 지시, 중재자에 의해 호출됨
+    func friendListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary])
+    /// 특정 친구와 함께한 모임 목록 로드를 지시, 중재자에 의해 호출됨
+    func loadCurrentMeetingWithFriend(friendID: UInt64)
     /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
     func setCurrentUserID(_ id: UInt64?)
 }
@@ -83,11 +81,13 @@ final class MeetingCore {
     weak var mediator: Notifiable?
     
     private var _meetings = [UInt64: Meeting]()
+    private var _summaries = [UInt64: MeetingSummary]()
     private var _meetingPariticipantIDs = [UInt64: Set<UInt64>]()
+    private var currentUserID: UInt64?
     
     private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
-    private let currentMeetingSubject = CurrentValueSubject<Meeting?, MeetingCoreError>(nil)
-    private let meetingParticipantIDsSubject = CurrentValueSubject<[UInt64: Set<UInt64>], MeetingCoreError>([:])
+    private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
+    private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
     
     private let apiService: APIServable
     private var cancellables = Set<AnyCancellable>()
@@ -107,22 +107,6 @@ final class MeetingCore {
                 self?._meetings = dict
             }
             .store(in: &cancellables)
-        
-        meetingParticipantIDsSubject
-            .sink { completion in
-                // TODO: 에러 핸들링 강화
-            } receiveValue: { [weak self] mapping in
-                self?._meetingPariticipantIDs = mapping
-            }
-            .store(in: &cancellables)
-        
-        currentMeetingSubject
-            .sink { completion in
-                // TODO: 에러 핸들링 강화
-            } receiveValue: { [weak self] meeting in
-                
-            }
-            .store(in: &cancellables)
     }
 }
 
@@ -132,8 +116,8 @@ extension MeetingCore: MeetingCoreProtocol {
         meetingsSubject.eraseToAnyPublisher()
     }
     
-    var currentMeeting: AnyPublisher<Meeting?, MeetingCoreError> {
-        currentMeetingSubject.eraseToAnyPublisher()
+    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> {
+        meetingSummariesSubject.eraseToAnyPublisher()
     }
     
     func createSchedule(id: UInt64) {
@@ -183,18 +167,15 @@ extension MeetingCore: MeetingCoreProtocol {
 
 // MARK: - MeetingMediationProtocol Conformation
 extension MeetingCore: MeetingMediationProtocol {
-    func loadUserMeetings() {
-        guard let userID = currentUserID else {
-            meetingsSubject.send(completion: .failure(.userIDNotSet))
-            return
-        }
-        
-        // TODO: 모임 목록 조회 로직 구현
-        // 1. userID를 사용하여 사용자의 모임 목록과 참가자 정보 등의 데이터를 네트워크 요청을 통해 획득
-        // 2. 데이터풀에 캐싱, 매핑 정보 저장 등
-        
-        // meetingsSubject.send(<#T##input: [UInt64 : Meeting]##[UInt64 : Meeting]#>)
-        // meetingParticipantIDsSubject.send(<#T##input: [UInt64 : Set<UInt64>]##[UInt64 : Set<UInt64>]#>)
+    func friendListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary]) {
+        relatedMeetingIDsSubject.send(meetingIDs)
+        _summaries = summaries
+    }
+    
+    func loadCurrentMeetingWithFriend(friendID: UInt64) {
+        guard let relatedMeetingIDs = relatedMeetingIDsSubject.value[friendID] else { return }
+        let summaries = relatedMeetingIDs.reduce(into: [:]) { $0[$1] = _summaries[$1] }
+        meetingSummariesSubject.send(summaries)
     }
     
     func loadCurrentMeeting(id: UInt64) {
