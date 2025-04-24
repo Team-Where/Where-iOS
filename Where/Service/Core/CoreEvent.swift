@@ -18,7 +18,7 @@ enum CoreEvent {
     
     
     // MARK: - Place Related
-    
+    case currentMeetingWillUpdate(meetingID: UInt64)
     
     // MARK: - Support Related
     
