@@ -26,10 +26,7 @@ protocol CommunityMediationProtocol {
     /// 현재 사용자의 친구 목록 로드를 지시, 중재자에 의해 호출됨
     /// - Parameters:
     ///     - 친구 목록을 로드할 사용자 식별자
-    func loadFriends()
-    
-    /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
-    func setCurrentUserID(_ id: UInt64?)
+    func loadFriends(userID: UInt64)
 }
 
 enum CommunityCoreError: Error {
@@ -60,9 +57,6 @@ final class CommunityCore {
                 // TODO: 에러 핸들링 강화
             } receiveValue: { [weak self] dict in
                 self?._friends = dict
-                
-                guard let userID = self?.currentUserID else { return }
-                self?.mediator?.notify(event: .friendListUpdated(id: userID))
             }
             .store(in: &cancellables)
     }
@@ -80,6 +74,8 @@ extension CommunityCore: CommunityCoreProtocol {
     
     func fetchFriend(id: UInt64) -> FriendRelationship? {
         _friends[id]
+        
+        self?.mediator.updateSummary(_ friendID)
     }
     
     func deleteFriend(id: UInt64) {
@@ -93,13 +89,27 @@ extension CommunityCore: CommunityCoreProtocol {
 
 // MARK: - CommunityMediationProtocol Conformation
 extension CommunityCore: CommunityMediationProtocol {
-    func loadFriends() {
-        // TODO: 현재 사용자 식별자를 사용하여 친구 목록 로직 구현
-        // 1. 캐시 확인, 없다면 네트워크 요청
-        // 2. 결과에 따라 friendsSubject로 send
-    }
-    
-    func setCurrentUserID(_ id: UInt64?) {
-        currentUserID = id
+    func loadFriends(userID: UInt64) {
+        apiService
+            .requestPublisher(Endpoint.readFriends(userID: userID), ReadFriendsDTO.Response.self)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] response in
+                let friends: [(friend: FriendRelationship, meetingSummaries: [MeetingSummary])] = response
+                    .map { dto in
+                        let meetingSummaries = dto.relatedMeetingDetails?.map { $0.asEntity() } ?? []
+                        let friend = dto.asEntity()
+                        return (friend, meetingSummaries)
+                    }
+                
+                let friendsDict = friends.reduce(into: [:]) { $0[$1.friend.id] = $1.friend }
+                let meetingIDsDict = friends.reduce(into: [:]) { $0[$1.friend.id] = $1.meetingSummaries.map({ $0.id }) }
+                let meetingSummaryDict = Set(friends.flatMap ({ $0.meetingSummaries })).reduce(into: [:]) { $0[$1.id] = $1 }
+                
+                self?.friendsSubject.send(friendsDict)
+                
+                self?.mediator?.notify(event: .friendsListUpdated(meetingIDs: meetingIDsDict, summaries: meetingSummaryDict))
+            }
+            .store(in: &cancellables)
     }
 }
