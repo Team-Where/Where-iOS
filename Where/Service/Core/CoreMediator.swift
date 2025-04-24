@@ -61,6 +61,13 @@ extension CoreMediator: CoreLinkageProtocol {
 // MARK: - Notifiable Conformation
 extension CoreMediator: Notifiable {
     func notify(event: CoreEvent) {
-        // TODO: 이벤트별 로직 추가
+        switch event {
+        case .userDidLogin(let userID):
+            communityCore.loadFriends(userID: userID)
+        case .userDidLogout(let userID):
+            
+        case .friendsListUpdated(let meetingIDs, let summaries):
+            meetingCore.loadMeetingSummaries(meetingIDs: meetingIDs, summaries: summaries)
+        }
     }
 }
