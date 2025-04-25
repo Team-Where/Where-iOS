@@ -202,16 +202,28 @@ extension MeetingCore: MeetingCoreProtocol {
                 //TODO: Error handling
             } receiveValue: { [weak self] _ in
                 guard let self else { return }
-                var meetings = meetingsSubject.value
-                meetings.removeValue(forKey: id)
-                meetingsSubject.send(meetings)
+                var meetngs = meetingsSubject.value
+                meetngs[id]?.isFinished = true
+                meetingsSubject.send(meetngs)
             }
             .store(in: &cancellables)
 
     }
     
     func exitMeeting(id: UInt64) {
-        
+        guard let userID = currentUserID else { return }
+        let dto = LeaveMeetingDTO.Request(meetingID: id, userID: userID)
+        apiService.requestPublisher(Endpoint.leaveMeeting(dto: dto), EmptyDTO.Response.self)
+            .sink { completion in
+                //TODO: Error handling
+            } receiveValue: { [weak self] _ in
+                guard let self else { return }
+                var meetings = meetingsSubject.value
+                meetings.removeValue(forKey: id)
+                meetingsSubject.send(meetings)
+            }
+            .store(in: &cancellables)
+
     }
     
     func inviteParticipant(id: UInt64, participantId: UInt64) {
