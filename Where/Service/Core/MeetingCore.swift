@@ -154,8 +154,8 @@ extension MeetingCore: MeetingCoreProtocol {
                 } receiveValue: { [weak self] response in
                     guard let self else { return }
                     let meeting = response.toEntity()
-                    self._meetings[meeting.id] = meeting
-                    self.meetingsSubject.send(self._meetings)
+                    _meetings[meeting.id] = meeting
+                    meetingsSubject.send(_meetings)
                 }
                 .store(in: &cancellables)
         } catch {
@@ -184,7 +184,17 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func acceptInvitation(id: UInt64) {
-        
+        let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
+        apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
+            .sink { completion in
+                // TODO: 에러핸들링 강화
+            } receiveValue: { [weak self] response in
+                guard let self else { return }
+                let meeting = response.toEntity()
+                _meetings[meeting.id] = meeting
+                meetingsSubject.send(_meetings)
+            }
+
     }
 }
 
