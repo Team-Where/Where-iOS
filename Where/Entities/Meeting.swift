@@ -18,15 +18,41 @@ struct Meeting: Identifiable {
     /// 모임 대표 이미지 URL
     let imageURL: URL?
     /// 생성일시
-    let createdAt: Date
+    let createdAt: Date?
     /// 최근 수정일시
     let updatedAt: Date?
-    /// 모임 일정
-    let schedule: Date?
+    /// 모임 일정 날짜
+    let scheduleDate: Date?
+    /// 모임 일정 시간
+    let scheduleTime: Date?
     /// 공유 링크
     let shareLink: URL?
     /// 활성화 여부
     let isFinished: Bool
+    
+    init(
+        id: UInt64,
+        title: String,
+        description: String,
+        imageURL: URL? = nil,
+        createdAt: Date? = nil,
+        updatedAt: Date? = nil,
+        scheduleDate: Date? = nil,
+        scheduleTime: Date? = nil,
+        shareLink: URL? = nil,
+        isFinished: Bool
+    ) {
+        self.id = id
+        self.title = title
+        self.description = description
+        self.imageURL = imageURL
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.scheduleDate = scheduleDate
+        self.scheduleTime = scheduleTime
+        self.shareLink = shareLink
+        self.isFinished = isFinished
+    }
 }
 
 /// 모임 참여 인원

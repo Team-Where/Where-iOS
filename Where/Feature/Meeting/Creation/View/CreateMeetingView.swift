@@ -12,6 +12,7 @@ struct CreateMeetingView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: CreateMeetingViewModel
     @State private var step: MeetingCreationStep = .basicInformation
+    @State var isImageSelected = false
     
     private let resolver: Resolver
     
@@ -34,8 +35,8 @@ struct CreateMeetingView: View {
         }
         .padding()
         .popup($viewModel.isPopupPresented) {
-            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
-                viewModel.selectedImage = uiImage
+            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented, isImageSelected: $isImageSelected) { imageData in
+                viewModel.selectedImage = imageData
             }
         }
     }
@@ -76,7 +77,8 @@ struct CreateMeetingView: View {
                 isPopupPresented: $viewModel.isPopupPresented,
                 step: $step,
                 tempInfo: $viewModel.tempMeetingInfo,
-                image: $viewModel.selectedImage
+                image: viewModel.selectedImage,
+                isImageSelected: isImageSelected
             )
         case .inviteFriends:
             InviteFriendsView(
@@ -122,22 +124,25 @@ extension CreateMeetingView {
         @Binding var step: MeetingCreationStep
         @Binding var tempMeetingInfo: TemporaryMeetingInfo?
         @Binding var isPopupPresented: Bool
-        @Binding var selectedImage: UIImage?
         @State private var isFloaterPresented: Bool = false
         @State private var title: String = String()
         @State private var description: String = String()
         @FocusState private var isFocused: TextFieldFocusState?
         
+        private let _selectedImageData: Data?
+        private var _isImageSelected: Bool
         init(
             isPopupPresented: Binding<Bool>,
             step: Binding<MeetingCreationStep>,
             tempInfo temp: Binding<TemporaryMeetingInfo?>,
-            image: Binding<UIImage?>
+            image: Data?,
+            isImageSelected: Bool
         ) {
             self._isPopupPresented = isPopupPresented
             self._step = step
             self._tempMeetingInfo = temp
-            self._selectedImage = image
+            self._selectedImageData = image
+            self._isImageSelected = isImageSelected
         }
         
         var body: some View {
@@ -153,7 +158,7 @@ extension CreateMeetingView {
                 Button {
                     // 임시 모임 정보 기록 후 다음 단계 진행
                     tempMeetingInfo = tempMeetingInfo?
-                        .setBasicInfo(title: title, description: description, image: selectedImage)
+                        .setBasicInfo(title: title, description: description, image: _selectedImageData)
                     step = .inviteFriends
                 } label: {
                     Text("다음")
@@ -178,13 +183,7 @@ extension CreateMeetingView {
                     isPopupPresented = true
                 }
             } label: {
-                if let image = selectedImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 120, height: 120)
-                        .clipShape(.rect(cornerRadius: 16))
-                } else {
+                if !_isImageSelected {
                     VStack {
                         Image(systemName: "camera.fill")
                             .resizable()
@@ -201,6 +200,17 @@ extension CreateMeetingView {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(.where(.gray100))
                     )
+                } else {
+                    if let data = _selectedImageData,
+                       let image = UIImage(data: data) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .rounded(contentMode: .fill, width: 120, height: 120, cornerRadius: 16)
+                    } else {
+                        Image(.person)
+                            .resizable()
+                            .rounded(contentMode: .fill, width: 120, height: 120, cornerRadius: 16)
+                    }
                 }
             }
         }
@@ -280,7 +290,7 @@ extension CreateMeetingView {
             .init(id: 0, nickname: "죠니월드"),
             .init(id: 1, nickname: "이초홍"),
             .init(id: 2, nickname: "유저2"),
-            .init(id: 3, nickname: "유저3"),
+            .init(id: 3, nickname: "유저3")
         ]
         
         var body: some View {

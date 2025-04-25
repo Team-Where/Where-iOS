@@ -75,6 +75,7 @@ protocol MeetingMediationProtocol {
 enum MeetingCoreError: Error {
     case networkingError(Error)
     case userIDNotSet
+    case encodingError
 }
 
 final class MeetingCore {
@@ -90,12 +91,15 @@ final class MeetingCore {
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
     
     private let apiService: APIServable
+    private let encoder: JSONEncoder
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        apiService: APIServable
+        apiService: APIServable,
+        encoder: JSONEncoder
     ) {
         self.apiService = apiService
+        self.encoder = encoder
         subscribe()
     }
     
@@ -137,7 +141,26 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func createMeeting(info: TemporaryMeetingInfo) {
+        guard let userID = currentUserID else { return }
         
+        do {
+            let dto = CreateMeetingDTO.Request(title: info.title, creatorID: userID, description: info.description, participants: info.participants)
+            let encodedMeeting = try encoder.encode(dto)
+            let imageData = info.imageData
+            
+            apiService.requestPublisher(Endpoint.createMeeting(encodedMeetingData: encodedMeeting, imageData: imageData), CreateMeetingDTO.Response.self)
+                .sink { completion in
+                    // TODO: error handling
+                } receiveValue: { [weak self] response in
+                    guard let self else { return }
+                    let meeting = response.toEntity()
+                    _meetings[meeting.id] = meeting
+                    meetingsSubject.send(_meetings)
+                }
+                .store(in: &cancellables)
+        } catch {
+            meetingsSubject.send(completion: .failure(.encodingError))
+        }
     }
     
     func fetchMeeting(id: UInt64) -> Meeting? {
@@ -161,12 +184,26 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func acceptInvitation(id: UInt64) {
-        
+        let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
+        apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
+            .sink { completion in
+                // TODO: 에러핸들링 강화
+            } receiveValue: { [weak self] response in
+                guard let self else { return }
+                let meeting = response.toEntity()
+                _meetings[meeting.id] = meeting
+                meetingsSubject.send(_meetings)
+            }
+
     }
 }
 
 // MARK: - MeetingMediationProtocol Conformation
 extension MeetingCore: MeetingMediationProtocol {
+    func updateRelatedMeetings(meetingIDs: [UInt64 : [UInt64]], summaries: [UInt64 : MeetingSummary]) {
+        return
+    }
+    
     func friendListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary]) {
         relatedMeetingIDsSubject.send(meetingIDs)
         _summaries = summaries

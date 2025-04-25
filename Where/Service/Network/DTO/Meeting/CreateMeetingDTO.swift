@@ -9,7 +9,7 @@
 enum CreateMeetingDTO {
     struct Request: Encodable {
         let title: String
-        let creatorID: String
+        let creatorID: UInt64
         let description: String
         let participants: [UInt64]?
         
@@ -32,6 +32,16 @@ enum CreateMeetingDTO {
             case meetingID = "id"
             case sharedLink = "link"
             case imageURLString = "image"
+        }
+        
+        func toEntity() -> Meeting {
+            return .init(
+                id: meetingID,
+                title: title,
+                description: description,
+                createdAt: createdAt.toDate(by: .serverDateTimeWithMS) ?? .now,
+                isFinished: false
+            )
         }
     }
 }

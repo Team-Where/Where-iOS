@@ -5,13 +5,13 @@
 //  Created by Swain Yun on 4/4/25.
 //
 
-import SwiftUI
+import Foundation
 import Combine
 import Swinject
 
 final class CreateMeetingViewModel: ObservableObject {
     @Published var isPopupPresented: Bool = false
-    @Published var selectedImage: UIImage?
+    @Published var selectedImage: Data?
     @Published var tempMeetingInfo: TemporaryMeetingInfo?
     
     private let communityCore: CommunityCoreProtocol
@@ -33,6 +33,5 @@ extension CreateMeetingViewModel {
     
     func createMeeting() {
         guard let tempMeeting = tempMeetingInfo else { return }
-        meetingCore.createMeeting(info: tempMeeting)
     }
 }
