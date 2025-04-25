@@ -8,14 +8,14 @@
 /// 모임 초대 수락 DTO
 struct AcceptMeeetingInvitationDTO {
     struct Request: Encodable {
-        let invitationID: String
+        let invitationID: UInt64
         
         enum CodingKeys: String, CodingKey {
             case invitationID = "id"
         }
     }
     
-    struct Respnse: Decodable {
+    struct Response: Decodable {
         let meetingID: UInt64
         let title: String
         let description: String
