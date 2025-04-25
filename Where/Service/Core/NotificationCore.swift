@@ -16,7 +16,7 @@ protocol NotificationCoreProtocol: CoreProtocol {
     func markNotificationAsRead(id: UInt64)
     
     /// FCM/APNs로부터 전달된 원시 페이로드 처리
-    func handleReceivedNotificaitonPayload(_ payload: [AnyHashable: Any])
+    func handleReceivedNotificationPayload(_ payload: [AnyHashable: Any])
 }
 
 protocol NotificationMediationProtocol {
@@ -71,7 +71,7 @@ extension NotificationCore: NotificationCoreProtocol {
         notificationsSubject.send(notifications)
     }
     
-    func handleReceivedNotificaitonPayload(_ payload: [AnyHashable: Any]) {
+    func handleReceivedNotificationPayload(_ payload: [AnyHashable: Any]) {
         
     }
 }
