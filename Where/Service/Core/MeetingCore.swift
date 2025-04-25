@@ -150,8 +150,9 @@ extension MeetingCore: MeetingCoreProtocol {
                 } receiveValue: { [weak self] response in
                     guard let self else { return }
                     let meeting = response.toEntity()
-                    _meetings[meeting.id] = meeting
-                    meetingsSubject.send(_meetings)
+                    var meetings = meetingsSubject.value
+                    meetings[meeting.id] = meeting
+                    meetingsSubject.send(meetings)
                 }
                 .store(in: &cancellables)
         } catch {
@@ -194,7 +195,19 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func endMeeting(id: UInt64) {
-        
+        guard let userID = currentUserID else { return }
+        let dto = EndMeetingDTO.Request(meetingID: id, userID: userID)
+        apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
+            .sink { completion in
+                //TODO: Error handling
+            } receiveValue: { [weak self] _ in
+                guard let self else { return }
+                var meetings = meetingsSubject.value
+                meetings.removeValue(forKey: id)
+                meetingsSubject.send(meetings)
+            }
+            .store(in: &cancellables)
+
     }
     
     func exitMeeting(id: UInt64) {
