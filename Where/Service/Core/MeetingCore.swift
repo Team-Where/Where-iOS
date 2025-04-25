@@ -48,6 +48,10 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
     func exitMeeting(id: UInt64)
+    /// 모임 초대 현황 조회
+    ///  - Parameters:
+    ///     - id: 모임의 고유 식별자
+    func readInvitaionStatus(id: UInt64)
     /// 모임 초대
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -85,6 +89,7 @@ final class MeetingCore {
     private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
+    private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationStatus]], MeetingCoreError>([:])
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -120,6 +125,8 @@ extension MeetingCore: MeetingCoreProtocol {
         meetingSummariesSubject.eraseToAnyPublisher()
     }
     
+    // MARK: - Schedule Related
+
     func createSchedule(id: UInt64) {
         
     }
@@ -136,6 +143,8 @@ extension MeetingCore: MeetingCoreProtocol {
         
     }
     
+    // MARK: - Meeting Related
+
     func createMeeting(info: TemporaryMeetingInfo) {
         guard let userID = currentUserID else { return }
         
@@ -223,7 +232,24 @@ extension MeetingCore: MeetingCoreProtocol {
                 meetingsSubject.send(meetings)
             }
             .store(in: &cancellables)
+    }
+    
+    // MARK: - Invitation Related
 
+    func readInvitaionStatus(id: UInt64) {
+        apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
+            .sink { completion in
+                //TODO: Error handling
+            } receiveValue: { [weak self] response in
+                guard let self else { return }
+                let invitaionStatus = response.map { dto in
+                    dto.toEntity()
+                }
+                var newInvitationStatusDict = invitationStatusSubject.value
+                newInvitationStatusDict[id] = invitaionStatus
+                invitationStatusSubject.send(newInvitationStatusDict)
+            }
+            .store(in: &cancellables)
     }
     
     func inviteParticipant(id: UInt64, participantId: UInt64) {
