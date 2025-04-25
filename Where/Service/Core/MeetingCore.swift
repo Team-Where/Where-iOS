@@ -35,15 +35,11 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - info: 생성 중인 모임의 임시 정보
     func createMeeting(info: TemporaryMeetingInfo)
-    /// 특정 모임 조회
-    func fetchMeeting(id: UInt64) -> Meeting?
     /// 모임 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    ///     - title: 모임 제목
-    ///     - description: 모임 설명
-    ///     - image: 모임 대표 이미지
-    func updateMeeting(id: UInt64, title: String?, description: String?, image: UIImage?)
+    ///     - imageData: 모임 대표 이미지 Data
+    func updateMeeting(id: UInt64, imageData: Data?)
     /// 모임 종료
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -163,12 +159,38 @@ extension MeetingCore: MeetingCoreProtocol {
         }
     }
     
-    func fetchMeeting(id: UInt64) -> Meeting? {
-        _meetings[id]
-    }
-    
-    func updateMeeting(id: UInt64, title: String?, description: String?, image: UIImage?) {
-        
+    func updateMeeting(id: UInt64, imageData: Data?) {
+        do {
+            guard let meeting = _meetings[id],
+                  let userID = currentUserID
+            else {
+                return
+            }
+            
+            let dto = UpdateMeetingDTO.Request(meetingID: id, title: meeting.title, description: meeting.description, userID: userID)
+            let encodedMeetingData = try encoder.encode(dto)
+            apiService.requestPublisher(Endpoint.updateMeeting(encodedMeetingData: encodedMeetingData, imageData: imageData), UpdateMeetingDTO.Response.self)
+                .sink { completion in
+                    // TODO: Error 핸들링 강화
+                } receiveValue: { [weak self] response in
+                    guard let self else { return }
+                    let newMeeting = Meeting(
+                        id: meeting.id,
+                        title: response.title,
+                        description: response.description,
+                        imageURL: URL(string: response.imageURLString ?? ""),
+                        shareLink: URL(string: response.invitationLink),
+                        isFinished: meeting.isFinished
+                    )
+                    var meetings = meetingsSubject.value
+                    meetings[meeting.id] = newMeeting
+                    meetingsSubject.send(meetings)
+                }
+                .store(in: &cancellables)
+
+        } catch {
+            meetingsSubject.send(completion: .failure(MeetingCoreError.encodingError))
+        }
     }
     
     func endMeeting(id: UInt64) {
@@ -191,9 +213,11 @@ extension MeetingCore: MeetingCoreProtocol {
             } receiveValue: { [weak self] response in
                 guard let self else { return }
                 let meeting = response.toEntity()
-                _meetings[meeting.id] = meeting
-                meetingsSubject.send(_meetings)
+                var meetings = meetingsSubject.value
+                meetings[meeting.id] = meeting
+                meetingsSubject.send(meetings)
             }
+            .store(in: &cancellables)
 
     }
 }
