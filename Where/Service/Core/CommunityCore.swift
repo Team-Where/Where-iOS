@@ -12,8 +12,6 @@ protocol CommunityCoreProtocol: CoreProtocol {
     /// 나의 친구 목록
     var friends: AnyPublisher<[UInt64: FriendRelationship], CommunityCoreError> { get }
     
-    /// 친구 추가
-    func createFriend(friend: FriendRelationship)
     /// 특정 친구와 함께한 모임 조회
     func readHistoryWithFriend(id: UInt64)
     /// 친구 삭제
@@ -27,6 +25,8 @@ protocol CommunityMediationProtocol {
     /// - Parameters:
     ///     - 친구 목록을 로드할 사용자 식별자
     func loadFriends(userID: UInt64)
+    /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
+    func setCurrentUserID(_ id: UInt64?)
 }
 
 enum CommunityCoreError: Error {
@@ -38,6 +38,7 @@ final class CommunityCore {
     weak var mediator: Notifiable?
     
     private var _friends = [UInt64: FriendRelationship]()
+    private var currentUserID: UInt64?
     
     private let friendsSubject = CurrentValueSubject<[UInt64: FriendRelationship], CommunityCoreError>([:])
     
@@ -68,20 +69,57 @@ extension CommunityCore: CommunityCoreProtocol {
         friendsSubject.eraseToAnyPublisher()
     }
     
-    func createFriend(friend: FriendRelationship) {
-        
-    }
-    
     func readHistoryWithFriend(id: UInt64) {
         mediator?.notify(event: .historyWithFriendWillUpdate(friendID: id))
     }
     
     func deleteFriend(id: UInt64) {
+        guard let userID = currentUserID else {
+            friendsSubject.send(completion: .failure(.userIDNotSet))
+        }
         
+        let dto = DeleteFriendDTO.Request(userID: userID, friendID: id)
+        
+        apiService
+            .requestPublisher(Endpoint.deleteFriend(dto: dto), EmptyDTO.Response.self)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] _ in
+                guard var friends = self?.friendsSubject.value else { return }
+                friends[id] = nil
+                self?.friendsSubject.send(friends)
+            }
+            .store(in: &cancellables)
     }
     
     func toggleBookmarkFriend(id: UInt64) {
+        guard let userID = currentUserID else {
+            friendsSubject.send(completion: .failure(.userIDNotSet))
+            return
+        }
         
+        let dto = BookmarkFriendDTO.Request(userID: userID, friendID: id)
+        
+        apiService
+            .requestPublisher(Endpoint.bookmarkFriend(dto: dto), BookmarkFriendDTO.Response.self)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] response in
+                guard var friends = self?.friendsSubject.value,
+                      let oldFriend = friends[response.friendID]
+                else { return }
+                
+                let newFriend = FriendRelationship(
+                    id: response.friendID,
+                    nickname: oldFriend.nickname,
+                    imageURL: oldFriend.imageURL,
+                    isFavorite: response.isBookmarked
+                )
+                
+                friends[response.friendID] = newFriend
+                self?.friendsSubject.send(friends)
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -109,5 +147,9 @@ extension CommunityCore: CommunityMediationProtocol {
                 self?.mediator?.notify(event: .friendsListUpdated(meetingIDs: meetingIDsDict, summaries: meetingSummaryDict))
             }
             .store(in: &cancellables)
+    }
+    
+    func setCurrentUserID(_ id: UInt64?) {
+        currentUserID = id
     }
 }
