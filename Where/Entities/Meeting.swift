@@ -18,11 +18,13 @@ struct Meeting: Identifiable {
     /// 모임 대표 이미지 URL
     let imageURL: URL?
     /// 생성일시
-    let createdAt: Date
+    let createdAt: Date?
     /// 최근 수정일시
     let updatedAt: Date?
-    /// 모임 일정
-    let schedule: Date?
+    /// 모임 일정 날짜
+    let scheduleDate: Date?
+    /// 모임 일정 시간
+    let scheduleTime: Date?
     /// 공유 링크
     let shareLink: URL?
     /// 활성화 여부
@@ -33,9 +35,10 @@ struct Meeting: Identifiable {
         title: String,
         description: String,
         imageURL: URL? = nil,
-        createdAt: Date,
+        createdAt: Date? = nil,
         updatedAt: Date? = nil,
-        schedule: Date? = nil,
+        scheduleDate: Date? = nil,
+        scheduleTime: Date? = nil,
         shareLink: URL? = nil,
         isFinished: Bool
     ) {
@@ -45,7 +48,8 @@ struct Meeting: Identifiable {
         self.imageURL = imageURL
         self.createdAt = createdAt
         self.updatedAt = updatedAt
-        self.schedule = schedule
+        self.scheduleDate = scheduleDate
+        self.scheduleTime = scheduleTime
         self.shareLink = shareLink
         self.isFinished = isFinished
     }
