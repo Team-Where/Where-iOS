@@ -35,15 +35,11 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - info: 생성 중인 모임의 임시 정보
     func createMeeting(info: TemporaryMeetingInfo)
-    /// 특정 모임 조회
-    func fetchMeeting(id: UInt64) -> Meeting?
     /// 모임 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    ///     - title: 모임 제목
-    ///     - description: 모임 설명
-    ///     - image: 모임 대표 이미지
-    func updateMeeting(id: UInt64, title: String?, description: String?, image: UIImage?)
+    ///     - imageData: 모임 대표 이미지 Data
+    func updateMeeting(id: UInt64, imageData: Data?)
     /// 모임 종료
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -52,6 +48,10 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
     func exitMeeting(id: UInt64)
+    /// 모임 초대 현황 조회
+    ///  - Parameters:
+    ///     - id: 모임의 고유 식별자
+    func readInvitaionStatus(id: UInt64)
     /// 모임 초대
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -89,6 +89,7 @@ final class MeetingCore {
     private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
+    private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationStatus]], MeetingCoreError>([:])
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -124,6 +125,8 @@ extension MeetingCore: MeetingCoreProtocol {
         meetingSummariesSubject.eraseToAnyPublisher()
     }
     
+    // MARK: - Schedule Related
+
     func createSchedule(id: UInt64) {
         
     }
@@ -140,6 +143,8 @@ extension MeetingCore: MeetingCoreProtocol {
         
     }
     
+    // MARK: - Meeting Related
+
     func createMeeting(info: TemporaryMeetingInfo) {
         guard let userID = currentUserID else { return }
         
@@ -154,8 +159,9 @@ extension MeetingCore: MeetingCoreProtocol {
                 } receiveValue: { [weak self] response in
                     guard let self else { return }
                     let meeting = response.toEntity()
-                    _meetings[meeting.id] = meeting
-                    meetingsSubject.send(_meetings)
+                    var meetings = meetingsSubject.value
+                    meetings[meeting.id] = meeting
+                    meetingsSubject.send(meetings)
                 }
                 .store(in: &cancellables)
         } catch {
@@ -163,20 +169,87 @@ extension MeetingCore: MeetingCoreProtocol {
         }
     }
     
-    func fetchMeeting(id: UInt64) -> Meeting? {
-        _meetings[id]
-    }
-    
-    func updateMeeting(id: UInt64, title: String?, description: String?, image: UIImage?) {
-        
+    func updateMeeting(id: UInt64, imageData: Data?) {
+        do {
+            guard let meeting = _meetings[id],
+                  let userID = currentUserID
+            else {
+                return
+            }
+            
+            let dto = UpdateMeetingDTO.Request(meetingID: id, title: meeting.title, description: meeting.description, userID: userID)
+            let encodedMeetingData = try encoder.encode(dto)
+            apiService.requestPublisher(Endpoint.updateMeeting(encodedMeetingData: encodedMeetingData, imageData: imageData), UpdateMeetingDTO.Response.self)
+                .sink { completion in
+                    // TODO: Error 핸들링 강화
+                } receiveValue: { [weak self] response in
+                    guard let self else { return }
+                    let newMeeting = Meeting(
+                        id: meeting.id,
+                        title: response.title,
+                        description: response.description,
+                        imageURL: URL(string: response.imageURLString ?? ""),
+                        shareLink: URL(string: response.invitationLink),
+                        isFinished: meeting.isFinished
+                    )
+                    var meetings = meetingsSubject.value
+                    meetings[meeting.id] = newMeeting
+                    meetingsSubject.send(meetings)
+                }
+                .store(in: &cancellables)
+
+        } catch {
+            meetingsSubject.send(completion: .failure(MeetingCoreError.encodingError))
+        }
     }
     
     func endMeeting(id: UInt64) {
-        
+        guard let userID = currentUserID else { return }
+        let dto = EndMeetingDTO.Request(meetingID: id, userID: userID)
+        apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
+            .sink { completion in
+                //TODO: Error handling
+            } receiveValue: { [weak self] _ in
+                guard let self else { return }
+                var meetngs = meetingsSubject.value
+                meetngs[id]?.isFinished = true
+                meetingsSubject.send(meetngs)
+            }
+            .store(in: &cancellables)
+
     }
     
     func exitMeeting(id: UInt64) {
-        
+        guard let userID = currentUserID else { return }
+        let dto = LeaveMeetingDTO.Request(meetingID: id, userID: userID)
+        apiService.requestPublisher(Endpoint.leaveMeeting(dto: dto), EmptyDTO.Response.self)
+            .sink { completion in
+                //TODO: Error handling
+            } receiveValue: { [weak self] _ in
+                guard let self else { return }
+                var meetings = meetingsSubject.value
+                meetings.removeValue(forKey: id)
+                meetingsSubject.send(meetings)
+            }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - Invitation Related
+
+    func readInvitaionStatus(id: UInt64) {
+        apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
+            .sink { completion in
+                //TODO: Error handling
+            } receiveValue: { [weak self] response in
+                guard let self else { return }
+                let invitaionStatus = response.map { dto in
+                    dto.toEntity()
+                }
+                var newInvitationStatusDict = invitationStatusSubject.value
+                newInvitationStatusDict[id] = invitaionStatus
+                invitationStatusSubject.send(newInvitationStatusDict)
+            }
+            .store(in: &cancellables)
     }
     
     func inviteParticipant(id: UInt64, participantId: UInt64) {
@@ -191,9 +264,11 @@ extension MeetingCore: MeetingCoreProtocol {
             } receiveValue: { [weak self] response in
                 guard let self else { return }
                 let meeting = response.toEntity()
-                _meetings[meeting.id] = meeting
-                meetingsSubject.send(_meetings)
+                var meetings = meetingsSubject.value
+                meetings[meeting.id] = meeting
+                meetingsSubject.send(meetings)
             }
+            .store(in: &cancellables)
 
     }
 }

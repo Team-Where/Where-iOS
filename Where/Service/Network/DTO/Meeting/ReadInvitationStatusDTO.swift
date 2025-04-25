@@ -27,5 +27,16 @@ extension ReadInvitationStatusDTO {
             case status
             case hostImageURLString = "toImage"
         }
+        
+        func toEntity() -> MeetingInvitationStatus {
+            return .init(
+                hostID: hostID,
+                hostName: hostName,
+                guestID: guestID,
+                guestName: guestName,
+                status: status,
+                hostImageURLString: hostImageURLString
+            )
+        }
     }
 }
