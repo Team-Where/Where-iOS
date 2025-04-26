@@ -21,7 +21,6 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 일정 조회
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    ///
     func readSchedule(id: UInt64)
     /// 모임 일정 수정
     /// - Parameters:
@@ -56,7 +55,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
     ///     - participantId: 초대 대상의 식별자
-    func inviteParticipant(id: UInt64, participantId: UInt64)
+    func inviteParticipant(id: UInt64, hostName: String, guest: FriendRelationship)
     /// 모임 초대 수락
     /// - Parameters:
     ///     - id: 초대장 식별자
@@ -94,7 +93,7 @@ final class MeetingCore {
     
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
-    private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationStatus]], MeetingCoreError>([:])
+    private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationState]], MeetingCoreError>([:])
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -363,26 +362,39 @@ extension MeetingCore: MeetingCoreProtocol {
             }
             .sink { completion in
                 //TODO: Error handling
-            } receiveValue: { [weak self] invitaionStatus in
+            } receiveValue: { [weak self] invitaionState in
                 guard let self else { return }
                 var newInvitationStatusDict = invitationStatusSubject.value
-                newInvitationStatusDict[id] = invitaionStatus
+                newInvitationStatusDict[id] = invitaionState
                 invitationStatusSubject.send(newInvitationStatusDict)
             }
             .store(in: &cancellables)
     }
     
-    func inviteParticipant(id: UInt64, participantId: UInt64) {
+    func inviteParticipant(id: UInt64, hostName: String, guest: FriendRelationship) {
         guard let userID = currentUserID
         else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+            return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
         }
-        let dto = InviteFriendsDTO.Request(meetingID: id, hostID: userID, guestID: participantId)
+        let dto = InviteFriendsDTO.Request(meetingID: id, hostID: userID, guestID: guest.id)
         apiService.requestPublisher(Endpoint.inviteFriends(dto: dto), EmptyDTO.Response.self)
+            .map { _ in
+                MeetingInvitationState(
+                    hostID: userID,
+                    hostName: hostName,
+                    guestID: guest.id,
+                    guestName: guest.nickname,
+                    status: false,
+                    guestImageURLString: guest.imageURL?.absoluteString
+                )
+            }
             .sink { completion in
                 // TODO: Error handling
-            } receiveValue: { _ in
-                // TODO:
+            } receiveValue: { [weak self] invitationState in
+                guard let self else { return }
+                var status = invitationStatusSubject.value
+                status[id]?.append(invitationState)
+                invitationStatusSubject.send(status)
             }
             .store(in: &cancellables)
     }
@@ -390,7 +402,7 @@ extension MeetingCore: MeetingCoreProtocol {
     func acceptInvitation(id: UInt64) {
         guard let _ = currentUserID
         else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+            return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
         }
         let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
         apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
