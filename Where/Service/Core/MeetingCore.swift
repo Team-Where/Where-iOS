@@ -60,6 +60,10 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - id: 초대장 식별자
     func acceptInvitation(id: UInt64)
+    /// 모임 초대 수락 링크
+    /// - Parameters:
+    ///     - link: 초대 링크
+    func acceptInvitationByLink(_ link: String)
 }
 
 protocol MeetingMediationProtocol {
@@ -427,6 +431,25 @@ extension MeetingCore: MeetingCoreProtocol {
             .map { $0.toEntity() }
             .sink { completion in
                 // TODO: 에러핸들링 강화
+            } receiveValue: { [weak self] meeting in
+                guard let self else { return }
+                var meetings = meetingsSubject.value
+                meetings[meeting.id] = meeting
+                meetingsSubject.send(meetings)
+            }
+            .store(in: &cancellables)
+    }
+    
+    func acceptInvitationByLink(_ link: String) {
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+        }
+        let dto = AcceptMeetingInvitationByLinkDTO.Request(userID: userID, invitationLink: link)
+        apiService.requestPublisher(Endpoint.acceptMeetingInvitationByLink(dto: dto), AcceptMeetingInvitationByLinkDTO.Response.self)
+            .map { $0.toEntity() }
+            .sink { completion in
+                //TODO: Error handling
             } receiveValue: { [weak self] meeting in
                 guard let self else { return }
                 var meetings = meetingsSubject.value
