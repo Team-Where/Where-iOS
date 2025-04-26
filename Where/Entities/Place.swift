@@ -29,6 +29,8 @@ struct Place: Identifiable {
     let links: PlaceLinks
     /// 같이 찾은 장소 여부
     let isSimulaneouslyShared: Bool
+    /// 장소에 대한 코멘트 목록
+    let comments: [Comment]
 }
 
 /// 장소 선택 여부

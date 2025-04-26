@@ -26,6 +26,47 @@ final class MeetingPlacesViewModel: ObservableObject {
     
     private func subscribe() {
         placeCore.places
+            .combineLatest($sortOption.setFailureType(to: PlaceCoreError.self))
+            .map { (dict, option) -> [Place] in
+                switch option {
+                case .all:
+                    return dict.values.sorted {
+                        if $0.isSimulaneouslyShared != $1.isSimulaneouslyShared {
+                            return $0.isSimulaneouslyShared
+                        }
+                        
+                        guard $0.likesCount != $1.likesCount else {
+                            return $0.name < $1.name
+                        }
+                        return $0.likesCount > $1.likesCount
+                    }
+                    
+                case .byLikesDescending:
+                    let sortedByLikes = dict.values.sorted { $0.likesCount > $1.likesCount }
+                    
+                    guard sortedByLikes.count > 3 else {
+                        return sortedByLikes
+                    }
+                    
+                    var uniqueLikesCounts = [Int]()
+                    uniqueLikesCounts.reserveCapacity(3)
+                    
+                    for place in sortedByLikes {
+                        if place.likesCount != uniqueLikesCounts.last {
+                            uniqueLikesCounts.append(place.likesCount)
+                            
+                            if uniqueLikesCounts.count == 3 { break }
+                        }
+                    }
+                    
+                    let top3UniqueLikesSet = Set(uniqueLikesCounts)
+                    let top3Places = sortedByLikes.filter {
+                        top3UniqueLikesSet.contains($0.likesCount)
+                    }
+                    
+                    return top3Places
+                }
+            }
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -35,22 +76,8 @@ final class MeetingPlacesViewModel: ObservableObject {
                     print(error)
                     #endif
                 }
-            } receiveValue: { [weak self] dict in
-                self?.places = dict.values.sorted {
-                    // 같이 찾은 장소라면 최우선 정렬
-                    if $0.isSimulaneouslyShared != $1.isSimulaneouslyShared {
-                        return $0.isSimulaneouslyShared
-                    }
-                    
-                    // 좋아요, 코멘트 수로 비교하여 내림차순으로 정렬
-                    let count1 = $0.likesCount + $0.comments.count
-                    let count2 = $1.likesCount + $1.comments.count
-                    guard count1 != count2 else {
-                        // 수가 같으면 장소명 사전순으로 정렬
-                        return $0.name < $1.name
-                    }
-                    return count1 > count2
-                }
+            } receiveValue: { [weak self] places in
+                self?.places = places
             }
             .store(in: &cancellables)
     }

@@ -228,11 +228,7 @@ struct MeetingPlacesView: View {
                             HStack(spacing: 4) {
                                 Image(.bubbleIcon)
                                 
-                                if place.comments.count > 0 {
-                                    Text("코멘트 \(place.comments.count)")
-                                } else {
-                                    Text("코멘트")
-                                }
+                                Text(place.comments.count > .zero ? "코멘트 \(place.comments.count)" : "코멘트")
                             }
                             .foregroundStyle(Color(hex: 0x868E96))
                             
