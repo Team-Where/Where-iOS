@@ -144,22 +144,24 @@ extension MeetingCore: MeetingCoreProtocol {
 
         let dto = CreateScheduleDTO.Request(meetingID: id, date: date.toString(by: .yyyyMMddHyphen), time: time.toString(by: .HHmm), userID: userID)
         apiService.requestPublisher(Endpoint.createSchedule(dto: dto), CreateScheduleDTO.Response.self)
-            .sink { completion in
-                // TODO: Error handling
-            } receiveValue: { [weak self] response in
-                guard let self else { return }
-                let newMeeting = Meeting(
+            .map {
+                Meeting(
                     id: id,
                     title: meeting.title,
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
                     updatedAt: meeting.updatedAt,
-                    scheduleDate: response.date.toDate(by: .yyyyMMddHyphen),
-                    scheduleTime: response.time.toDate(by: .HHmm),
+                    scheduleDate: $0.date.toDate(by: .yyyyMMddHyphen),
+                    scheduleTime: $0.time.toDate(by: .HHmm),
                     shareLink: meeting.shareLink,
                     isFinished: meeting.isFinished
                 )
+            }
+            .sink { completion in
+                // TODO: Error handling
+            } receiveValue: { [weak self] newMeeting in
+                guard let self else { return }
                 var meetings = meetingsSubject.value
                 meetings[id] = newMeeting
                 meetingsSubject.send(meetings)
@@ -183,22 +185,24 @@ extension MeetingCore: MeetingCoreProtocol {
 
         let dto = UpdateScheduleDTO.Request(meetingID: id, date: date.toString(by: .yyyyMMddHyphen), time: time.toString(by: .HHmm), userID: userID)
         apiService.requestPublisher(Endpoint.updateSchedule(dto: dto), UpdateScheduleDTO.Response.self)
-            .sink { completion in
-                // TODO: Error handling
-            } receiveValue: { [weak self] response in
-                guard let self else { return }
-                let newMeeting = Meeting(
+            .map {
+                Meeting(
                     id: id,
                     title: meeting.title,
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
                     updatedAt: meeting.updatedAt,
-                    scheduleDate: response.date.toDate(by: .yyyyMMddHyphen),
-                    scheduleTime: response.time.toDate(by: .HHmm),
+                    scheduleDate: $0.date.toDate(by: .yyyyMMddHyphen),
+                    scheduleTime: $0.time.toDate(by: .HHmm),
                     shareLink: meeting.shareLink,
                     isFinished: meeting.isFinished
                 )
+            }
+            .sink { completion in
+                // TODO: Error handling
+            } receiveValue: { [weak self] newMeeting in
+                guard let self else { return }
                 var meetings = meetingsSubject.value
                 meetings[id] = newMeeting
                 meetingsSubject.send(meetings)
@@ -218,12 +222,8 @@ extension MeetingCore: MeetingCoreProtocol {
                 
         let dto = DeleteScheduleDTO.Request(meetingID: id, userID: userID)
         apiService.requestPublisher(Endpoint.deleteSchedule(dto: dto), EmptyDTO.Response.self)
-            .sink { completion in
-                // TODO: Error handling
-            } receiveValue: { [weak self] _ in
-                guard let self else { return }
-                var meetings = meetingsSubject.value
-                let newMeeting = Meeting(
+            .map { _ in
+                Meeting(
                     id: id,
                     title: meeting.title,
                     description: meeting.description,
@@ -233,6 +233,12 @@ extension MeetingCore: MeetingCoreProtocol {
                     shareLink: meeting.shareLink,
                     isFinished: meeting.isFinished
                 )
+            }
+            .sink { completion in
+                // TODO: Error handling
+            } receiveValue: { [weak self] newMeeting in
+                guard let self else { return }
+                var meetings = meetingsSubject.value
                 meetings[id] = newMeeting
                 meetingsSubject.send(meetings)
             }
@@ -253,11 +259,11 @@ extension MeetingCore: MeetingCoreProtocol {
             let imageData = info.imageData
             
             apiService.requestPublisher(Endpoint.createMeeting(encodedMeetingData: encodedMeeting, imageData: imageData), CreateMeetingDTO.Response.self)
+                .map { $0.toEntity() }
                 .sink { completion in
                     // TODO: error handling
-                } receiveValue: { [weak self] response in
+                } receiveValue: { [weak self] meeting in
                     guard let self else { return }
-                    let meeting = response.toEntity()
                     var meetings = meetingsSubject.value
                     meetings[meeting.id] = meeting
                     meetingsSubject.send(meetings)
@@ -283,18 +289,20 @@ extension MeetingCore: MeetingCoreProtocol {
         do {
             let encodedMeetingData = try encoder.encode(dto)
             apiService.requestPublisher(Endpoint.updateMeeting(encodedMeetingData: encodedMeetingData, imageData: imageData), UpdateMeetingDTO.Response.self)
-                .sink { completion in
-                    // TODO: Error 핸들링 강화
-                } receiveValue: { [weak self] response in
-                    guard let self else { return }
-                    let newMeeting = Meeting(
+                .map {
+                    Meeting(
                         id: meeting.id,
-                        title: response.title,
-                        description: response.description,
-                        imageURL: URL(string: response.imageURLString ?? ""),
-                        shareLink: URL(string: response.invitationLink),
+                        title: $0.title,
+                        description: $0.description,
+                        imageURL: URL(string: $0.imageURLString ?? ""),
+                        shareLink: URL(string: $0.invitationLink),
                         isFinished: meeting.isFinished
                     )
+                }
+                .sink { completion in
+                    // TODO: Error 핸들링 강화
+                } receiveValue: { [weak self] newMeeting in
+                    guard let self else { return }
                     var meetings = meetingsSubject.value
                     meetings[meeting.id] = newMeeting
                     meetingsSubject.send(meetings)
@@ -350,13 +358,13 @@ extension MeetingCore: MeetingCoreProtocol {
             return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
         }
         apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
+            .map { response in
+                response.map { $0.toEntity() }
+            }
             .sink { completion in
                 //TODO: Error handling
-            } receiveValue: { [weak self] response in
+            } receiveValue: { [weak self] invitaionStatus in
                 guard let self else { return }
-                let invitaionStatus = response.map { dto in
-                    dto.toEntity()
-                }
                 var newInvitationStatusDict = invitationStatusSubject.value
                 newInvitationStatusDict[id] = invitaionStatus
                 invitationStatusSubject.send(newInvitationStatusDict)
@@ -386,11 +394,11 @@ extension MeetingCore: MeetingCoreProtocol {
         }
         let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
         apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
+            .map { $0.toEntity() }
             .sink { completion in
                 // TODO: 에러핸들링 강화
-            } receiveValue: { [weak self] response in
+            } receiveValue: { [weak self] meeting in
                 guard let self else { return }
-                let meeting = response.toEntity()
                 var meetings = meetingsSubject.value
                 meetings[meeting.id] = meeting
                 meetingsSubject.send(meetings)
