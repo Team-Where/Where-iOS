@@ -5,7 +5,7 @@
 //  Created by Swain Yun on 4/7/25.
 //
 
-import SwiftUI
+import Foundation
 import Combine
 
 protocol MeetingCoreProtocol: CoreProtocol {
