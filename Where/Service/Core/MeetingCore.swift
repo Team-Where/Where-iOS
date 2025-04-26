@@ -75,7 +75,8 @@ protocol MeetingMediationProtocol {
 enum MeetingCoreError: Error {
     case networkingError(Error)
     case userIDNotSet
-    case encodingError
+    case encodingError(type: Encodable.Type)
+    case meetingNotFound
 }
 
 final class MeetingCore {
@@ -172,19 +173,23 @@ extension MeetingCore: MeetingCoreProtocol {
                 }
                 .store(in: &cancellables)
         } catch {
-            meetingsSubject.send(completion: .failure(.encodingError))
+            meetingsSubject.send(completion: .failure(.encodingError(type: CreateMeetingDTO.Request.self)))
         }
     }
     
     func updateMeeting(id: UInt64, imageData: Data?) {
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+        }
+        
+        guard let meeting = _meetings[id]
+        else {
+            return meetingsSubject.send(completion: .failure(MeetingCoreError.meetingNotFound))
+        }
+        
+        let dto = UpdateMeetingDTO.Request(meetingID: id, title: meeting.title, description: meeting.description, userID: userID)
         do {
-            guard let meeting = _meetings[id],
-                  let userID = currentUserID
-            else {
-                return
-            }
-            
-            let dto = UpdateMeetingDTO.Request(meetingID: id, title: meeting.title, description: meeting.description, userID: userID)
             let encodedMeetingData = try encoder.encode(dto)
             apiService.requestPublisher(Endpoint.updateMeeting(encodedMeetingData: encodedMeetingData, imageData: imageData), UpdateMeetingDTO.Response.self)
                 .sink { completion in
@@ -204,9 +209,8 @@ extension MeetingCore: MeetingCoreProtocol {
                     meetingsSubject.send(meetings)
                 }
                 .store(in: &cancellables)
-
         } catch {
-            meetingsSubject.send(completion: .failure(MeetingCoreError.encodingError))
+            meetingsSubject.send(completion: .failure(MeetingCoreError.encodingError(type: UpdateMeetingDTO.Request.self)))
         }
     }
     
