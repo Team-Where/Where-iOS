@@ -317,14 +317,32 @@ extension MeetingCore: MeetingCoreProtocol {
         else {
             return meetingsSubject.send(completion: .failure(.userIDNotSet))
         }
+        guard let meeting = _meetings[id]
+        else {
+            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        }
         let dto = EndMeetingDTO.Request(meetingID: id, userID: userID)
         apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
+            .map { _ in
+                Meeting(
+                    id: meeting.id,
+                    title: meeting.title,
+                    description: meeting.description,
+                    imageURL: meeting.imageURL,
+                    createdAt: meeting.createdAt,
+                    updatedAt: meeting.updatedAt,
+                    scheduleDate: meeting.scheduleDate,
+                    scheduleTime: meeting.scheduleTime,
+                    shareLink: meeting.shareLink,
+                    isFinished: true
+                )
+            }
             .sink { completion in
                 //TODO: Error handling
-            } receiveValue: { [weak self] _ in
+            } receiveValue: { [weak self] endedMeeting in
                 guard let self else { return }
                 var meetngs = meetingsSubject.value
-                meetngs[id]?.isFinished = true
+                meetngs[id] = endedMeeting
                 meetingsSubject.send(meetngs)
             }
             .store(in: &cancellables)

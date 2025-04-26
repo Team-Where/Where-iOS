@@ -28,7 +28,7 @@ struct Meeting: Identifiable {
     /// 공유 링크
     let shareLink: URL?
     /// 활성화 여부
-    var isFinished: Bool
+    let isFinished: Bool
     
     init(
         id: UInt64,
