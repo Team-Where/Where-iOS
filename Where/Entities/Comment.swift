@@ -15,11 +15,14 @@ struct Comment: Hashable {
     /// 코멘트 내용
     let description: String
     /// 코멘트 작성자의 식별자
-    let writerId: UInt64
+//    let writerId: UInt64
+    /// 코멘트 생성 시각
+    let createdAt: Date
     
     func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
         hasher.combine(placeId)
         hasher.combine(description)
-        hasher.combine(writerId)
+//        hasher.combine(writerId)
     }
 }

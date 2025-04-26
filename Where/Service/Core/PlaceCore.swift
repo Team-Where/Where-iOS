@@ -20,6 +20,8 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - name: 장소명
     ///     - address: 장소 주소
     func createPlace(meetingID: UInt64, name: String, address: String)
+    /// 특정 장소의 상세 정보 조회
+    func readSpecificPlace(id: UInt64)
     /// 장소 삭제
     func deletePlace(id: UInt64)
     /// 장소 선택
@@ -105,6 +107,22 @@ extension PlaceCore: PlaceCoreProtocol {
             .store(in: &cancellables)
     }
     
+    func readSpecificPlace(id: UInt64) {
+        apiService
+            .requestPublisher(Endpoint.readComments(placeID: id), ReadCommentsDTO.Response.self)
+            .map { (response: ReadCommentsDTO.Response) -> [UInt64: Comment] in
+                response
+                    .map { $0.toEntity() }
+                    .reduce(into: [:]) { $0[$1.id] = $1 }
+            }
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] comments in
+                self?.commentsSubject.send(comments)
+            }
+            .store(in: &cancellables)
+    }
+    
     func deletePlace(id: UInt64) {
         guard let userID = currentUserID else {
             placesSubject.send(completion: .failure(.userIDNotSet))
@@ -147,10 +165,12 @@ extension PlaceCore: PlaceCoreProtocol {
                     meetingId: oldPlace.meetingId,
                     name: oldPlace.name,
                     address: oldPlace.address,
-                    likesCount: oldPlace.likesCount,
+                    likesCount: response.likesCount,
+                    isLikedByMe: response.isLikedByMe,
+                    sharedUserImageURLs: oldPlace.sharedUserImageURLs,
                     pickedState: PickedState(response.pickedState),
                     links: oldPlace.links,
-                    isSimulaneouslyPicked: oldPlace.isSimulaneouslyPicked
+                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared
                 )
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)
@@ -181,9 +201,11 @@ extension PlaceCore: PlaceCoreProtocol {
                     name: oldPlace.name,
                     address: oldPlace.address,
                     likesCount: response.likesCount,
+                    isLikedByMe: response.isLikedByMe,
+                    sharedUserImageURLs: oldPlace.sharedUserImageURLs,
                     pickedState: PickedState(response.pickedState),
                     links: oldPlace.links,
-                    isSimulaneouslyPicked: oldPlace.isSimulaneouslyPicked
+                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared
                 )
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)
@@ -210,7 +232,8 @@ extension PlaceCore: PlaceCoreProtocol {
                     id: response.commentID,
                     placeId: placeID,
                     description: response.description,
-                    writerId: userID
+//                    writerId: userID
+                    createdAt: .now
                 )
             }
             .store(in: &cancellables)
@@ -237,7 +260,8 @@ extension PlaceCore: PlaceCoreProtocol {
                     id: oldComment.id,
                     placeId: oldComment.placeId,
                     description: response.description,
-                    writerId: oldComment.writerId
+//                    writerId: oldComment.writerId
+                    createdAt: oldComment.createdAt
                 )
                 comments[response.commentID] = newComment
                 self?.commentsSubject.send(comments)
@@ -267,7 +291,7 @@ extension PlaceCore: PlaceCoreProtocol {
     
     func isMyComment(comment: Comment) -> Bool {
         guard let userID = currentUserID else { return false }
-        return comment.writerId == userID
+        return true
     }
 }
 

@@ -19,12 +19,14 @@ enum PickPlaceDTO {
     
     struct Response: Decodable {
         let id: UInt64
-        let isLike: Bool
+        let isLikedByMe: Bool
+        let likesCount: Int
         let pickedState: String
         
         enum CodingKeys: String, CodingKey {
             case id
-            case isLike = "like"
+            case isLikedByMe = "myLike"
+            case likesCount = "likes"
             case pickedState = "placeStatus"
         }
     }
