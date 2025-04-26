@@ -17,7 +17,7 @@ extension ReadInvitationStatusDTO {
         let guestID: UInt64
         let guestName: String
         let status: Bool
-        let hostImageURLString: String?
+        let guestImageURLString: String?
         
         enum CodingKeys: String, CodingKey {
             case hostID = "fromId"
@@ -25,7 +25,7 @@ extension ReadInvitationStatusDTO {
             case guestID = "toId"
             case guestName = "toName"
             case status
-            case hostImageURLString = "toImage"
+            case guestImageURLString = "toImage"
         }
         
         func toEntity() -> MeetingInvitationStatus {
@@ -35,7 +35,7 @@ extension ReadInvitationStatusDTO {
                 guestID: guestID,
                 guestName: guestName,
                 status: status,
-                hostImageURLString: hostImageURLString
+                guestImageURLString: guestImageURLString
             )
         }
     }
