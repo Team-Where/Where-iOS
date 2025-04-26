@@ -48,7 +48,7 @@ struct PlaceDetailView: View {
                     .padding(.vertical, 32)
             }
             
-            CommentView(resolver: resolver)
+            CommentView(place: place, resolver: resolver)
         }
         .scrollIndicators(.never)
         .onAppear {
@@ -112,7 +112,7 @@ struct PlaceDetailView: View {
                 HStack(spacing: 4) {
                     Image(.bubbleIcon)
                     
-                    Text(viewModel.comments.count > 0 ? "코멘트 \(viewModel.comments.count)" : "코멘트")
+                    Text(viewModel.commentCount > 0 ? "코멘트 \(viewModel.commentCount)" : "코멘트")
                 }
                 .foregroundStyle(.where(hex: 0x868E96))
                 

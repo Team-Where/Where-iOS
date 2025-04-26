@@ -13,7 +13,13 @@ fileprivate typealias SheetType = CommentViewModel.SheetType
 struct CommentView: View {
     @ObservedObject private var viewModel: CommentViewModel
     
-    init(resolver: Resolver) {
+    private let place: Place
+    
+    init(
+        place: Place,
+        resolver: Resolver
+    ) {
+        self.place = place
         self.viewModel = resolver.resolve(CommentViewModel.self)!
     }
     
@@ -34,7 +40,7 @@ struct CommentView: View {
             switch type {
             case .create:
                 CommentCreationSheet($viewModel.sheetType, commentTextField: $viewModel.commentTextField) {
-                    viewModel.createComment()
+                    viewModel.createComment(placeID: place.id)
                 }
                 
             case .read(let comment):

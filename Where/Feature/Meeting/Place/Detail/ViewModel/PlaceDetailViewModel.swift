@@ -12,7 +12,7 @@ import Swinject
 final class PlaceDetailViewModel: ObservableObject {
     @Published var isDeletionSheetPresented = false
     @Published var isTipPresented = false
-    @Published var comments = [Comment]()
+    @Published var commentCount: Int = .zero
     
     private let placeCore: PlaceCoreProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -28,7 +28,7 @@ final class PlaceDetailViewModel: ObservableObject {
             .sink { completion in
                 // TODO: 에러 핸들링
             } receiveValue: { [weak self] dict in
-                self?.comments = dict.values.map { $0 }
+                self?.commentCount = dict.count
             }
             .store(in: &cancellables)
     }
