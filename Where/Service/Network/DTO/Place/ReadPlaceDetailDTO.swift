@@ -20,18 +20,22 @@ extension ReadPlaceDetailDTO {
         let kakaoLinkString: String
         let name: String
         let address: String
-        let likingUserIDs: [UInt64]
+        let likesCount: Int
+        let result: Bool
         let pickedState: String
         let isSimulaneouslyPicked: Bool
+        let pickedUserImageURLStrings: [String]?
         
         enum CodingKeys: String, CodingKey {
             case id, name, address
             case meetingID = "meetingId"
             case naverLinkString = "naverLink"
             case kakaoLinkString = "kakaoLink"
-            case likingUserIDs = "likes"
+            case likesCount = "likes"
+            case result = "myLike"
             case pickedState = "placeStatus"
             case isSimulaneouslyPicked = "together"
+            case pickedUserImageURLStrings = "users"
         }
         
         func toEntity() -> Place {
@@ -40,8 +44,10 @@ extension ReadPlaceDetailDTO {
                 meetingId: meetingID,
                 name: name,
                 address: address,
-                likesCount: likingUserIDs.count,
-                pickedState: .init(pickedState),
+                likesCount: likesCount,
+                isLikedByMe: result,
+                pickedUserImageURLs: (pickedUserImageURLStrings ?? []).compactMap { URL(string: $0) },
+                pickedState: PickedState(pickedState),
                 links: .init(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
                 isSimulaneouslyPicked: isSimulaneouslyPicked
             )

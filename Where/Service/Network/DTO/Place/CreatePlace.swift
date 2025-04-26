@@ -29,7 +29,8 @@ enum CreatePlaceDTO {
         let kakaoLinkString: String
         let name: String
         let address: String
-        let likingUserIDs: [UInt64]
+        let likesCount: Int
+        let isLikedByMe: Bool
         let pickedState: String
         let isSimulaneouslyPicked: Bool
         
@@ -39,7 +40,8 @@ enum CreatePlaceDTO {
             case meetingID = "meetingId"
             case naverLinkString = "naverLink"
             case kakaoLinkString = "kakaoLink"
-            case likingUserIDs = "likes"
+            case likesCount = "likes"
+            case isLikedByMe = "myLike"
             case pickedState = "placeStatus"
             case isSimulaneouslyPicked = "together"
         }
@@ -50,9 +52,11 @@ enum CreatePlaceDTO {
                 meetingId: meetingID,
                 name: name,
                 address: address,
-                likesCount: likingUserIDs.count,
+                likesCount: likesCount,
+                isLikedByMe: isLikedByMe,
+                pickedUserImageURLs: [],
                 pickedState: PickedState(pickedState),
-                links: PlaceLinks(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
+                links: .init(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
                 isSimulaneouslyPicked: isSimulaneouslyPicked
             )
         }
