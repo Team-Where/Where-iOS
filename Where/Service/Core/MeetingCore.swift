@@ -17,7 +17,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 일정 등록
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func createSchedule(id: UInt64)
+    func createSchedule(id: UInt64, date: Date, time: Date)
     /// 모임 일정 조회
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -132,8 +132,39 @@ extension MeetingCore: MeetingCoreProtocol {
     
     // MARK: - Schedule Related
 
-    func createSchedule(id: UInt64) {
-        
+    func createSchedule(id: UInt64, date: Date, time: Date) {
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+        }
+        guard let meeting = _meetings[id]
+        else {
+            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        }
+
+        let dto = CreateScheduleDTO.Request(meetingID: id, date: date.toString(by: .yyyyMMddHyphen), time: time.toString(by: .HHmm), userID: userID)
+        apiService.requestPublisher(Endpoint.createSchedule(dto: dto), CreateScheduleDTO.Response.self)
+            .sink { completion in
+                // TODO: Error handling
+            } receiveValue: { [weak self] response in
+                guard let self else { return }
+                let newMeeting = Meeting(
+                    id: id,
+                    title: meeting.title,
+                    description: meeting.description,
+                    imageURL: meeting.imageURL,
+                    createdAt: meeting.createdAt,
+                    updatedAt: meeting.updatedAt,
+                    scheduleDate: response.date.toDate(by: .yyyyMMddHyphen),
+                    scheduleTime: response.time.toDate(by: .HHmm),
+                    shareLink: meeting.shareLink,
+                    isFinished: meeting.isFinished
+                )
+                var meetings = meetingsSubject.value
+                meetings[id] = newMeeting
+                meetingsSubject.send(meetings)
+            }
+            .store(in: &cancellables)
     }
     
     func readSchedule(id: UInt64) {
