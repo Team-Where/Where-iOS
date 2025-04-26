@@ -238,8 +238,7 @@ extension FriendsListView {
                         .clipShape(.circle)
                     
                     VStack(spacing: 6) {
-                        // TODO: 모델에 추가해야할 프로퍼티
-                        Text("3번 만남")
+                        Text("\(viewModel.meetingsCount)번 만남")
                             .whereFont(.caption12regular)
                             .foregroundStyle(.accent)
                             .padding(.horizontal, 8)
@@ -296,7 +295,6 @@ extension FriendsListView {
                 Spacer()
                 
                 Button {
-                    // TODO: 즐겨찾기 토글
                     viewModel.isEditing ? viewModel.deleteFriend(by: friend.id) : viewModel.toggleFavorite(by: friend.id)
                 } label: {
                     Image(systemName: viewModel.isEditing ? "trash" : friend.isFavorite ? "star.fill" : "star")

@@ -17,16 +17,19 @@ final class FriendsListViewModel: ObservableObject {
     @Published var searchedFriends: [FriendRelationship] = []
     @Published var searchingText: String = String()
     @Published var isEditing: Bool = false
+    @Published var meetingsCount: Int = .zero
     
     var isSearching: Bool { searchingText.isEmpty == false }
     
     private let authCore: AuthentificationCoreProtocol
     private let communityCore: CommunityCoreProtocol
+    private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         subscribe()
     }
     
@@ -59,6 +62,15 @@ final class FriendsListViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] dict in
                 self?.friends = dict.values.map { $0 }.sorted { $0.nickname < $1.nickname }
+            }
+            .store(in: &cancellables)
+        
+        meetingCore.meetingSummaries
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] dict in
+                self?.meetingsCount = dict.count
             }
             .store(in: &cancellables)
         
@@ -144,6 +156,7 @@ extension FriendsListViewModel {
     func presentHistoryWithFriend(friend: FriendRelationship) {
         guard let user else { return }
         sheetType = .historyWithFriend(user: user, friend: friend)
+        communityCore.readHistoryWithFriend(id: friend.id)
     }
     
     func presentHistoryReminder(friend: FriendRelationship) {
