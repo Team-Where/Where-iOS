@@ -21,14 +21,14 @@ struct Place: Identifiable {
     let likesCount: Int
     /// 사용자의 좋아요 여부
     let isLikedByMe: Bool
-    /// 장소를 선택한 사람들의 프로필 이미지 URL
-    let pickedUserImageURLs: [URL]
+    /// 장소 공유한 사람들의 프로필 이미지 URL
+    let sharedUserImageURLs: [URL]
     /// 장소 선택 여부
     let pickedState: PickedState
     /// 외부 지도앱 장소 링크
     let links: PlaceLinks
-    /// 동시 선택 여부
-    let isSimulaneouslyPicked: Bool
+    /// 같이 찾은 장소 여부
+    let isSimulaneouslyShared: Bool
 }
 
 /// 장소 선택 여부

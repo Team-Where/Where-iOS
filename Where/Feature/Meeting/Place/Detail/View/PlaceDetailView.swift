@@ -31,7 +31,7 @@ struct PlaceDetailView: View {
             VStack(spacing: 20) {
                 placeInfoArea(place)
                 
-                profileImagesArea(place.pickedUserImageURLs)
+                profileImagesArea(place.sharedUserImageURLs)
                 
                 mapButtonsArea
                 
@@ -85,7 +85,7 @@ struct PlaceDetailView: View {
                             .frame(width: 110, height: 89)
                     }
                     .overlay(alignment: .topLeading) {
-                        if place.isSimulaneouslyPicked {
+                        if place.isSimulaneouslyShared {
                             Text("같이 찾은 장소")
                                 .whereFont(.caption11regular)
                                 .foregroundStyle(.white)

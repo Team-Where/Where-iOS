@@ -19,13 +19,13 @@ enum TogglePlaceLikeDTO {
     
     struct Response: Decodable {
         let id: UInt64
-        let result: Bool
+        let isLikedByMe: Bool
         let likesCount: Int
         let pickedState: String
         
         enum CodingKeys: String, CodingKey {
             case id
-            case result = "myLike"
+            case isLikedByMe = "myLike"
             case likesCount = "likes"
             case pickedState = "placeStatus"
         }

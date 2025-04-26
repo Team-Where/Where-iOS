@@ -37,9 +37,9 @@ final class MeetingPlacesViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] dict in
                 self?.places = dict.values.sorted {
-                    // 동시 선택된 장소라면 최우선 정렬
-                    if $0.isSimulaneouslyPicked != $1.isSimulaneouslyPicked {
-                        return $0.isSimulaneouslyPicked
+                    // 같이 찾은 장소라면 최우선 정렬
+                    if $0.isSimulaneouslyShared != $1.isSimulaneouslyShared {
+                        return $0.isSimulaneouslyShared
                     }
                     
                     // 좋아요, 코멘트 수로 비교하여 내림차순으로 정렬

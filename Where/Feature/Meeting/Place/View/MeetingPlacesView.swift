@@ -204,7 +204,7 @@ struct MeetingPlacesView: View {
             PlaceDetailView(place, resolver: resolver)
         } label: {
             VStack(alignment: .leading, spacing: 10) {
-                if place.isSimulaneouslyPicked {
+                if place.isSimulaneouslyShared {
                     Text("같이 찾은 장소")
                         .whereFont(.caption11regular)
                         .foregroundStyle(.white)

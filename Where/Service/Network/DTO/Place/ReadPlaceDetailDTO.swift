@@ -23,7 +23,7 @@ extension ReadPlaceDetailDTO {
         let likesCount: Int
         let result: Bool
         let pickedState: String
-        let isSimulaneouslyPicked: Bool
+        let isSimulaneouslyShared: Bool
         let pickedUserImageURLStrings: [String]?
         
         enum CodingKeys: String, CodingKey {
@@ -34,7 +34,7 @@ extension ReadPlaceDetailDTO {
             case likesCount = "likes"
             case result = "myLike"
             case pickedState = "placeStatus"
-            case isSimulaneouslyPicked = "together"
+            case isSimulaneouslyShared = "together"
             case pickedUserImageURLStrings = "users"
         }
         
@@ -46,10 +46,10 @@ extension ReadPlaceDetailDTO {
                 address: address,
                 likesCount: likesCount,
                 isLikedByMe: result,
-                pickedUserImageURLs: (pickedUserImageURLStrings ?? []).compactMap { URL(string: $0) },
+                sharedUserImageURLs: (pickedUserImageURLStrings ?? []).compactMap { URL(string: $0) },
                 pickedState: PickedState(pickedState),
                 links: .init(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
-                isSimulaneouslyPicked: isSimulaneouslyPicked
+                isSimulaneouslyShared: isSimulaneouslyShared
             )
         }
     }

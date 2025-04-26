@@ -32,7 +32,7 @@ enum CreatePlaceDTO {
         let likesCount: Int
         let isLikedByMe: Bool
         let pickedState: String
-        let isSimulaneouslyPicked: Bool
+        let isSimulaneouslyShared: Bool
         
         enum CodingKeys: String, CodingKey {
             case name, address
@@ -43,7 +43,7 @@ enum CreatePlaceDTO {
             case likesCount = "likes"
             case isLikedByMe = "myLike"
             case pickedState = "placeStatus"
-            case isSimulaneouslyPicked = "together"
+            case isSimulaneouslyShared = "together"
         }
         
         func toEntity() -> Place {
@@ -54,10 +54,10 @@ enum CreatePlaceDTO {
                 address: address,
                 likesCount: likesCount,
                 isLikedByMe: isLikedByMe,
-                pickedUserImageURLs: [],
+                sharedUserImageURLs: [],
                 pickedState: PickedState(pickedState),
                 links: .init(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
-                isSimulaneouslyPicked: isSimulaneouslyPicked
+                isSimulaneouslyShared: isSimulaneouslyShared
             )
         }
     }
