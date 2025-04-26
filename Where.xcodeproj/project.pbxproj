@@ -122,7 +122,7 @@
 		04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F051892D42332D000892C0 /* AuthentificationProvider.swift */; };
 		04F051902D424C01000892C0 /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0518F2D424C01000892C0 /* TokenStorage.swift */; };
 		7F831B1A2DBA8F75006FFAA0 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B192DBA8F75006FFAA0 /* Image.swift */; };
-		7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationStatus.swift */; };
+		7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */; };
 		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
 		7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */; };
 		7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */; };
@@ -307,7 +307,7 @@
 		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F831B192DBA8F75006FFAA0 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
-		7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationStatus.swift; sourceTree = "<group>"; };
+		7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationState.swift; sourceTree = "<group>"; };
 		7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD642DB68E160097CC30 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
@@ -478,7 +478,7 @@
 				04A4F45A2D42105E0041FD02 /* Inquiry.swift */,
 				04A4F45C2D4212020041FD02 /* Meeting.swift */,
 				04C6F23C2DB923080099874F /* MeetingSummary.swift */,
-				7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationStatus.swift */,
+				7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */,
 				046833ED2D3B8F65009D2357 /* DayOfWeek+Day+Month.swift */,
 				046833EE2D3B8F65009D2357 /* Meridiem.swift */,
 				046833EF2D3B8F65009D2357 /* Place.swift */,
@@ -1372,7 +1372,7 @@
 				046833E02D3B8DD1009D2357 /* FriendsListView.swift in Sources */,
 				91B7A1722D26DFDE003932B4 /* String.swift in Sources */,
 				046833E92D3B8E8E009D2357 /* MeetingInformationView.swift in Sources */,
-				7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationStatus.swift in Sources */,
+				7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationState.swift in Sources */,
 				0450E8662D9B876E00DB029A /* MyMeetingViewModel.swift in Sources */,
 				046833EA2D3B8E8E009D2357 /* InviteFriendsView.swift in Sources */,
 				04C6F22E2DB26F6A0099874F /* CoreMediator.swift in Sources */,
