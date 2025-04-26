@@ -86,7 +86,11 @@ final class MeetingCore {
     private var _meetingPariticipantIDs = [UInt64: Set<UInt64>]()
     private var currentUserID: UInt64?
     
+    /// 모임 관련 Subject
+    /// - Key: meeting.id
+    /// - Value: Meeting
     private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
+    
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
     private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationStatus]], MeetingCoreError>([:])
@@ -146,7 +150,10 @@ extension MeetingCore: MeetingCoreProtocol {
     // MARK: - Meeting Related
 
     func createMeeting(info: TemporaryMeetingInfo) {
-        guard let userID = currentUserID else { return }
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+        }
         
         do {
             let dto = CreateMeetingDTO.Request(title: info.title, creatorID: userID, description: info.description, participants: info.participants)
@@ -204,7 +211,10 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func endMeeting(id: UInt64) {
-        guard let userID = currentUserID else { return }
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+        }
         let dto = EndMeetingDTO.Request(meetingID: id, userID: userID)
         apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
             .sink { completion in
@@ -220,7 +230,10 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func exitMeeting(id: UInt64) {
-        guard let userID = currentUserID else { return }
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+        }
         let dto = LeaveMeetingDTO.Request(meetingID: id, userID: userID)
         apiService.requestPublisher(Endpoint.leaveMeeting(dto: dto), EmptyDTO.Response.self)
             .sink { completion in
@@ -237,6 +250,10 @@ extension MeetingCore: MeetingCoreProtocol {
     // MARK: - Invitation Related
 
     func readInvitaionStatus(id: UInt64) {
+        guard let _ = currentUserID
+        else {
+            return invitationStatusSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+        }
         apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
             .sink { completion in
                 //TODO: Error handling
@@ -253,10 +270,25 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func inviteParticipant(id: UInt64, participantId: UInt64) {
-        
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+        }
+        let dto = InviteFriendsDTO.Request(meetingID: id, hostID: userID, guestID: participantId)
+        apiService.requestPublisher(Endpoint.inviteFriends(dto: dto), EmptyDTO.Response.self)
+            .sink { completion in
+                // TODO: Error handling
+            } receiveValue: { _ in
+                // TODO:
+            }
+            .store(in: &cancellables)
     }
     
     func acceptInvitation(id: UInt64) {
+        guard let _ = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+        }
         let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
         apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
             .sink { completion in
@@ -269,7 +301,6 @@ extension MeetingCore: MeetingCoreProtocol {
                 meetingsSubject.send(meetings)
             }
             .store(in: &cancellables)
-
     }
 }
 
