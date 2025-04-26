@@ -15,6 +15,8 @@ struct PlaceDetailView: View {
     private let place: Place
     private let resolver: Resolver
     
+    private var isPicked: Bool { place.pickedState == .picked }
+    
     init(
         _ place: Place,
         resolver: Resolver
@@ -29,7 +31,7 @@ struct PlaceDetailView: View {
             VStack(spacing: 20) {
                 placeInfoArea(place)
                 
-                profileImagesArea(viewModel.pickedFriends)
+                profileImagesArea(place.pickedUserImageURLs)
                 
                 mapButtonsArea
                 
@@ -66,7 +68,7 @@ struct PlaceDetailView: View {
             }
         }
         .sheet(isPresented: $viewModel.isDeletionSheetPresented) {
-            PlaceDelete { viewModel.deletePlace() }
+            PlaceDelete { viewModel.deletePlace(id: place.id) }
         }
     }
     
@@ -110,7 +112,7 @@ struct PlaceDetailView: View {
                 HStack(spacing: 4) {
                     Image(.bubbleIcon)
                     
-                    Text(place.comments.count > 0 ? "코멘트 \(place.comments.count)" : "코멘트")
+                    Text(viewModel.comments.count > 0 ? "코멘트 \(viewModel.comments.count)" : "코멘트")
                 }
                 .foregroundStyle(.where(hex: 0x868E96))
                 
@@ -119,31 +121,26 @@ struct PlaceDetailView: View {
                     
                     Text(place.likesCount > 0 ? "좋아요 \(place.likesCount)" : "좋아요")
                 }
-                .foregroundStyle(place.likesCount > 0 ? .accent : .where(hex: 0x868E96))
+                .foregroundStyle(place.isLikedByMe ? .accent : .where(hex: 0x868E96))
             }
             .whereFont(.body14medium)
         }
     }
     
-    @ViewBuilder private func profileImagesArea(_ friends: [FriendRelationship]) -> some View {
+    @ViewBuilder private func profileImagesArea(_ urls: [URL?]) -> some View {
         let spacing: CGFloat = 26
         let maxDisplayCount: Int = 5
         let displayCount: Int = maxDisplayCount - 1
         
         ZStack(alignment: .leading) {
-            ForEach(friends.prefix(maxDisplayCount).indices, id: \.self) { index in
-                profileImageCell(
-                    url: friends[index].imageURL,
-                    index: index,
-                    displayCount: displayCount,
-                    cellCount: friends.count
-                )
-                .offset(x: CGFloat(index) * spacing)
+            ForEach(urls.prefix(maxDisplayCount).indices, id: \.self) { index in
+                profileImageCell(url: urls[index], index: index, displayCount: displayCount, cellCount: urls.count)
+                    .offset(x: CGFloat(index) * spacing)
             }
         }
         .frame(
-            width: min(friends.count, maxDisplayCount) > 0 ?
-            CGFloat(min(friends.count, maxDisplayCount) - 1) * spacing + 40 :
+            width: min(urls.count, maxDisplayCount) > 0 ?
+            CGFloat(min(urls.count, maxDisplayCount) - 1) * spacing + 40 :
                 40, alignment: .leading
         )
     }
@@ -236,7 +233,7 @@ struct PlaceDetailView: View {
             Spacer()
             
             Button {
-                viewModel.togglePick()
+                viewModel.togglePick(id: place.id)
             } label: {
                 Image(.whereCheckmark)
                     .resizable()
@@ -244,7 +241,7 @@ struct PlaceDetailView: View {
                     .padding(6)
                     .background(
                         Circle()
-                            .fill(viewModel.isPicked ? .accent : .where(hex: 0xDEE2E6))
+                            .fill(isPicked ? .accent : .where(hex: 0xDEE2E6))
                     )
             }
             .whereTip($viewModel.isTipPresented, configuration: tipConfiguration) {
@@ -262,11 +259,5 @@ struct PlaceDetailView: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(.where(.gray50))
         )
-    }
-}
-
-#Preview {
-    NavigationStack {
-        PlaceDetailView(PreviewHelper.shared.mockPlace, resolver: PreviewHelper.shared.resolver)
     }
 }

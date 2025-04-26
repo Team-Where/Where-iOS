@@ -12,8 +12,7 @@ import Swinject
 final class PlaceDetailViewModel: ObservableObject {
     @Published var isDeletionSheetPresented = false
     @Published var isTipPresented = false
-    @Published var place: Place?
-    var isPicked: Bool { place?.pickedState == .picked }
+    @Published var comments = [Comment]()
     
     private let placeCore: PlaceCoreProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -24,18 +23,12 @@ final class PlaceDetailViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        placeCore.currentPlace
+        placeCore.comments
             .receive(on: DispatchQueue.main)
             .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print(error)
-                    #endif
-                }
-            } receiveValue: { [weak self] place in
-                self?.place = place
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] dict in
+                self?.comments = dict.values.map { $0 }
             }
             .store(in: &cancellables)
     }
@@ -56,13 +49,11 @@ extension PlaceDetailViewModel {
         isDeletionSheetPresented = true
     }
     
-    func deletePlace() {
-        guard let placeID = place?.id else { return }
-        placeCore.deletePlace(id: placeID)
+    func deletePlace(id: UInt64) {
+        placeCore.deletePlace(id: id)
     }
     
-    func togglePick() {
-        guard let placeID = place?.id else { return }
-        placeCore.pickPlace(id: placeID)
+    func togglePick(id: UInt64) {
+        placeCore.pickPlace(id: id)
     }
 }
