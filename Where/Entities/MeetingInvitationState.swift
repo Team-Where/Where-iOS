@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MeetingInvitationStatus {
+struct MeetingInvitationState {
     let hostID: UInt64
     let hostName: String
     let guestID: UInt64
@@ -28,6 +28,6 @@ struct MeetingInvitationStatus {
         self.guestID = guestID
         self.guestName = guestName
         self.status = status
-        self.hostImageURLString = URL(string: hostImageURLString ?? "")
+        self.guestImageURLString = URL(string: guestImageURLString ?? "")
     }
 }
