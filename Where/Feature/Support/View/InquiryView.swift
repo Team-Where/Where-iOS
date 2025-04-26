@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct InquiryView: View {
-    @State private var inquiries: [Inquiry] = [
-        .init(id: 0, createdAt: .now, modifiedAt: .now, title: "[비밀번호 변경이 안돼요]", content: "비밀번호가 변경이 안돼요. 해결해주세요.", images: [], isAnswered: false, answerContent: nil),
-        .init(id: 1, createdAt: .now, modifiedAt: .now, title: "[친구가 추가되지 않아요]", content: "친구가 추가되지 않아요. 사진에 보이는 것처럼 등록했는데, 어떻게 해야하는 걸까요?", images: [], isAnswered: true, answerContent: "안녕하세요. 어디서비스 운영자입니다.\n서비스 상에 오류가 있어 불편함드려 죄송합니다. 오류는 금일 밤 12시에 수정되어 정상적으로 서비스를 이용하실 수 있습니다. 감사합니다.")
-    ]
+    @State private var inquiries: [Inquiry] = []
     
     private var waitingForReplyInquiries: [Inquiry] {
         inquiries.filter { $0.isAnswered == false }
@@ -197,7 +194,7 @@ extension InquiryView {
                             .whereFont(.body16medium)
                             .foregroundStyle(.where(.gray800))
                         
-                        AsyncDateView(date: .constant(inquiry.createdAt), format: .yyyyMMdd, prompt: "")
+                        AsyncDateView(date: .constant(inquiry.modifiedAt), format: .yyyyMMdd, prompt: "")
                             .whereFont(.body14regular)
                             .foregroundStyle(.where(.gray700))
                     }

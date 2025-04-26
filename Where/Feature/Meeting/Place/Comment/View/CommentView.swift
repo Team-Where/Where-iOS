@@ -373,9 +373,3 @@ extension CommentView {
         }
     }
 }
-
-#Preview {
-    NavigationStack {
-        PlaceDetailView(PreviewHelper.shared.mockPlace, resolver: PreviewHelper.shared.resolver)
-    }
-}
