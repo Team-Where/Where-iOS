@@ -76,7 +76,7 @@ enum MeetingCoreError: Error {
     case networkingError(Error)
     case userIDNotSet
     case encodingError(type: Encodable.Type)
-    case meetingNotFound
+    case noSuchMeeting
 }
 
 final class MeetingCore {
@@ -145,7 +145,36 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func deleteSchedule(id: UInt64) {
-        
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+        }
+        guard let meeting = _meetings[id]
+        else {
+            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        }
+                
+        let dto = DeleteScheduleDTO.Request(meetingID: id, userID: userID)
+        apiService.requestPublisher(Endpoint.deleteSchedule(dto: dto), EmptyDTO.Response.self)
+            .sink { completion in
+                // TODO: Error handling
+            } receiveValue: { [weak self] _ in
+                guard let self else { return }
+                var meetings = meetingsSubject.value
+                let newMeeting = Meeting(
+                    id: id,
+                    title: meeting.title,
+                    description: meeting.description,
+                    imageURL: meeting.imageURL,
+                    createdAt: meeting.createdAt,
+                    updatedAt: meeting.updatedAt,
+                    shareLink: meeting.shareLink,
+                    isFinished: meeting.isFinished
+                )
+                meetings[id] = newMeeting
+                meetingsSubject.send(meetings)
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Meeting Related
@@ -153,7 +182,7 @@ extension MeetingCore: MeetingCoreProtocol {
     func createMeeting(info: TemporaryMeetingInfo) {
         guard let userID = currentUserID
         else {
-            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
         }
         
         do {
@@ -180,12 +209,12 @@ extension MeetingCore: MeetingCoreProtocol {
     func updateMeeting(id: UInt64, imageData: Data?) {
         guard let userID = currentUserID
         else {
-            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
         }
         
         guard let meeting = _meetings[id]
         else {
-            return meetingsSubject.send(completion: .failure(MeetingCoreError.meetingNotFound))
+            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
         }
         
         let dto = UpdateMeetingDTO.Request(meetingID: id, title: meeting.title, description: meeting.description, userID: userID)
@@ -217,7 +246,7 @@ extension MeetingCore: MeetingCoreProtocol {
     func endMeeting(id: UInt64) {
         guard let userID = currentUserID
         else {
-            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
         }
         let dto = EndMeetingDTO.Request(meetingID: id, userID: userID)
         apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
@@ -256,7 +285,7 @@ extension MeetingCore: MeetingCoreProtocol {
     func readInvitaionStatus(id: UInt64) {
         guard let _ = currentUserID
         else {
-            return invitationStatusSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+            return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
         }
         apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
             .sink { completion in
@@ -276,7 +305,7 @@ extension MeetingCore: MeetingCoreProtocol {
     func inviteParticipant(id: UInt64, participantId: UInt64) {
         guard let userID = currentUserID
         else {
-            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
         }
         let dto = InviteFriendsDTO.Request(meetingID: id, hostID: userID, guestID: participantId)
         apiService.requestPublisher(Endpoint.inviteFriends(dto: dto), EmptyDTO.Response.self)
@@ -291,7 +320,7 @@ extension MeetingCore: MeetingCoreProtocol {
     func acceptInvitation(id: UInt64) {
         guard let _ = currentUserID
         else {
-            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
         }
         let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
         apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
