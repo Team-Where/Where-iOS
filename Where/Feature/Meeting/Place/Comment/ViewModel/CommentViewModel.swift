@@ -15,7 +15,6 @@ final class CommentViewModel: ObservableObject {
     @Published var comments = [Comment]()
     @Published var currentComment: Comment?
     @Published var commentTextField = String()
-    private var currentPlace: Place?
     
     private let placeCore: PlaceCoreProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -26,24 +25,12 @@ final class CommentViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        placeCore.currentPlace
-            .combineLatest(placeCore.currentPlaceComments)
+        placeCore.comments
             .receive(on: DispatchQueue.main)
             .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print(error)
-                    #endif
-                }
-            } receiveValue: { [weak self] (place, comments) in
-                self?.currentPlace = place
-                self?.comments = comments.sorted {
-                    let date1 = $0.updatedAt > $0.createdAt ? $0.updatedAt : $0.createdAt
-                    let date2 = $1.updatedAt > $1.createdAt ? $1.updatedAt : $1.createdAt
-                    return date1 < date2
-                }
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] dict in
+                self?.comments = dict.values.sorted { $0.createdAt > $1.createdAt }
             }
             .store(in: &cancellables)
     }
@@ -70,9 +57,8 @@ extension CommentViewModel {
         sheetType = .create
     }
     
-    func createComment() {
-        guard let currentPlace else { return }
-        placeCore.createComment(placeID: currentPlace.id, description: commentTextField)
+    func createComment(placeID: UInt64) {
+        placeCore.createComment(placeID: placeID, description: commentTextField)
     }
     
     func presentReadingSheet(comment: Comment) {
