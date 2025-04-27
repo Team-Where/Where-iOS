@@ -5,6 +5,8 @@
 //  Created by BOMBSGIE on 4/8/25.
 //
 
+import Foundation
+
 /// 모임 정보 조회 DTO
 enum ReadMeetingDetailDTO {
     typealias Response = [MeetingInfo]
@@ -28,6 +30,20 @@ extension ReadMeetingDetailDTO {
             case meetingImageURLString = "image"
             case isMeetingEnded = "finished"
             case title, description, createdAt, scheduleDate, scheduleTime
+        }
+        
+        func toEntity() -> Meeting {
+            return .init(
+                id: meetingID,
+                title: title,
+                description: description,
+                imageURL: URL(string: meetingImageURLString ?? ""),
+                createdAt: createdAt.toDate(by: .serverDateTimeWithMS) ?? .now,
+                scheduleDate: scheduleDate?.toDate(by: .yyyyMMddHyphen),
+                scheduleTime: scheduleTime?.toDate(by: .HHmmss),
+                shareLink: URL(string: invitationLink),
+                isFinished: isMeetingEnded
+            )
         }
     }
 }
