@@ -53,8 +53,6 @@ protocol MeetingCoreProtocol: CoreProtocol {
     ///  - Parameters:
     ///     - id: 모임의 고유 식별자
     func readInvitaionStatus(id: UInt64)
-    /// 전체 모임 조회
-    func readMeetings()
     /// 모임 초대
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -77,6 +75,8 @@ protocol MeetingMediationProtocol {
     func loadCurrentMeetingsWithFriend(friendID: UInt64)
     /// 현재 사용자를 설정, 중재자에 의해 호출됨
     func setCurrentUser(_ user: User?)
+    /// 전체 모임 조회, 중재자에 의해 호출
+    func loadAllMeetings()
 }
 
 enum MeetingCoreError: Error {
@@ -254,23 +254,6 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     // MARK: - Meeting Related
-    
-    func readMeetings() {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
-        }
-        apiService.requestPublisher(Endpoint.readMeetingDetail(userID: user.id), ReadMeetingDetailDTO.Response.self)
-            .map { meetings in
-                meetings.reduce(into: [:]) { $0[$1.meetingID] = $1.toEntity() }
-            }
-            .sink { completions in
-                // TODO: Error handling
-            } receiveValue: { [weak self] in
-                self?.meetingsSubject.send($0)
-            }
-            .store(in: &cancellables)
-    }
 
     func createMeeting(info: TemporaryMeetingInfo) {
         guard let user = currentUser
@@ -484,6 +467,25 @@ extension MeetingCore: MeetingCoreProtocol {
 
 // MARK: - MeetingMediationProtocol Conformation
 extension MeetingCore: MeetingMediationProtocol {
+    
+    func loadAllMeetings() {
+        guard let user = currentUser
+        else {
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+        }
+        apiService.requestPublisher(Endpoint.readMeetingDetail(userID: user.id), ReadMeetingDetailDTO.Response.self)
+            .map { meetings in
+                meetings.reduce(into: [:]) { $0[$1.meetingID] = $1.toEntity() }
+            }
+            .sink { completions in
+                // TODO: Error handling
+            } receiveValue: { [weak self] in
+                self?.meetingsSubject.send($0)
+            }
+            .store(in: &cancellables)
+    }
+    
+    
     func updateRelatedMeetings(meetingIDs: [UInt64 : [UInt64]], summaries: [UInt64 : MeetingSummary]) {
         return
     }

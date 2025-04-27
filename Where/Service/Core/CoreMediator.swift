@@ -62,11 +62,15 @@ extension CoreMediator: CoreLinkageProtocol {
 extension CoreMediator: Notifiable {
     func notify(event: CoreEvent) {
         switch event {
-        case .userDidLogin(let userID, let isAdmin):
-            communityCore.loadFriends(userID: userID)
+        case .userDidLogin(let user, let isAdmin):
+            communityCore.loadFriends(userID: user.id)
             
+            // MARK: - MeetingCore Related
+            meetingCore.setCurrentUser(user)
+            meetingCore.loadAllMeetings()
+
             // MARK: - SupportCore Related
-            supportCore.setCurrentUserID(userID)
+            supportCore.setCurrentUserID(user.id)
             supportCore.loadAnnouncements()
             isAdmin ? supportCore.loadAdminInquiries() : supportCore.loadInquiries()
         case .userDidLogout(let userID):
