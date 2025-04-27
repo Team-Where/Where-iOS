@@ -67,7 +67,7 @@ extension CommentViewModel {
     }
     
     func deleteComment(_ comment: Comment) {
-        placeCore.deleteComment(id: comment.placeId)
+        placeCore.deleteComment(comment: comment)
     }
     
     func presentEditingSheet() {
@@ -78,10 +78,10 @@ extension CommentViewModel {
     
     func editComment() {
         guard let currentComment else { return }
-        placeCore.updateComment(id: currentComment.placeId, description: commentTextField)
+        placeCore.updateComment(comment: currentComment, description: commentTextField)
     }
     
     func isMyComment(_ comment: Comment) -> Bool {
-        placeCore.isMyComment(placeID: comment.placeId, commentID: comment.id)
+        placeCore.isMyComment(comment: comment)
     }
 }
