@@ -49,7 +49,7 @@ struct AcceptMeeetingInvitationDTO {
                 title: title,
                 description: description,
                 imageURL: URL(string: imageString),
-                createdAt: createdAt.toDate(by: .serverDateTimeWithMS),
+                createdAt: createdAt.toDate(by: .serverDateTimeWithMS) ?? .now,
                 scheduleDate: scheduleDate?.toDate(by: .yyyyMMddHyphen),
                 scheduleTime: scheduleTime?.toDate(by: .HHmmss),
                 shareLink: URL(string: invitationLink),

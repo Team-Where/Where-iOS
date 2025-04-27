@@ -33,8 +33,7 @@ struct Meeting: Identifiable {
         title: String,
         description: String,
         imageURL: URL? = nil,
-        createdAt: Date? = nil,
-        updatedAt: Date? = nil,
+        createdAt: Date,
         scheduleDate: Date? = nil,
         scheduleTime: Date? = nil,
         shareLink: URL? = nil,
@@ -45,7 +44,6 @@ struct Meeting: Identifiable {
         self.description = description
         self.imageURL = imageURL
         self.createdAt = createdAt
-        self.updatedAt = updatedAt
         self.scheduleDate = scheduleDate
         self.scheduleTime = scheduleTime
         self.shareLink = shareLink

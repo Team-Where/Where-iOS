@@ -44,8 +44,11 @@ enum AcceptMeetingInvitationByLinkDTO {
                 title: title,
                 description: description,
                 imageURL: URL(string: meetingImageURLString ?? ""),
-                createdAt: createdAt.toDate(by: .serverDateTimeWithMS),
-                scheduleDate: scheduleDate?.toDate(by: .yyyyMMddHyphen), scheduleTime: scheduleTime?.toDate(by: .HHmmss), shareLink: URL(string: invitationLink), isFinished: isMeetingEnded
+                createdAt: createdAt.toDate(by: .serverDateTimeWithMS) ?? .now,
+                scheduleDate: scheduleDate?.toDate(by: .yyyyMMddHyphen),
+                scheduleTime: scheduleTime?.toDate(by: .HHmmss),
+                shareLink: URL(string: invitationLink),
+                isFinished: isMeetingEnded
             )
         }
     }
