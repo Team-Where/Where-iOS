@@ -18,9 +18,7 @@ struct Meeting: Identifiable {
     /// 모임 대표 이미지 URL
     let imageURL: URL?
     /// 생성일시
-    let createdAt: Date?
-    /// 최근 수정일시
-    let updatedAt: Date?
+    let createdAt: Date
     /// 모임 일정 날짜
     let scheduleDate: Date?
     /// 모임 일정 시간
