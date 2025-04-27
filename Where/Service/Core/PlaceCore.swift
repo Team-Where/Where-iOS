@@ -171,7 +171,7 @@ extension PlaceCore: PlaceCoreProtocol {
                     sharedUserImageURLs: oldPlace.sharedUserImageURLs,
                     pickedState: PickedState(response.pickedState),
                     links: oldPlace.links,
-                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared,
+                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared
                 )
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)
@@ -207,7 +207,7 @@ extension PlaceCore: PlaceCoreProtocol {
                     sharedUserImageURLs: oldPlace.sharedUserImageURLs,
                     pickedState: PickedState(response.pickedState),
                     links: oldPlace.links,
-                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared,
+                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared
                 )
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)

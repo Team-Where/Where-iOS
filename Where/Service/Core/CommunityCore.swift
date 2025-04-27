@@ -76,6 +76,7 @@ extension CommunityCore: CommunityCoreProtocol {
     func deleteFriend(id: UInt64) {
         guard let userID = currentUserID else {
             friendsSubject.send(completion: .failure(.userIDNotSet))
+            return
         }
         
         let dto = DeleteFriendDTO.Request(userID: userID, friendID: id)

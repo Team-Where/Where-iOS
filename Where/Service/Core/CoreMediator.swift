@@ -70,6 +70,8 @@ extension CoreMediator: Notifiable {
             supportCore.loadAnnouncements()
             isAdmin ? supportCore.loadAdminInquiries() : supportCore.loadInquiries()
         case .userDidLogout(let userID):
+            // TODO: 로그 아웃 처리
+            return
             
         case .friendsListUpdated(let meetingIDs, let summaries):
             meetingCore.updateRelatedMeetings(meetingIDs: meetingIDs, summaries: summaries)

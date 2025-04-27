@@ -21,7 +21,7 @@ struct MeetingAdditionGuideView: View {
         .scrollIndicators(.never)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarVisibility(.hidden, for: .tabBar)
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()
