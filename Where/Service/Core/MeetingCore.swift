@@ -51,6 +51,8 @@ protocol MeetingCoreProtocol: CoreProtocol {
     ///  - Parameters:
     ///     - id: 모임의 고유 식별자
     func readInvitaionStatus(id: UInt64)
+    /// 전체 모임 조회
+    func readMeetings()
     /// 모임 초대
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -154,7 +156,6 @@ extension MeetingCore: MeetingCoreProtocol {
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
-                    updatedAt: meeting.updatedAt,
                     scheduleDate: $0.date.toDate(by: .yyyyMMddHyphen),
                     scheduleTime: $0.time.toDate(by: .HHmm),
                     shareLink: meeting.shareLink,
@@ -195,7 +196,6 @@ extension MeetingCore: MeetingCoreProtocol {
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
-                    updatedAt: meeting.updatedAt,
                     scheduleDate: $0.date.toDate(by: .yyyyMMddHyphen),
                     scheduleTime: $0.time.toDate(by: .HHmm),
                     shareLink: meeting.shareLink,
@@ -232,7 +232,6 @@ extension MeetingCore: MeetingCoreProtocol {
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
-                    updatedAt: meeting.updatedAt,
                     shareLink: meeting.shareLink,
                     isFinished: meeting.isFinished
                 )
@@ -249,6 +248,23 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     // MARK: - Meeting Related
+    
+    func readMeetings() {
+        guard let userID = currentUserID
+        else {
+            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+        }
+        apiService.requestPublisher(Endpoint.readMeetingDetail(userID: userID), ReadMeetingDetailDTO.Response.self)
+            .map { meetings in
+                meetings.reduce(into: [:]) { $0[$1.meetingID] = $1.toEntity() }
+            }
+            .sink { completions in
+                // TODO: Error handling
+            } receiveValue: { [weak self] in
+                self?.meetingsSubject.send($0)
+            }
+            .store(in: &cancellables)
+    }
 
     func createMeeting(info: TemporaryMeetingInfo) {
         guard let userID = currentUserID
@@ -298,6 +314,7 @@ extension MeetingCore: MeetingCoreProtocol {
                         title: $0.title,
                         description: $0.description,
                         imageURL: URL(string: $0.imageURLString ?? ""),
+                        createdAt: meeting.createdAt,
                         shareLink: URL(string: $0.invitationLink),
                         isFinished: meeting.isFinished
                     )
@@ -334,7 +351,6 @@ extension MeetingCore: MeetingCoreProtocol {
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
-                    updatedAt: meeting.updatedAt,
                     scheduleDate: meeting.scheduleDate,
                     scheduleTime: meeting.scheduleTime,
                     shareLink: meeting.shareLink,
