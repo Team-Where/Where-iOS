@@ -190,3 +190,14 @@ extension Date {
         return components
     }
 }
+
+// MARK: - Date+Compare
+extension Date {
+    /// '어디' 서비스의 '최근 만난 모임'이란 종료일로부터 한 달이 되지 않은 모임을 의미합니다.
+    func isRecent(compareTo now: Date) -> Bool {
+        guard let oneMonthAgo = calendar.date(byAdding: .month, value: -1, to: now) else {
+            return false
+        }
+        return self >= oneMonthAgo
+    }
+}
