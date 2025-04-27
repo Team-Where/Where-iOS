@@ -67,6 +67,7 @@
 		046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046833F72D3B8FE5009D2357 /* InviteFriendsViewModel.swift */; };
 		046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046833FA2D3B902E009D2357 /* CalendarView.swift */; };
 		046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046834172D3E26E2009D2357 /* PreferenceView.swift */; };
+		046A64442DBE6021006ED90C /* ViewModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64432DBE6021006ED90C /* ViewModelError.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -254,6 +255,7 @@
 		046833F72D3B8FE5009D2357 /* InviteFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewModel.swift; sourceTree = "<group>"; };
 		046833FA2D3B902E009D2357 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		046834172D3E26E2009D2357 /* PreferenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceView.swift; sourceTree = "<group>"; };
+		046A64432DBE6021006ED90C /* ViewModelError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelError.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -1066,6 +1068,7 @@
 			isa = PBXGroup;
 			children = (
 				7F7E67ED2DA1214B00833376 /* View */,
+				046A64432DBE6021006ED90C /* ViewModelError.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1391,6 +1394,7 @@
 				04C6F2402DBA656A0099874F /* HistoryReminderViewModel.swift in Sources */,
 				0450E85F2D9AC85B00DB029A /* CommunityCore.swift in Sources */,
 				04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */,
+				046A64442DBE6021006ED90C /* ViewModelError.swift in Sources */,
 				046455D52D93E2A100B74A01 /* EditInquiryView.swift in Sources */,
 				046455D92D93EF5000B74A01 /* Text.swift in Sources */,
 				04A530BA2D929D71004E58AD /* EditProfileViewModel.swift in Sources */,
