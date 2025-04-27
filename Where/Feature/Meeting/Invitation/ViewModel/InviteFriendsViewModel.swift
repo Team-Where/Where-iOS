@@ -17,10 +17,12 @@ final class InviteFriendsViewModel: ObservableObject {
     @Published var searchingText: String = String()
     
     private let communityCore: CommunityCoreProtocol
+    private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         subscribe()
     }
     
@@ -54,5 +56,13 @@ final class InviteFriendsViewModel: ObservableObject {
                 self?.friends = dict.values.sorted { $0.nickname < $1.nickname }
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: - Interfaces
+extension InviteFriendsViewModel {
+    func inviteFriend(on meeting: Meeting, _ friend: FriendRelationship) {
+        isFloaterPresented.toggle()
+        meetingCore.inviteParticipant(id: meeting.id, guest: friend)
     }
 }

@@ -13,8 +13,13 @@ struct InviteFriendsView: View {
     @FocusState private var isFocused: Bool
     
     private let resolver: Resolver
+    private let meeting: Meeting
     
-    init(resolver: Resolver) {
+    init(
+        meeting: Meeting,
+        resolver: Resolver
+    ) {
+        self.meeting = meeting
         self.viewModel = resolver.resolve(InviteFriendsViewModel.self)!
         self.resolver = resolver
     }
@@ -192,7 +197,7 @@ struct InviteFriendsView: View {
     
     @ViewBuilder private func friendsListCell(_ friend: FriendRelationship) -> some View {
         HStack(spacing: 12) {
-            AsyncImage(url: nil)
+            AsyncImage(url: friend.imageURL)
                 .frame(width: 40, height: 40)
                 .clipShape(.circle)
             
@@ -231,7 +236,7 @@ struct InviteFriendsView: View {
             
             // TODO: 도메인 모델 나오면 수정 예정
             Button {
-                viewModel.isFloaterPresented.toggle()
+                viewModel.inviteFriend(on: meeting, friend)
             } label: {
                 Text("초대")
                     .whereFont(.body14medium)
@@ -246,11 +251,5 @@ struct InviteFriendsView: View {
                     )
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        InviteFriendsView(resolver: PreviewHelper.shared.resolver)
     }
 }

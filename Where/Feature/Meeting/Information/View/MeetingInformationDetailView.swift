@@ -98,12 +98,13 @@ struct MeetingInformationDetailView: View {
         .navigationDestination(item: $navigationType) { type in
             switch type {
             case .inviteFriends:
-                InviteFriendsView(resolver: resolver)
+                InviteFriendsView(meeting: viewModel.meeting!, resolver: resolver)
             }
         }
     }
     
     private var header: some View {
+        // TODO: 하드코딩 데이터 실제 값으로 채우기
         HStack {
             AsyncImage(url: nil)
                 .frame(width: 64, height: 64)
