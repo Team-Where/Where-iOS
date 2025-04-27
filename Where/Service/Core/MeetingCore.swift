@@ -13,6 +13,8 @@ protocol MeetingCoreProtocol: CoreProtocol {
     var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> { get }
     /// 친구와 함께한 모임 목록
     var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> { get }
+    /// 특정 모임의 초대 현황
+    var invitationStatus: AnyPublisher<[UInt64: [MeetingInvitationState]], MeetingCoreError> { get }
     
     /// 모임 일정 등록
     /// - Parameters:
@@ -133,6 +135,10 @@ extension MeetingCore: MeetingCoreProtocol {
     
     var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> {
         meetingSummariesSubject.eraseToAnyPublisher()
+    }
+    
+    var invitationStatus: AnyPublisher<[UInt64 : [MeetingInvitationState]], MeetingCoreError> {
+        invitationStatusSubject.eraseToAnyPublisher()
     }
     
     // MARK: - Schedule Related
@@ -422,7 +428,7 @@ extension MeetingCore: MeetingCoreProtocol {
                     hostName: user.nickname,
                     guestID: guest.id,
                     guestName: guest.nickname,
-                    status: false,
+                    isInvited: false,
                     guestImageURLString: guest.imageURL?.absoluteString
                 )
             }
