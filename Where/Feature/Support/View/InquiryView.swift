@@ -25,7 +25,7 @@ struct InquiryView: View {
         ])
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarVisibility(.hidden, for: .tabBar)
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()

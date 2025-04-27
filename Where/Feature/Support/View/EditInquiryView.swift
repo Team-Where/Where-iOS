@@ -235,7 +235,7 @@ extension EditInquiryView {
                         .contentShape(.rect)
                 }
                 // TODO: 테스트 과정에서 파일 확장자 수정할 수 있음
-                .fileImporter(isPresented: $isImporting, allowedContentTypes: [.image, .jpeg, .png, .gif, .heic, .heif, .heics]) { result in
+                .fileImporter(isPresented: $isImporting, allowedContentTypes: [.image, .jpeg, .png, .gif, .heic, .heif]) { result in
                     switch result {
                     case .success(let url):
                         guard url.startAccessingSecurityScopedResource(),

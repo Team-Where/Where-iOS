@@ -52,19 +52,8 @@ final class MyMeetingViewModel: ObservableObject {
         case .created:
             meetings.sort { $0.createdAt < $1.createdAt }
         case .scheduled:
-            meetings.sort { lhs, rhs in
-                // MARK: 정렬 기준 구체화 예정 (WIP)
-                let isLeftFinished = lhs.schedule ?? .now < .now
-                let isRightFinished = rhs.schedule ?? .now < .now
-                
-                if isLeftFinished && !isRightFinished {
-                    return false
-                } else if !isLeftFinished && isRightFinished {
-                    return true
-                } else {
-                    return lhs.schedule ?? .now < rhs.schedule ?? .now
-                }
-            }
+            // TODO: 스케줄 기준 정렬 로직 구현
+            return
         }
     }
 }

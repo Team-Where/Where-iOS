@@ -62,7 +62,8 @@ struct ContentView: View {
                 .presentationDetents([.fraction(0.99)])
         }
         .fullScreenCover(isPresented: $isCompleteCreationViewPresented) {
-            CompleteCreationView(isCompleteCreationViewPresented: $isCompleteCreationViewPresented)
+            // TODO: 미팅 생성 성공 후, 미팅 인스턴스 넘기는 처리 구현
+//            CompleteCreationView(isCompleteCreationViewPresented: $isCompleteCreationViewPresented, meeting: <#Meeting#>)
         }
     }
 }

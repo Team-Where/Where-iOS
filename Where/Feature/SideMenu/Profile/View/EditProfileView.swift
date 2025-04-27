@@ -89,9 +89,9 @@ struct EditProfileView: View {
             }
         }
         .popup($viewModel.isPopupPresented) {
-            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
-                viewModel.profileImage = uiImage
-            }
+//            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
+//                viewModel.profileImage = uiImage
+//            }
         }
         .floater($viewModel.isFloaterPresented, title: "잠시 후 다시 시도해주세요.")
         .onChange(of: viewModel.step) { oldValue, newValue in

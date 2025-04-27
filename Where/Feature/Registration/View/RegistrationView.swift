@@ -46,9 +46,9 @@ struct RegistrationView: View {
                 .ignoresSafeArea(.keyboard)
             }
             .popup($viewModel.isPopupPresented) {
-                ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
-                    viewModel.profileImage = uiImage
-                }
+//                ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
+//                    viewModel.profileImage = uiImage
+//                }
             }
             .onDisappear {
                 viewModel.flush()

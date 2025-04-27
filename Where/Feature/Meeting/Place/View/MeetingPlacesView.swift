@@ -228,7 +228,7 @@ struct MeetingPlacesView: View {
                             HStack(spacing: 4) {
                                 Image(.bubbleIcon)
                                 
-                                Text(place.comments.count > .zero ? "코멘트 \(place.comments.count)" : "코멘트")
+                                Text(place.commentsCount > .zero ? "코멘트 \(place.commentsCount)" : "코멘트")
                             }
                             .foregroundStyle(Color(hex: 0x868E96))
                             
@@ -329,7 +329,7 @@ extension MeetingPlacesView {
                     HStack(spacing: 4) {
                         Image(.bubbleIcon)
                         
-                        Text("코멘트 \(place.comments.count)")
+                        Text("코멘트 \(place.commentsCount)")
                     }
                     .foregroundStyle(Color(hex: 0x868E96))
                     

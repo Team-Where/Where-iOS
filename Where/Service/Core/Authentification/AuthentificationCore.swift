@@ -105,7 +105,8 @@ final class AuthentificationCore {
 //                    }
                     return
                 }
-                self?.mediator?.notify(event: .userDidLogin(id: user.id))
+                // TODO: 관리자 계정인지 아닌지 파악 여부 후 로직 구현
+//                self?.mediator?.notify(event: .userDidLogin(id: user.id, isAdmin: ))
             }
             .store(in: &cancellables)
         

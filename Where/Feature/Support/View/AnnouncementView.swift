@@ -46,7 +46,7 @@ struct AnnouncementView: View {
                 }
             }
         }
-        .toolbarVisibility(.hidden, for: .tabBar)
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
