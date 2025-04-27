@@ -11,7 +11,7 @@ import Combine
 protocol PlaceCoreProtocol: CoreProtocol {
     /// 장소 목록
     var places: AnyPublisher<[UInt64: Place], PlaceCoreError> { get }
-    /// 코멘트 목록
+    /// 특정 장소에 대한 코멘트 목록
     var comments: AnyPublisher<[UInt64: Comment], PlaceCoreError> { get }
     
     /// 장소 생성
@@ -34,9 +34,9 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - description: 코멘트 내용
     func createComment(placeID: UInt64, description: String)
     /// 장소에 대한 코멘트 수정
-    func updateComment(id: UInt64, description: String)
+    func updateComment(comment: Comment, description: String)
     /// 장소에 대한 코멘트 삭제
-    func deleteComment(id: UInt64)
+    func deleteComment(comment: Comment)
     /// 사용자가 작성한 코멘트 여부 확인
     func isMyComment(comment: Comment) -> Bool
 }
@@ -110,7 +110,7 @@ extension PlaceCore: PlaceCoreProtocol {
     func readSpecificPlace(id: UInt64) {
         apiService
             .requestPublisher(Endpoint.readComments(placeID: id), ReadCommentsDTO.Response.self)
-            .map { (response: ReadCommentsDTO.Response) -> [UInt64: Comment] in
+            .map { response -> [UInt64: Comment] in
                 response
                     .map { $0.toEntity() }
                     .reduce(into: [:]) { $0[$1.id] = $1 }
@@ -166,11 +166,12 @@ extension PlaceCore: PlaceCoreProtocol {
                     name: oldPlace.name,
                     address: oldPlace.address,
                     likesCount: response.likesCount,
+                    commentsCount: oldPlace.commentsCount,
                     isLikedByMe: response.isLikedByMe,
                     sharedUserImageURLs: oldPlace.sharedUserImageURLs,
                     pickedState: PickedState(response.pickedState),
                     links: oldPlace.links,
-                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared
+                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared,
                 )
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)
@@ -201,11 +202,12 @@ extension PlaceCore: PlaceCoreProtocol {
                     name: oldPlace.name,
                     address: oldPlace.address,
                     likesCount: response.likesCount,
+                    commentsCount: oldPlace.commentsCount,
                     isLikedByMe: response.isLikedByMe,
                     sharedUserImageURLs: oldPlace.sharedUserImageURLs,
                     pickedState: PickedState(response.pickedState),
                     links: oldPlace.links,
-                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared
+                    isSimulaneouslyShared: oldPlace.isSimulaneouslyShared,
                 )
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)
@@ -235,17 +237,20 @@ extension PlaceCore: PlaceCoreProtocol {
 //                    writerId: userID
                     createdAt: .now
                 )
+                
+                comments[comment.id] = comment
+                self?.commentsSubject.send(comments)
             }
             .store(in: &cancellables)
     }
     
-    func updateComment(id: UInt64, description: String) {
+    func updateComment(comment: Comment, description: String) {
         guard let userID = currentUserID else {
             commentsSubject.send(completion: .failure(.userIDNotSet))
             return
         }
         
-        let dto = UpdateCommentDTO.Request(id: id, userID: userID, description: description)
+        let dto = UpdateCommentDTO.Request(id: comment.id, userID: userID, description: description)
         
         apiService
             .requestPublisher(Endpoint.updateComment(dto: dto), UpdateCommentDTO.Response.self)
@@ -269,13 +274,13 @@ extension PlaceCore: PlaceCoreProtocol {
             .store(in: &cancellables)
     }
     
-    func deleteComment(id: UInt64) {
+    func deleteComment(comment: Comment) {
         guard let userID = currentUserID else {
             commentsSubject.send(completion: .failure(.userIDNotSet))
             return
         }
         
-        let dto = DeletePlaceDTO.Request(id: id, userID: userID)
+        let dto = DeletePlaceDTO.Request(id: comment.id, userID: userID)
         
         apiService
             .requestPublisher(Endpoint.deleteComment(dto: dto), EmptyDTO.Response.self)
@@ -283,13 +288,14 @@ extension PlaceCore: PlaceCoreProtocol {
                 // TODO: 에러 핸들링
             } receiveValue: { [weak self] _ in
                 guard var comments = self?.commentsSubject.value else { return }
-                comments[id] = nil
+                comments[comment.id] = nil
                 self?.commentsSubject.send(comments)
             }
             .store(in: &cancellables)
     }
     
     func isMyComment(comment: Comment) -> Bool {
+        // TODO: 로직 보완하기
         guard let userID = currentUserID else { return false }
         return true
     }

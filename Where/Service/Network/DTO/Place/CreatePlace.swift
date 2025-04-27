@@ -53,6 +53,7 @@ enum CreatePlaceDTO {
                 name: name,
                 address: address,
                 likesCount: likesCount,
+                commentsCount: .zero,
                 isLikedByMe: isLikedByMe,
                 sharedUserImageURLs: [],
                 pickedState: PickedState(pickedState),

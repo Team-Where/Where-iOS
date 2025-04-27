@@ -82,6 +82,6 @@ extension CommentViewModel {
     }
     
     func isMyComment(_ comment: Comment) -> Bool {
-        placeCore.isMyComment(comment: comment)
+        placeCore.isMyComment(placeID: comment.placeId, commentID: comment.id)
     }
 }

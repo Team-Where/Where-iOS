@@ -19,6 +19,8 @@ struct Place: Identifiable {
     let address: String
     /// 좋아요 개수
     let likesCount: Int
+    /// 코멘트 개수
+    let commentsCount: Int
     /// 사용자의 좋아요 여부
     let isLikedByMe: Bool
     /// 장소 공유한 사람들의 프로필 이미지 URL
@@ -29,8 +31,6 @@ struct Place: Identifiable {
     let links: PlaceLinks
     /// 같이 찾은 장소 여부
     let isSimulaneouslyShared: Bool
-    /// 장소에 대한 코멘트 목록
-    let comments: [Comment]
 }
 
 /// 장소 선택 여부
