@@ -12,7 +12,6 @@ struct ImageSelectionPopupView: View {
     @Binding var isPopupPresented: Bool
     @State private var selectedItem: PhotosPickerItem?
     @State var isSeleted = false
-    @Binding var isImageSelected: Bool
     
     let onSelected: (Data?) -> Void
     
@@ -21,7 +20,6 @@ struct ImageSelectionPopupView: View {
             Button("기본 이미지로 설정") {
                 onSelected(nil)
                 isPopupPresented = false
-                isImageSelected = true
             }
             
             PhotosPicker(
@@ -36,7 +34,6 @@ struct ImageSelectionPopupView: View {
                     if let data = try? await newItem?.loadTransferable(type: Data.self) {
                         onSelected(data)
                         isPopupPresented = false
-                        isImageSelected = true
                     }
                 }
             }

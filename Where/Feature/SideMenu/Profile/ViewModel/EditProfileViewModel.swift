@@ -5,13 +5,14 @@
 //  Created by Swain Yun on 3/25/25.
 //
 
-import SwiftUI
+import Foundation
 import Combine
 import Swinject
 
+@MainActor
 final class EditProfileViewModel: ObservableObject {
     @Published var isPopupPresented: Bool = false
-    @Published var profileImage: UIImage?
+    @Published var profileImageData: Data?
     @Published var nicknameFieldText: String = String()
     @Published var isNicknameValid: Bool = false
     @Published var step: EditProfileStep = .beforeUpdate
@@ -55,16 +56,15 @@ final class EditProfileViewModel: ObservableObject {
     
     private func initializeProperties(_ user: User?) {
         guard let imageURL = user?.imageURL,
-              let data = try? Data(contentsOf: imageURL),
-              let image = UIImage(data: data)
+              let data = try? Data(contentsOf: imageURL)
         else {
-            self.profileImage = UIImage(named: "person")
-            self.nicknameFieldText = user?.nickname ?? ""
+            profileImageData = nil
+            nicknameFieldText = user?.nickname ?? ""
             return
         }
         
-        self.profileImage = image
-        self.nicknameFieldText = user?.nickname ?? ""
+        profileImageData = data
+        nicknameFieldText = user?.nickname ?? ""
     }
 }
 
@@ -93,5 +93,9 @@ extension EditProfileViewModel {
         step = .processing
         
         // TODO: 프로필 수정 기능 연결
+    }
+    
+    func selectProfileImageData(_ data: Data?) {
+        profileImageData = data
     }
 }

@@ -21,8 +21,9 @@ struct EditProfileView: View {
     var body: some View {
         VStack {
             ZStack(alignment: .bottomTrailing) {
-                if let image = viewModel.profileImage {
-                    Image(uiImage: image)
+                if let data = viewModel.profileImageData,
+                   let uiImage = UIImage(data: data) {
+                    Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 155, height: 155)
@@ -89,9 +90,12 @@ struct EditProfileView: View {
             }
         }
         .popup($viewModel.isPopupPresented) {
-//            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
-//                viewModel.profileImage = uiImage
-//            }
+            ImageSelectionPopupView(
+                isPopupPresented: $viewModel.isPopupPresented,
+                isImageSelected: .constant(true)
+            ) { data in
+                viewModel.selectProfileImageData(data)
+            }
         }
         .floater($viewModel.isFloaterPresented, title: "잠시 후 다시 시도해주세요.")
         .onChange(of: viewModel.step) { oldValue, newValue in
