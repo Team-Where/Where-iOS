@@ -128,11 +128,12 @@ struct CoreAssembly: Assembly {
         }
         
         container.register(SupportCore.self) { resolver in
-            guard let apiService = resolver.resolve(APIServable.self)
+            guard let apiService = resolver.resolve(APIServable.self),
+                  let encoder = resolver.resolve(JSONEncoder.self)
             else {
                 fatalError("TokenStorageProtocol not registered")
             }
-            return SupportCore(apiService: apiService)
+            return SupportCore(encoder: encoder, apiService: apiService)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
