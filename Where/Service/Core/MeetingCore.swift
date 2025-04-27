@@ -13,6 +13,8 @@ protocol MeetingCoreProtocol: CoreProtocol {
     var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> { get }
     /// 친구와 함께한 모임 목록
     var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> { get }
+    /// 친구와 연관된 모임 식별자
+    var relatedMeetingIDs: AnyPublisher<[UInt64: [UInt64]], Never> { get }
     /// 특정 모임의 초대 현황
     var invitationStatus: AnyPublisher<[UInt64: [MeetingInvitationState]], MeetingCoreError> { get }
     
@@ -135,6 +137,10 @@ extension MeetingCore: MeetingCoreProtocol {
     
     var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> {
         meetingSummariesSubject.eraseToAnyPublisher()
+    }
+    
+    var relatedMeetingIDs: AnyPublisher<[UInt64 : [UInt64]], Never> {
+        relatedMeetingIDsSubject.eraseToAnyPublisher()
     }
     
     var invitationStatus: AnyPublisher<[UInt64 : [MeetingInvitationState]], MeetingCoreError> {
