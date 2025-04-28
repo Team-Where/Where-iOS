@@ -6,39 +6,19 @@
 //
 
 import SwiftUI
+import Swinject
 import PhotosUI
 import UniformTypeIdentifiers
 
 struct EditInquiryView: View {
-    struct Constants {
-        /// 제목 글자 수 제한
-        static let titleCharacterLimit: Int = 15
-        /// 내용 글자 수 제한
-        static let contentCharacterLimit: Int = 500
-        /// 제목 텍스트필드 문구
-        static let titlePlaceholder: String = "제목을 입력해주세요."
-        /// 내용 텍스트필드 문구
-        static let contentPlaceholder: String = "내용을 자세하게 입력할수록 빠르게 답변을 받을 수 있어요."
-        /// 파일 호환성 안내
-        static let fileCompatibilityInformation: String = "10MB 미만의 JPG, PNG, GIF 파일만 등록가능 합니다."
-        /// 첨부파일 법적처리 안내
-        static let legalProcessingGuideForAttachedFiles: String = "문의와 무관한 내용이거나 음란/불법적인 내용은 통보없이 삭제될 수 있습니다."
-        /// 최대 첨부사진 개수
-        static let maxAttachmentImageCount: Int = 5
-    }
-    
-    @State private var isPopupPresented: Bool = false
-    @State private var selectedIndex: Int = 0
-    @State private var titleFieldText: String
-    @State private var contentFieldText: String
+    @ObservedObject private var viewModel: EditInquiryViewModel
     @FocusState private var isContentFieldFocused
-    @State private var images: [UIImage?] = .init(repeating: nil, count: Constants.maxAttachmentImageCount)
     
-    private var disabled: Bool { titleFieldText.isEmpty || contentFieldText.isEmpty }
+    private let inquiry: Inquiry?
     
-    init(inquiry: Inquiry?) {
-        self.titleFieldText = inquiry?.title ?? String()
-        self.contentFieldText = inquiry?.content ?? String()
+    init(inquiry: Inquiry?, resolver: Resolver) {
+        self.inquiry = inquiry
+        self.viewModel = resolver.resolve(EditInquiryViewModel.self)!
     }
     
     var body: some View {
@@ -56,7 +36,7 @@ struct EditInquiryView: View {
                         .foregroundStyle(.where(.gray500))
                 }
                 
-                attachmentImagesSection()
+                AttachmentImagesSection(viewModel: viewModel)
                 
                 guideArea
             }
@@ -72,7 +52,7 @@ struct EditInquiryView: View {
                     .frame(height: 48)
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.whereRoundedProminent(disabled: disabled))
+            .buttonStyle(.whereRoundedProminent(disabled: viewModel.disabled))
             .padding()
         }
         .navigationBarBackButtonHidden()
@@ -91,30 +71,32 @@ struct EditInquiryView: View {
         .onTapGesture {
             isContentFieldFocused = false
         }
-        .popup($isPopupPresented) {
-            PopupView(isPopupPresented: $isPopupPresented, image: $images[selectedIndex])
+        .popup($viewModel.isPopupPresented) {
+            PopupView(viewModel: viewModel)
         }
+        .onAppear { viewModel.onAppear(inquiry) }
+        .onDisappear { viewModel.onDisappear() }
     }
     
     private var textFieldsArea: some View {
         VStack(spacing: 24) {
             ZStack(alignment: .trailing) {
-                RoundedTextField(Constants.titlePlaceholder, text: $titleFieldText, lineColor: .where(.gray200))
-                    .characterLimit(text: $titleFieldText, limit: Constants.titleCharacterLimit)
+                RoundedTextField(EditInquiryViewModel.Constants.titlePlaceholder, text: $viewModel.titleFieldText, lineColor: .where(.gray200))
+                    .characterLimit(text: $viewModel.titleFieldText, limit: EditInquiryViewModel.Constants.titleCharacterLimit)
                 
-                Text("\(titleFieldText.count)/\(Constants.titleCharacterLimit)")
+                Text("\(viewModel.titleFieldText.count)/\(EditInquiryViewModel.Constants.titleCharacterLimit)")
                     .whereFont(.body14regular)
                     .foregroundStyle(.where(.gray500))
                     .padding(.trailing, 30)
             }
             
             ZStack(alignment: .bottomTrailing) {
-                RoundedTextEditor(Constants.contentPlaceholder, text: $contentFieldText)
-                    .characterLimit(text: $contentFieldText, limit: Constants.contentCharacterLimit)
+                RoundedTextEditor(EditInquiryViewModel.Constants.contentPlaceholder, text: $viewModel.contentFieldText)
+                    .characterLimit(text: $viewModel.contentFieldText, limit: EditInquiryViewModel.Constants.contentCharacterLimit)
                     .focused($isContentFieldFocused)
                     .frame(height: 175)
                 
-                Text("\(contentFieldText.count)/\(Constants.contentCharacterLimit)")
+                Text("\(viewModel.contentFieldText.count)/\(EditInquiryViewModel.Constants.contentCharacterLimit)")
                     .whereFont(.body14regular)
                     .foregroundStyle(.where(.gray500))
                     .padding(.bottom)
@@ -125,26 +107,14 @@ struct EditInquiryView: View {
         .padding(.top, 40)
     }
     
-    @ViewBuilder private func attachmentImagesSection() -> some View {
-        ScrollView(.horizontal) {
-            LazyHStack {
-                ForEach(0..<5) { index in
-                    AttachmentImageCell(isPopupPresented: $isPopupPresented, selectedIndex: $selectedIndex, image: $images[index], index: index)
-                }
-            }
-        }
-        .scrollIndicators(.never)
-        .frame(height: 80)
-    }
-    
     private var guideArea: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            Text(Constants.fileCompatibilityInformation)
+            Text(EditInquiryViewModel.Constants.fileCompatibilityInformation)
                 .withBulletPoint()
                 .whereFont(.caption12regular)
                 .foregroundStyle(.where(.gray600))
             
-            Text(Constants.legalProcessingGuideForAttachedFiles)
+            Text(EditInquiryViewModel.Constants.legalProcessingGuideForAttachedFiles)
                 .withBulletPoint()
                 .whereFont(.caption12regular)
                 .foregroundStyle(.where(.gray600))
@@ -154,22 +124,34 @@ struct EditInquiryView: View {
 
 // MARK: Nested Types
 extension EditInquiryView {
-    struct AttachmentImageCell: View {
-        @Binding var isPopupPresented: Bool
-        @Binding var selectedIndex: Int
-        @Binding var image: UIImage?
+    struct AttachmentImagesSection: View {
+        @ObservedObject private var viewModel: EditInquiryViewModel
         
-        let index: Int
+        init(viewModel: EditInquiryViewModel) {
+            self.viewModel = viewModel
+        }
         
         var body: some View {
+            ScrollView(.horizontal) {
+                LazyHStack {
+                    ForEach(viewModel.imageDatas.indices, id: \.self) { index in
+                        cell(index)
+                    }
+                }
+            }
+            .scrollIndicators(.never)
+            .frame(height: 80)
+        }
+        
+        @ViewBuilder private func cell(_ index: Int) -> some View {
             Button {
                 withAnimation {
-                    selectedIndex = index
-                    isPopupPresented = true
+                    viewModel.presentPopup(index)
                 }
             } label: {
-                if let image = image {
-                    Image(uiImage: image)
+                if let data = viewModel.imageDatas[index],
+                   let uiImage = UIImage(data: data) {
+                    Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 80, height: 80)
@@ -190,17 +172,11 @@ extension EditInquiryView {
     }
     
     struct PopupView: View {
-        @Binding var isPopupPresented: Bool
-        @Binding var image: UIImage?
-        @State private var isImporting: Bool = false
+        @ObservedObject private var viewModel: EditInquiryViewModel
         @State private var selectedItem: PhotosPickerItem?
         
-        init(
-            isPopupPresented: Binding<Bool>,
-            image: Binding<UIImage?>
-        ) {
-            self._isPopupPresented = isPopupPresented
-            self._image = image
+        init(viewModel: EditInquiryViewModel) {
+            self.viewModel = viewModel
         }
         
         var body: some View {
@@ -218,15 +194,13 @@ extension EditInquiryView {
                 }
                 .onChange(of: selectedItem) { oldValue, newValue in
                     Task {
-                        guard let data = try? await newValue?.loadTransferable(type: Data.self),
-                              let uiImage = UIImage(data: data) else { return }
-                        image = uiImage
-                        isPopupPresented = false
+                        guard let data = try? await newValue?.loadTransferable(type: Data.self) else { return }
+                        viewModel.importImageData(data)
                     }
                 }
                 
                 Button {
-                    isImporting = true
+                    viewModel.isImporting = true
                 } label: {
                     Text("파일 선택")
                         .padding()
@@ -235,16 +209,15 @@ extension EditInquiryView {
                         .contentShape(.rect)
                 }
                 // TODO: 테스트 과정에서 파일 확장자 수정할 수 있음
-                .fileImporter(isPresented: $isImporting, allowedContentTypes: [.image, .jpeg, .png, .gif, .heic, .heif]) { result in
+                .fileImporter(isPresented: $viewModel.isImporting, allowedContentTypes: [.image, .jpeg, .png, .gif, .heic, .heif]) { result in
                     switch result {
                     case .success(let url):
                         guard url.startAccessingSecurityScopedResource(),
-                              let data = try? Data(contentsOf: url),
-                              let uiImage = UIImage(data: data)
+                              let data = try? Data(contentsOf: url)
                         else { return }
                         
                         url.stopAccessingSecurityScopedResource()
-                        image = uiImage
+                        viewModel.importImageData(data)
                         
                     case .failure(let error):
                         #if DEBUG
@@ -253,10 +226,9 @@ extension EditInquiryView {
                     }
                 }
                 
-                if image != nil {
+                if viewModel.currentImageData != nil {
                     Button(role: .destructive) {
-                        image = nil
-                        isPopupPresented = false
+                        viewModel.clearImageData()
                     } label: {
                         Text("파일 첨부 해제")
                             .padding()
@@ -277,16 +249,10 @@ extension EditInquiryView {
                     )
                 
                     .onTapGesture {
-                        isPopupPresented = false
+                        viewModel.dismissPopup()
                     }
             }
             .padding()
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        EditInquiryView(inquiry: nil)
     }
 }
