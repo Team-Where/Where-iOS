@@ -69,6 +69,7 @@
 		046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046834172D3E26E2009D2357 /* PreferenceView.swift */; };
 		046A64442DBE6021006ED90C /* ViewModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64432DBE6021006ED90C /* ViewModelError.swift */; };
 		046A64462DBF23F0006ED90C /* InquiryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64452DBF23F0006ED90C /* InquiryViewModel.swift */; };
+		046A64492DBFA4E9006ED90C /* EditInquiryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -258,6 +259,7 @@
 		046834172D3E26E2009D2357 /* PreferenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceView.swift; sourceTree = "<group>"; };
 		046A64432DBE6021006ED90C /* ViewModelError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelError.swift; sourceTree = "<group>"; };
 		046A64452DBF23F0006ED90C /* InquiryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryViewModel.swift; sourceTree = "<group>"; };
+		046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInquiryViewModel.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -600,6 +602,7 @@
 			isa = PBXGroup;
 			children = (
 				046A64452DBF23F0006ED90C /* InquiryViewModel.swift */,
+				046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1394,6 +1397,7 @@
 				0450E84B2D996E5D00DB029A /* LoginViewModel.swift in Sources */,
 				046833EB2D3B8E8E009D2357 /* MeetingPlacesView.swift in Sources */,
 				046833EC2D3B8E8E009D2357 /* MeetingInformationDetailView.swift in Sources */,
+				046A64492DBFA4E9006ED90C /* EditInquiryViewModel.swift in Sources */,
 				046833F02D3B8F65009D2357 /* DayOfWeek+Day+Month.swift in Sources */,
 				04A530A92D8FB9E6004E58AD /* RadioButton.swift in Sources */,
 				04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */,
