@@ -14,12 +14,18 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     @Published var selectedDate: Date?
     @Published var invitedFriends = [MeetingInvitationState]()
     @Published var watingFriends = [MeetingInvitationState]()
+    @Published private var _meeting: Meeting!
     
-    private var meeting: Meeting?
+    var meeting: Meeting {
+        _meeting
+    }
+    
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
+    
+    
     
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
@@ -30,7 +36,7 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     private func subscribe() {
         meetingCore.invitationStatus
             .map { [weak self] dict -> [MeetingInvitationState] in
-                guard let id = self?.meeting?.id,
+                guard let id = self?._meeting.id,
                       let states = dict[id]
                 else { return [] }
                 return states
@@ -43,17 +49,37 @@ final class MeetingInformationDetailViewModel: ObservableObject {
                 self?.watingFriends = status.filter { $0.isInvited == false }
             }
             .store(in: &cancellables)
+        
+        meetingCore.meetings
+            .mapError {
+                ViewModelError.meetingError($0)
+            }
+            .combineLatest($_meeting.setFailureType(to: ViewModelError.self))
+            .compactMap{ (dict, meeting) -> Meeting? in
+                guard let meeting else { return nil }
+                return dict[meeting.id]
+            }
+            .sink { comletion in
+                // TODO: Error handling
+            } receiveValue: { [weak self] in
+                self?._meeting = $0
+            }
+            .store(in: &cancellables)
+
     }
 }
 
 // MARK: Interfaces
 extension MeetingInformationDetailViewModel {
-    func onAppear(meeting: Meeting) {
-        self.meeting = meeting
+    func setMeeitng(_ meeting: Meeting) {
+        self._meeting = meeting
+    }
+    
+    func onAppear() {
+        meetingCore.readInvitaionStatus(id: _meeting.id)
     }
     
     func endMeeting() {
-        guard let meetingId = meeting?.id else { return }
-        meetingCore.endMeeting(id: meetingId)
+        meetingCore.endMeeting(id: _meeting.id)
     }
 }
