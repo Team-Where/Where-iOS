@@ -59,8 +59,8 @@ struct SideMenuContentView: View {
             switch type {
             case .settings: PreferenceView()
             case .notifications: NotificationListView()
-            case .FAQs: FAQView()
-            case .inquiries: InquiryView()
+            case .FAQs: FAQView(resolver: resolver)
+            case .inquiries: InquiryView(resolver: resolver)
             case .announcements: AnnouncementView()
             case .editProfile: EditProfileView(resolver: resolver)
             }
