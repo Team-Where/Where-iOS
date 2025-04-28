@@ -34,6 +34,15 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     
     /// 로그아웃
     func logout()
+    
+    /// 이메일 중복 확인
+    func checkEmailDuplicate(email: String)
+    
+    /// 회원가입
+    func register(email: String, password: String, nickname: String, profileImageData: Data?)
+    
+    /// 회원탈퇴
+    func unregister()
 }
 
 protocol AuthentificationMediationProtocol {
@@ -156,6 +165,18 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     
     func logout() {
         currentUserSubject.send(nil)
+    }
+    
+    func checkEmailDuplicate(email: String) {
+        // TODO: 기능 구현
+    }
+    
+    func register(email: String, password: String, nickname: String, profileImageData: Data?) {
+        // TODO: 기능 구현
+    }
+    
+    func unregister() {
+        // TODO: 기능 구현
     }
 }
 
