@@ -90,10 +90,7 @@ struct EditProfileView: View {
             }
         }
         .popup($viewModel.isPopupPresented) {
-            ImageSelectionPopupView(
-                isPopupPresented: $viewModel.isPopupPresented,
-                isImageSelected: .constant(true)
-            ) { data in
+            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { data in
                 viewModel.selectProfileImageData(data)
             }
         }
