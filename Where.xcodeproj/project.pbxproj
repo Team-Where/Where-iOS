@@ -71,6 +71,7 @@
 		046A64462DBF23F0006ED90C /* InquiryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64452DBF23F0006ED90C /* InquiryViewModel.swift */; };
 		046A64492DBFA4E9006ED90C /* EditInquiryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */; };
 		046A644B2DBFC00E006ED90C /* AnnouncementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */; };
+		046A644F2DBFC7A9006ED90C /* FAQViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A644E2DBFC7A9006ED90C /* FAQViewModel.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -262,6 +263,7 @@
 		046A64452DBF23F0006ED90C /* InquiryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryViewModel.swift; sourceTree = "<group>"; };
 		046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInquiryViewModel.swift; sourceTree = "<group>"; };
 		046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementViewModel.swift; sourceTree = "<group>"; };
+		046A644E2DBFC7A9006ED90C /* FAQViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQViewModel.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -606,6 +608,7 @@
 				046A64452DBF23F0006ED90C /* InquiryViewModel.swift */,
 				046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */,
 				046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */,
+				046A644E2DBFC7A9006ED90C /* FAQViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1483,6 +1486,7 @@
 				046833F52D3B8F99009D2357 /* User.swift in Sources */,
 				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
 				7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */,
+				046A644F2DBFC7A9006ED90C /* FAQViewModel.swift in Sources */,
 				7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */,
 				7FE7BD972DB68E160097CC30 /* ReadFriendsDTO.swift in Sources */,
 				7FE7BD982DB68E160097CC30 /* AcceptMeeetingInvitationDTO.swift in Sources */,
