@@ -14,18 +14,21 @@ struct MeetingInformationDetailView: View {
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
     
+    private let meeting: Meeting
     private let resolver: Resolver
     
     init(
+        meeting: Meeting,
         resolver: Resolver
     ) {
+        self.meeting = meeting
         self.viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
         self.resolver = resolver
     }
     
     var body: some View {
         VStack {
-            if viewModel.isMeetingAvailiable == false {
+            if meeting.isFinished == false {
                 HStack(spacing: 6) {
                     Text("✋")
                         .rotationEffect(.degrees(-45))
@@ -45,18 +48,18 @@ struct MeetingInformationDetailView: View {
                     .padding(.bottom)
                     .padding(.horizontal)
                 
-                friendsList([], isInvited: true)
+                friendsList(viewModel.invitedFriends, isInvited: true)
                     .padding(.bottom)
                     .padding(.horizontal)
                 
-                friendsList([], isInvited: false)
+                friendsList(viewModel.watingFriends, isInvited: false)
                     .padding(.bottom)
                     .padding(.horizontal)
             }
-            .opacity(viewModel.isMeetingAvailiable ? 1 : 0.5)
-            .disabled(viewModel.isMeetingAvailiable == false)
+            .opacity(meeting.isFinished == false ? 1 : 0.5)
+            .disabled(meeting.isFinished)
             
-            if viewModel.isMeetingAvailable {
+            if meeting.isFinished == false {
                 Button {
                     // TODO: 모임 마감 기능 연결
                     withAnimation {
@@ -75,6 +78,9 @@ struct MeetingInformationDetailView: View {
                 .padding(.bottom)
                 .padding(.horizontal)
             }
+        }
+        .onAppear {
+            viewModel.onAppear(meeting: meeting)
         }
         .sheet(item: $sheetType) { type in
             switch type {
@@ -98,7 +104,7 @@ struct MeetingInformationDetailView: View {
         .navigationDestination(item: $navigationType) { type in
             switch type {
             case .inviteFriends:
-                InviteFriendsView(meeting: viewModel.meeting!, resolver: resolver)
+                InviteFriendsView(meeting: meeting, resolver: resolver)
             }
         }
     }
@@ -106,17 +112,17 @@ struct MeetingInformationDetailView: View {
     private var header: some View {
         // TODO: 하드코딩 데이터 실제 값으로 채우기
         HStack {
-            AsyncImage(url: nil)
+            AsyncImage(url: meeting.imageURL)
                 .frame(width: 64, height: 64)
                 .clipShape(.rect(cornerRadius: 12))
                 .padding(.trailing, 10)
             
             VStack(alignment: .leading, spacing: 6) {
-                Text("2024 연말파티")
+                Text(meeting.title)
                     .whereFont(.title20semibold)
                     .foregroundStyle(Color(hex: 0x111827))
                 
-                Text("벌써 연말이다 신나게 놀아보장~~")
+                Text(meeting.description)
                     .whereFont(.body14regular)
             }
             .foregroundStyle(Color(hex: 0x6B7280))
@@ -199,7 +205,7 @@ struct MeetingInformationDetailView: View {
         }
     }
     
-    @ViewBuilder private func friendsList(_ friends: [User], isInvited: Bool) -> some View {
+    @ViewBuilder private func friendsList(_ states: [MeetingInvitationState], isInvited: Bool) -> some View {
         VStack(spacing: 16) {
             HStack {
                 Text(isInvited ? "초대된 친구" : "수락을 기다리는 친구")
@@ -211,35 +217,36 @@ struct MeetingInformationDetailView: View {
             
             Divider()
             
-            ForEach(friends) { friend in
+            ForEach(states, id: \.guestID) { state in
                 HStack {
-                    AsyncImage(url: friend.imageURL)
+                    AsyncImage(url: state.guestImageURL)
                         .frame(width: 40, height: 40)
                         .clipShape(.circle)
                     
-                    Text(friend.nickname)
+                    Text(state.guestName)
                         .whereFont(.body16medium)
                         .foregroundStyle(Color(hex: 0x374151))
                     
                     Spacer()
                     
-                    Button {
-                        sheetType = .editFriend(friend: friend)
-                    } label: {
-                        if isInvited {
+                    if isInvited {
+                        Button {
+                            // TODO: 친구 편집화면으로 이동한다던데 디자인이 없음;; (WIP)
+//                            sheetType = .editFriend(friend: friend)
+                        } label: {
                             Image(systemName: "ellipsis")
                                 .foregroundStyle(Color(hex: 0x868E96))
-                        } else {
-                            Text("대기중")
-                                .whereFont(.caption12regular)
-                                .foregroundStyle(Color(hex: 0x6B7280))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 26)
-                                        .fill(Color(hex: 0xF3F4F6))
-                                )
                         }
+                    } else {
+                        Text("대기중")
+                            .whereFont(.caption12regular)
+                            .foregroundStyle(Color(hex: 0x6B7280))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                RoundedRectangle(cornerRadius: 26)
+                                    .fill(Color(hex: 0xF3F4F6))
+                            )
                     }
                 }
             }

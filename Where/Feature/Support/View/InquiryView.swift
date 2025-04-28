@@ -6,22 +6,24 @@
 //
 
 import SwiftUI
+import Swinject
+
+fileprivate typealias SheetType = InquiryViewModel.SheetType
 
 struct InquiryView: View {
-    @State private var inquiries: [Inquiry] = []
+    @ObservedObject private var viewModel: InquiryViewModel
     
-    private var waitingForReplyInquiries: [Inquiry] {
-        inquiries.filter { $0.isAnswered == false }
-    }
+    private let resolver: Resolver
     
-    private var answerCompleteInquiries: [Inquiry] {
-        inquiries.filter { $0.isAnswered == true }
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(InquiryViewModel.self)!
+        self.resolver = resolver
     }
     
     var body: some View {
         SelectionTab<TabViewItem>(selection: [
-            .waitingForReply(inquiries: waitingForReplyInquiries),
-            .answerComplete(inquiries: answerCompleteInquiries)
+            .waitingForReply(viewModel: viewModel),
+            .answerComplete(viewModel: viewModel)
         ])
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -52,30 +54,39 @@ struct InquiryView: View {
 // MARK: Nested Types
 extension InquiryView {
     enum TabViewItem: SelectionTabItem {
-        case waitingForReply(inquiries: [Inquiry])
-        case answerComplete(inquiries: [Inquiry])
+        case waitingForReply(viewModel: InquiryViewModel)
+        case answerComplete(viewModel: InquiryViewModel)
         
         var id: String { String(describing: self) }
         
         var title: String {
             switch self {
-            case .waitingForReply(let inquiries): return "답변대기(\(inquiries.count))"
-            case .answerComplete(let inquiries): return "답변완료(\(inquiries.count))"
+            case .waitingForReply(let viewModel): return "답변대기(\(viewModel.waitingForReplyInquiries.count))"
+            case .answerComplete(let viewModel): return "답변완료(\(viewModel.answerCompleteInquiries.count))"
             }
         }
         
         @ViewBuilder func view() -> some View {
             switch self {
-            case .waitingForReply(let inquiries): InquiryListView(inquiries: inquiries)
-            case .answerComplete(let inquiries): InquiryListView(inquiries: inquiries)
+            case .waitingForReply(let viewModel): InquiryListView(viewModel, inquiries: viewModel.waitingForReplyInquiries)
+            case .answerComplete(let viewModel):
+                InquiryListView(viewModel, inquiries: viewModel.answerCompleteInquiries)
             }
         }
     }
     
     struct InquiryListView: View {
-        @State private var sheetType: SheetType?
+        @ObservedObject private var viewModel: InquiryViewModel
         
         let inquiries: [Inquiry]
+        
+        init(
+            _ viewModel: InquiryViewModel,
+            inquiries: [Inquiry]
+        ) {
+            self.viewModel = viewModel
+            self.inquiries = inquiries
+        }
         
         var body: some View {
             if inquiries.isEmpty {
@@ -109,10 +120,10 @@ extension InquiryView {
                     }
                 }
             }
-            .sheet(item: $sheetType) { type in
+            .sheet(item: $viewModel.sheetType) { type in
                 switch type {
                 case .deleteInquiry(let inquiry):
-                    DeleteInquirySheet(inquiry: inquiry)
+                    DeleteInquirySheet(viewModel, inquiry: inquiry)
                 }
             }
         }
@@ -140,22 +151,24 @@ extension InquiryView {
                     HStack(spacing: 10) {
                         Spacer()
                         
-                        Button {
-                            // TODO: 문의 수정 기능 연결
-                        } label: {
-                            Text("수정")
-                                .whereFont(.body14medium)
-                                .foregroundStyle(.accent)
-                                .frame(width: 52, height: 32)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(.white)
-                                        .strokeBorder(.accent)
-                                )
+                        if inquiry.isAnswered == false {
+                            Button {
+                                viewModel.updateInquiry(inquiry)
+                            } label: {
+                                Text("수정")
+                                    .whereFont(.body14medium)
+                                    .foregroundStyle(.accent)
+                                    .frame(width: 52, height: 32)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(.white)
+                                            .strokeBorder(.accent)
+                                    )
+                            }
                         }
                         
                         Button {
-                            sheetType = .deleteInquiry(inquiry: inquiry)
+                            viewModel.presentDeleteInquirySheet(for: inquiry)
                         } label: {
                             Text("삭제")
                                 .whereFont(.body14medium)
@@ -209,19 +222,22 @@ extension InquiryView {
 
 // MARK: Sheet
 extension InquiryView {
-    /// 문의 화면에서 라우팅 가능한 시트의 종류
-    enum SheetType: Identifiable {
-        case deleteInquiry(inquiry: Inquiry)
-        
-        var id: String { String(describing: self) }
-    }
-    
     struct DeleteInquirySheet: View {
+        @ObservedObject private var viewModel: InquiryViewModel
+        
         let inquiry: Inquiry
+        
+        init(
+            _ viewModel: InquiryViewModel,
+            inquiry: Inquiry
+        ) {
+            self.viewModel = viewModel
+            self.inquiry = inquiry
+        }
         
         var body: some View {
             Button {
-                // TODO: 문의 삭제 기능 연결
+                viewModel.deleteInquiry(inquiry)
             } label: {
                 Text("1:1 문의 삭제")
                     .whereFont(.body16medium)
@@ -233,11 +249,5 @@ extension InquiryView {
             .presentationCornerRadius(16)
             .padding()
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        InquiryView()
     }
 }

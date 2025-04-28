@@ -6,10 +6,17 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct FAQView: View {
     @State private var navigationType: NavigationType?
     @State private var announcements: [Announcement] = []
+    
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.resolver = resolver
+    }
     
     var body: some View {
         VStack {
@@ -39,7 +46,7 @@ struct FAQView: View {
             case .editAnnouncement:
                 EmptyView()
             case .editInquiry:
-                InquiryView()
+                InquiryView(resolver: resolver)
             }
         }
         .navigationBarBackButtonHidden()
@@ -106,11 +113,5 @@ extension FAQView {
         case editAnnouncement
         /// 1:1 문의 작성 화면
         case editInquiry
-    }
-}
-
-#Preview {
-    NavigationStack {
-        FAQView()
     }
 }

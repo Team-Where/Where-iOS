@@ -8,11 +8,13 @@
 import SwiftUI
 import Swinject
 
+fileprivate typealias MeetingCreationStep = CreateMeetingViewModel.MeetingCreationStep
+fileprivate typealias FloaterItem = CreateMeetingViewModel.FloaterItem
+fileprivate typealias FriendCellDataSource = CreateMeetingViewModel.FriendCellDataSource
+
 struct CreateMeetingView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: CreateMeetingViewModel
-    @State private var step: MeetingCreationStep = .basicInformation
-    @State var isImageSelected = false
     
     private let resolver: Resolver
     
@@ -28,14 +30,14 @@ struct CreateMeetingView: View {
             Spacer()
             
             header
-            content(step)
+            content(viewModel.step)
                 .padding(.top)
             
             Spacer()
         }
         .padding()
         .popup($viewModel.isPopupPresented) {
-            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented, isImageSelected: $isImageSelected) { imageData in
+            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { imageData in
                 viewModel.selectedImage = imageData
             }
         }
@@ -58,11 +60,11 @@ struct CreateMeetingView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 16) {
-                Text("새 모임 만들기(\(step.turn)/2)")
+                Text("새 모임 만들기(\(viewModel.step.turn)/2)")
                     .whereFont(.body14medium)
                     .foregroundStyle(.accent)
                 
-                Text(step.navigationTitle)
+                Text(viewModel.step.navigationTitle)
                     .whereFont(.title24semibold)
             }
             
@@ -73,38 +75,9 @@ struct CreateMeetingView: View {
     @ViewBuilder private func content(_ step: MeetingCreationStep) -> some View {
         switch step {
         case .basicInformation:
-            BasicInformationView(
-                isPopupPresented: $viewModel.isPopupPresented,
-                step: $step,
-                tempInfo: $viewModel.tempMeetingInfo,
-                image: viewModel.selectedImage,
-                isImageSelected: isImageSelected
-            )
+            BasicInformationView(resolver: resolver)
         case .inviteFriends:
-            InviteFriendsView(
-                step: $step,
-                tempMeetingInfo: $viewModel.tempMeetingInfo
-            )
-        }
-    }
-}
-
-// MARK: Nested Types
-extension CreateMeetingView {
-    /// 모임 생성 단계
-    enum MeetingCreationStep: Int {
-        /// 기본 정보 설정 단계
-        case basicInformation = 1
-        /// 친구 초대 단계
-        case inviteFriends
-        
-        var turn: Int { self.rawValue }
-        
-        var navigationTitle: String {
-            switch self {
-            case .basicInformation: "어떤 모임인가요?"
-            case .inviteFriends: "파티원을 초대해요!"
-            }
+            InviteFriendsView(resolver: resolver)
         }
     }
 }
@@ -121,28 +94,11 @@ extension CreateMeetingView {
             case title, description
         }
         
-        @Binding var step: MeetingCreationStep
-        @Binding var tempMeetingInfo: TemporaryMeetingInfo?
-        @Binding var isPopupPresented: Bool
-        @State private var isFloaterPresented: Bool = false
-        @State private var title: String = String()
-        @State private var description: String = String()
+        @ObservedObject private var viewModel: CreateMeetingViewModel
         @FocusState private var isFocused: TextFieldFocusState?
         
-        private let _selectedImageData: Data?
-        private var _isImageSelected: Bool
-        init(
-            isPopupPresented: Binding<Bool>,
-            step: Binding<MeetingCreationStep>,
-            tempInfo temp: Binding<TemporaryMeetingInfo?>,
-            image: Data?,
-            isImageSelected: Bool
-        ) {
-            self._isPopupPresented = isPopupPresented
-            self._step = step
-            self._tempMeetingInfo = temp
-            self._selectedImageData = image
-            self._isImageSelected = isImageSelected
+        init(resolver: Resolver) {
+            self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
         }
         
         var body: some View {
@@ -153,37 +109,34 @@ extension CreateMeetingView {
                         textFieldSection
                     }
                 }
-                .floater($isFloaterPresented, title: "모임 이름과 사진은 생성 후에도 변경할 수 있어요.")
+                .floater($viewModel.isFloaterPresented, title: "모임 이름과 사진은 생성 후에도 변경할 수 있어요.")
                 
                 Button {
-                    // 임시 모임 정보 기록 후 다음 단계 진행
-                    tempMeetingInfo = tempMeetingInfo?
-                        .setBasicInfo(title: title, description: description, image: _selectedImageData)
-                    step = .inviteFriends
+                    viewModel.setBasicInfo()
                 } label: {
                     Text("다음")
                         .whereFont(.body16medium)
                         .frame(height: 48)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.whereRoundedProminent(disabled: title.isEmpty))
+                .buttonStyle(.whereRoundedProminent(disabled: viewModel.disabled))
             }
             .clipShape(.rect)
             .onTapGesture {
                 isFocused = nil
             }
             .onAppear {
-                isFloaterPresented = true
+                viewModel.isFloaterPresented = true
             }
         }
         
         private var profileImageSection: some View {
             Button {
                 withAnimation {
-                    isPopupPresented = true
+                    viewModel.isPopupPresented = true
                 }
             } label: {
-                if !_isImageSelected {
+                if viewModel.isImageSelected == false {
                     VStack {
                         Image(systemName: "camera.fill")
                             .resizable()
@@ -201,7 +154,7 @@ extension CreateMeetingView {
                             .fill(.where(.gray100))
                     )
                 } else {
-                    if let data = _selectedImageData,
+                    if let data = viewModel.selectedImage,
                        let image = UIImage(data: data) {
                         Image(uiImage: image)
                             .resizable()
@@ -220,16 +173,16 @@ extension CreateMeetingView {
                 HStack {
                     TextField(
                         "",
-                        text: $title,
+                        text: $viewModel.titleFieldText,
                         prompt: Text(verbatim: "모임이름을 입력해주세요")
                             .foregroundStyle(.where(.gray600))
                     )
-                    .characterLimit(text: $title, limit: Constants.titleCharacterLimit)
+                    .characterLimit(text: $viewModel.titleFieldText, limit: Constants.titleCharacterLimit)
                     .focused($isFocused, equals: .title)
                     
-                    if title.isEmpty == false {
+                    if viewModel.titleFieldText.isEmpty == false {
                         Button {
-                            title.removeAll()
+                            viewModel.titleFieldText.removeAll()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .resizable()
@@ -243,7 +196,7 @@ extension CreateMeetingView {
                     .frame(height: 1)
                     .foregroundStyle(isFocused == .title ? .accent : .where(.gray200))
                 
-                Text("(\(title.count)/\(Constants.titleCharacterLimit))")
+                Text("(\(viewModel.titleFieldText.count)/\(Constants.titleCharacterLimit))")
                     .foregroundStyle(.where(.gray700))
             }
             .whereFont(.body16regular)
@@ -252,16 +205,16 @@ extension CreateMeetingView {
                 HStack {
                     TextField(
                         "",
-                        text: $description,
+                        text: $viewModel.descriptionFieldText,
                         prompt: Text(verbatim: "모임에 대한 간단한 소개를 입력해주세요")
                             .foregroundStyle(.where(.gray600))
                     )
-                    .characterLimit(text: $description, limit: Constants.descriptionCharacterLimit)
+                    .characterLimit(text: $viewModel.descriptionFieldText, limit: Constants.descriptionCharacterLimit)
                     .focused($isFocused, equals: .description)
                     
-                    if description.isEmpty == false {
+                    if viewModel.descriptionFieldText.isEmpty == false {
                         Button {
-                            description.removeAll()
+                            viewModel.descriptionFieldText.removeAll()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .resizable()
@@ -275,7 +228,7 @@ extension CreateMeetingView {
                     .frame(height: 1)
                     .foregroundStyle(isFocused == .description ? .accent : .where(.gray200))
                 
-                Text("(\(description.count)/\(Constants.descriptionCharacterLimit))")
+                Text("(\(viewModel.descriptionFieldText.count)/\(Constants.descriptionCharacterLimit))")
                     .foregroundStyle(.where(.gray700))
             }
             .whereFont(.body16regular)
@@ -283,31 +236,25 @@ extension CreateMeetingView {
     }
     
     struct InviteFriendsView: View {
-        @Binding var step: MeetingCreationStep
-        @Binding var tempMeetingInfo: TemporaryMeetingInfo?
-        @State private var floaterItem: FloaterItem?
-        @State private var friends: [User] = [
-            .init(id: 0, nickname: "죠니월드"),
-            .init(id: 1, nickname: "이초홍"),
-            .init(id: 2, nickname: "유저2"),
-            .init(id: 3, nickname: "유저3")
-        ]
+        @ObservedObject private var viewModel: CreateMeetingViewModel
+        
+        init(resolver: Resolver) {
+            self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
+        }
         
         var body: some View {
             VStack {
                 ScrollView(.vertical) {
-                    friendsSections(friends)
+                    friendsSections(viewModel.friendsDataSource)
                 }
                 .scrollIndicators(.never)
-                .floater($floaterItem) { _ in
+                .floater($viewModel.floaterItem) { _ in
                     Image(systemName: "checkmark")
                         .foregroundStyle(.accent)
                 }
                 
                 Button {
-                    // 임시 모임 정보 기록 후 다음 단계 진행
-                    tempMeetingInfo = tempMeetingInfo?
-                        .setInvitedFriends(friends.map({ $0.id }))
+                    viewModel.setInvitedFriends()
                 } label: {
                     Text("다음")
                         .whereFont(.body16medium)
@@ -318,11 +265,11 @@ extension CreateMeetingView {
             }
         }
         
-        @ViewBuilder private func friendsSections(_ friends: [User]) -> some View {
+        @ViewBuilder private func friendsSections(_ friends: [FriendCellDataSource]) -> some View {
             Section {
                 LazyVStack(spacing: 16) {
-                    ForEach(friends) { friend in
-                        Cell($floaterItem, friend)
+                    ForEach(friends.filter { $0.isRecent }) { friend in
+                        Cell(viewModel, friend: friend)
                     }
                 }
             } header: {
@@ -339,7 +286,7 @@ extension CreateMeetingView {
             Section {
                 LazyVStack(spacing: 16) {
                     ForEach(friends) { friend in
-                        Cell($floaterItem, friend)
+                        Cell(viewModel, friend: friend)
                     }
                 }
             } header: {
@@ -358,33 +305,26 @@ extension CreateMeetingView {
 
 // MARK: Nested Types
 extension CreateMeetingView.InviteFriendsView {
-    enum FloaterItem: FloaterContent {
-        case invite(friend: User)
-        
-        var title: String {
-            switch self {
-            case .invite(let friend): return "'\(friend.nickname)'님을 초대했습니다."
-            }
-        }
-    }
-    
     struct Cell: View {
-        @Binding var floaterItem: FloaterItem?
-        @State private var isSelected: Bool = false
+        @ObservedObject private var viewModel: CreateMeetingViewModel
         
-        let friend: User
+        fileprivate let dataSource: FriendCellDataSource
         
-        init(
-            _ floaterItem: Binding<FloaterItem?>,
-            _ friend: User
+        private var isSelected: Bool {
+            viewModel.selectedParticipantIDs.contains(dataSource.id)
+        }
+        
+        fileprivate init(
+            _ viewModel: CreateMeetingViewModel,
+            friend: FriendCellDataSource
         ) {
-            self._floaterItem = floaterItem
-            self.friend = friend
+            self.viewModel = viewModel
+            self.dataSource = friend
         }
         
         var body: some View {
             HStack(spacing: 12) {
-                AsyncImage(url: friend.imageURL) { image in
+                AsyncImage(url: dataSource.friend.imageURL) { image in
                     image
                         .resizable()
                         .scaledToFit()
@@ -398,14 +338,13 @@ extension CreateMeetingView.InviteFriendsView {
                         .foregroundColor(.gray)
                         .clipShape(.circle)
                 }
-
+                
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(friend.nickname)
+                    Text(dataSource.friend.nickname)
                         .whereFont(.body16medium)
                         .foregroundStyle(.where(.gray800))
                     
-                    // TODO: 만난 횟수 표시하기 위해 '친구' 도메인 모델 선언 필요
-                    Text("\(3)번 만남")
+                    Text("\(dataSource.meetingCount)번 만남")
                         .whereFont(.caption11regular)
                         .foregroundStyle(.where(.gray400))
                 }
@@ -413,11 +352,7 @@ extension CreateMeetingView.InviteFriendsView {
                 Spacer()
                 
                 Button {
-                    if isSelected == false {
-                        floaterItem = .invite(friend: friend)
-                    }
-                    
-                    isSelected.toggle()
+                    viewModel.toggleInvitationState(for: dataSource.id)
                 } label: {
                     inviteButtonLabel()
                         .whereFont(.body14medium)
