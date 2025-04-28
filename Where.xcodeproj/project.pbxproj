@@ -127,6 +127,7 @@
 		04F051882D423283000892C0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F051872D423283000892C0 /* Bundle.swift */; };
 		04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F051892D42332D000892C0 /* AuthentificationProvider.swift */; };
 		04F051902D424C01000892C0 /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0518F2D424C01000892C0 /* TokenStorage.swift */; };
+		7F488A3B2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */; };
 		7F831B1A2DBA8F75006FFAA0 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B192DBA8F75006FFAA0 /* Image.swift */; };
 		7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */; };
 		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
@@ -316,6 +317,7 @@
 		04F051872D423283000892C0 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		04F051892D42332D000892C0 /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
+		7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationViewModel.swift; sourceTree = "<group>"; };
 		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F831B192DBA8F75006FFAA0 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
@@ -978,6 +980,7 @@
 			isa = PBXGroup;
 			children = (
 				042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */,
+				7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1454,6 +1457,7 @@
 				042A79EA2DA3EC80004105E2 /* AuthentificationStrategyProtocol.swift in Sources */,
 				04A4F43F2D3F92730041FD02 /* RegistrationViewModel.swift in Sources */,
 				04A4F4462D40D8E20041FD02 /* RegistrationTerminationStep.swift in Sources */,
+				7F488A3B2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift in Sources */,
 				046833DB2D3B8DB8009D2357 /* RegistrationTermView.swift in Sources */,
 				04A530AF2D900251004E58AD /* UnregisterView.swift in Sources */,
 				04854C452D954B02007AADE4 /* SideMenu.swift in Sources */,
