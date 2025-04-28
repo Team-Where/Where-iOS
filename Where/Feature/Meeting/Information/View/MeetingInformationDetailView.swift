@@ -13,22 +13,20 @@ struct MeetingInformationDetailView: View {
     @State private var sheetType: SheetType?
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
-    
-    private let meeting: Meeting
     private let resolver: Resolver
     
     init(
         meeting: Meeting,
         resolver: Resolver
     ) {
-        self.meeting = meeting
-        self.viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
         self.resolver = resolver
+        self.viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
+        self.viewModel.setMeeitng(meeting)
     }
     
     var body: some View {
         VStack {
-            if meeting.isFinished == false {
+            if viewModel.meeting.isFinished == false {
                 HStack(spacing: 6) {
                     Text("✋")
                         .rotationEffect(.degrees(-45))
@@ -56,12 +54,11 @@ struct MeetingInformationDetailView: View {
                     .padding(.bottom)
                     .padding(.horizontal)
             }
-            .opacity(meeting.isFinished == false ? 1 : 0.5)
-            .disabled(meeting.isFinished)
+            .opacity(viewModel.meeting.isFinished == false ? 1 : 0.5)
+            .disabled(viewModel.meeting.isFinished)
             
-            if meeting.isFinished == false {
+            if viewModel.meeting.isFinished == false {
                 Button {
-                    // TODO: 모임 마감 기능 연결
                     withAnimation {
                         viewModel.endMeeting()
                     }
@@ -80,7 +77,7 @@ struct MeetingInformationDetailView: View {
             }
         }
         .onAppear {
-            viewModel.onAppear(meeting: meeting)
+            viewModel.onAppear()
         }
         .sheet(item: $sheetType) { type in
             switch type {
@@ -104,7 +101,7 @@ struct MeetingInformationDetailView: View {
         .navigationDestination(item: $navigationType) { type in
             switch type {
             case .inviteFriends:
-                InviteFriendsView(meeting: meeting, resolver: resolver)
+                InviteFriendsView(meeting: viewModel.meeting, resolver: resolver)
             }
         }
     }
@@ -112,17 +109,17 @@ struct MeetingInformationDetailView: View {
     private var header: some View {
         // TODO: 하드코딩 데이터 실제 값으로 채우기
         HStack {
-            AsyncImage(url: meeting.imageURL)
+            AsyncImage(url: viewModel.meeting.imageURL)
                 .frame(width: 64, height: 64)
                 .clipShape(.rect(cornerRadius: 12))
                 .padding(.trailing, 10)
             
             VStack(alignment: .leading, spacing: 6) {
-                Text(meeting.title)
+                Text(viewModel.meeting.title)
                     .whereFont(.title20semibold)
                     .foregroundStyle(Color(hex: 0x111827))
                 
-                Text(meeting.description)
+                Text(viewModel.meeting.description)
                     .whereFont(.body14regular)
             }
             .foregroundStyle(Color(hex: 0x6B7280))

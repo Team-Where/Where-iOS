@@ -69,7 +69,10 @@ extension MeetingInformationView {
         
         @ViewBuilder func view() -> some View {
             switch self {
-            case .meetingInfo(let resolver): MeetingInformationDetailView(resolver: resolver)
+            case .meetingInfo(let resolver):
+                // TODO: InfomationDetailView 연결
+                //MeetingInformationDetailView(meeting: <#Meeting#>, resolver: resolver)
+                EmptyView()
             case .placeInfo(let resolver): MeetingPlacesView(resolver: resolver)
             }
         }
