@@ -1,0 +1,81 @@
+//
+//  UnregisterViewModel.swift
+//  Where
+//
+//  Created by Swain Yun on 4/28/25.
+//
+
+import Foundation
+import Combine
+
+final class UnregisterViewModel: ObservableObject {
+    @Published var selectedUnregisterReason: UnregisterReasonType = .infrequentUse
+    @Published var unregisterStep: UnregisterStep = .submitUnregisterReason
+    @Published var isSheetPresented: Bool = false
+    
+    private let authCore: AuthentificationCoreProtocol
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(authCore: AuthentificationCoreProtocol) {
+        self.authCore = authCore
+        subscribe()
+    }
+    
+    private func subscribe() {
+        authCore.currentUser
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] user in
+                guard let user else {
+                    self?.unregisterStep = .unregisterComplete
+                    self?.isSheetPresented = false
+                    return
+                }
+                return
+            }
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: - Nested Types
+extension UnregisterViewModel {
+    struct Constants {
+        static let confirmationTitleScript: String = "잠깐만요"
+        static let confirmationContentScript: String = "탈퇴 시 계정 및 이용 기록은 모두 삭제되며,\n삭제된 데이터는 복구가 불가능합니다.\n또한 탈퇴 후 동일 계정으로 재가입시\n제한을 받을 수 있습니다.\n탈퇴를 진행할까요?"
+    }
+    
+    enum UnregisterReasonType: String, RadioButtonSelection {
+        case infrequentUse = "사용을 잘 안해서"
+        case frequentErrors = "잦은 오류, 장애가 발생해서"
+        case difficultyOfUse = "이용 방법이 어려워서"
+        case other = "기타"
+        
+        var title: String {
+            self.rawValue
+        }
+    }
+    
+    /// 회원탈퇴 과정의 단계를 의미합니다.
+    enum UnregisterStep {
+        /// 탈퇴 사유 제출
+        case submitUnregisterReason
+        /// 탈퇴 처리 완료
+        case unregisterComplete
+    }
+}
+
+// MARK: - Interfaces
+extension UnregisterViewModel {
+    func presentUnregisterConfirmationSheet() {
+        isSheetPresented = true
+    }
+    
+    func dismissUnregisterConfirmationSheet() {
+        isSheetPresented = false
+    }
+    
+    func unregister() {
+        authCore.unregister()
+    }
+}

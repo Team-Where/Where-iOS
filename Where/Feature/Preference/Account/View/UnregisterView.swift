@@ -6,31 +6,32 @@
 //
 
 import SwiftUI
+import Swinject
+
+fileprivate typealias UnregisterReasonType = UnregisterViewModel.UnregisterReasonType
+fileprivate typealias UnregisterStep = UnregisterViewModel.UnregisterStep
 
 struct UnregisterView: View {
-    struct Constants {
-        static let confirmationTitleScript: String = "잠깐만요"
-        static let confirmationContentScript: String = "탈퇴 시 계정 및 이용 기록은 모두 삭제되며,\n삭제된 데이터는 복구가 불가능합니다.\n또한 탈퇴 후 동일 계정으로 재가입시\n제한을 받을 수 있습니다.\n탈퇴를 진행할까요?"
-    }
+    @ObservedObject private var viewModel: UnregisterViewModel
     
-    @State private var selectedUnregisterReason: UnregisterReasonType = .infrequentUse
-    @State private var unregisterStep: UnregisterStep = .submitUnregisterReason
-    @State private var isSheetPresented: Bool = false
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(UnregisterViewModel.self)!
+    }
     
     var body: some View {
         VStack {
-            header(unregisterStep)
+            header(viewModel.unregisterStep)
                 .whereFont(.title24semibold)
                 .foregroundStyle(.where(.gray800))
                 .multilineTextAlignment(.leading)
                 .padding(.vertical)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            content(unregisterStep)
+            content(viewModel.unregisterStep)
             
             Spacer()
             
-            submitButton(unregisterStep)
+            submitButton(viewModel.unregisterStep)
         }
         .padding(.horizontal)
         .padding(.top)
@@ -47,8 +48,8 @@ struct UnregisterView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
-        .sheet(isPresented: $isSheetPresented) {
-            UnregisterConfirmationSheet($isSheetPresented, step: $unregisterStep)
+        .sheet(isPresented: $viewModel.isSheetPresented) {
+            UnregisterConfirmationSheet(viewModel: viewModel)
         }
     }
     
@@ -95,7 +96,7 @@ struct UnregisterView: View {
         HStack {
             VStack(alignment: .leading, spacing: 32) {
                 ForEach(UnregisterReasonType.allCases) { reason in
-                    RadioButton(selectedValue: $selectedUnregisterReason, value: reason)
+                    RadioButton(selectedValue: $viewModel.selectedUnregisterReason, value: reason)
                 }
             }
             
@@ -106,8 +107,7 @@ struct UnregisterView: View {
     
     private var confirmButton: some View {
         Button {
-            // TODO: 탈퇴 사유 제출 및 회원탈퇴 요청
-            isSheetPresented = true
+            viewModel.presentUnregisterConfirmationSheet()
         } label: {
             Text("확인")
                 .whereFont(.body16medium)
@@ -119,7 +119,7 @@ struct UnregisterView: View {
     
     private var completeButton: some View {
         Button {
-            // TODO: 탈퇴 과정 종료 및 앱 내 잔여 회원정보 정리 등
+            dismiss()
         } label: {
             Text("완료")
                 .whereFont(.body16medium)
@@ -130,47 +130,23 @@ struct UnregisterView: View {
     }
 }
 
-// MARK: Nested Types
+// MARK: Subviews
 extension UnregisterView {
-    enum UnregisterReasonType: String, RadioButtonSelection {
-        case infrequentUse = "사용을 잘 안해서"
-        case frequentErrors = "잦은 오류, 장애가 발생해서"
-        case difficultyOfUse = "이용 방법이 어려워서"
-        case other = "기타"
-        
-        var title: String {
-            self.rawValue
-        }
-    }
-    
-    /// 회원탈퇴 과정의 단계를 의미합니다.
-    enum UnregisterStep {
-        /// 탈퇴 사유 제출
-        case submitUnregisterReason
-        /// 탈퇴 처리 완료
-        case unregisterComplete
-    }
-    
     struct UnregisterConfirmationSheet: View {
-        @Binding var isSheetPresented: Bool
-        @Binding var unregisterStep: UnregisterStep
+        @ObservedObject private var viewModel: UnregisterViewModel
         
-        init(
-            _ isSheetPresented: Binding<Bool>,
-            step: Binding<UnregisterStep>
-        ) {
-            self._isSheetPresented = isSheetPresented
-            self._unregisterStep = step
+        init(viewModel: UnregisterViewModel) {
+            self.viewModel = viewModel
         }
         
         var body: some View {
             VStack {
                 VStack(spacing: 13) {
-                    Text(Constants.confirmationTitleScript)
+                    Text(UnregisterViewModel.Constants.confirmationTitleScript)
                         .whereFont(.subtitle18semibold)
                         .foregroundStyle(.where(.gray800))
                     
-                    Text(Constants.confirmationContentScript)
+                    Text(UnregisterViewModel.Constants.confirmationContentScript)
                         .whereFont(.body16regular)
                         .foregroundStyle(.where(.gray600))
                         .multilineTextAlignment(.center)
@@ -181,7 +157,7 @@ extension UnregisterView {
                 
                 HStack {
                     Button {
-                        isSheetPresented = false
+                        viewModel.dismissUnregisterConfirmationSheet()
                     } label: {
                         Text("취소")
                     }
@@ -195,11 +171,7 @@ extension UnregisterView {
                     )
                     
                     Button {
-                        // TODO: 탈퇴 처리 및 앱 내 잔여 회원정보 정리 등
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            isSheetPresented = false
-                            unregisterStep = .unregisterComplete
-                        }
+                        viewModel.unregister()
                     } label: {
                         Text("확인")
                     }
@@ -217,11 +189,5 @@ extension UnregisterView {
             .presentationDetents([.fraction(0.4)])
             .presentationCornerRadius(16)
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        UnregisterView()
     }
 }
