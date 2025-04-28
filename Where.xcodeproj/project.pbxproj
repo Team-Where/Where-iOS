@@ -70,6 +70,7 @@
 		046A64442DBE6021006ED90C /* ViewModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64432DBE6021006ED90C /* ViewModelError.swift */; };
 		046A64462DBF23F0006ED90C /* InquiryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64452DBF23F0006ED90C /* InquiryViewModel.swift */; };
 		046A64492DBFA4E9006ED90C /* EditInquiryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */; };
+		046A644B2DBFC00E006ED90C /* AnnouncementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -260,6 +261,7 @@
 		046A64432DBE6021006ED90C /* ViewModelError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelError.swift; sourceTree = "<group>"; };
 		046A64452DBF23F0006ED90C /* InquiryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryViewModel.swift; sourceTree = "<group>"; };
 		046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInquiryViewModel.swift; sourceTree = "<group>"; };
+		046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementViewModel.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -603,6 +605,7 @@
 			children = (
 				046A64452DBF23F0006ED90C /* InquiryViewModel.swift */,
 				046A64482DBFA4E9006ED90C /* EditInquiryViewModel.swift */,
+				046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1435,6 +1438,7 @@
 				04F051882D423283000892C0 /* Bundle.swift in Sources */,
 				04A4F4442D40D82E0041FD02 /* AdjustPasswordViewModel.swift in Sources */,
 				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
+				046A644B2DBFC00E006ED90C /* AnnouncementViewModel.swift in Sources */,
 				045B44EC2D224D1D00514A27 /* Color Extension.swift in Sources */,
 				91A9EABA2D29AFD7005F09D2 /* MyMeetingView.swift in Sources */,
 				04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */,
