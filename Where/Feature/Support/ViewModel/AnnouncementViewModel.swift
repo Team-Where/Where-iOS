@@ -26,7 +26,9 @@ final class AnnouncementViewModel: ObservableObject {
             .sink { completion in
                 // TODO: 에러 핸들링
             } receiveValue: { [weak self] dict in
-                self?.announcements = dict.values.sorted { $0.date > $1.date }
+                self?.announcements = dict.values
+                    .sorted { $0.date > $1.date }
+                    .filter { $0.type == .common }
             }
             .store(in: &cancellables)
     }
