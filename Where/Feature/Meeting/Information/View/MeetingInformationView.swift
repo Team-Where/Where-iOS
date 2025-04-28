@@ -7,18 +7,22 @@
 
 import SwiftUI
 import Swinject
+import Combine
+
+fileprivate typealias SheetType = MeetingInformationViewModel.SheetType
 
 struct MeetingInformationView: View {
-    @State private var sheetType: SheetType?
-    
+    @ObservedObject private var viewModel: MeetingInformationViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {
         self.resolver = resolver
+        self.viewModel = resolver.resolve(MeetingInformationViewModel.self)!
+        // TODO: setMeeting ViewModel
     }
     
     var body: some View {
-        SelectionTab<TabViewItem>(selection: [.meetingInfo(resolver: resolver), .placeInfo(resolver: resolver)])
+        SelectionTab<TabViewItem>(selection: [.meetingInfo(resolver: resolver, meeting: viewModel.meeting), .placeInfo(resolver: resolver)])
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -28,14 +32,14 @@ struct MeetingInformationView: View {
                 
                 ToolbarItem(placement: .principal) {
                     // TODO: 모임 도메인 모델 선언 필요
-                    Text("2024 연말파티")
+                    Text(viewModel.meeting.title)
                         .whereFont(.subtitle18semibold)
                         .foregroundStyle(Color(hex: 0x1F2937))
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        sheetType = .editMeetingInfo
+                        viewModel.sheetType = .editMeetingInfo
                     } label: {
                         Image(systemName: "ellipsis")
                             .rotationEffect(.degrees(90))
@@ -43,10 +47,12 @@ struct MeetingInformationView: View {
                     }
                 }
             }
-            .sheet(item: $sheetType) { type in
+            .sheet(item: $viewModel.sheetType) { type in
                 switch type {
                 case .editMeetingInfo:
-                    EditMeetingInfoSheet($sheetType)
+                    EditMeetingInfoSheet {
+                        viewModel.sheetType = $0
+                    }
                 }
             }
     }
@@ -55,7 +61,7 @@ struct MeetingInformationView: View {
 // MARK: Nested Types - CustomTabbar
 extension MeetingInformationView {
     enum TabViewItem: SelectionTabItem {
-        case meetingInfo(resolver: Resolver)
+        case meetingInfo(resolver: Resolver, meeting: Meeting)
         case placeInfo(resolver: Resolver)
         
         var id: Int { self.hashValue }
@@ -69,11 +75,10 @@ extension MeetingInformationView {
         
         @ViewBuilder func view() -> some View {
             switch self {
-            case .meetingInfo(let resolver):
-                // TODO: InfomationDetailView 연결
-                //MeetingInformationDetailView(meeting: <#Meeting#>, resolver: resolver)
-                EmptyView()
-            case .placeInfo(let resolver): MeetingPlacesView(resolver: resolver)
+            case .meetingInfo(let resolver, let meeting):
+                MeetingInformationDetailView(meeting: meeting, resolver: resolver)
+            case .placeInfo(let resolver):
+                MeetingPlacesView(resolver: resolver)
             }
         }
         
@@ -89,13 +94,6 @@ extension MeetingInformationView {
 
 // MARK: Nested Types - Sheet
 extension MeetingInformationView {
-    /// 모임정보 화면에서 라우팅 가능한 시트의 종류
-    enum SheetType: Identifiable {
-        /// 모임정보 편집
-        case editMeetingInfo
-        
-        var id: String { String(describing: self) }
-    }
     
     struct EditMeetingInfoSheet: View {
         /// 모임정보 편집 간 단계
@@ -115,14 +113,12 @@ extension MeetingInformationView {
         @State private var editStep: EditStep = .entry
         @State private var titleText: String = "2024 연말파티"
         @State private var memoText: String = "메모 입력"
-        @Binding var sheetType: SheetType?
         @FocusState private var textFieldFocused: EditMeetingFocusState?
         
-        init(
-            _ present: Binding<SheetType?>
-        ) {
-            self._sheetType = present
-            // TODO: 모임 모델 주입
+        private let sheetCompletion: (SheetType?) -> Void
+        
+        fileprivate init(completion: @escaping (SheetType?) -> Void) {
+            sheetCompletion = completion
         }
         
         var body: some View {
@@ -147,7 +143,7 @@ extension MeetingInformationView {
                     Spacer()
                     
                     Button {
-                        sheetType = .none
+                        sheetCompletion(.none)
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -216,7 +212,7 @@ extension MeetingInformationView {
                     
                     Button {
                         textFieldFocused = .none
-                        sheetType = .none
+                        sheetCompletion(.none)
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -280,7 +276,7 @@ extension MeetingInformationView {
                     
                     Button {
                         textFieldFocused = .none
-                        sheetType = .none
+                        sheetCompletion(.none)
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
