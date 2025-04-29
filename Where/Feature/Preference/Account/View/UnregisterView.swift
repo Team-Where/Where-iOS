@@ -12,6 +12,7 @@ fileprivate typealias UnregisterReasonType = UnregisterViewModel.UnregisterReaso
 fileprivate typealias UnregisterStep = UnregisterViewModel.UnregisterStep
 
 struct UnregisterView: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: UnregisterViewModel
     
     init(resolver: Resolver) {

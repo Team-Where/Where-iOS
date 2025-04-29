@@ -29,10 +29,13 @@ final class UnregisterViewModel: ObservableObject {
                 // TODO: 에러 핸들링
             } receiveValue: { [weak self] user in
                 guard let user else {
+                    self?.selectedUnregisterReason = .infrequentUse
                     self?.unregisterStep = .unregisterComplete
                     self?.isSheetPresented = false
                     return
                 }
+                self?.selectedUnregisterReason = .infrequentUse
+                self?.unregisterStep = .submitUnregisterReason
                 return
             }
             .store(in: &cancellables)
