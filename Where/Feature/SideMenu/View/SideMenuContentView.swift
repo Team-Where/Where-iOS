@@ -61,7 +61,7 @@ struct SideMenuContentView: View {
             case .notifications: NotificationListView()
             case .FAQs: FAQView(resolver: resolver)
             case .inquiries: InquiryView(resolver: resolver)
-            case .announcements: AnnouncementView()
+            case .announcements: AnnouncementView(resolver: resolver)
             case .editProfile: EditProfileView(resolver: resolver)
             }
         }
