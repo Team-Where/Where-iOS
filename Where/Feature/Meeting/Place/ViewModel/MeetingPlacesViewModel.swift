@@ -13,6 +13,7 @@ final class MeetingPlacesViewModel: ObservableObject {
     @Published var sortOption: PlaceSortOption = .all
     @Published var isPickTipPresented: Bool = false
     @Published var isShareTipPresented: Bool = false
+    @Published var sheetType: SheetType?
     @Published var pickedPlaces = [Place]()
     @Published var places = [Place]()
     
@@ -98,6 +99,13 @@ extension MeetingPlacesViewModel {
             case .byLikesDescending: "BEST 순위"
             }
         }
+    }
+    
+    /// 장소 목록 화면에서 라우팅 가능한 시트의 종류
+    enum SheetType: Identifiable {
+        case sharePlace
+        
+        var id: Int { self.hashValue }
     }
 }
 

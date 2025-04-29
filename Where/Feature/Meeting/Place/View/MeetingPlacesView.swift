@@ -9,6 +9,7 @@ import SwiftUI
 import Swinject
 
 fileprivate typealias PlaceSortOption = MeetingPlacesViewModel.PlaceSortOption
+fileprivate typealias SheetType = MeetingPlacesViewModel.SheetType
 
 struct MeetingPlacesView: View {
     @ObservedObject private var viewModel: MeetingPlacesViewModel
@@ -40,6 +41,11 @@ struct MeetingPlacesView: View {
             withAnimation {
                 viewModel.isPickTipPresented = false
                 viewModel.isShareTipPresented = false
+            }
+        }
+        .sheet(item: $viewModel.sheetType) { type in
+            switch type {
+            case .sharePlace: SharePlaceSheet(sheetType: $viewModel.sheetType)
             }
         }
     }
@@ -378,6 +384,60 @@ extension MeetingPlacesView {
                     .fill(.white)
                     .shadow(color: .where(.gray200), radius: 4, y: 4)
             )
+        }
+    }
+    
+    struct SharePlaceSheet: View {
+        @Environment(\.openURL) private var openURL
+        @Binding fileprivate var sheetType: SheetType?
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 28) {
+                HStack {
+                    Text("장소 공유")
+                        .whereFont(.subtitle18semibold)
+                    
+                    Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+                .padding([.top, .horizontal])
+                .padding(.top)
+                
+                Button {
+                    // TODO: 네이버지도 Universal Link 연결
+                } label: {
+                    HStack(spacing: 16) {
+                        Image(.colorNaverMapLogo)
+                        
+                        Text("네이버 지도에서 공유하기")
+                            .whereFont(.body16medium)
+                            .foregroundStyle(Color(hex: 0x282828))
+                    }
+                }
+                .padding(.horizontal)
+                
+                Button {
+                    // TODO: 카카오맵 Universal Link 연결
+                } label: {
+                    HStack(spacing: 16) {
+                        Image(.colorKakaoMapLogo)
+                        
+                        Text("카카오맵에서 공유하기")
+                            .whereFont(.body16medium)
+                            .foregroundStyle(Color(hex: 0x282828))
+                    }
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .presentationDetents([.fraction(0.27)])
+            .presentationCornerRadius(16)
         }
     }
 }
