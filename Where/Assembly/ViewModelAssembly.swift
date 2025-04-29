@@ -39,8 +39,8 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             return MeetingInformationDetailViewModel(resolver: resolver)
         }
         
-        container.register(MeetingInformationViewModel.self) { _ in
-            return MeetingInformationViewModel()
+        container.register(MeetingInformationViewModel.self) { resolver in
+            return MeetingInformationViewModel(resolver: resolver)
         }
         
         container.register(FriendsListViewModel.self) { resolver in
