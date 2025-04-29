@@ -73,6 +73,7 @@
 		046A644B2DBFC00E006ED90C /* AnnouncementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */; };
 		046A644F2DBFC7A9006ED90C /* FAQViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A644E2DBFC7A9006ED90C /* FAQViewModel.swift */; };
 		046A64512DBFCA9A006ED90C /* UnregisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64502DBFCA9A006ED90C /* UnregisterViewModel.swift */; };
+		046A64542DC10755006ED90C /* PreferenceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64532DC10755006ED90C /* PreferenceViewModel.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -267,6 +268,7 @@
 		046A644A2DBFC00E006ED90C /* AnnouncementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementViewModel.swift; sourceTree = "<group>"; };
 		046A644E2DBFC7A9006ED90C /* FAQViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQViewModel.swift; sourceTree = "<group>"; };
 		046A64502DBFCA9A006ED90C /* UnregisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnregisterViewModel.swift; sourceTree = "<group>"; };
+		046A64532DC10755006ED90C /* PreferenceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewModel.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -617,6 +619,14 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		046A64522DC1073F006ED90C /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				046A64532DC10755006ED90C /* PreferenceViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		04832B452D266819003FFE3B /* WhereTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -743,6 +753,7 @@
 			isa = PBXGroup;
 			children = (
 				7F7E67BF2DA1070B00833376 /* Account */,
+				046A64522DC1073F006ED90C /* ViewModel */,
 				7F7E67C42DA1081E00833376 /* View */,
 			);
 			path = Preference;
@@ -1430,6 +1441,7 @@
 				0497F6AC2DA951100037B1CC /* CommentViewModel.swift in Sources */,
 				04A530A22D8EE312004E58AD /* FAQView.swift in Sources */,
 				0450E8632D9B7BC200DB029A /* MeetingSortType.swift in Sources */,
+				046A64542DC10755006ED90C /* PreferenceViewModel.swift in Sources */,
 				0450E8542D99A2F000DB029A /* ServiceAssembly.swift in Sources */,
 				042A79DC2DA17644004105E2 /* SupportCore.swift in Sources */,
 				04A530B12D913D28004E58AD /* MeetingAdditionGuideView.swift in Sources */,
