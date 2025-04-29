@@ -200,4 +200,34 @@ extension Date {
         }
         return self >= oneMonthAgo
     }
+    
+    /// 현재 시각과의 차이를 계산하여 상대적인 문자열을 반환합니다.
+    /// - 60초 미만: "방금"
+    /// - 1분 이상, 50분 미만: "N분 전"
+    /// - 0일: "오늘"
+    /// - 1일: "어제"
+    /// - 2일 이상, 30일 이하: "N일 전"
+    /// - 30일 초과: "MM월 dd일"
+    func relativeTimeDisplay() -> String {
+        let now = Date.now
+        let components = calendar.dateComponents([.second, .minute, .day], from: self, to: now)
+        
+        if let seconds = components.second, seconds < 60 {
+            return "방금"
+        } else if let minutes = components.minute, minutes < 60 {
+            return "\(minutes)분 전"
+        } else if let days = components.day {
+            if days == .zero {
+                return "오늘"
+            } else if days == 1 {
+                return "어제"
+            } else if days <= 30 {
+                return "\(days)일 전"
+            } else {
+                return self.toString(by: .MMddKorean)
+            }
+        }
+        
+        return self.toString(by: .MMddKorean)
+    }
 }
