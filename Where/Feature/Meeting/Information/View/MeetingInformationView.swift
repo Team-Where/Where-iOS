@@ -170,7 +170,8 @@ extension MeetingInformationView {
                 Spacer()
                 
                 Button {
-                    // TODO: 모임 삭제(또는 나가기) 기능 연결
+                    // 모임 삭제(또는 나가기)
+                    viewModel.exitMeeting()
                 } label: {
                     Text("모임에서 나가기")
                         .whereFont(.body16medium)
@@ -227,7 +228,8 @@ extension MeetingInformationView {
                     }
                     
                     Button {
-                        // TODO: 모임명 업데이트 기능 연결
+                        // 모임명 업데이트 기능
+                        viewModel.updateMeetingTitle()
                         textFieldFocused = .none
                         viewModel.editStep = .entry
                     } label: {
@@ -291,7 +293,8 @@ extension MeetingInformationView {
                     }
                     
                     Button {
-                        // TODO: 메모 업데이트 기능 연결
+                        // 메모 업데이트 기능
+                        viewModel.updateMeetingDescription()
                         textFieldFocused = .none
                         viewModel.editStep = .entry
                     } label: {

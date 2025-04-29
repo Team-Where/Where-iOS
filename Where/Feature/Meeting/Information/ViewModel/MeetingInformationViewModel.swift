@@ -54,8 +54,26 @@ extension MeetingInformationViewModel {
         self._meeting = meeting
     }
     
-    func updateMeeting() {
-        meetingCore.updateMeeting(id: meeting.id, title: titleText, description: descriptionText, imageData: nil)
+    func updateMeetingTitle() {
+        meetingCore.updateMeeting(
+            id: meeting.id,
+            title: titleText,
+            description: nil,
+            imageData: nil
+        )
+    }
+    
+    func updateMeetingDescription() {
+        meetingCore.updateMeeting(
+            id: meeting.id,
+            title: nil,
+            description: descriptionText,
+            imageData: nil
+        )
+    }
+    
+    func exitMeeting() {
+        meetingCore.exitMeeting(id: meeting.id)
     }
 }
 
