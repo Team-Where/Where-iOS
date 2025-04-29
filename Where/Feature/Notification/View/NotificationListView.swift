@@ -6,13 +6,18 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct NotificationListView: View {
-    @State private var notifications: [Notification] = []
+    @ObservedObject private var viewModel: NotificationListViewModel
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(NotificationListViewModel.self)!
+    }
     
     var body: some View {
         VStack {
-            if notifications.isEmpty {
+            if viewModel.notifications.isEmpty {
                 unavailableView()
             } else {
                 notificationsSection()
@@ -47,7 +52,7 @@ struct NotificationListView: View {
     
     @ViewBuilder private func notificationsSection() -> some View {
         List {
-            ForEach(notifications) { notification in
+            ForEach(viewModel.notifications) { notification in
                 notificationCell(notification)
                     .listRowSeparator(.hidden)
             }
@@ -88,7 +93,7 @@ struct NotificationListView: View {
             Spacer()
             
             // TODO: 수신시각 확인할 수 있도록 Notification 모델 수정 필요
-            Text("지금")
+            Text(notification.date.relativeTimeDisplay())
                 .whereFont(.caption12regular)
                 .foregroundStyle(.where(.gray600))
         }
@@ -103,11 +108,5 @@ extension NotificationListView {
                 .frame(width: 6, height: 6)
                 .foregroundStyle(.red)
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        NotificationListView()
     }
 }
