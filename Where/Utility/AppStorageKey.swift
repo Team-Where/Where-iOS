@@ -10,4 +10,5 @@ import Foundation
 /// AppStorageKey로 사용되는 문자열
 struct AppStorageKey {
     static let isOnboardingNeeded = "isOnboardingNeeded"
+    static let shouldDisplayNotifications = "shouldDisplayNotifications"
 }
