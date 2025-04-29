@@ -6,11 +6,22 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct PreferenceView: View {
+    @AppStorage(AppStorageKey.shouldDisplayNotifications) var shouldDisplayNotifications: Bool = true
+    @ObservedObject private var viewModel: PreferenceViewModel
+    
+    private let resolver: Resolver
+    
+    init(resolver: Resolver) {
+        self.viewModel = resolver.resolve(PreferenceViewModel.self)!
+        self.resolver = resolver
+    }
+    
     var body: some View {
         ScrollView(.vertical) {
-            LazyVStack(pinnedViews: .sectionHeaders) {
+            LazyVStack {
                 Section {
                     NavigationLink {
                         AdjustPasswordView()
@@ -31,8 +42,8 @@ struct PreferenceView: View {
                     }
                     .frame(width: 350, height: 50)
                     
-                    NavigationLink {
-                        // TODO: 로그아웃
+                    Button {
+                        viewModel.logout()
                     } label: {
                         HStack {
                             Text("로그아웃")
@@ -51,7 +62,7 @@ struct PreferenceView: View {
                     .frame(width: 350, height: 50)
                     
                     NavigationLink {
-                        UnregisterView()
+                        UnregisterView(resolver: resolver)
                     } label: {
                         HStack {
                             Text("계정 탈퇴")
@@ -69,7 +80,7 @@ struct PreferenceView: View {
                     }
                     .frame(width: 350, height: 50)
                     
-                    Toggle(isOn: .constant(true)) {
+                    Toggle(isOn: $shouldDisplayNotifications) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("알림")
                                 .whereFont(.body16medium)
@@ -189,6 +200,6 @@ struct PreferenceView: View {
 
 #Preview {
     NavigationStack {
-        PreferenceView()
+        PreferenceView(resolver: PreviewHelper.shared.resolver)
     }
 }
