@@ -200,7 +200,7 @@ extension HistoryReminderView {
                 .padding(.bottom, 10)
                 
                 NavigationLink {
-                    MeetingInformationView(resolver: resolver)
+                    MeetingInformationView(resolver: resolver, meetingID: meeting.id)
                 } label: {
                     Text("자세히 보기")
                         .whereFont(.body14medium)

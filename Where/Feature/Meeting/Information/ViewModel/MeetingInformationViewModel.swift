@@ -11,6 +11,7 @@ import Combine
 
 final class MeetingInformationViewModel: ObservableObject {
     @Published private var _meeting: Meeting!
+    @Published private var meetingID: UInt64!
     
     @Published var sheetType: SheetType?
     @Published var titleText = String()
@@ -33,10 +34,10 @@ final class MeetingInformationViewModel: ObservableObject {
             .mapError {
                 ViewModelError.meetingError($0)
             }
-            .combineLatest($_meeting.setFailureType(to: ViewModelError.self))
-            .compactMap{ (dict, meeting) -> Meeting? in
-                guard let meeting else { return nil }
-                return dict[meeting.id]
+            .combineLatest($meetingID.setFailureType(to: ViewModelError.self))
+            .compactMap{ (dict, id) -> Meeting? in
+                guard let id else { return nil }
+                return dict[id]
             }
             .sink { completion in
                 // TODO: Error handling
@@ -50,8 +51,8 @@ final class MeetingInformationViewModel: ObservableObject {
 }
 
 extension MeetingInformationViewModel {
-    func setMeeting(_ meeting: Meeting) {
-        self._meeting = meeting
+    func setMeeting(id: UInt64) {
+        self.meetingID = id
     }
     
     func updateMeetingTitle() {

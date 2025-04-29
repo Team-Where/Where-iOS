@@ -13,10 +13,10 @@ struct MeetingInformationView: View {
     @ObservedObject private var viewModel: MeetingInformationViewModel
     private let resolver: Resolver
     
-    init(resolver: Resolver, meeting: Meeting) {
+    init(resolver: Resolver, meetingID: UInt64) {
         self.resolver = resolver
         self.viewModel = resolver.resolve(MeetingInformationViewModel.self)!
-        self.viewModel.setMeeting(meeting)
+        self.viewModel.setMeeting(id: meetingID)
     }
     
     var body: some View {
