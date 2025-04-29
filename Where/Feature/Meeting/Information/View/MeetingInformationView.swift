@@ -9,16 +9,14 @@ import SwiftUI
 import Swinject
 import Combine
 
-fileprivate typealias SheetType = MeetingInformationViewModel.SheetType
-
 struct MeetingInformationView: View {
     @ObservedObject private var viewModel: MeetingInformationViewModel
     private let resolver: Resolver
     
-    init(resolver: Resolver) {
+    init(resolver: Resolver, meeting: Meeting) {
         self.resolver = resolver
         self.viewModel = resolver.resolve(MeetingInformationViewModel.self)!
-        // TODO: setMeeting ViewModel
+        self.viewModel.setMeeting(meeting)
     }
     
     var body: some View {
@@ -31,7 +29,6 @@ struct MeetingInformationView: View {
                 }
                 
                 ToolbarItem(placement: .principal) {
-                    // TODO: 모임 도메인 모델 선언 필요
                     Text(viewModel.meeting.title)
                         .whereFont(.subtitle18semibold)
                         .foregroundStyle(Color(hex: 0x1F2937))
@@ -50,9 +47,8 @@ struct MeetingInformationView: View {
             .sheet(item: $viewModel.sheetType) { type in
                 switch type {
                 case .editMeetingInfo:
-                    EditMeetingInfoSheet {
-                        viewModel.sheetType = $0
-                    }
+                    EditMeetingInfoSheet (resolver: resolver)
+
                 }
             }
     }
@@ -96,29 +92,16 @@ extension MeetingInformationView {
 extension MeetingInformationView {
     
     struct EditMeetingInfoSheet: View {
-        /// 모임정보 편집 간 단계
-        enum EditStep {
-            /// 모임명, 메모 표시 단계
-            case entry
-            /// 모임명 수정 단계
-            case title
-            /// 메모 수정 단계
-            case memo
-        }
-        
         enum EditMeetingFocusState {
             case title, memo
         }
         
-        @State private var editStep: EditStep = .entry
-        @State private var titleText: String = "2024 연말파티"
-        @State private var memoText: String = "메모 입력"
+        @ObservedObject private var viewModel: MeetingInformationViewModel
+
         @FocusState private var textFieldFocused: EditMeetingFocusState?
         
-        private let sheetCompletion: (SheetType?) -> Void
-        
-        fileprivate init(completion: @escaping (SheetType?) -> Void) {
-            sheetCompletion = completion
+        init(resolver: Resolver) {
+            viewModel = resolver.resolve(MeetingInformationViewModel.self)!
         }
         
         var body: some View {
@@ -130,7 +113,7 @@ extension MeetingInformationView {
         }
         
         @ViewBuilder private func content() -> some View {
-            switch editStep {
+            switch viewModel.editStep {
             case .entry: entry
             case .title: title
             case .memo: memo
@@ -143,7 +126,7 @@ extension MeetingInformationView {
                     Spacer()
                     
                     Button {
-                        sheetCompletion(.none)
+                        viewModel.sheetType = .none
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -154,12 +137,12 @@ extension MeetingInformationView {
                 }
                 
                 HStack {
-                    Text("2024 연말파티")
+                    Text(viewModel.meeting.title)
                         .whereFont(.title20semibold)
                         .foregroundStyle(Color(hex: 0x111827))
                     
                     Button {
-                        editStep = .title
+                        viewModel.editStep = .title
                     } label: {
                         Image(.pencilIcon)
                             .frame(width: 16, height: 16)
@@ -170,11 +153,11 @@ extension MeetingInformationView {
                 }
                 
                 HStack {
-                    Text("벌써 연말이다 신나게 놀아보장~~")
+                    Text(viewModel.meeting.description)
                         .whereFont(.body14regular)
                         .foregroundStyle(Color(hex: 0x6B7280))
                     Button {
-                        editStep = .memo
+                        viewModel.editStep = .memo
                     } label: {
                         Image(.pencilIcon)
                             .frame(width: 12, height: 12)
@@ -212,7 +195,7 @@ extension MeetingInformationView {
                     
                     Button {
                         textFieldFocused = .none
-                        sheetCompletion(.none)
+                        viewModel.sheetType = .none
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -222,7 +205,7 @@ extension MeetingInformationView {
                     }
                 }
                 
-                TextField("모임 이름 입력", text: $titleText)
+                TextField("모임 이름 입력", text: $viewModel.titleText)
                     .whereFont(.body16regular)
                     .foregroundStyle(Color(hex: 0x1F2937))
                     .focused($textFieldFocused, equals: .title)
@@ -232,7 +215,7 @@ extension MeetingInformationView {
                 HStack {
                     Button {
                         textFieldFocused = .none
-                        editStep = .entry
+                        viewModel.editStep = .entry
                     } label: {
                         Text("취소")
                             .whereFont(.body16medium)
@@ -246,7 +229,7 @@ extension MeetingInformationView {
                     Button {
                         // TODO: 모임명 업데이트 기능 연결
                         textFieldFocused = .none
-                        editStep = .entry
+                        viewModel.editStep = .entry
                     } label: {
                         Text("확인")
                             .whereFont(.body16medium)
@@ -256,7 +239,7 @@ extension MeetingInformationView {
                             .background(.accent)
                             .clipShape(.rect(cornerRadius: 16))
                     }
-                    .disabled(titleText.isEmpty) // 모임명은 필수 입력
+                    .disabled(viewModel.titleText.isEmpty) // 모임명은 필수 입력
                 }
             }
             .onAppear {
@@ -276,7 +259,7 @@ extension MeetingInformationView {
                     
                     Button {
                         textFieldFocused = .none
-                        sheetCompletion(.none)
+                        viewModel.sheetType = .none
                     } label: {
                         Image(systemName: "xmark")
                             .resizable()
@@ -286,7 +269,7 @@ extension MeetingInformationView {
                     }
                 }
                 
-                TextField("메모 입력", text: $memoText)
+                TextField("메모 입력", text: $viewModel.descriptionText)
                     .whereFont(.body16regular)
                     .foregroundStyle(Color(hex: 0x1F2937))
                     .focused($textFieldFocused, equals: .memo)
@@ -296,7 +279,7 @@ extension MeetingInformationView {
                 HStack {
                     Button {
                         textFieldFocused = .none
-                        editStep = .entry
+                        viewModel.editStep = .entry
                     } label: {
                         Text("취소")
                             .whereFont(.body16medium)
@@ -310,7 +293,7 @@ extension MeetingInformationView {
                     Button {
                         // TODO: 메모 업데이트 기능 연결
                         textFieldFocused = .none
-                        editStep = .entry
+                        viewModel.editStep = .entry
                     } label: {
                         Text("확인")
                             .whereFont(.body16medium)
@@ -330,8 +313,8 @@ extension MeetingInformationView {
     }
 }
 
-#Preview {
-    NavigationStack {
-        MeetingInformationView(resolver: PreviewHelper.shared.resolver)
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        MeetingInformationView(resolver: PreviewHelper.shared.resolver)
+//    }
+//}
