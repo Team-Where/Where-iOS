@@ -15,7 +15,7 @@ enum MapAppScheme {
     
     private var identifier: String? { Bundle.main.bundleIdentifier }
     
-    var baseURLString: String {
+    private var baseURLString: String {
         switch self {
         case .kakaomap: "kakaomap://"
         case .navermap: "nmap://"
