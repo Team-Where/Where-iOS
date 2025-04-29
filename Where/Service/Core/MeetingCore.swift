@@ -303,8 +303,8 @@ extension MeetingCore: MeetingCoreProtocol {
         
         let dto = UpdateMeetingDTO.Request(
             meetingID: id,
-            title: title ?? meeting.title,
-            description: description ?? meeting.description,
+            title: title,
+            description: description,
             userID: user.id
         )
         
