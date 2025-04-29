@@ -41,8 +41,10 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
+    ///     - title: 모임의 제목
+    ///     - description: 모임의 메모 및 설명
     ///     - imageData: 모임 대표 이미지 Data
-    func updateMeeting(id: UInt64, imageData: Data?)
+    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?)
     /// 모임 종료
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -288,7 +290,7 @@ extension MeetingCore: MeetingCoreProtocol {
         }
     }
     
-    func updateMeeting(id: UInt64, imageData: Data?) {
+    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) {
         guard let user = currentUser
         else {
             return meetingsSubject.send(completion: .failure(.userIDNotSet))
@@ -299,7 +301,13 @@ extension MeetingCore: MeetingCoreProtocol {
             return meetingsSubject.send(completion: .failure(.noSuchMeeting))
         }
         
-        let dto = UpdateMeetingDTO.Request(meetingID: id, title: meeting.title, description: meeting.description, userID: user.id)
+        let dto = UpdateMeetingDTO.Request(
+            meetingID: id,
+            title: title ?? meeting.title,
+            description: description ?? meeting.description,
+            userID: user.id
+        )
+        
         do {
             let encodedMeetingData = try encoder.encode(dto)
             apiService.requestPublisher(Endpoint.updateMeeting(encodedMeetingData: encodedMeetingData, imageData: imageData), UpdateMeetingDTO.Response.self)
