@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class InquiryViewModel: ObservableObject {
     @Published var sheetType: SheetType?
@@ -16,8 +17,8 @@ final class InquiryViewModel: ObservableObject {
     private let supportCore: SupportCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(supportCore: SupportCoreProtocol) {
-        self.supportCore = supportCore
+    init(resolver: Resolver) {
+        self.supportCore = resolver.resolve(SupportCoreProtocol.self)!
         subscribe()
     }
     

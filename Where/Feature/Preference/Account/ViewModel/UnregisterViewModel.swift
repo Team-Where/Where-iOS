@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class UnregisterViewModel: ObservableObject {
     @Published var selectedUnregisterReason: UnregisterReasonType = .infrequentUse
@@ -16,8 +17,8 @@ final class UnregisterViewModel: ObservableObject {
     private let authCore: AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(authCore: AuthentificationCoreProtocol) {
-        self.authCore = authCore
+    init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
         subscribe()
     }
     

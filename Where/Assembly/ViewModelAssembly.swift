@@ -39,6 +39,10 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             return MeetingInformationDetailViewModel(resolver: resolver)
         }
         
+        container.register(MeetingInformationViewModel.self) { _ in
+            return MeetingInformationViewModel()
+        }
+        
         container.register(FriendsListViewModel.self) { resolver in
             return FriendsListViewModel(resolver: resolver)
         }
@@ -61,6 +65,22 @@ struct ViewModelAssembly: @preconcurrency Assembly {
         
         container.register(CommentViewModel.self) { resolver in
             return CommentViewModel(resolver: resolver)
+        }
+        
+        container.register(UnregisterViewModel.self) { resolver in
+            return UnregisterViewModel(resolver: resolver)
+        }
+        
+        container.register(FAQViewModel.self) { resolver in
+            return FAQViewModel(resolver: resolver)
+        }
+        
+        container.register(EditInquiryViewModel.self) { resolver in
+            return EditInquiryViewModel(resolver: resolver)
+        }
+        
+        container.register(InquiryViewModel.self) { resolver in
+            return InquiryViewModel(resolver: resolver)
         }
     }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class EditInquiryViewModel: ObservableObject {
     @Published var isPopupPresented: Bool = false
@@ -25,8 +26,8 @@ final class EditInquiryViewModel: ObservableObject {
     private let supportCore: SupportCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(supportCore: SupportCoreProtocol) {
-        self.supportCore = supportCore
+    init(resolver: Resolver) {
+        self.supportCore = resolver.resolve(SupportCoreProtocol.self)!
     }
 }
 
