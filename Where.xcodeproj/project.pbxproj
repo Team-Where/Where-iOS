@@ -76,6 +76,8 @@
 		046A64542DC10755006ED90C /* PreferenceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64532DC10755006ED90C /* PreferenceViewModel.swift */; };
 		046A64562DC114F8006ED90C /* NotificationListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64552DC114F8006ED90C /* NotificationListViewModel.swift */; };
 		046A64592DC13CC9006ED90C /* MapAppScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64582DC13CC9006ED90C /* MapAppScheme.swift */; };
+		046A645B2DC1D3F0006ED90C /* AcceptInvitationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A645A2DC1D3F0006ED90C /* AcceptInvitationView.swift */; };
+		046A645D2DC1D409006ED90C /* AcceptInvitationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A645C2DC1D409006ED90C /* AcceptInvitationViewModel.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -273,6 +275,8 @@
 		046A64532DC10755006ED90C /* PreferenceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewModel.swift; sourceTree = "<group>"; };
 		046A64552DC114F8006ED90C /* NotificationListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListViewModel.swift; sourceTree = "<group>"; };
 		046A64582DC13CC9006ED90C /* MapAppScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAppScheme.swift; sourceTree = "<group>"; };
+		046A645A2DC1D3F0006ED90C /* AcceptInvitationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitationView.swift; sourceTree = "<group>"; };
+		046A645C2DC1D409006ED90C /* AcceptInvitationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitationViewModel.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -636,6 +640,7 @@
 			isa = PBXGroup;
 			children = (
 				046A64552DC114F8006ED90C /* NotificationListViewModel.swift */,
+				046A645C2DC1D409006ED90C /* AcceptInvitationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -759,6 +764,7 @@
 			isa = PBXGroup;
 			children = (
 				04A530A02D8EE312004E58AD /* NotificationListView.swift */,
+				046A645A2DC1D3F0006ED90C /* AcceptInvitationView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1441,6 +1447,7 @@
 				046833F12D3B8F65009D2357 /* Place.swift in Sources */,
 				04F0518A2D42332D000892C0 /* AuthentificationProvider.swift in Sources */,
 				046833F22D3B8F65009D2357 /* Meridiem.swift in Sources */,
+				046A645B2DC1D3F0006ED90C /* AcceptInvitationView.swift in Sources */,
 				042A79F02DA3F5F8004105E2 /* NaverLoginStrategy.swift in Sources */,
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
 				04C6F2402DBA656A0099874F /* HistoryReminderViewModel.swift in Sources */,
@@ -1553,6 +1560,7 @@
 				7FE7BDB12DB68E160097CC30 /* CreateFAQDTO.swift in Sources */,
 				7FE7BDB22DB68E160097CC30 /* CreateUserInquiryDTO.swift in Sources */,
 				7FE7BDB32DB68E160097CC30 /* DeleteAnnouncementDTO.swift in Sources */,
+				046A645D2DC1D409006ED90C /* AcceptInvitationViewModel.swift in Sources */,
 				7FE7BDB42DB68E160097CC30 /* DeleteFAQDTO.swift in Sources */,
 				7FE7BDB52DB68E160097CC30 /* ReadAdminInquiriesDTO.swift in Sources */,
 				7FE7BDB62DB68E160097CC30 /* ReadAnnouncementsDTO.swift in Sources */,
