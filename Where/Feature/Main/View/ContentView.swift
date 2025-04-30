@@ -60,11 +60,9 @@ struct ContentView: View {
         .fullScreenCover(item: $viewModel.fullScreenCoverType) { type in
             switch type {
             case .completeCreation(let meeting):
-                EmptyView()
-//                CompleteCreationView(isCompleteCreationViewPresented: <#T##Binding<Bool>#>, meeting: <#T##Meeting#>)
+                CompleteCreationView(meeting: meeting)
             case .login:
-                EmptyView()
-//                LoginView(<#T##isPresented: Binding<Bool>##Binding<Bool>#>, resolver: <#T##any Resolver#>)
+                LoginView(resolver: resolver)
             }
         }
     }
