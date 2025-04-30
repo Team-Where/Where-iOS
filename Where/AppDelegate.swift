@@ -55,7 +55,7 @@ extension AppDelegate: UIApplicationDelegate {
     }
     
     /// Background에서 푸시 알림을 수신했을 때 호출됨
-    /// Non-sendable parameter type '[AnyHashable : Any]' cannot be sent from caller of protocol requirement 'application(_:didReceiveRemoteNotification:)' into nonisolated implementation; this is an error in the Swift 6 language mode
+    /// - Warning: Non-sendable parameter type '[AnyHashable : Any]' cannot be sent from caller of protocol requirement 'application(_:didReceiveRemoteNotification:)' into nonisolated implementation; this is an error in the Swift 6 language mode
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) async -> UIBackgroundFetchResult {
         notificationCore.handleReceivedNotificationPayload(userInfo)
         return .newData

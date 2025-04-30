@@ -9,6 +9,7 @@ import UIKit
 
 /// URL Schemes 및 관련 정보를 정의합니다.
 enum MapAppScheme {
+    /// 카카오맵
     case kakaomap
     /// 네이버지도
     case navermap
