@@ -10,17 +10,12 @@ import AuthenticationServices
 import Swinject
 
 struct LoginView: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: LoginViewModel
-    
-    @Binding var isPresented: Bool
     
     private let resolver: Resolver
     
-    init(
-        _ isPresented: Binding<Bool>,
-        resolver: Resolver
-    ) {
-        self._isPresented = isPresented
+    init(resolver: Resolver) {
         self.viewModel = resolver.resolve(LoginViewModel.self)!
         self.resolver = resolver
     }
@@ -84,7 +79,7 @@ struct LoginView: View {
                     
                     // Start With E-mail Button
                     NavigationLink {
-                        RegistrationTermView($isPresented, resolver: resolver)
+                        RegistrationTermView($viewModel.isRegistrationTermViewPresented, resolver: resolver)
                     } label: {
                         Text("이메일로 시작하기")
                             .whereFont(.body16semibold)
@@ -98,7 +93,7 @@ struct LoginView: View {
                             .whereFont(.body14medium)
                         
                         NavigationLink {
-                            SignInView($isPresented, resolver: resolver)
+                            SignInView($viewModel.isSignInViewPresented, resolver: resolver)
                         } label: {
                             Text("여기에 로그인하세요")
                                 .whereFont(.body14medium)
@@ -114,22 +109,21 @@ struct LoginView: View {
                 }
             }
         }
+        .onChange(of: viewModel.isLoginCompleted) { _, isCompleted in
+            guard isCompleted else { return }
+            dismiss()
+        }
+        .onAppear(perform: viewModel.onAppear)
     }
     
     private var backButton: some View {
         Button {
-            isPresented = false
+            dismiss()
         } label: {
             Image(systemName: "xmark")
                 .frame(width: 12, height: 12)
                 .padding()
                 .foregroundStyle(.black)
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        LoginView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }
