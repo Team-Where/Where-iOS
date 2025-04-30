@@ -157,6 +157,31 @@ struct CoreAssembly: Assembly {
             return core
         }
         
+        container.register(NotificationCore.self) { _ in
+            return NotificationCore()
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(NotificationCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(NotificationCore.self) else {
+                fatalError("NotificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(NotificationMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(NotificationCore.self) else {
+                fatalError("NotificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
         container.register(CoreMediatorProtocol.self) { _ in
             return CoreMediator()
         }
