@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CompleteCreationView: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var isCompleteCreationViewPresented: Bool
     
     let meeting: Meeting
     
