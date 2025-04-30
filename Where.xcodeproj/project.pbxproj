@@ -78,6 +78,7 @@
 		046A64592DC13CC9006ED90C /* MapAppScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64582DC13CC9006ED90C /* MapAppScheme.swift */; };
 		046A645B2DC1D3F0006ED90C /* AcceptInvitationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A645A2DC1D3F0006ED90C /* AcceptInvitationView.swift */; };
 		046A645D2DC1D409006ED90C /* AcceptInvitationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A645C2DC1D409006ED90C /* AcceptInvitationViewModel.swift */; };
+		046A64622DC233F6006ED90C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64612DC233F6006ED90C /* AppDelegate.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -277,6 +278,7 @@
 		046A64582DC13CC9006ED90C /* MapAppScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAppScheme.swift; sourceTree = "<group>"; };
 		046A645A2DC1D3F0006ED90C /* AcceptInvitationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitationView.swift; sourceTree = "<group>"; };
 		046A645C2DC1D409006ED90C /* AcceptInvitationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitationViewModel.swift; sourceTree = "<group>"; };
+		046A64612DC233F6006ED90C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -550,6 +552,7 @@
 				045B449F2D2150AF00514A27 /* Utility */,
 				7F7E67BC2DA105B500833376 /* Feature */,
 				045B44A62D2150AF00514A27 /* WhereApp.swift */,
+				046A64612DC233F6006ED90C /* AppDelegate.swift */,
 				0450E84C2D99708900DB029A /* PreviewHelper.swift */,
 				0450E8472D99665400DB029A /* Assembly */,
 				91A9EAAE2D26EE45005F09D2 /* Preview Content */,
@@ -1574,6 +1577,7 @@
 				7FE7BDBD2DB68E160097CC30 /* RegisterDTO.swift in Sources */,
 				7FE7BDBE2DB68E160097CC30 /* APIService.swift in Sources */,
 				7FE7BDBF2DB68E160097CC30 /* Endpoint.swift in Sources */,
+				046A64622DC233F6006ED90C /* AppDelegate.swift in Sources */,
 				045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */,
 				04993AA62D50BA940058EAB8 /* ToolTip.swift in Sources */,
 				04C6F2422DBA9B6C0099874F /* EmptyDTO.swift in Sources */,

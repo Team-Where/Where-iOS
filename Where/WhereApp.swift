@@ -10,6 +10,7 @@ import Swinject
 
 @main
 struct WhereApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let resolver: Swinject.Resolver
     
     init() {
@@ -22,6 +23,7 @@ struct WhereApp: App {
             container: Container()
         )
         self.resolver = assembler.resolver
+        self.appDelegate.configure(resolver: resolver)
     }
     
     var body: some Scene {
