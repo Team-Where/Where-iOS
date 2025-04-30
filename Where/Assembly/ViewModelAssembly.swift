@@ -86,5 +86,9 @@ struct ViewModelAssembly: @preconcurrency Assembly {
         container.register(PreferenceViewModel.self) { resolver in
             return PreferenceViewModel(resolver: resolver)
         }
+        
+        container.register(ContentViewModel.self) { resolver in
+            return ContentViewModel(resolver: resolver)
+        }
     }
 }
