@@ -58,7 +58,7 @@ struct SideMenuContentView: View {
         .navigationDestination(item: $navigationType) { type in
             switch type {
             case .settings: PreferenceView(resolver: resolver)
-            case .notifications: NotificationListView()
+            case .notifications: NotificationListView(resolver: resolver)
             case .FAQs: FAQView(resolver: resolver)
             case .inquiries: InquiryView(resolver: resolver)
             case .announcements: AnnouncementView(resolver: resolver)
