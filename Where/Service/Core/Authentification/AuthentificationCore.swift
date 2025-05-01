@@ -36,7 +36,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func logout()
     
     /// 이메일 중복 확인
-    func checkEmailDuplicate(email: String)
+    func checkEmailDuplicate(email: String) -> AnyPublisher<Bool, AuthentificationCoreError>
     
     /// 회원가입
     func register(email: String, password: String, nickname: String, profileImageData: Data?)
@@ -71,6 +71,12 @@ enum AuthentificationCoreError: Error {
     
     /// 알 수 없는 에러
     case unknown(Error?)
+    
+    /// 네트워크 요청 실패
+    case networkRequestFailed(Error)
+    
+    /// 토큰 만료 등으로 인한 자동 로그인 실패
+    case autoLoginFailed
 }
 
 private extension AuthentificationCore {
@@ -87,13 +93,16 @@ final class AuthentificationCore {
     private let currentUserSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
     
     private let apiService: APIServable
+    private let encoder: JSONEncoder
     private let strategyContext = AuthentificationStrategyContext()
     private var cancellables = Set<AnyCancellable>()
     
     init(
-        apiService: APIServable
+        apiService: APIServable,
+        encoder: JSONEncoder
     ) {
         self.apiService = apiService
+        self.encoder = encoder
         subscribe()
     }
     
@@ -119,6 +128,7 @@ final class AuthentificationCore {
                 }
                 // TODO: 관리자 계정인지 아닌지 파악 여부 후 로직 구현
 //                self?.mediator?.notify(event: .userDidLogin(id: user.id, isAdmin: ))
+                UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
             }
             .store(in: &cancellables)
         
@@ -168,28 +178,61 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     
     func logout() {
         currentUserSubject.send(nil)
+        mediator?.notify(event: .userDidLogout)
     }
     
-    func checkEmailDuplicate(email: String) {
-        // TODO: 기능 구현
+    func checkEmailDuplicate(email: String) -> AnyPublisher<Bool, AuthentificationCoreError> {
+        let dto = CheckEmailDuplicationDTO.Request(email: email)
+        
+        return apiService
+            .requestPublisher(Endpoint.checkEmailDuplication(dto: dto), Bool.self)
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .eraseToAnyPublisher()
     }
     
     func register(email: String, password: String, nickname: String, profileImageData: Data?) {
-        // TODO: 기능 구현
+        do {
+            let dto = RegisterDTO.Request(email: email, password: password, nickname: nickname)
+            let encodedUserData = try encoder.encode(dto)
+            apiService.requestPublisher(Endpoint.register(encodedUserData: encodedUserData, profileImageData: profileImageData), RegisterDTO.Response.self)
+                .sink { completion in
+                    // TODO: 에러 핸들링
+                } receiveValue: { [weak self] _ in
+                    // TODO: 구현 방향 결정되면 수정하기
+                }
+                .store(in: &cancellables)
+
+        } catch {
+            currentUserSubject.send(completion: .failure(.userInfoFetchFailed))
+        }
     }
     
     func unregister() {
         // TODO: 기능 구현
+    }
+    
+    func updateUserProfile(nickname: String, profileImageData: Data?) {
+        
     }
 }
 
 // MARK: - AuthentificationMediationProtocol Conformation
 extension AuthentificationCore: AuthentificationMediationProtocol {
     func loadCurrentUser() {
-        // TODO: 로직 구현
-        // <추가>: UserDefaults에 저장했던 최근 로그인 정보(currentUserId)를 사용해 자동 로그인 구현
-        // 1. 캐시 확인
-        // 2. 서버로부터 사용자 정보와 토큰을 얻어 저장
-        // 3. 결과에 따라 currentUserSubject에 send하여 추가적인 동작을 촉발
+        guard let userIDString = UserDefaults.standard.string(forKey: AppStorageKey.currentUserID),
+              let userID = UInt64(userIDString)
+        else {
+            return currentUserSubject.send(completion: .failure(.autoLoginFailed))
+        }
+        
+        apiService
+            .requestPublisher(Endpoint.readUserInfo(userID: userID), ReadUserInfoDTO.Response.self)
+            .map { $0.toEntity() }
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] user in
+                self?.currentUserSubject.send(user)
+            }
+            .store(in: &cancellables)
     }
 }
