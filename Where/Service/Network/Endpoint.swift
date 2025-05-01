@@ -11,7 +11,7 @@ import Moya
 enum Endpoint {
     // MARK: User Related
     /// 회원가입
-    case register(dto: RegisterDTO.Request)
+    case register(encodedUserData: Data, profileImageData: Data?)
     /// 회원탈퇴
     case unregister(userID: UInt64)
     /// 로그인
@@ -130,7 +130,7 @@ enum Endpoint {
 // MARK: TargetType Confirmation
 extension Endpoint: TargetType {
     var baseURL: URL {
-        URL(string: "https://audiwhere.codns.com/api")!
+        URL(string: "https://audiwhere.shop/api")!
     }
     
     var path: String {
@@ -227,8 +227,13 @@ extension Endpoint: TargetType {
     
     var task: Moya.Task {
         switch self {
-        case .register(let dto):
-            return .requestJSONEncodable(dto)
+        case .register(let userData, let profileImageData):
+            var formData = [MultipartFormData]()
+            formData.append(.init(provider: .data(userData), name: "data"))
+            if let profileImageData = profileImageData {
+                formData.append(.init(provider: .data(profileImageData), name: "image"))
+            }
+            return .uploadMultipart(formData)
         case .unregister:
             return .requestPlain
         case .login(let dto):
@@ -237,11 +242,10 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .readUserInfo:
             return .requestPlain
-        case .uploadProfileImage(let userId, let image):
-            
-            // TODO: 현재 API가 나와있지 않은 상태, API 나오면 업데이트 예정
-            return .requestPlain
-            
+        case .uploadProfileImage(_, let image):
+            var formData = [MultipartFormData]()
+            formData.append(.init(provider: .data(image), name: "image"))
+            return .uploadMultipart(formData)
         case .reissueAccessToken(let refreshToken):
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(refreshToken.data(using: .utf8) ?? Data()), name: "refreshToken", mimeType: "application/json"))
