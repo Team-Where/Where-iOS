@@ -46,9 +46,9 @@ struct RegistrationView: View {
                 .ignoresSafeArea(.keyboard)
             }
             .popup($viewModel.isPopupPresented) {
-//                ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { uiImage in
-//                    viewModel.profileImage = uiImage
-//                }
+                ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { data in
+                    viewModel.profileImageData = data
+                }
             }
             .onDisappear {
                 viewModel.flush()
@@ -80,8 +80,9 @@ struct RegistrationView: View {
         case .profile:
             ScrollView(.vertical) {
                 ZStack(alignment: .bottomTrailing) {
-                    if let image = viewModel.profileImage {
-                        Image(uiImage: image)
+                    if let data = viewModel.profileImageData,
+                       let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 155, height: 155)
@@ -301,7 +302,7 @@ struct RegistrationView: View {
             
             Text(viewModel.nicknameValidationNotice())
                 .whereFont(.body14regular)
-                .foregroundColor(viewModel.nicknameValidationNoticeColor())
+                .foregroundColor(nicknameValidationNoticeColor())
                 .padding(.top, 8)
         }
     }
@@ -324,6 +325,14 @@ struct RegistrationView: View {
         
         guard isInvalid == false else { return .red }
         return textFieldFocus == focus ? .accent : Color(hex: 0xE5E7EB)
+    }
+    
+    private func nicknameValidationNoticeColor() -> Color {
+        switch viewModel.nicknameValidationState {
+        case .valid: .green
+        case .beforeValidate: .where(.gray700)
+        case .invalid, .duplicated: .red
+        }
     }
 }
 

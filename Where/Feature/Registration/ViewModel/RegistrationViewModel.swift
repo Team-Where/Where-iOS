@@ -5,7 +5,7 @@
 //  Created by Swain Yun on 1/21/25.
 //
 
-import SwiftUI
+import Foundation
 import Combine
 import Swinject
 
@@ -17,7 +17,7 @@ final class RegistrationViewModel: ObservableObject {
     @Published var reInputPasswordFieldText: String = String()
     @Published var nicknameFieldText: String = String()
     @Published var remainingTime: Int?
-    @Published var profileImage: UIImage? = UIImage(named: "person")
+    @Published var profileImageData: Data?
     @Published var isPopupPresented: Bool = false
     @Published var floater: FloaterType?
     @Published var isCompleted: Bool = false
@@ -225,14 +225,6 @@ extension RegistrationViewModel {
         }
     }
     
-    func nicknameValidationNoticeColor() -> Color {
-        switch nicknameValidationState {
-        case .valid: .green
-        case .beforeValidate: .where(.gray700)
-        case .invalid, .duplicated: .red
-        }
-    }
-    
     func flush() {
         emailFieldText.removeAll()
         authorizationCodeFieldText.removeAll()
@@ -240,7 +232,7 @@ extension RegistrationViewModel {
         reInputPasswordFieldText.removeAll()
         nicknameFieldText.removeAll()
         remainingTime = nil
-        profileImage = UIImage(named: "person")
+        profileImageData = nil
         isPopupPresented = false
         floater = nil
         isCompleted = false
