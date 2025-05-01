@@ -207,7 +207,7 @@ extension InquiryView {
                             .whereFont(.body16medium)
                             .foregroundStyle(.where(.gray800))
                         
-                        AsyncDateView(date: .constant(inquiry.modifiedAt), format: .yyyyMMdd, prompt: "")
+                        DateView(date: inquiry.modifiedAt, format: .yyyyMMdd, prompt: "")
                             .whereFont(.body14regular)
                             .foregroundStyle(.where(.gray700))
                     }

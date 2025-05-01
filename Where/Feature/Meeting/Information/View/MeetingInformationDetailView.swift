@@ -155,7 +155,7 @@ struct MeetingInformationDetailView: View {
             
             switch type {
             case .date(let date):
-                AsyncDateView(date: date, format: .yyyyMMddah, prompt: "아직 정해진 일정이 없어요")
+                DateView(date: date, format: .yyyyMMddah, prompt: "아직 정해진 일정이 없어요")
                     .whereFont(.body14regular)
                     .foregroundStyle(date == .none ? Color(hex: 0x868E96) : Color(hex: 0x212529))
             case .sharedPlace(let count):
@@ -468,7 +468,7 @@ extension MeetingInformationDetailView {
                         sheetType = .date
                     } label: {
                         HStack(spacing: 8) {
-                            AsyncDateView(date: $temporalSelectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
+                            DateView(date: $temporalSelectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
                                 .whereFont(.body14regular)
                                 .foregroundStyle(temporalSelectedDate == nil ? Color(hex: 0x6B7280) : Color(hex: 0x1F2937))
                             
@@ -610,7 +610,7 @@ extension MeetingInformationDetailView {
                     sheetType = .none
                 } label: {
                     HStack {
-                        AsyncDateView(date: $temporalSelectedDate, format: .MMddEEKorean, prompt: "날짜를 선택해주세요")
+                        DateView(date: $temporalSelectedDate, format: .MMddEEKorean, prompt: "날짜를 선택해주세요")
                         
                         if let _ = temporalSelectedDate {
                             Rectangle()

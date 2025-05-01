@@ -1,13 +1,13 @@
 //
-//  AsyncDateView.swift
+//  DateView.swift
 //  Where
 //
-//  Created by Swain Yun on 1/4/25.
+//  Created by Swain Yun on 5/2/25.
 //
 
 import SwiftUI
 
-struct AsyncDateView: View {
+struct DateView: View {
     @State private var time: String = String()
     @Binding var date: Date?
     
@@ -35,20 +35,18 @@ struct AsyncDateView: View {
     var body: some View {
         Text(time)
             .onChange(of: date) { _, newValue in
-                Task { @MainActor in
-                    guard let newValue = newValue else {
-                        time = prompt
-                        return
-                    }
-                    time = await newValue.toString(by: format)
+                guard let newValue else {
+                    return time = prompt
                 }
+                
+                time = newValue.toString(by: format)
             }
-            .task {
-                guard let date = date else {
-                    time = prompt
-                    return
+            .onAppear {
+                guard let date else {
+                    return time = prompt
                 }
-                time = await date.toString(by: format)
+                
+                time = date.toString(by: format)
             }
     }
 }

@@ -72,7 +72,7 @@ extension AnnouncementView {
                         .whereFont(.body16medium)
                         .foregroundStyle(.where(.gray800))
                     
-                    AsyncDateView(date: .constant(announcement.date), format: .yyyyMMdd, prompt: String())
+                    DateView(date: announcement.date, format: .yyyyMMdd, prompt: String())
                         .whereFont(.body14regular)
                         .foregroundStyle(.where(.gray700))
                 }

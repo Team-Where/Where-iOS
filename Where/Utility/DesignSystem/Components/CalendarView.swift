@@ -31,7 +31,7 @@ struct CalendarView: View {
     
     @ViewBuilder private func calendarHeader() -> some View {
         HStack(spacing: 12) {
-            AsyncDateView(date: currentMonth.startDate, format: .yyyyMMKorean, prompt: "선택해주세요.")
+            DateView(date: currentMonth.startDate, format: .yyyyMMKorean, prompt: "선택해주세요.")
                 .whereFont(.title20semibold)
                 .foregroundStyle(Color(hex: 0x1F2937))
             
