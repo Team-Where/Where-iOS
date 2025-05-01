@@ -11,11 +11,12 @@ import Swinject
 struct CoreAssembly: Assembly {
     func assemble(container: Swinject.Container) {
         container.register(AuthentificationCore.self) { resolver in
-            guard let apiService = resolver.resolve(APIServable.self)
+            guard let apiService = resolver.resolve(APIServable.self),
+                  let encoder = resolver.resolve(JSONEncoder.self)
             else {
                 fatalError("Failed Initializing AuthentificationCore")
             }
-            return AuthentificationCore(apiService: apiService)
+            return AuthentificationCore(apiService: apiService, encoder: encoder)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
