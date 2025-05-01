@@ -27,6 +27,8 @@ protocol CommunityMediationProtocol {
     func loadFriends(userID: UInt64)
     /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
     func setCurrentUserID(_ id: UInt64?)
+    /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
+    func userDidLogout()
 }
 
 enum CommunityCoreError: Error {
@@ -152,5 +154,10 @@ extension CommunityCore: CommunityMediationProtocol {
     
     func setCurrentUserID(_ id: UInt64?) {
         currentUserID = id
+    }
+    
+    func userDidLogout() {
+        currentUserID = nil
+        friendsSubject.send([:])
     }
 }

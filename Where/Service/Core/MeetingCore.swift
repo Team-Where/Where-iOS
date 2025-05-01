@@ -81,6 +81,8 @@ protocol MeetingMediationProtocol {
     func setCurrentUser(_ user: User?)
     /// 전체 모임 조회, 중재자에 의해 호출
     func loadAllMeetings()
+    /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
+    func userDidLogout()
 }
 
 enum MeetingCoreError: Error {
@@ -517,5 +519,13 @@ extension MeetingCore: MeetingMediationProtocol {
     
     func setCurrentUser(_ user: User?) {
         currentUser = user
+    }
+    
+    func userDidLogout() {
+        currentUser = nil
+        meetingsSubject.send([:])
+        relatedMeetingIDsSubject.send([:])
+        meetingSummariesSubject.send([:])
+        invitationStatusSubject.send([:])
     }
 }

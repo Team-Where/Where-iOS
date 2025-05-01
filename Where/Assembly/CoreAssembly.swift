@@ -202,4 +202,9 @@ struct CoreAssembly: Assembly {
             mediator.attachSupportCore(supportCore)
         }
     }
+    
+    func loaded(resolver: any Resolver) {
+        guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else { return }
+        mediator.notify(event: .applicationDidLaunch)
+    }
 }

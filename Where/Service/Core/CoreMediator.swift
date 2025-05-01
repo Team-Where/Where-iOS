@@ -73,9 +73,12 @@ extension CoreMediator: Notifiable {
             supportCore.setCurrentUserID(user.id)
             supportCore.loadAnnouncements()
             isAdmin ? supportCore.loadAdminInquiries() : supportCore.loadInquiries()
-        case .userDidLogout(let userID):
-            // TODO: 로그 아웃 처리
-            return
+        case .userDidLogout():
+            communityCore.userDidLogout()
+            meetingCore.userDidLogout()
+            placeCore.userDidLogout()
+            supportCore.userDidLogout()
+            notificationCore.userDidLogout()
             
         case .friendsListUpdated(let meetingIDs, let summaries):
             meetingCore.updateRelatedMeetings(meetingIDs: meetingIDs, summaries: summaries)
@@ -87,6 +90,9 @@ extension CoreMediator: Notifiable {
             
         case .currentMeetingWillUpdate(let meetingID):
             placeCore.loadPlaces(meetingID: meetingID)
+            
+        case .applicationDidLaunch:
+            supportCore.loadAnnouncements()
         }
     }
 }

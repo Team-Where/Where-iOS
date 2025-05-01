@@ -55,6 +55,8 @@ protocol SupportMediationProtocol {
     func loadAnnouncements()
     /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
     func setCurrentUserID(_ id: UInt64?)
+    /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
+    func userDidLogout()
 }
 
 enum SupportCoreError: Error {
@@ -320,5 +322,10 @@ extension SupportCore: SupportMediationProtocol {
     
     func setCurrentUserID(_ id: UInt64?) {
         currentUserID = id
+    }
+    
+    func userDidLogout() {
+        currentUserID = nil
+        inquiriesSubject.send([:])
     }
 }

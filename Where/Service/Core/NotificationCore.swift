@@ -20,7 +20,8 @@ protocol NotificationCoreProtocol: CoreProtocol {
 }
 
 protocol NotificationMediationProtocol {
-    
+    /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
+    func userDidLogout()
 }
 
 enum NotificationCoreError: Error {
@@ -78,7 +79,7 @@ extension NotificationCore: NotificationCoreProtocol {
 
 // MARK: - NotificationMediationProtocol Conformation
 extension NotificationCore: NotificationMediationProtocol {
-    func saveNotification(_ notification: Notification) {
-        
+    func userDidLogout() {
+        notificationsSubject.send([:])
     }
 }
