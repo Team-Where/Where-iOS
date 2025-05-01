@@ -149,7 +149,8 @@ struct MyMeetingView: View {
         .scrollIndicators(.never)
         .padding()
         .navigationDestination(isPresented: $viewModel.isMeetingInformationViewPresented) {
-            MeetingInformationView(resolver: resolver)
+            // TODO: Meeting 주입
+//            MeetingInformationView(resolver: resolver)
         }
     }
     
