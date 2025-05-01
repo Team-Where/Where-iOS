@@ -38,6 +38,9 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 이메일 중복 확인
     func checkEmailDuplicate(email: String) -> AnyPublisher<Bool, AuthentificationCoreError>
     
+    /// 인증 코드 요청
+    func requestAuthorizationCode(email: String)
+    
     /// 회원가입
     func register(email: String, password: String, nickname: String, profileImageData: Data?)
     
@@ -192,6 +195,10 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .requestPublisher(Endpoint.checkEmailDuplication(dto: dto), Bool.self)
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .eraseToAnyPublisher()
+    }
+    
+    func requestAuthorizationCode(email: String) {
+        // TODO: 인증 코드 발급 요청 API 연결 필요
     }
     
     func register(email: String, password: String, nickname: String, profileImageData: Data?) {
