@@ -73,7 +73,7 @@ extension CoreMediator: Notifiable {
             supportCore.setCurrentUserID(user.id)
             supportCore.loadAnnouncements()
             isAdmin ? supportCore.loadAdminInquiries() : supportCore.loadInquiries()
-        case .userDidLogout():
+        case .userDidLogout:
             communityCore.userDidLogout()
             meetingCore.userDidLogout()
             placeCore.userDidLogout()
