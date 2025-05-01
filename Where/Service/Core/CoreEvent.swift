@@ -8,7 +8,7 @@
 enum CoreEvent {
     // MARK: - Authentification Related
     case userDidLogin(user: User, isAdmin: Bool)
-    case userDidLogout()
+    case userDidLogout
     
     // MARK: - Community Related
     case friendsListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary])
