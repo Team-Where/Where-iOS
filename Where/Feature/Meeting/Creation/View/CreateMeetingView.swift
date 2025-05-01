@@ -77,7 +77,7 @@ struct CreateMeetingView: View {
         case .basicInformation:
             BasicInformationView(resolver: resolver)
         case .inviteFriends:
-            InviteFriendsView(resolver: resolver)
+            InvitationView(resolver: resolver)
         }
     }
 }
@@ -235,7 +235,7 @@ extension CreateMeetingView {
         }
     }
     
-    struct InviteFriendsView: View {
+    struct InvitationView: View {
         @ObservedObject private var viewModel: CreateMeetingViewModel
         
         init(resolver: Resolver) {
@@ -304,7 +304,7 @@ extension CreateMeetingView {
 }
 
 // MARK: Nested Types
-extension CreateMeetingView.InviteFriendsView {
+extension CreateMeetingView.InvitationView {
     struct Cell: View {
         @ObservedObject private var viewModel: CreateMeetingViewModel
         
