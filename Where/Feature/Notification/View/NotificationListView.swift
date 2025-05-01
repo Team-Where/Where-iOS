@@ -92,7 +92,6 @@ struct NotificationListView: View {
             
             Spacer()
             
-            // TODO: 수신시각 확인할 수 있도록 Notification 모델 수정 필요
             Text(notification.date.relativeTimeDisplay())
                 .whereFont(.caption12regular)
                 .foregroundStyle(.where(.gray600))

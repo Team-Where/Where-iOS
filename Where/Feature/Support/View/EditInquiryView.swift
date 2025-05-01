@@ -208,7 +208,6 @@ extension EditInquiryView {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(.rect)
                 }
-                // TODO: 테스트 과정에서 파일 확장자 수정할 수 있음
                 .fileImporter(isPresented: $viewModel.isImporting, allowedContentTypes: [.image, .jpeg, .png, .gif, .heic, .heif]) { result in
                     switch result {
                     case .success(let url):

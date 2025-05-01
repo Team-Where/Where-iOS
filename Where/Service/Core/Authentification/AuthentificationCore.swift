@@ -43,6 +43,9 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     
     /// 회원탈퇴
     func unregister()
+    
+    /// 프로필 수정
+    func updateUserProfile(nickname: String, profileImageData: Data?)
 }
 
 protocol AuthentificationMediationProtocol {

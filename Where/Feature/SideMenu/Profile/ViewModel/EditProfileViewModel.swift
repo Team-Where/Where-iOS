@@ -91,8 +91,7 @@ extension EditProfileViewModel {
     
     func updateProfile() {
         step = .processing
-        
-        // TODO: 프로필 수정 기능 연결
+        authCore.updateUserProfile(nickname: nicknameFieldText, profileImageData: profileImageData)
     }
     
     func selectProfileImageData(_ data: Data?) {
