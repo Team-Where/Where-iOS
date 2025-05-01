@@ -31,7 +31,7 @@ final class KakaoLoginStrategy {
     private func handleKakaoLoginResult(token: OAuthToken?, error: Error?) {
         if let error = error {
             #if DEBUG
-            print(error)
+            print("Error occured from KakaoLoginStrategy: \(error)")
             #endif
             credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
             return
@@ -41,7 +41,7 @@ final class KakaoLoginStrategy {
             // TODO: 에러 핸들링 강화 필요
             if let error = error {
                 #if DEBUG
-                print(error)
+                print("Error occured from KakaoLoginStrategy: \(error)")
                 #endif
                 self?.credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
                 return

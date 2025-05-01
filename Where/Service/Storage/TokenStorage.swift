@@ -85,7 +85,7 @@ extension TokenStorage {
         guard status != noErr else { return }
         
         let errorMessage = SecCopyErrorMessageString(status, nil) as String? ?? "\(TokenStorageError.unknown)"
-        print("Error in \(function): \(errorMessage)")
+        print("Error occured from TokenStorage: \(function): \(errorMessage)")
         
         if status == errSecItemNotFound {
             throw TokenStorageError.failedFindToken
