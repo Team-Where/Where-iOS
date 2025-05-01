@@ -92,6 +92,7 @@ extension CoreMediator: Notifiable {
             placeCore.loadPlaces(meetingID: meetingID)
             
         case .applicationDidLaunch:
+            authentificationCore.loadCurrentUser()
             supportCore.loadAnnouncements()
         }
     }
