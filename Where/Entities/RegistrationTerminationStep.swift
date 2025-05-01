@@ -94,6 +94,10 @@ enum RegistrationTerminationStep {
     case email
     /// 비밀번호 검증 및 입력 단계
     case password
+}
+
+/// 프로필 설정 과정 단계
+enum ProfileCreationStep {
     /// 프로필 설정 단계
     case profile
     /// 회원가입 완료 단계

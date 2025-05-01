@@ -15,10 +15,7 @@ final class RegistrationViewModel: ObservableObject {
     @Published var authorizationCodeFieldText: String = String()
     @Published var passwordFieldText: String = String()
     @Published var reInputPasswordFieldText: String = String()
-    @Published var nicknameFieldText: String = String()
     @Published var remainingTime: Int?
-    @Published var profileImageData: Data?
-    @Published var isPopupPresented: Bool = false
     @Published var floater: FloaterType?
     @Published var isCompleted: Bool = false
     
@@ -26,7 +23,6 @@ final class RegistrationViewModel: ObservableObject {
     private(set) var authorizationCodeValidationState: AuthorizationCodeValidationState = .beforeValidate
     private(set) var passwordValidationState: PasswordValidationState = .beforeValidate
     private(set) var passwordComparisonResult: PasswordComparisonResult = .unknown
-    private(set) var nicknameValidationState: NicknameValidationState = .beforeValidate
     private(set) var registrationStep: RegistrationTerminationStep = .email
     
     private let authCore: AuthentificationCoreProtocol
@@ -37,10 +33,6 @@ final class RegistrationViewModel: ObservableObject {
             "가입을 위한 이메일을\n인증해주세요"
         case .password:
             "설정할 비밀번호를\n입력해주세요"
-        case .profile:
-            "프로필을 설정해주세요"
-        case .completed:
-            "\(nicknameFieldText)님,\n회원가입을 축하합니다!"
         }
     }
     
@@ -48,8 +40,6 @@ final class RegistrationViewModel: ObservableObject {
         switch registrationStep {
         case .email: return emailValidationState != .validOnServer || authorizationCodeValidationState != .valid
         case .password: return passwordValidationState != .valid || passwordComparisonResult != .same
-        case .profile: return nicknameValidationState != .valid
-        case .completed: return true
         }
     }
     
@@ -110,26 +100,6 @@ final class RegistrationViewModel: ObservableObject {
                 }
                 
                 self?.passwordComparisonResult = .same
-            }
-            .store(in: &cancellables)
-        
-        $nicknameFieldText
-            .removeDuplicates()
-            .sink { [weak self] nickname in
-                guard nickname.isEmpty == false else {
-                    self?.nicknameValidationState = .beforeValidate
-                    return
-                }
-                
-                guard nickname.isValidNickname() else {
-                    self?.nicknameValidationState = .invalid
-                    return
-                }
-                
-                // TODO: 닉네임 중복 검사
-                
-                
-                self?.nicknameValidationState = .valid
             }
             .store(in: &cancellables)
     }
@@ -218,45 +188,12 @@ extension RegistrationViewModel {
         startTimer(seconds: 20)
     }
     
-    func proceedButtonLabel() -> String {
-        registrationStep == .completed ? "완료" : "다음"
-    }
-    
     func proceed() {
         guard isProceedButtonDisabled == false else { return }
         
         switch registrationStep {
         case .email: registrationStep = .password
-        case .password: registrationStep = .profile
-        case .profile: registrationStep = .completed
-        case .completed: isCompleted = true
+        case .password: isCompleted = true
         }
-    }
-    
-    func nicknameValidationNotice() -> String {
-        switch nicknameValidationState {
-        case .valid: "사용 가능한 닉네임입니다."
-        case .invalid, .beforeValidate: "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다."
-        case .duplicated: "이미 사용 중인 닉네임입니다."
-        }
-    }
-    
-    func flush() {
-        emailFieldText.removeAll()
-        authorizationCodeFieldText.removeAll()
-        passwordFieldText.removeAll()
-        reInputPasswordFieldText.removeAll()
-        nicknameFieldText.removeAll()
-        remainingTime = nil
-        profileImageData = nil
-        isPopupPresented = false
-        floater = nil
-        isCompleted = false
-        emailValidationState = .beforeValidate
-        authorizationCodeValidationState = .beforeValidate
-        passwordValidationState = .beforeValidate
-        passwordComparisonResult = .unknown
-        nicknameValidationState = .beforeValidate
-        registrationStep = .email
     }
 }

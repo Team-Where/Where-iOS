@@ -83,6 +83,8 @@
 		046A646A2DC3B32A006ED90C /* ReadUserInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */; };
 		046A646C2DC3CCFB006ED90C /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646B2DC3CCFB006ED90C /* DateView.swift */; };
 		046A646E2DC3D1E5006ED90C /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646D2DC3D1E5006ED90C /* AuthentificationProvider.swift */; };
+		046A64702DC3E034006ED90C /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646F2DC3E034006ED90C /* ProfileCreationView.swift */; };
+		046A64722DC3E03F006ED90C /* ProfileCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64712DC3E03F006ED90C /* ProfileCreationViewModel.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
 		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
@@ -284,6 +286,8 @@
 		046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserInfoDTO.swift; sourceTree = "<group>"; };
 		046A646B2DC3CCFB006ED90C /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
 		046A646D2DC3D1E5006ED90C /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
+		046A646F2DC3E034006ED90C /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
+		046A64712DC3E03F006ED90C /* ProfileCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationViewModel.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		04832B322D23EB93003FFE3B /* Floater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Floater.swift; sourceTree = "<group>"; };
@@ -932,6 +936,7 @@
 			children = (
 				046833D92D3B8DB8009D2357 /* RegistrationTermView.swift */,
 				046833D72D3B8DB8009D2357 /* RegistrationView.swift */,
+				046A646F2DC3E034006ED90C /* ProfileCreationView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -940,6 +945,7 @@
 			isa = PBXGroup;
 			children = (
 				04A4F43E2D3F92730041FD02 /* RegistrationViewModel.swift */,
+				046A64712DC3E03F006ED90C /* ProfileCreationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1542,6 +1548,7 @@
 				046833F52D3B8F99009D2357 /* User.swift in Sources */,
 				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
 				7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */,
+				046A64722DC3E03F006ED90C /* ProfileCreationViewModel.swift in Sources */,
 				046A644F2DBFC7A9006ED90C /* FAQViewModel.swift in Sources */,
 				7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */,
 				7FE7BD972DB68E160097CC30 /* ReadFriendsDTO.swift in Sources */,
@@ -1551,6 +1558,7 @@
 				7FE7BD9B2DB68E160097CC30 /* EndMeetingDTO.swift in Sources */,
 				7FE7BD9C2DB68E160097CC30 /* InviteFriendsDTO.swift in Sources */,
 				7FE7BD9D2DB68E160097CC30 /* LeaveMeetingDTO.swift in Sources */,
+				046A64702DC3E034006ED90C /* ProfileCreationView.swift in Sources */,
 				7FE7BD9E2DB68E160097CC30 /* MeetingDetailFromLinkDTO.swift in Sources */,
 				7FE7BD9F2DB68E160097CC30 /* ReadInvitationStatusDTO.swift in Sources */,
 				7FE7BDA02DB68E160097CC30 /* ReadMeetingDetailDTO.swift in Sources */,

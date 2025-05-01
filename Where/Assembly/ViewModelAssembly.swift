@@ -90,5 +90,9 @@ struct ViewModelAssembly: @preconcurrency Assembly {
         container.register(ContentViewModel.self) { resolver in
             return ContentViewModel(resolver: resolver)
         }
+        
+        container.register(ProfileCreationViewModel.self) { resolver in
+            return ProfileCreationViewModel(resolver: resolver)
+        }
     }
 }
