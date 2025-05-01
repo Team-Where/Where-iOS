@@ -37,28 +37,12 @@ final class KakaoLoginStrategy {
             return
         }
         
-        kakaoAPI.me { [weak self] user, error in
-            // TODO: 에러 핸들링 강화 필요
-            if let error = error {
-                #if DEBUG
-                print("Error occured from KakaoLoginStrategy: \(error)")
-                #endif
-                self?.credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
-                return
-            }
-            
-            guard let userId = user?.id else {
-                self?.credentialSubject.send(completion: .failure(.userInfoFetchFailed))
-                return
-            }
-            
-            let email = user?.kakaoAccount?.email
-            let nickname = user?.kakaoAccount?.profile?.nickname
-            
-            let userCredential = UserCredential(provider: .kakao, ci: String(userId), email: email, nickname: nickname)
-            
-            self?.credentialSubject.send(userCredential)
+        guard let token = token else {
+            return credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
         }
+        
+        let userCredential = UserCredential(accessToken: token.accessToken, refreshToken: token.refreshToken)
+        credentialSubject.send(userCredential)
     }
 }
 

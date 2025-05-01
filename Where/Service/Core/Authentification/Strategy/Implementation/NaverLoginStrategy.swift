@@ -32,18 +32,7 @@ final class NaverLoginStrategy: NSObject {
                 return login(provider: provider)
             }
             
-            naverAPI.getUserProfile(accessToken: tokens.accessToken.tokenString) { [weak self] result in
-                switch result {
-                case .success(let entity):
-                    guard let id = entity["id"] else { return }
-                    let email = entity["email"]
-                    let nickname = entity["nickname"]
-                    let userCredential = UserCredential(provider: .naver, ci: id, email: email, nickname: nickname)
-                    self?.credentialSubject.send(userCredential)
-                case .failure:
-                    self?.credentialSubject.send(completion: .failure(.userInfoFetchFailed))
-                }
-            }
+            let userCredential = UserCredential(accessToken: tokens.accessToken.tokenString, refreshToken: tokens.refreshToken.tokenString)
         case .failure:
             self.credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
         }

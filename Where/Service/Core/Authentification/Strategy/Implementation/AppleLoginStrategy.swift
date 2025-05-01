@@ -24,10 +24,8 @@ extension AppleLoginStrategy: AuthentificationStrategyProtocol {
 
         switch auth.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            let userId = appleIDCredential.user
-            let email = appleIDCredential.email
-            let nickname = appleIDCredential.fullName?.nickname
-            let userCredential = UserCredential(provider: .apple(auth: auth), ci: userId, email: email, nickname: nickname)
+            let code = appleIDCredential.authorizationCode
+            let userCredential = UserCredential(authorizationCode: code)
             credentialSubject.send(userCredential)
             
         default:
