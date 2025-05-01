@@ -173,7 +173,11 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func login(email: String, password: String) {
-        strategyContext.login(by: .custom(email: email, password: password))
+        // TODO: 이어서 구현하기
+//        let dto = LoginDTO.Request(email: email, password: password)
+//        
+//        apiService
+//            .requestPublisher(Endpoint.login(dto: dto), LoginDTO.Response.self)
     }
     
     func logout() {
