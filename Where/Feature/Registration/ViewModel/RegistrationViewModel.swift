@@ -22,12 +22,12 @@ final class RegistrationViewModel: ObservableObject {
     @Published var floater: FloaterType?
     @Published var isCompleted: Bool = false
     
-    var emailValidationState: EmailValidationState = .beforeValidate
-    var authorizationCodeValidationState: AuthorizationCodeValidationState = .beforeValidate
-    var passwordValidationState: PasswordValidationState = .beforeValidate
-    var passwordComparisonResult: PasswordComparisonResult = .unknown
-    var nicknameValidationState: NicknameValidationState = .beforeValidate
-    var registrationStep: RegistrationTerminationStep = .email
+    private(set) var emailValidationState: EmailValidationState = .beforeValidate
+    private(set) var authorizationCodeValidationState: AuthorizationCodeValidationState = .beforeValidate
+    private(set) var passwordValidationState: PasswordValidationState = .beforeValidate
+    private(set) var passwordComparisonResult: PasswordComparisonResult = .unknown
+    private(set) var nicknameValidationState: NicknameValidationState = .beforeValidate
+    private(set) var registrationStep: RegistrationTerminationStep = .email
     
     private let authCore: AuthentificationCoreProtocol
     
@@ -46,7 +46,7 @@ final class RegistrationViewModel: ObservableObject {
     
     var isProceedButtonDisabled: Bool {
         switch registrationStep {
-        case .email: return emailValidationState != .valid || authorizationCodeValidationState != .valid
+        case .email: return emailValidationState != .validOnServer || authorizationCodeValidationState != .valid
         case .password: return passwordValidationState != .valid || passwordComparisonResult != .same
         case .profile: return nicknameValidationState != .valid
         case .completed: return true
@@ -134,8 +134,8 @@ final class RegistrationViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func startTimer(seconds: Int) {
-        emailValidationState = .valid
+    private func startTimer(seconds: Int) {
+        emailValidationState = .validOnServer
         authorizationCodeValidationState = .beforeValidate
         remainingTime = seconds
         
@@ -197,9 +197,25 @@ extension RegistrationViewModel {
 
 // MARK: Interfaces
 extension RegistrationViewModel {
+    func checkEmailDuplicate() {
+        authCore.checkEmailDuplicate(email: emailFieldText)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { isDuplecated in
+                guard isDuplecated else {
+                    
+                    return
+                }
+                
+            }
+            .store(in: &cancellables)
+    }
+    
     func requestAuthorizationCode() {
-        // TODO: 인증코드 요청
+        authCore.requestAuthorizationCode(email: emailFieldText)
         floater = .authorizationCodeSended
+        startTimer(seconds: 20)
     }
     
     func proceedButtonLabel() -> String {

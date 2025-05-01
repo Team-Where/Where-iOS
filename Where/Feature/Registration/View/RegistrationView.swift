@@ -151,7 +151,6 @@ struct RegistrationView: View {
             Button {
                 viewModel.requestAuthorizationCode()
                 textFieldFocus = .authorizationCodeTextField
-                viewModel.startTimer(seconds: 20)
             } label: {
                 Text("인증코드 전송")
                     .whereFont(.caption12regular)
@@ -161,12 +160,22 @@ struct RegistrationView: View {
                     .clipShape(.capsule)
             }
             .disabled(viewModel.emailFieldText.isEmpty)
-        case .valid:
+        case .validOnLocal:
             Button {
-                // TODO: 인증코드 재요청
+                viewModel.checkEmailDuplicate()
+            } label: {
+                Text("인증코드 전송")
+                    .whereFont(.caption12regular)
+                    .foregroundStyle(Color(hex: 0xF2F5F5))
+                    .frame(width: 84, height: 28)
+                    .background(state == .invalid ? Color(hex: 0xADB5BD) : Color(hex: 0x212529))
+                    .clipShape(.capsule)
+            }
+            .disabled(viewModel.emailFieldText.isEmpty)
+        case .validOnServer:
+            Button {
                 viewModel.requestAuthorizationCode()
                 textFieldFocus = .authorizationCodeTextField
-                viewModel.startTimer(seconds: 10)
             } label: {
                 Text("재전송")
                     .whereFont(.caption12regular)
