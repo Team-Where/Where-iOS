@@ -12,12 +12,16 @@ import Swinject
 struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: LoginViewModel
-    
     private let resolver: Resolver
+    private let willDisappear: (() -> Void)?
     
-    init(resolver: Resolver) {
+    init(
+        resolver: Resolver,
+        _ willDisappear: (() -> Void)? = nil
+    ) {
         self.viewModel = resolver.resolve(LoginViewModel.self)!
         self.resolver = resolver
+        self.willDisappear = willDisappear
     }
     
     var body: some View {
@@ -111,6 +115,7 @@ struct LoginView: View {
         }
         .onChange(of: viewModel.isLoginCompleted) { _, isCompleted in
             guard isCompleted else { return }
+            willDisappear?()
             dismiss()
         }
         .onAppear(perform: viewModel.onAppear)
@@ -118,6 +123,7 @@ struct LoginView: View {
     
     private var backButton: some View {
         Button {
+            willDisappear?()
             dismiss()
         } label: {
             Image(systemName: "xmark")

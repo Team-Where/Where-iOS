@@ -68,7 +68,7 @@ struct MyMeetingView: View {
             OnboardingView()
         }
         .fullScreenCover(isPresented: $viewModel.isLoginNeeded) {
-            LoginView($viewModel.isLoginNeeded, resolver: resolver)
+            LoginView(resolver: resolver)
         }
         .onAppear {
             viewModel.isOnboardingViewPresented = isOnboardingNeeded
@@ -189,7 +189,7 @@ struct MyMeetingView: View {
                     Text(meeting.title)
                         .whereFont(.body16medium)
                     
-                    AsyncDateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
+                    DateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
                         .whereFont(.body14regular)
                         .foregroundStyle(.where(.gray500))
                 }

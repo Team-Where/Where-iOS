@@ -62,7 +62,7 @@ struct ContentView: View {
             case .completeCreation(let meeting):
                 CompleteCreationView(meeting: meeting)
             case .login:
-                LoginView(resolver: resolver)
+                LoginView(resolver: resolver, viewModel.willFullScreenCoverDisappear)
             }
         }
     }

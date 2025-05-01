@@ -67,4 +67,8 @@ extension ContentViewModel {
         isCreateMeetingSheetPresented = true
         selectedTab = previousTab
     }
+    
+    func willFullScreenCoverDisappear() {
+        selectedTab = previousTab
+    }
 }

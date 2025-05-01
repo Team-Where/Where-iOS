@@ -66,7 +66,7 @@ struct SideMenuContentView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.isLoginViewPresented) {
-            LoginView($viewModel.isLoginViewPresented, resolver: resolver)
+            LoginView(resolver: resolver)
         }
     }
     
