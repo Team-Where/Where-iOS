@@ -221,15 +221,16 @@ extension AuthentificationCore: AuthentificationMediationProtocol {
     func loadCurrentUser() {
         guard let userIDString = UserDefaults.standard.string(forKey: AppStorageKey.currentUserID),
               let userID = UInt64(userIDString)
-        else {
-            return currentUserSubject.send(completion: .failure(.autoLoginFailed))
-        }
+        else { return }
         
         apiService
             .requestPublisher(Endpoint.readUserInfo(userID: userID), ReadUserInfoDTO.Response.self)
             .map { $0.toEntity() }
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure: self?.currentUserSubject.send(nil)
+                }
             } receiveValue: { [weak self] user in
                 self?.currentUserSubject.send(user)
             }
