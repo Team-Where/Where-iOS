@@ -11,4 +11,5 @@ import Foundation
 struct AppStorageKey {
     static let isOnboardingNeeded = "isOnboardingNeeded"
     static let shouldDisplayNotifications = "shouldDisplayNotifications"
+    static let currentUserID = "currentUserID"
 }
