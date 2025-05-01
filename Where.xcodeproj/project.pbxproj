@@ -81,7 +81,7 @@
 		046A64622DC233F6006ED90C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64612DC233F6006ED90C /* AppDelegate.swift */; };
 		046A64682DC2681D006ED90C /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64672DC2681D006ED90C /* ContentViewModel.swift */; };
 		046A646A2DC3B32A006ED90C /* ReadUserInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */; };
-		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
+		046A646C2DC3CCFB006ED90C /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646B2DC3CCFB006ED90C /* DateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
 		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
@@ -283,7 +283,7 @@
 		046A64612DC233F6006ED90C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		046A64672DC2681D006ED90C /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserInfoDTO.swift; sourceTree = "<group>"; };
-		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
+		046A646B2DC3CCFB006ED90C /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		04832B322D23EB93003FFE3B /* Floater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Floater.swift; sourceTree = "<group>"; };
@@ -497,7 +497,6 @@
 				04832B452D266819003FFE3B /* WhereTests */,
 				7F716C7F2DAE86B10076D4DD /* Where.app */,
 				7F716C802DAE86B10076D4DD /* WhereTests.xctest */,
-				7FE7BCA22DB673550097CC30 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -602,8 +601,8 @@
 				04832B322D23EB93003FFE3B /* Floater.swift */,
 				04832B472D266F55003FFE3B /* SearchBar.swift */,
 				91F1BFC82D3B8093000B4C84 /* BackButton.swift */,
-				048182262D29151800CCF721 /* AsyncDateView.swift */,
 				046833FA2D3B902E009D2357 /* CalendarView.swift */,
+				046A646B2DC3CCFB006ED90C /* DateView.swift */,
 				04993AA52D50BA940058EAB8 /* ToolTip.swift */,
 				04CBC19E2D74543C002CA364 /* WhereFormModifier.swift */,
 				04A5309B2D8EC31B004E58AD /* WhereDisclosureGroupStyle.swift */,
@@ -1162,13 +1161,6 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		7FE7BCA22DB673550097CC30 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		7FE7BD652DB68E160097CC30 /* Friend */ = {
 			isa = PBXGroup;
 			children = (
@@ -1535,6 +1527,7 @@
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
 				046833DD2D3B8DB8009D2357 /* RegistrationView.swift in Sources */,
 				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
+				046A646C2DC3CCFB006ED90C /* DateView.swift in Sources */,
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
 				04C6F23D2DB923080099874F /* MeetingSummary.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
@@ -1609,7 +1602,6 @@
 				045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */,
 				041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */,
 				04A530A72D8FB8D8004E58AD /* EditAnnouncementView.swift in Sources */,
-				048182272D29151800CCF721 /* AsyncDateView.swift in Sources */,
 				04832B332D23EB93003FFE3B /* Floater.swift in Sources */,
 				042A79EE2DA3EE1D004105E2 /* KakaoLoginStrategy.swift in Sources */,
 				91A9EABD2D29BA85005F09D2 /* ContentView.swift in Sources */,
