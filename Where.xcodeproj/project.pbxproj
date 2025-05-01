@@ -80,6 +80,7 @@
 		046A645D2DC1D409006ED90C /* AcceptInvitationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A645C2DC1D409006ED90C /* AcceptInvitationViewModel.swift */; };
 		046A64622DC233F6006ED90C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64612DC233F6006ED90C /* AppDelegate.swift */; };
 		046A64682DC2681D006ED90C /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64672DC2681D006ED90C /* ContentViewModel.swift */; };
+		046A646A2DC3B32A006ED90C /* ReadUserInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */; };
 		048182272D29151800CCF721 /* AsyncDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048182262D29151800CCF721 /* AsyncDateView.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
@@ -281,6 +282,7 @@
 		046A645C2DC1D409006ED90C /* AcceptInvitationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptInvitationViewModel.swift; sourceTree = "<group>"; };
 		046A64612DC233F6006ED90C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		046A64672DC2681D006ED90C /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserInfoDTO.swift; sourceTree = "<group>"; };
 		048182262D29151800CCF721 /* AsyncDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDateView.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
@@ -1246,6 +1248,7 @@
 				7FE7BD8D2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift */,
 				7FE7BD8E2DB68E160097CC30 /* LoginDTO.swift */,
 				7FE7BD8F2DB68E160097CC30 /* RegisterDTO.swift */,
+				046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -1542,6 +1545,7 @@
 				042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */,
 				04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */,
 				045CA1612D27D22D001B5CEE /* HistoryReminderView.swift in Sources */,
+				046A646A2DC3B32A006ED90C /* ReadUserInfoDTO.swift in Sources */,
 				045B44C62D2166D000514A27 /* WhereFont.swift in Sources */,
 				7F831B1A2DBA8F75006FFAA0 /* Image.swift in Sources */,
 				0450E84F2D99766900DB029A /* SignInViewModel.swift in Sources */,
