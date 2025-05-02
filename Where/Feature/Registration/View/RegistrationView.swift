@@ -8,6 +8,8 @@
 import SwiftUI
 import Swinject
 
+fileprivate typealias KeyboardFocusState = RegistrationViewModel.KeyboardFocusState
+
 struct RegistrationView: View {
     @ObservedObject private var viewModel: RegistrationViewModel
     @Binding var isLoginNeeded: Bool
@@ -25,56 +27,43 @@ struct RegistrationView: View {
     }
     
     var body: some View {
-        content()
-            .padding(.top, 40)
-            .floater($viewModel.floater) { type in
-                switch type {
-                case .authorizationCodeSended:
-                    Image(systemName: "checkmark")
-                        .foregroundStyle(.accent)
-                case .inValidAuthorizationCode:
-                    Image(systemName: "exclamationmark.circle")
-                        .foregroundStyle(.red)
-                }
-            }
-            .whereForm(viewModel.navigationTitle) {
-                Button {
-                    viewModel.proceed()
-                } label: {
-                    Text("다음")
-                        .whereFont(.body16semibold)
-                        .frame(width: 350, height: 48)
-                }
-                .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
-                .ignoresSafeArea(.keyboard)
-            }
-            .navigationDestination(isPresented: $viewModel.isCompleted) {
-                ProfileCreationView($isLoginNeeded, resolver: resolver)
-            }
-    }
-    
-    @ViewBuilder private func content() -> some View {
-        switch viewModel.registrationStep {
-        case .email:
-            ScrollView(.vertical) {
-                emailCell
-                
-                authorizationCodeCell
-                
-                Spacer()
-            }
-        case .password:
-            ScrollView(.vertical) {
-                emailCell
-                
+        ScrollView(.vertical, showsIndicators: false) {
+            emailCell()
+            
+            if viewModel.registrationStep == .email {
+                authorizationCodeCell()
+            } else {
                 passwordCell
-                
-                Spacer()
             }
+        }
+        .scrollDismissesKeyboard(.immediately)
+        .floater($viewModel.floater) { type in
+            switch type {
+            case .authorizationCodeSended:
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.accent)
+            case .inValidAuthorizationCode:
+                Image(systemName: "exclamationmark.circle")
+                    .foregroundStyle(.red)
+            }
+        }
+        .whereForm(viewModel.navigationTitle) {
+            Button {
+                viewModel.proceed()
+            } label: {
+                Text("다음")
+                    .whereFont(.body16semibold)
+                    .frame(width: 350, height: 48)
+            }
+            .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
+            .ignoresSafeArea(.keyboard)
+        }
+        .navigationDestination(isPresented: $viewModel.isCompleted) {
+            ProfileCreationView($isLoginNeeded, resolver: resolver)
         }
     }
     
-    private var emailCell: some View {
+    @ViewBuilder private func emailCell() -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("이메일")
                 .whereFont(.body14regular)
@@ -84,7 +73,7 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
                     text: $viewModel.emailFieldText,
-                    lineColor: textFieldLineColor(focus: .emailTextField)
+                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .emailTextField))
                 )
                 .frame(width: 350)
                 .focused($textFieldFocus, equals: .emailTextField)
@@ -94,43 +83,28 @@ struct RegistrationView: View {
                     .padding(.trailing)
             }
             
-            if viewModel.emailValidationState == .invalid {
-                Text("잘못된 이메일 주소입니다.")
-                    .whereFont(.body14regular)
-                    .foregroundStyle(Color(hex: 0xEF4444))
-            }
+            Text(viewModel.emailValidationNotice)
+                .whereFont(.body14regular)
+                .foregroundStyle(Color(hex: 0xEF4444))
         }
         .padding(.bottom)
     }
     
     @ViewBuilder private func authorizationCodeRequestButton(_ state: EmailValidationState) -> some View {
         switch state {
-        case .beforeValidate, .invalid:
+        case .beforeValidate, .invalidOnLocal, .emailDuplicated:
             Button {
                 viewModel.requestAuthorizationCode()
-                textFieldFocus = .authorizationCodeTextField
             } label: {
                 Text("인증코드 전송")
                     .whereFont(.caption12regular)
                     .foregroundStyle(Color(hex: 0xF2F5F5))
                     .frame(width: 84, height: 28)
-                    .background(state == .invalid ? Color(hex: 0xADB5BD) : Color(hex: 0x212529))
+                    .background(state == .invalidOnLocal ? Color(hex: 0xADB5BD) : Color(hex: 0x212529))
                     .clipShape(.capsule)
             }
-            .disabled(viewModel.emailFieldText.isEmpty)
-        case .validOnLocal:
-            Button {
-                viewModel.checkEmailDuplicate()
-            } label: {
-                Text("인증코드 전송")
-                    .whereFont(.caption12regular)
-                    .foregroundStyle(Color(hex: 0xF2F5F5))
-                    .frame(width: 84, height: 28)
-                    .background(state == .invalid ? Color(hex: 0xADB5BD) : Color(hex: 0x212529))
-                    .clipShape(.capsule)
-            }
-            .disabled(viewModel.emailFieldText.isEmpty)
-        case .validOnServer:
+            .disabled(viewModel.requestAuthorizationCodeDisabled)
+        case .valid:
             Button {
                 viewModel.requestAuthorizationCode()
                 textFieldFocus = .authorizationCodeTextField
@@ -142,11 +116,11 @@ struct RegistrationView: View {
                     .background(Color(hex: 0x1F2937))
                     .clipShape(.capsule)
             }
-            .disabled(viewModel.emailFieldText.isEmpty)
+            .disabled(viewModel.requestAuthorizationCodeDisabled)
         }
     }
     
-    private var authorizationCodeCell: some View {
+    @ViewBuilder private func authorizationCodeCell() -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("인증코드")
                 .whereFont(.body14regular)
@@ -156,7 +130,7 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "코드 6자리 입력해주세요",
                     text: $viewModel.authorizationCodeFieldText,
-                    lineColor: textFieldLineColor(focus: .authorizationCodeTextField)
+                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .authorizationCodeTextField))
                 )
                 .frame(width: 350)
                 .focused($textFieldFocus, equals: .authorizationCodeTextField)
@@ -195,7 +169,7 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $viewModel.passwordFieldText,
-                    lineColor: textFieldLineColor(focus: .passwordTextField)
+                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .passwordTextField))
                 )
                 .secured()
                 .frame(width: 350)
@@ -221,7 +195,7 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $viewModel.reInputPasswordFieldText,
-                    lineColor: textFieldLineColor(focus: .reInputPasswordTextField)
+                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .reInputPasswordTextField))
                 )
                 .secured()
                 .frame(width: 350)
@@ -238,30 +212,5 @@ struct RegistrationView: View {
                 }
             }
         }
-    }
-    
-    private func textFieldLineColor(focus: KeyboardFocusState) -> Color {
-        var isInvalid: Bool
-        
-        switch focus {
-        case .emailTextField:
-            isInvalid = viewModel.emailValidationState == .invalid
-        case .authorizationCodeTextField:
-            isInvalid = viewModel.authorizationCodeValidationState == .timeout
-        case .passwordTextField:
-            isInvalid = viewModel.passwordValidationState == .invalid
-        case .reInputPasswordTextField:
-            isInvalid = viewModel.passwordComparisonResult == .different
-        }
-        
-        guard isInvalid == false else { return .red }
-        return textFieldFocus == focus ? .accent : Color(hex: 0xE5E7EB)
-    }
-}
-
-// MARK: Nested Types
-extension RegistrationView {
-    enum KeyboardFocusState: Hashable {
-        case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField
     }
 }

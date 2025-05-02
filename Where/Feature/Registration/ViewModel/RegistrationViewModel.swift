@@ -38,9 +38,33 @@ final class RegistrationViewModel: ObservableObject {
     
     var isProceedButtonDisabled: Bool {
         switch registrationStep {
-        case .email: return emailValidationState != .validOnServer || authorizationCodeValidationState != .valid
+        case .email: return emailValidationState != .valid || authorizationCodeValidationState != .valid
         case .password: return passwordValidationState != .valid || passwordComparisonResult != .same
         }
+    }
+    
+    var emailValidationNotice: String {
+        switch emailValidationState {
+        case .beforeValidate, .valid: String()
+        case .invalidOnLocal: "잘못된 이메일 주소입니다."
+        case .emailDuplicated: "이미 가입된 이메일입니다."
+        }
+    }
+    
+    var isEmailInvalid: Bool {
+        emailValidationState == .invalidOnLocal || emailValidationState == .emailDuplicated
+    }
+    
+    var authorizationCodeValidationNotice: String {
+        switch authorizationCodeValidationState {
+        case .beforeValidate, .invalid, .valid: String()
+        case .timeout: "인증 시간이 만료되었습니다."
+        }
+    }
+    
+    var requestAuthorizationCodeDisabled: Bool {
+        emailFieldText.isEmpty || emailValidationState == .invalidOnLocal ||
+        authorizationCodeValidationState == .valid
     }
     
     private var timer: AnyCancellable?
@@ -61,7 +85,7 @@ final class RegistrationViewModel: ObservableObject {
                 }
                 
                 guard self?.isEmailValid(email) ?? false else {
-                    self?.emailValidationState = .invalid
+                    self?.emailValidationState = .invalidOnLocal
                     return
                 }
                 
@@ -105,7 +129,6 @@ final class RegistrationViewModel: ObservableObject {
     }
     
     private func startTimer(seconds: Int) {
-        emailValidationState = .validOnServer
         authorizationCodeValidationState = .beforeValidate
         remainingTime = seconds
         
@@ -163,6 +186,10 @@ extension RegistrationViewModel {
             }
         }
     }
+    
+    enum KeyboardFocusState: Hashable {
+        case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField
+    }
 }
 
 // MARK: Interfaces
@@ -195,5 +222,23 @@ extension RegistrationViewModel {
         case .email: registrationStep = .password
         case .password: isCompleted = true
         }
+    }
+    
+    func textFieldLineColorHex(currentFocused: KeyboardFocusState?, focus: KeyboardFocusState) -> Int {
+        var isInvalid: Bool
+        
+        switch focus {
+        case .emailTextField:
+            isInvalid = emailValidationState == .invalidOnLocal || emailValidationState == .emailDuplicated
+        case .authorizationCodeTextField:
+            isInvalid = authorizationCodeValidationState == .timeout
+        case .passwordTextField:
+            isInvalid = passwordValidationState == .invalid
+        case .reInputPasswordTextField:
+            isInvalid = passwordComparisonResult == .different
+        }
+        
+        guard isInvalid == false else { return 0xEF4444 }
+        return currentFocused == focus ? 0x4F46E5 : 0xE5E7EB
     }
 }
