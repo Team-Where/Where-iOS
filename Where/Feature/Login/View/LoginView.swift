@@ -13,7 +13,7 @@ struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: LoginViewModel
     private let resolver: Resolver
-    private let willDisappear: (() -> Void)?
+    private let willDisappear: (() -> Void)? // ContentView의 이전 탭뷰 전환 로직을 위해 사용
     
     init(
         resolver: Resolver,
