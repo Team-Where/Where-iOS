@@ -87,6 +87,7 @@ struct RegistrationView: View {
                 .whereFont(.body14regular)
                 .foregroundStyle(Color(hex: 0xEF4444))
         }
+        .padding(.top, 40)
         .padding(.bottom)
     }
     
@@ -213,4 +214,8 @@ struct RegistrationView: View {
             }
         }
     }
+}
+
+#Preview {
+    RegistrationView(.constant(true), resolver: PreviewHelper.shared.resolver)
 }
