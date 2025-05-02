@@ -137,24 +137,24 @@ struct InviteFriendsView: View {
             
             ScrollView(.horizontal) {
                 LazyHStack {
-                    ForEach(viewModel.invitationStates, id: \.guestID) { friend in
+                    ForEach(viewModel.invitationStates, id: \.guestID) { state in
                         VStack {
-                            if let imageURL = friend.guestImageURL {
-                                AsyncImage(url: imageURL)
+                            AsyncImage(url: state.guestImageURL) { image in
+                                image
                                     .frame(width: 40, height: 40)
                                     .clipShape(.circle)
-                            } else {
+                            } placeholder: {
                                 Image(.person)
                                     .frame(width: 40, height: 40)
                                     .clipShape(.circle)
                             }
-                            Text(friend.nickname)
+                            Text(state.guestName)
                                 .whereFont(.body14medium)
                                 .foregroundStyle(Color(hex: 0x374151))
                                 .multilineTextAlignment(.center)
                                 .lineLimit(2)
                         }
-                        .opacity(friend.isInvited ? 1.0 : 0.8)
+                        .opacity(state.isInvited ? 1.0 : 0.8)
                         
                     }
                 }
