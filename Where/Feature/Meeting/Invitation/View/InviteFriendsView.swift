@@ -13,15 +13,14 @@ struct InviteFriendsView: View {
     @FocusState private var isFocused: Bool
     
     private let resolver: Resolver
-    private let meeting: Meeting
     
     init(
-        meeting: Meeting,
+        meetingID: UInt64,
         resolver: Resolver
     ) {
-        self.meeting = meeting
         self.viewModel = resolver.resolve(InviteFriendsViewModel.self)!
         self.resolver = resolver
+        self.viewModel.setMeeting(id: meetingID)
     }
     
     var body: some View {
@@ -64,7 +63,7 @@ struct InviteFriendsView: View {
                 }
             } else {
                 ScrollView(.vertical) {
-                    invitedFriends(viewModel.friends)
+                    invitedFriends()
                     
                     Button {
                         // TODO: KakaoTalk Universal Link
@@ -114,16 +113,16 @@ struct InviteFriendsView: View {
         .padding([.top, .horizontal])
     }
     
-    @ViewBuilder private func invitedFriends(_ friends: [FriendRelationship]) -> some View {
+    @ViewBuilder private func invitedFriends() -> some View {
         VStack(spacing: 16) {
             HStack {
-                Text("초대된 친구 \(3)")
+                Text("초대된 친구 \(viewModel.invitedFriends.count)")
                     .whereFont(.body16semibold)
                     .foregroundStyle(Color(hex: 0x1F2937))
                 
                 Spacer()
                 
-                Text("대기중 \(1)")
+                Text("대기중 \(viewModel.pendingFriends.count)")
                     .whereFont(.caption12regular)
                     .foregroundStyle(Color(hex: 0x6B7280))
                     .padding(.horizontal, 8)
@@ -138,18 +137,25 @@ struct InviteFriendsView: View {
             
             ScrollView(.horizontal) {
                 LazyHStack {
-                    ForEach(friends, id: \.id) { friend in
+                    ForEach(viewModel.invitationStates, id: \.guestID) { friend in
                         VStack {
-                            AsyncImage(url: nil)
-                                .frame(width: 40, height: 40)
-                                .clipShape(.circle)
-                            
+                            if let imageURL = friend.guestImageURL {
+                                AsyncImage(url: imageURL)
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(.circle)
+                            } else {
+                                Image(.person)
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(.circle)
+                            }
                             Text(friend.nickname)
                                 .whereFont(.body14medium)
                                 .foregroundStyle(Color(hex: 0x374151))
                                 .multilineTextAlignment(.center)
                                 .lineLimit(2)
                         }
+                        .opacity(friend.isInvited ? 1.0 : 0.8)
+                        
                     }
                 }
             }
@@ -236,7 +242,7 @@ struct InviteFriendsView: View {
             
             // TODO: 도메인 모델 나오면 수정 예정
             Button {
-                viewModel.inviteFriend(on: meeting, friend)
+                viewModel.inviteFriend(friend)
             } label: {
                 Text("초대")
                     .whereFont(.body14medium)
