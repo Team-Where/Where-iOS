@@ -16,6 +16,8 @@ enum Endpoint {
     case unregister(userID: UInt64)
     /// 로그인
     case login(dto: LoginDTO.Request)
+    /// 카카오 로그인
+    case loginWithKakao(accessToken: String, refreshToken: String)
     /// 이메일 중복확인
     case checkEmailDuplication(dto: CheckEmailDuplicationDTO.Request)
     /// 마이페이지 사용자 정보 조회
@@ -142,6 +144,8 @@ extension Endpoint: TargetType {
             return "\(basePath)/\(userID)"
         case .login:
             return "\(basePath)/login"
+        case .loginWithKakao:
+            return "\(basePath)/kakao/login"
         case .checkEmailDuplication:
             return "\(basePath)/checkEmail"
         case .readUserInfo(let userID):
@@ -219,7 +223,7 @@ extension Endpoint: TargetType {
     var method: Moya.Method {
         switch self {
         case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink: .get
-        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfileImage, .register, .reissueAccessToken: .post
+        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfileImage, .register, .reissueAccessToken, .loginWithKakao: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister: .delete
         }
@@ -238,6 +242,8 @@ extension Endpoint: TargetType {
             return .requestPlain
         case .login(let dto):
             return .requestJSONEncodable(dto)
+        case .loginWithKakao:
+            return .requestPlain
         case .checkEmailDuplication(let dto):
             return .requestJSONEncodable(dto)
         case .readUserInfo:
@@ -349,7 +355,7 @@ extension Endpoint: TargetType {
     
     var headers: [String: String]? {
         switch self {
-        case .unregister, .readUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs:
+        case .unregister, .readUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs, .loginWithKakao:
             return nil
         default:
             return ["Content-Type": "application/json"]
@@ -362,7 +368,7 @@ extension Endpoint: TargetType {
 private extension Endpoint {
     var basePath: String {
         switch self {
-        case .register, .unregister, .login, .checkEmailDuplication,.readUserInfo, .uploadProfileImage:
+        case .register, .unregister, .login, .checkEmailDuplication,.readUserInfo, .uploadProfileImage, .loginWithKakao:
             return "/user"
         case .readFriends, .deleteFriend, .bookmarkFriend:
             return "/friend"
