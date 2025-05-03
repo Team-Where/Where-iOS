@@ -12,25 +12,23 @@ final class AuthentificationStrategyContext {
     private var strategies = [AuthentificationProvider: AuthentificationStrategyProtocol]()
     private var currentProvider: AuthentificationProvider?
     
-    let credentialSubject = PassthroughSubject<UserCredential, AuthentificationCoreError>()
-    
     private func cache(by provider: AuthentificationProvider) {
         guard strategies[provider] == nil else { return }
         
         switch provider {
-        case .apple: strategies[provider] = AppleLoginStrategy(credentialSubject: credentialSubject)
-        case .kakao: strategies[provider] = KakaoLoginStrategy(credentialSubject: credentialSubject)
-        case .naver: strategies[provider] = NaverLoginStrategy(credentialSubject: credentialSubject)
+        case .apple: strategies[provider] = AppleLoginStrategy()
+        case .kakao: strategies[provider] = KakaoLoginStrategy()
+        case .naver: strategies[provider] = NaverLoginStrategy()
         default: break
         }
     }
     
-    func login(by provider: AuthentificationProvider) {
+    func login(by provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
         currentProvider = provider
         cache(by: provider)
         
         guard let strategy = strategies[provider] else { return }
-        strategy.login(provider: provider)
+        strategy.login(provider: provider, completion: completion)
     }
     
     func handleOpenURL(_ url: URL) {

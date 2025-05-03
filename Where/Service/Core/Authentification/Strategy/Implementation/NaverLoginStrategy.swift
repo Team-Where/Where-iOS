@@ -11,10 +11,8 @@ import NidThirdPartyLogin
 
 final class NaverLoginStrategy: NSObject {
     private let naverAPI: NidOAuth = .shared
-    private let credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>
     
-    init(credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>) {
-        self.credentialSubject = credentialSubject
+    override init() {
         super.init()
         _configureNaverAPI(naverAPI)
     }
@@ -24,28 +22,28 @@ final class NaverLoginStrategy: NSObject {
         naver.setLoginBehavior(.appPreferredWithInAppBrowserFallback)
     }
     
-    private func handleNaverLoginResult(_ provider: AuthentificationProvider, _ result: Result<LoginResult, NidError>) {
+    private func handleNaverLoginResult(_ result: Result<LoginResult, NidError>) throws(AuthentificationCoreError) -> UserCredential {
         switch result {
         case .success(let tokens):
-            guard tokens.accessToken.isExpired == false else {
-                // 토큰 만료 시 재귀호출
-                return login(provider: provider)
-            }
-            
-            let userCredential = UserCredential(accessToken: tokens.accessToken.tokenString, refreshToken: tokens.refreshToken.tokenString)
+            let accessToken = tokens.accessToken.tokenString
+            let refreshToken = tokens.refreshToken.tokenString
+            return UserCredential(accessToken: accessToken, refreshToken: refreshToken)
         case .failure:
-            self.credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
+            throw .socialAuthProviderAuthorizationFailed
         }
     }
 }
 
 // MARK: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol Confirmation
 extension NaverLoginStrategy: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol {
-    func login(provider: AuthentificationProvider) {
-        guard case .naver = provider else { return }
+    func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
+        guard case .naver = provider else { return completion(.failure(.notSupported)) }
         
         naverAPI.requestLogin { [weak self] result in
-            self?.handleNaverLoginResult(provider, result)
+            guard let credential = try? self?.handleNaverLoginResult(result) else {
+                return completion(.failure(.socialAuthProviderAuthorizationFailed))
+            }
+            return completion(.success(credential))
         }
     }
     

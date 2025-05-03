@@ -10,7 +10,7 @@ import Combine
 import AuthenticationServices
 
 protocol AuthentificationStrategyProtocol: AnyObject {
-    func login(provider: AuthentificationProvider)
+    func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void)
 }
 
 protocol URLHandlerStrategyProtocol: AuthentificationStrategyProtocol {

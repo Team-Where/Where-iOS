@@ -134,18 +134,6 @@ final class AuthentificationCore {
                 UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
             }
             .store(in: &cancellables)
-        
-        strategyContext.credentialSubject
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.currentUserSubject.send(completion: .failure(error))
-                }
-            } receiveValue: { [weak self] credential in
-                // TODO: 여기에 네트워킹 로직 작성
-            }
-            .store(in: &cancellables)
     }
 }
 
@@ -164,15 +152,29 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func loginWithApple(auth: ASAuthorization) {
-        strategyContext.login(by: .apple(auth: auth))
+        strategyContext.login(by: .apple(auth: auth)) { result in
+            // TODO: WIP
+        }
     }
     
     func loginWithKakao() {
-        strategyContext.login(by: .kakao)
+        strategyContext.login(by: .kakao) { [weak self] result in
+            guard case .success(let credential) = result,
+                  let accessToken = credential.accessToken,
+                  let refreshToken = credential.refreshToken
+            else {
+                self?.currentUserSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
+                return
+            }
+            
+            // TODO: Missing Credential 에러 해결한 뒤 구현 예정
+        }
     }
     
     func loginWithNaver() {
-        strategyContext.login(by: .naver)
+        strategyContext.login(by: .naver) { result in
+            // TODO: WIP
+        }
     }
     
     func login(email: String, password: String) {

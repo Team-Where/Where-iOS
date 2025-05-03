@@ -20,6 +20,7 @@
 		042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F52DA4124F004105E2 /* MeetingCore.swift */; };
 		042A79F92DA53386004105E2 /* KakaoSDKShare in Frameworks */ = {isa = PBXBuildFile; productRef = 042A79F82DA53386004105E2 /* KakaoSDKShare */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
+		044647A22DC61CFF0039BFA5 /* AuthentificationProvider 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044647A12DC61CFF0039BFA5 /* AuthentificationProvider 2.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
 		0450E84B2D996E5D00DB029A /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E84A2D996E5D00DB029A /* LoginViewModel.swift */; };
@@ -82,9 +83,9 @@
 		046A64682DC2681D006ED90C /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64672DC2681D006ED90C /* ContentViewModel.swift */; };
 		046A646A2DC3B32A006ED90C /* ReadUserInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */; };
 		046A646C2DC3CCFB006ED90C /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646B2DC3CCFB006ED90C /* DateView.swift */; };
-		046A646E2DC3D1E5006ED90C /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646D2DC3D1E5006ED90C /* AuthentificationProvider.swift */; };
 		046A64702DC3E034006ED90C /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646F2DC3E034006ED90C /* ProfileCreationView.swift */; };
 		046A64722DC3E03F006ED90C /* ProfileCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64712DC3E03F006ED90C /* ProfileCreationViewModel.swift */; };
+		046A64762DC509FC006ED90C /* LoginWithKakaoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64752DC509FC006ED90C /* LoginWithKakaoDTO.swift */; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
 		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
@@ -224,6 +225,7 @@
 		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
 		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
+		044647A12DC61CFF0039BFA5 /* AuthentificationProvider 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthentificationProvider 2.swift"; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		0450E84C2D99708900DB029A /* PreviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHelper.swift; sourceTree = "<group>"; };
@@ -285,9 +287,9 @@
 		046A64672DC2681D006ED90C /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserInfoDTO.swift; sourceTree = "<group>"; };
 		046A646B2DC3CCFB006ED90C /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
-		046A646D2DC3D1E5006ED90C /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
 		046A646F2DC3E034006ED90C /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
 		046A64712DC3E03F006ED90C /* ProfileCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationViewModel.swift; sourceTree = "<group>"; };
+		046A64752DC509FC006ED90C /* LoginWithKakaoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithKakaoDTO.swift; sourceTree = "<group>"; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		04832B322D23EB93003FFE3B /* Floater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Floater.swift; sourceTree = "<group>"; };
@@ -517,7 +519,7 @@
 				04A5309D2D8EDDD4004E58AD /* Notification.swift */,
 				04A4F4452D40D8E20041FD02 /* RegistrationTerminationStep.swift */,
 				04CBC18D2D72E32D002CA364 /* UserCredential.swift */,
-				046A646D2DC3D1E5006ED90C /* AuthentificationProvider.swift */,
+				044647A12DC61CFF0039BFA5 /* AuthentificationProvider 2.swift */,
 				0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */,
 				0450E8622D9B7BC200DB029A /* MeetingSortType.swift */,
 				046A64582DC13CC9006ED90C /* MapAppScheme.swift */,
@@ -1242,6 +1244,7 @@
 			children = (
 				7FE7BD8D2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift */,
 				7FE7BD8E2DB68E160097CC30 /* LoginDTO.swift */,
+				046A64752DC509FC006ED90C /* LoginWithKakaoDTO.swift */,
 				7FE7BD8F2DB68E160097CC30 /* RegisterDTO.swift */,
 				046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */,
 			);
@@ -1445,6 +1448,7 @@
 				0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */,
 				04A4F45B2D42105E0041FD02 /* Inquiry.swift in Sources */,
 				04A530A52D8EE31C004E58AD /* AnnouncementView.swift in Sources */,
+				046A64762DC509FC006ED90C /* LoginWithKakaoDTO.swift in Sources */,
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				04A4F4612D42189F0041FD02 /* Announcement.swift in Sources */,
 				042A79F42DA3FC28004105E2 /* AuthentificationStrategyContext.swift in Sources */,
@@ -1527,6 +1531,7 @@
 				04A530B32D914BE4004E58AD /* InquiryView.swift in Sources */,
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
 				046833DD2D3B8DB8009D2357 /* RegistrationView.swift in Sources */,
+				044647A22DC61CFF0039BFA5 /* AuthentificationProvider 2.swift in Sources */,
 				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
 				046A646C2DC3CCFB006ED90C /* DateView.swift in Sources */,
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
@@ -1594,7 +1599,6 @@
 				046A64462DBF23F0006ED90C /* InquiryViewModel.swift in Sources */,
 				7FE7BDBB2DB68E160097CC30 /* CheckEmailDuplicationDTO.swift in Sources */,
 				7FE7BDBC2DB68E160097CC30 /* LoginDTO.swift in Sources */,
-				046A646E2DC3D1E5006ED90C /* AuthentificationProvider.swift in Sources */,
 				7FE7BDBD2DB68E160097CC30 /* RegisterDTO.swift in Sources */,
 				7FE7BDBE2DB68E160097CC30 /* APIService.swift in Sources */,
 				7FE7BDBF2DB68E160097CC30 /* Endpoint.swift in Sources */,

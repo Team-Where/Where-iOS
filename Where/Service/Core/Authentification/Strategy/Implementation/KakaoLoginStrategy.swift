@@ -13,10 +13,8 @@ import KakaoSDKAuth
 
 final class KakaoLoginStrategy {
     private let kakaoAPI: UserApi = .shared
-    private let credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>
     
-    init(credentialSubject: PassthroughSubject<UserCredential, AuthentificationCoreError>) {
-        self.credentialSubject = credentialSubject
+    init() {
         _configureKakaoAPI()
     }
     
@@ -28,38 +26,39 @@ final class KakaoLoginStrategy {
         KakaoSDK.initSDK(appKey: key)
     }
     
-    private func handleKakaoLoginResult(token: OAuthToken?, error: Error?) {
+    private func handleKakaoLoginResult(token: OAuthToken?, error: Error?) throws(AuthentificationCoreError) -> UserCredential {
         if let error = error {
-            #if DEBUG
-            print("Error occured from KakaoLoginStrategy: \(error)")
-            #endif
-            credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
-            return
+            throw .socialAuthProviderAuthorizationFailed
         }
         
         guard let token = token else {
-            return credentialSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
+            throw .socialAuthProviderAuthorizationFailed
         }
         
-        let userCredential = UserCredential(accessToken: token.accessToken, refreshToken: token.refreshToken)
-        credentialSubject.send(userCredential)
+        return UserCredential(accessToken: token.accessToken, refreshToken: token.refreshToken)
     }
 }
 
 // MARK: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol Confirmation
 extension KakaoLoginStrategy: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol {
-    func login(provider: AuthentificationProvider) {
-        guard case .kakao = provider else { return }
+    func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
+        guard case .kakao = provider else { return completion(.failure(.notSupported)) }
         
         let nonce = UUID().uuidString
         
         if UserApi.isKakaoTalkLoginAvailable() {
             kakaoAPI.loginWithKakaoTalk(nonce: nonce) { [weak self] token, error in
-                self?.handleKakaoLoginResult(token: token, error: error)
+                guard let credential = try? self?.handleKakaoLoginResult(token: token, error: error) else {
+                    return completion(.failure(.socialAuthProviderAuthorizationFailed))
+                }
+                return completion(.success(credential))
             }
         } else {
             kakaoAPI.loginWithKakaoAccount(nonce: nonce) { [weak self] token, error in
-                self?.handleKakaoLoginResult(token: token, error: error)
+                guard let credential = try? self?.handleKakaoLoginResult(token: token, error: error) else {
+                    return completion(.failure(.socialAuthProviderAuthorizationFailed))
+                }
+                return completion(.success(credential))
             }
         }
     }
