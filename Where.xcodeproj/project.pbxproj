@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		041BC3F72DC657CB0035C825 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */; };
 		041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041DF3BD2DB000C100A0E51F /* NotificationCore.swift */; };
 		042A79D32D9EAD2F004105E2 /* WhereAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */; };
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
@@ -20,7 +21,6 @@
 		042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F52DA4124F004105E2 /* MeetingCore.swift */; };
 		042A79F92DA53386004105E2 /* KakaoSDKShare in Frameworks */ = {isa = PBXBuildFile; productRef = 042A79F82DA53386004105E2 /* KakaoSDKShare */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
-		044647A22DC61CFF0039BFA5 /* AuthentificationProvider 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044647A12DC61CFF0039BFA5 /* AuthentificationProvider 2.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
 		0450E84B2D996E5D00DB029A /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E84A2D996E5D00DB029A /* LoginViewModel.swift */; };
@@ -213,6 +213,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
 		041DF3BD2DB000C100A0E51F /* NotificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCore.swift; sourceTree = "<group>"; };
 		042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereAuthenticator.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
@@ -225,7 +226,6 @@
 		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
 		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
-		044647A12DC61CFF0039BFA5 /* AuthentificationProvider 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthentificationProvider 2.swift"; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		0450E84C2D99708900DB029A /* PreviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHelper.swift; sourceTree = "<group>"; };
@@ -519,7 +519,7 @@
 				04A5309D2D8EDDD4004E58AD /* Notification.swift */,
 				04A4F4452D40D8E20041FD02 /* RegistrationTerminationStep.swift */,
 				04CBC18D2D72E32D002CA364 /* UserCredential.swift */,
-				044647A12DC61CFF0039BFA5 /* AuthentificationProvider 2.swift */,
+				041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */,
 				0450E8602D9AD36700DB029A /* TemporaryMeetingInfo.swift */,
 				0450E8622D9B7BC200DB029A /* MeetingSortType.swift */,
 				046A64582DC13CC9006ED90C /* MapAppScheme.swift */,
@@ -1531,7 +1531,6 @@
 				04A530B32D914BE4004E58AD /* InquiryView.swift in Sources */,
 				046833E42D3B8DE5009D2357 /* OnboardingView.swift in Sources */,
 				046833DD2D3B8DB8009D2357 /* RegistrationView.swift in Sources */,
-				044647A22DC61CFF0039BFA5 /* AuthentificationProvider 2.swift in Sources */,
 				04854C3E2D950260007AADE4 /* FlowLayout.swift in Sources */,
 				046A646C2DC3CCFB006ED90C /* DateView.swift in Sources */,
 				042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */,
@@ -1593,6 +1592,7 @@
 				7FE7BDB52DB68E160097CC30 /* ReadAdminInquiriesDTO.swift in Sources */,
 				7FE7BDB62DB68E160097CC30 /* ReadAnnouncementsDTO.swift in Sources */,
 				7FE7BDB72DB68E160097CC30 /* ReadFAQsDTO.swift in Sources */,
+				041BC3F72DC657CB0035C825 /* AuthentificationProvider.swift in Sources */,
 				7FE7BDB82DB68E160097CC30 /* ReadUserInquiriesDTO.swift in Sources */,
 				7FE7BDB92DB68E160097CC30 /* UpdateAnnouncementDTO.swift in Sources */,
 				7FE7BDBA2DB68E160097CC30 /* UpdateFAQDTO.swift in Sources */,
