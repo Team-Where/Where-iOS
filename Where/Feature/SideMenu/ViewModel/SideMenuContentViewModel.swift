@@ -12,7 +12,6 @@ import Swinject
 final class SideMenuContentViewModel: ObservableObject {
     @Published var user: User?
     @Published var totalMeetingsCount = Int.zero
-    @Published var isLoginViewPresented: Bool = false
     
     var isLoginNeeded: Bool { authCore.isLoginNeeded }
     
@@ -58,12 +57,5 @@ final class SideMenuContentViewModel: ObservableObject {
                 self?.totalMeetingsCount = dict.values.count
             }
             .store(in: &cancellables)
-    }
-}
-
-// MARK: Interfaces
-extension SideMenuContentViewModel {
-    func login() {
-        isLoginViewPresented = true
     }
 }

@@ -39,7 +39,7 @@ struct MyMeetingView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .allowsHitTesting(viewModel.isSideMenuPresented == false)
             .sideMenu(isPresented: $viewModel.isSideMenuPresented) {
-                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver)
+                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver, onLoginButtonTapped: viewModel.presentLoginView)
             }
         }
         .overlay(alignment: .bottom) {

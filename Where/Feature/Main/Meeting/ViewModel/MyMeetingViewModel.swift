@@ -64,6 +64,10 @@ extension MyMeetingViewModel {
         isSideMenuPresented.toggle()
     }
     
+    func presentLoginView() {
+        isLoginNeeded = true
+    }
+    
     func selectSortType(for type: MeetingSortType) {
         sortType = type
     }

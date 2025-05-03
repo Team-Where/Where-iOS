@@ -13,15 +13,18 @@ struct SideMenuContentView: View {
     @ObservedObject private var viewModel: SideMenuContentViewModel
     @State private var navigationType: NavigationType?
     
+    private let onLoginButtonTapped: () -> Void
     private let resolver: Resolver
     
     init(
         _ isSideMenuPresented: Binding<Bool>,
-        resolver: Resolver
+        resolver: Resolver,
+        onLoginButtonTapped: @escaping () -> Void
     ) {
         self._isSideMenuPresented = isSideMenuPresented
         self.viewModel = resolver.resolve(SideMenuContentViewModel.self)!
         self.resolver = resolver
+        self.onLoginButtonTapped = onLoginButtonTapped
     }
     
     var body: some View {
@@ -65,9 +68,6 @@ struct SideMenuContentView: View {
             case .editProfile: EditProfileView(resolver: resolver)
             }
         }
-        .fullScreenCover(isPresented: $viewModel.isLoginViewPresented) {
-            LoginView(resolver: resolver)
-        }
     }
     
     @ViewBuilder private func profileSection() -> some View {
@@ -78,7 +78,8 @@ struct SideMenuContentView: View {
                 
                 Button {
                     if viewModel.isLoginNeeded {
-                        viewModel.login()
+                        onLoginButtonTapped()
+                        isSideMenuPresented = false
                     } else {
                         navigationType = .editProfile
                     }
@@ -201,11 +202,5 @@ extension SideMenuContentView {
         case announcements
         /// 프로필 수정
         case editProfile
-    }
-}
-
-#Preview {
-    NavigationStack {
-        SideMenuContentView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }
