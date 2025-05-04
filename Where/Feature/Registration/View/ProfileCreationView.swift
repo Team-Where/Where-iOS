@@ -10,14 +10,14 @@ import Swinject
 
 struct ProfileCreationView: View {
     @ObservedObject private var viewModel: ProfileCreationViewModel
-    @Binding var isLoginNeeded: Bool
+    @Binding var isRegistrationNeeded: Bool
     @FocusState private var isFocused: Bool
     
     init(
-        _ isLoginNeeded: Binding<Bool>,
+        _ isRegistrationNeeded: Binding<Bool>,
         resolver: Resolver
     ) {
-        self._isLoginNeeded = isLoginNeeded
+        self._isRegistrationNeeded = isRegistrationNeeded
         self.viewModel = resolver.resolve(ProfileCreationViewModel.self)!
     }
     
@@ -41,7 +41,7 @@ struct ProfileCreationView: View {
             }
             .onChange(of: viewModel.isCompleted) { _, isCompleted in
                 guard isCompleted else { return }
-                isLoginNeeded = false
+                isRegistrationNeeded = false
             }
     }
     
