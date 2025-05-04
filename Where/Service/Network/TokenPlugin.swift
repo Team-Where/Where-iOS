@@ -16,7 +16,8 @@ final class TokenPlugin: PluginType {
     }
     
     func prepare(_ request: URLRequest, target: any TargetType) -> URLRequest {
-        guard let endpoint = target as? Endpoint,
+        guard let multiTarget = target as? MultiTarget,
+              let endpoint = multiTarget.target as? Endpoint,
               endpoint.isTokenRequired
         else {
             return request

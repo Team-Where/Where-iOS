@@ -51,6 +51,12 @@ struct Meeting: Identifiable {
     }
 }
 
+extension Meeting: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
 /// 모임 참여 인원
 struct Participant {
     /// 모임 초대자 식별자
