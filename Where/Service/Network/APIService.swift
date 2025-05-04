@@ -26,8 +26,9 @@ final class APIService: APIServable {
         _ tokenStorage: TokenStorageProtocol
     ) {
         self.decoder = decoder
-        let authenticator = WhereAuthenticator(tokenStorage: tokenStorage)
-        let interceptor = AuthenticationInterceptor(authenticator: authenticator)
+//        let authenticator = WhereAuthenticator(tokenStorage: tokenStorage)
+//        let interceptor = AuthenticationInterceptor(authenticator: authenticator)
+        let interceptor = AuthInterceptor(tokenStorage)
         let session = Session(interceptor: interceptor)
         
         provider = .init(session: session, plugins: [TokenPlugin(tokenStorage: tokenStorage)])
