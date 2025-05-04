@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 final class AnnouncementViewModel: ObservableObject {
     @Published var navigationType: NavigationType?
@@ -15,8 +16,8 @@ final class AnnouncementViewModel: ObservableObject {
     private let supportCore: SupportCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(supportCore: SupportCoreProtocol) {
-        self.supportCore = supportCore
+    init(resolver: Resolver) {
+        self.supportCore = resolver.resolve(SupportCoreProtocol.self)!
         subscribe()
     }
     
