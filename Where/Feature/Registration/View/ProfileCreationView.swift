@@ -23,6 +23,7 @@ struct ProfileCreationView: View {
     
     var body: some View {
         content()
+            .toolbar(.hidden, for: .tabBar)
             .whereForm(viewModel.navigationTitle) {
                 Button {
                     viewModel.proceed()
@@ -58,11 +59,19 @@ struct ProfileCreationView: View {
                             .frame(width: 155, height: 155)
                             .clipShape(Circle())
                     } else {
-                        Image(.person)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 155, height: 155)
-                            .clipShape(Circle())
+                        AsyncImage(url: viewModel.currentUser?.imageURL) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 155, height: 155)
+                                .clipShape(Circle())
+                        } placeholder: {
+                            Image(.person)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 155, height: 155)
+                                .clipShape(Circle())
+                        }
                     }
                     
                     Button {
