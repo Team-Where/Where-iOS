@@ -18,6 +18,8 @@ final class EditProfileViewModel: ObservableObject {
     @Published var step: EditProfileStep = .beforeUpdate
     @Published var isFloaterPresented: Bool = false
     
+    private(set) var currentUser: User?
+    
     private let authCore: AuthentificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
@@ -40,8 +42,8 @@ final class EditProfileViewModel: ObservableObject {
 #endif
                 }
             } receiveValue: { [weak self] user in
-                self?.initializeProperties(user)
-                self?.step = .done
+                guard let user else { return }
+                self?.nicknameFieldText = user.nickname
             }
             .store(in: &cancellables)
         
@@ -52,19 +54,6 @@ final class EditProfileViewModel: ObservableObject {
                 self?.isNicknameValid = nickname.isValidNickname()
             }
             .store(in: &cancellables)
-    }
-    
-    private func initializeProperties(_ user: User?) {
-        guard let imageURL = user?.imageURL,
-              let data = try? Data(contentsOf: imageURL)
-        else {
-            profileImageData = nil
-            nicknameFieldText = user?.nickname ?? ""
-            return
-        }
-        
-        profileImageData = data
-        nicknameFieldText = user?.nickname ?? ""
     }
 }
 
@@ -90,8 +79,58 @@ extension EditProfileViewModel {
     }
     
     func updateProfile() {
+        guard step != .processing else { return }
+        
+        guard let user = currentUser else { return step = .errorOccured }
+        
         step = .processing
-        authCore.updateUserProfile(nickname: nicknameFieldText, profileImageData: profileImageData)
+        
+        guard let user = currentUser else {
+            return step = .errorOccured
+        }
+        
+        let imageUpdatePublisher: AnyPublisher<Void, AuthentificationCoreError>
+        
+        if let data = profileImageData {
+            if user.imageURL != nil {
+                // 기존 프로필사진이 있는 경우 -> 프로필 변경
+                imageUpdatePublisher = authCore.updateUserProfile(profileImageData: data)
+                    .map { _ in () }
+                    .eraseToAnyPublisher()
+            } else {
+                // 기존 프로필사진이 없는 경우 -> 프로필 등록
+                imageUpdatePublisher = authCore.createUserProfile(profileImageData: data)
+                    .map { _ in () }
+                    .eraseToAnyPublisher()
+            }
+        } else {
+            if user.imageURL != nil {
+                // 기존 프로필사진이 있는 경우 -> 프로필 삭제
+                imageUpdatePublisher = authCore.deleteUserProfile()
+                    .map { _ in () }
+                    .eraseToAnyPublisher()
+            } else {
+                // 기존 프로필사진도 없고, 선택한 이미지도 없을 경우 -> 별도 처리 필요 없음
+                imageUpdatePublisher = Just(()).setFailureType(to: AuthentificationCoreError.self).eraseToAnyPublisher()
+            }
+        }
+        
+        let nicknameUpdatePublisher = authCore.updateNickname(nicknameFieldText)
+        
+        imageUpdatePublisher
+            .combineLatest(nicknameUpdatePublisher)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.step = .done
+                case .failure(let error):
+                    self?.isFloaterPresented = true
+                }
+            } receiveValue: { (_, isDone) in
+                return
+            }
+            .store(in: &cancellables)
     }
     
     func selectProfileImageData(_ data: Data?) {

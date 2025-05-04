@@ -50,8 +50,17 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 회원탈퇴
     func unregister()
     
+    /// 프로필 생성
+    func createUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError>
+    
     /// 프로필 수정
-    func updateUserProfile(nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError>
+    func updateUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError>
+    
+    /// 프로필 삭제
+    func deleteUserProfile() -> AnyPublisher<Bool, AuthentificationCoreError>
+    
+    /// 닉네임 변경
+    func updateNickname(_ nickname: String) -> AnyPublisher<Bool, AuthentificationCoreError>
 }
 
 protocol AuthentificationMediationProtocol {
@@ -182,7 +191,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                     // TODO: 에러 핸들링
                 } receiveValue: { [weak self] response in
                     self?.isRegistrationNeededSubject.send(response.isRegistrationNeeded)
-                    let user = User(id: response.userID)
+                    let user = User(id: response.userID, imageURL: response.profileImageURL)
                     self?.currentUserSubject.send(user)
                 }
                 .store(in: &cancellables)
@@ -242,8 +251,72 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         // TODO: 기능 구현
     }
     
-    func updateUserProfile(nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError> {
+    func createUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError> {
+        guard let user = currentUserSubject.value else {
+            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
+        }
         
+        return apiService.requestPublisher(Endpoint.uploadProfile(userID: user.id, image: profileImageData), UpdateProfileDTO.Response.self)
+            .map {
+                return User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
+            }
+            .handleEvents(receiveOutput: { [weak self] user in
+                self?.currentUserSubject.send(user)
+            })
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func updateUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError> {
+        guard let user = currentUserSubject.value else {
+            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
+        }
+        
+        return apiService.requestPublisher(Endpoint.updateProfile(userID: user.id, image: profileImageData), UpdateProfileDTO.Response.self)
+            .map {
+                return User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
+            }
+            .handleEvents(receiveOutput: { [weak self] user in
+                self?.currentUserSubject.send(user)
+            })
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func deleteUserProfile() -> AnyPublisher<Bool, AuthentificationCoreError> {
+        guard let user = currentUserSubject.value else {
+            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
+        }
+        
+        return apiService.requestPublisher(Endpoint.deleteProfile(userID: user.id), EmptyDTO.Response.self)
+            .map { _ in true }
+            .handleEvents(receiveOutput: { [weak self] isSuccess in
+                if isSuccess {
+                    let user = User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: nil)
+                    self?.currentUserSubject.send(user)
+                }
+            })
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func updateNickname(_ nickname: String) -> AnyPublisher<Bool, AuthentificationCoreError> {
+        guard let user = currentUserSubject.value else {
+            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
+        }
+        
+        let dto = UpdateNicknameDTO.Request(nickname: nickname)
+        
+        return apiService.requestPublisher(Endpoint.updateNickname(userID: user.id, dto: dto), EmptyDTO.Response.self)
+            .map { _ in true }
+            .handleEvents(receiveOutput: { [weak self] isSuccess in
+                if isSuccess {
+                    let user = User(id: user.id, nickname: nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: user.imageURL)
+                    self?.currentUserSubject.send(user)
+                }
+            })
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .eraseToAnyPublisher()
     }
 }
 

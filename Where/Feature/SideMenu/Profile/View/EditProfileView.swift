@@ -28,6 +28,8 @@ struct EditProfileView: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 155, height: 155)
                         .clipShape(Circle())
+                } else {
+                    AsyncImage(url: viewMo)
                 }
                 
                 Button {
