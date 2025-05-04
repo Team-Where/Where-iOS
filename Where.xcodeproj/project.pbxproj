@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		041BC3F72DC657CB0035C825 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */; };
+		041BC4052DC74E210035C825 /* UpdateNicknameDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC4042DC74E210035C825 /* UpdateNicknameDTO.swift */; };
+		041BC4072DC752760035C825 /* UpdateProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC4062DC752760035C825 /* UpdateProfileDTO.swift */; };
 		041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041DF3BD2DB000C100A0E51F /* NotificationCore.swift */; };
 		042A79D32D9EAD2F004105E2 /* WhereAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */; };
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
@@ -214,6 +216,8 @@
 
 /* Begin PBXFileReference section */
 		041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
+		041BC4042DC74E210035C825 /* UpdateNicknameDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNicknameDTO.swift; sourceTree = "<group>"; };
+		041BC4062DC752760035C825 /* UpdateProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileDTO.swift; sourceTree = "<group>"; };
 		041DF3BD2DB000C100A0E51F /* NotificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCore.swift; sourceTree = "<group>"; };
 		042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereAuthenticator.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
@@ -1247,6 +1251,8 @@
 				046A64752DC509FC006ED90C /* LoginWithKakaoDTO.swift */,
 				7FE7BD8F2DB68E160097CC30 /* RegisterDTO.swift */,
 				046A64692DC3B32A006ED90C /* ReadUserInfoDTO.swift */,
+				041BC4062DC752760035C825 /* UpdateProfileDTO.swift */,
+				041BC4042DC74E210035C825 /* UpdateNicknameDTO.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -1472,6 +1478,7 @@
 				046A645B2DC1D3F0006ED90C /* AcceptInvitationView.swift in Sources */,
 				042A79F02DA3F5F8004105E2 /* NaverLoginStrategy.swift in Sources */,
 				91A9EAC42D29C5D0005F09D2 /* Dismiss.swift in Sources */,
+				041BC4052DC74E210035C825 /* UpdateNicknameDTO.swift in Sources */,
 				04C6F2402DBA656A0099874F /* HistoryReminderViewModel.swift in Sources */,
 				0450E85F2D9AC85B00DB029A /* CommunityCore.swift in Sources */,
 				04CBC18E2D72E32D002CA364 /* UserCredential.swift in Sources */,
@@ -1570,6 +1577,7 @@
 				7FE7BDA22DB68E160097CC30 /* CreateCommentDTO.swift in Sources */,
 				7FE7BDA32DB68E160097CC30 /* CreatePlace.swift in Sources */,
 				7FE7BDA42DB68E160097CC30 /* DeleteCommentDTO.swift in Sources */,
+				041BC4072DC752760035C825 /* UpdateProfileDTO.swift in Sources */,
 				7FE7BDA52DB68E160097CC30 /* DeletePlaceDTO.swift in Sources */,
 				7FE7BDA62DB68E160097CC30 /* PickPlaceDTO.swift in Sources */,
 				7FE7BDA72DB68E160097CC30 /* ReadCommentsDTO.swift in Sources */,
