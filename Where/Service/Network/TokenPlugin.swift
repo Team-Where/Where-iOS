@@ -24,9 +24,16 @@ final class TokenPlugin: PluginType {
         }
         
         do {
-            let token = try tokenStorage.fetch()
             var tokenRequest = request
-            tokenRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            
+            if case .loginWithKakao(let accessToken, let refreshToken) = endpoint {
+                tokenRequest.setValue("\(accessToken)", forHTTPHeaderField: "Authorization")
+                tokenRequest.setValue("\(refreshToken)", forHTTPHeaderField: "refreshToken")
+            } else {
+                let token = try tokenStorage.fetch()
+                tokenRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            }
+            
             return tokenRequest
         } catch {
             return request

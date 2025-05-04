@@ -14,6 +14,9 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 사용자 정보
     var currentUser: AnyPublisher<User?, AuthentificationCoreError> { get }
     
+    /// 소셜로그인 회원가입 시 프로필 설정 필요 여부
+    var isRegistrationNeeded: AnyPublisher<Bool, Never> { get }
+    
     /// 로그인 필요 여부
     var isLoginNeeded: Bool { get }
     
@@ -94,6 +97,7 @@ final class AuthentificationCore {
     private var _currentUser: User?
     
     private let currentUserSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
+    private let isRegistrationNeededSubject = PassthroughSubject<Bool, Never>()
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -143,6 +147,10 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         currentUserSubject.eraseToAnyPublisher()
     }
     
+    var isRegistrationNeeded: AnyPublisher<Bool, Never> {
+        isRegistrationNeededSubject.eraseToAnyPublisher()
+    }
+    
     var isLoginNeeded: Bool {
         _currentUser == nil
     }
@@ -159,15 +167,25 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     
     func loginWithKakao() {
         strategyContext.login(by: .kakao) { [weak self] result in
+            guard let self else { return }
+            
             guard case .success(let credential) = result,
                   let accessToken = credential.accessToken,
                   let refreshToken = credential.refreshToken
             else {
-                self?.currentUserSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
+                currentUserSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
                 return
             }
             
-            // TODO: Missing Credential 에러 해결한 뒤 구현 예정
+            apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToken, refreshToken: refreshToken), LoginWithKakaoDTO.Response.self)
+                .sink { completion in
+                    // TODO: 에러 핸들링
+                } receiveValue: { [weak self] response in
+                    self?.isRegistrationNeededSubject.send(response.isRegistrationNeeded)
+                    let user = User(id: response.userID)
+                    self?.currentUserSubject.send(user)
+                }
+                .store(in: &cancellables)
         }
     }
     
