@@ -10,7 +10,6 @@ import Swinject
 
 struct MyMeetingView: View {
     @ObservedObject private var viewModel: MyMeetingViewModel
-    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     
     private let resolver: Resolver
     
@@ -64,14 +63,11 @@ struct MyMeetingView: View {
                 }
             }
         }
-        .navigationDestination(isPresented: $viewModel.isOnboardingViewPresented) {
-            OnboardingView()
+        .navigationDestination(isPresented: $viewModel.isRegistrationNeeded) {
+            ProfileCreationView($viewModel.isRegistrationNeeded, resolver: resolver)
         }
         .fullScreenCover(isPresented: $viewModel.isLoginNeeded) {
             LoginView(resolver: resolver)
-        }
-        .onAppear {
-            viewModel.isOnboardingViewPresented = isOnboardingNeeded
         }
     }
     

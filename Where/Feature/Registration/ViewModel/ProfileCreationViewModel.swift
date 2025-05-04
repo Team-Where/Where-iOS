@@ -82,8 +82,11 @@ extension ProfileCreationViewModel {
         guard isProceedButtonDisabled == false else { return }
         
         switch profileCreationStep {
-        case .profile: profileCreationStep = .completed
-        case .completed: isCompleted = true
+        case .profile:
+            profileCreationStep = .completed
+        case .completed:
+            authCore.updateUserProfile(nickname: <#T##String#>, profileImageData: <#T##Data?#>)
+            isCompleted = true
         }
     }
 }

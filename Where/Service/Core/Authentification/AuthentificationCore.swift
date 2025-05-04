@@ -51,7 +51,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func unregister()
     
     /// 프로필 수정
-    func updateUserProfile(nickname: String, profileImageData: Data?)
+    func updateUserProfile(nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError>
 }
 
 protocol AuthentificationMediationProtocol {
@@ -242,7 +242,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         // TODO: 기능 구현
     }
     
-    func updateUserProfile(nickname: String, profileImageData: Data?) {
+    func updateUserProfile(nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError> {
         
     }
 }

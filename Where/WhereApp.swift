@@ -10,6 +10,7 @@ import Swinject
 
 @main
 struct WhereApp: App {
+    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let resolver: Swinject.Resolver
     
@@ -28,7 +29,11 @@ struct WhereApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(resolver: resolver)
+            if isOnboardingNeeded {
+                OnboardingView()
+            } else {
+                ContentView(resolver: resolver)
+            }
         }
     }
 }

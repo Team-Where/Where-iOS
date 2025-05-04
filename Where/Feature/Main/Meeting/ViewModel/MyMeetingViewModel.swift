@@ -13,14 +13,16 @@ final class MyMeetingViewModel: ObservableObject {
     @Published var sortType: MeetingSortType = .created
     @Published var isSideMenuPresented = false
     @Published var isMeetingInformationViewPresented = false
-    @Published var isOnboardingViewPresented = false
     @Published var isLoginNeeded = false
+    @Published var isRegistrationNeeded = false
     @Published var meetings: [Meeting] = []
     
+    private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
     init(resolver: Resolver) {
+        self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
         self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         subscribe()
     }
@@ -45,6 +47,13 @@ final class MyMeetingViewModel: ObservableObject {
                 self?.sortMeetings(by: type)
             }
             .store(in: &cancellables)
+        
+        authCore.isRegistrationNeeded
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isNeeded in
+                self?.isRegistrationNeeded = isNeeded
+            }
+            .store(in: &cancellables)
     }
     
     private func sortMeetings(by type: MeetingSortType) {
@@ -52,8 +61,7 @@ final class MyMeetingViewModel: ObservableObject {
         case .created:
             meetings.sort { $0.createdAt < $1.createdAt }
         case .scheduled:
-            // TODO: 스케줄 기준 정렬 로직 구현
-            return
+            meetings.sort { $0.scheduleDate ?? .now < $1.scheduleDate ?? .now }
         }
     }
 }
