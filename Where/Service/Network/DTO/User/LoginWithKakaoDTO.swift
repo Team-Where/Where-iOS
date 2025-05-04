@@ -11,10 +11,12 @@ enum LoginWithKakaoDTO {
     struct Response: Decodable {
         let userID: UInt64
         let isRegistrationNeeded: Bool
+        let profileImageURL: URL?
         
         enum CodingKeys: String, CodingKey {
             case userID = "userId"
             case isRegistrationNeeded = "signUp"
+            case profileImageURL = "profileImage"
         }
     }
 }
