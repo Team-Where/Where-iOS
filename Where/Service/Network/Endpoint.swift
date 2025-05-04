@@ -23,7 +23,14 @@ enum Endpoint {
     /// 마이페이지 사용자 정보 조회
     case readUserInfo(userID: UInt64)
     /// 프로필이미지 등록
-    case uploadProfileImage(userID: UInt64, image: Data)
+    case uploadProfile(userID: UInt64, image: Data)
+    /// 프로필이미지 변경
+    case updateProfile(userID: UInt64, image: Data)
+    /// 프로필이미지 삭제
+    /// - Note: 프로필 이미지를 삭제하고 기본이미지로 설정할 때 사용합니다.
+    case deleteProfile(userID: UInt64)
+    /// 닉네임 변경
+    case updateNickname(userID: UInt64, dto: UpdateNicknameDTO.Request)
     /// accessToken 재발급
     case reissueAccessToken(refreshToken: String)
     
@@ -150,8 +157,14 @@ extension Endpoint: TargetType {
             return "\(basePath)/checkEmail"
         case .readUserInfo(let userID):
             return "\(basePath)/mypage/\(userID)"
-        case .uploadProfileImage(let userID, _):
-            return "\(basePath)/\(userID)/uploadProfile"
+        case .uploadProfile(let userID, _):
+            return "\(basePath)/\(userID)/upload"
+        case .updateProfile(let userID, _):
+            return "\(basePath)/\(userID)/edit"
+        case .deleteProfile(let userID):
+            return "\(basePath)/\(userID)/edit"
+        case .updateNickname(let userID, _):
+            return "\(basePath)/\(userID)/nickname"
         case .reissueAccessToken:
             return "\(basePath)/refresh"
             
@@ -223,9 +236,9 @@ extension Endpoint: TargetType {
     var method: Moya.Method {
         switch self {
         case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink: .get
-        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfileImage, .register, .reissueAccessToken, .loginWithKakao: .post
-        case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend: .put
-        case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister: .delete
+        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao: .post
+        case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend, .updateProfile, .updateNickname: .put
+        case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister, .deleteProfile: .delete
         }
     }
     
@@ -248,10 +261,18 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .readUserInfo:
             return .requestPlain
-        case .uploadProfileImage(_, let image):
+        case .uploadProfile(_, let image):
             var formData = [MultipartFormData]()
-            formData.append(.init(provider: .data(image), name: "image"))
+            formData.append(.init(provider: .data(image), name: "file"))
             return .uploadMultipart(formData)
+        case .updateProfile(_, let image):
+            var formData = [MultipartFormData]()
+            formData.append(.init(provider: .data(image), name: "file"))
+            return .uploadMultipart(formData)
+        case .deleteProfile:
+            return .requestPlain
+        case .updateNickname(_, let dto):
+            return .requestJSONEncodable(dto)
         case .reissueAccessToken(let refreshToken):
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(refreshToken.data(using: .utf8) ?? Data()), name: "refreshToken", mimeType: "application/json"))
@@ -368,7 +389,7 @@ extension Endpoint: TargetType {
 private extension Endpoint {
     var basePath: String {
         switch self {
-        case .register, .unregister, .login, .checkEmailDuplication,.readUserInfo, .uploadProfileImage, .loginWithKakao:
+        case .register, .unregister, .login, .checkEmailDuplication,.readUserInfo, .uploadProfile, .updateProfile, .deleteProfile, .updateNickname, .loginWithKakao:
             return "/user"
         case .readFriends, .deleteFriend, .bookmarkFriend:
             return "/friend"
@@ -384,6 +405,8 @@ private extension Endpoint {
             return "/admin"
         case .reissueAccessToken:
             return "/token"
+        case .readAnnouncements, .readFAQs:
+            return ""
         @unknown default:
             return ""
         }
