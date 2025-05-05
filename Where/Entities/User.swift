@@ -12,7 +12,7 @@ struct User: Identifiable {
     /// 고유 식별자
     let id: UInt64
     /// 사용자 닉네임
-    let nickname: String
+    let nickname: String?
     /// SMS 토큰
     let smsVerificationToken: String?
     /// 사용자 계정 생성일시(가입일시)
@@ -22,7 +22,7 @@ struct User: Identifiable {
     
     init(
         id: UInt64 = 0,
-        nickname: String = "별명",
+        nickname: String? = nil,
         smsVerificationToken: String? = nil,
         createdAt: Date = .now,
         imageURL: URL? = nil
