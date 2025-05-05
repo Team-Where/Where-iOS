@@ -17,7 +17,7 @@ extension ReadAnnouncementsDTO {
         let announcementID: UInt64
         let title: String
         let content: String
-        let modifiedAt: Date
+        let modifiedAt: String
         
         enum CodingKeys: String, CodingKey {
             case announcementID = "id"
@@ -30,7 +30,7 @@ extension ReadAnnouncementsDTO {
                 id: announcementID,
                 title: title,
                 content: content,
-                date: modifiedAt,
+                date: modifiedAt.toDate(by: .yyyyMMddHyphen) ?? .now,
                 type: .common
             )
         }
