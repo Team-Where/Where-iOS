@@ -102,7 +102,7 @@ struct AcceptInvitationView: View {
                     
                     Text(viewModel.meeting.scheduleDate?.toString(by: .yyyyMMdd) ?? "")
                     
-                    Text(viewModel.meeting.scheduleTime?.toString(by: .HHmm) ?? "")
+                    Text(viewModel.meeting.scheduleTime?.toString(by: .ahmm) ?? "")
                 }
                 .whereFont(.body14regular)
                 .foregroundStyle(.where(.gray700))
