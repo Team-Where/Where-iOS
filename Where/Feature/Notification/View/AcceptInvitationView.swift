@@ -100,9 +100,9 @@ struct AcceptInvitationView: View {
                 HStack(spacing: 4) {
                     Image(.calendarIcon)
                     
-                    Text("2024.12.28")
+                    Text(viewModel.meeting.scheduleDate?.toString(by: .yyyyMMdd) ?? "")
                     
-                    Text("오후 5시")
+                    Text(viewModel.meeting.scheduleTime?.toString(by: .HHmm) ?? "")
                 }
                 .whereFont(.body14regular)
                 .foregroundStyle(.where(.gray700))
