@@ -37,6 +37,11 @@ final class APIService: APIServable {
     func requestPublisher<T: TargetType, D: Decodable>(_ targetType: T, _ DTO: D.Type) -> AnyPublisher<D, Error> {
         
         return provider.requestPublisher(MultiTarget(targetType))
+            .handleEvents(receiveOutput: { response in
+                if let jsonString = String(data: response.data, encoding: .utf8) {
+                    print(jsonString)
+                }
+            })
             .tryMap { response in
                 guard (200..<300).contains(response.statusCode)
                 else {
