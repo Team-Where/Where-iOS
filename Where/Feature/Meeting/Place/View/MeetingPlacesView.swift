@@ -409,7 +409,10 @@ extension MeetingPlacesView {
                 .padding(.top)
                 
                 Button {
-                    // TODO: 네이버지도 Universal Link 연결
+                    if MapAppScheme.navermap.isAppInstalled(),
+                       let url = MapAppScheme.navermap.openURL() {
+                        openURL(url)
+                    }
                 } label: {
                     HStack(spacing: 16) {
                         Image(.colorNaverMapLogo)
@@ -422,7 +425,10 @@ extension MeetingPlacesView {
                 .padding(.horizontal)
                 
                 Button {
-                    // TODO: 카카오맵 Universal Link 연결
+                    if MapAppScheme.kakaomap.isAppInstalled(),
+                       let url = MapAppScheme.kakaomap.openURL() {
+                        openURL(url)
+                    }
                 } label: {
                     HStack(spacing: 16) {
                         Image(.colorKakaoMapLogo)

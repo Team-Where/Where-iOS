@@ -9,6 +9,7 @@ import SwiftUI
 import Swinject
 
 struct PlaceDetailView: View {
+    @Environment(\.openURL) private var openURL
     @ObservedObject private var viewModel: PlaceDetailViewModel
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing, backgroundColor: .accent, cornerRadius: 4)
@@ -170,7 +171,10 @@ struct PlaceDetailView: View {
     private var mapButtonsArea: some View {
         HStack(spacing: 8) {
             Button {
-                // TODO: 네이버 지도 열기
+                if MapAppScheme.navermap.isAppInstalled(),
+                   let url = MapAppScheme.navermap.openURL() {
+                    openURL(url)
+                }
             } label: {
                 HStack(spacing: 8) {
                     Spacer()
@@ -195,7 +199,10 @@ struct PlaceDetailView: View {
             }
             
             Button {
-                // TODO: 카카오맵 열기
+                if MapAppScheme.kakaomap.isAppInstalled(),
+                   let url = MapAppScheme.kakaomap.openURL() {
+                    openURL(url)
+                }
             } label: {
                 HStack(spacing: 8) {
                     Spacer()
