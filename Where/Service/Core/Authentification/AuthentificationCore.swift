@@ -11,14 +11,8 @@ import Combine
 import Moya
 
 protocol AuthentificationCoreProtocol: CoreProtocol {
-    /// 사용자 정보
-    var currentUser: AnyPublisher<User?, AuthentificationCoreError> { get }
-    
-    /// 소셜로그인 회원가입 시 프로필 설정 필요 여부
-    var isRegistrationNeeded: AnyPublisher<Bool, Never> { get }
-    
-    /// 로그인 필요 여부
-    var isLoginNeeded: Bool { get }
+    /// 인증 상태
+    var authentificationState: AnyPublisher<AuthentificationCore.AuthentificationState, AuthentificationCoreError> { get }
     
     /// Redirection URL Handling
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL)
@@ -42,7 +36,10 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func checkEmailDuplicate(email: String) -> AnyPublisher<Bool, AuthentificationCoreError>
     
     /// 인증 코드 요청
-    func requestAuthorizationCode(email: String)
+    func requestAuthorizationCode(email: String) -> AnyPublisher<Void, AuthentificationCoreError>
+    
+    /// 인증 코드 검증
+    func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<Bool, AuthentificationCoreError>
     
     /// 회원가입
     func register(email: String, password: String, nickname: String, profileImageData: Data?)
@@ -92,6 +89,9 @@ enum AuthentificationCoreError: Error {
     
     /// 토큰 만료 등으로 인한 자동 로그인 실패
     case autoLoginFailed
+    
+    /// 인코딩 실패
+    case encodingFailed
 }
 
 private extension AuthentificationCore {
@@ -104,10 +104,9 @@ final class AuthentificationCore {
     weak var mediator: Notifiable?
     
     private var _currentUser: User?
-    private var _pendingSocialUserID: UInt64?
+    private var _pendingSocialUser: User?
     
-    private let currentUserSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
-    private let isRegistrationNeededSubject = PassthroughSubject<Bool, Never>()
+    private let authentificationStateSubject = CurrentValueSubject<AuthentificationState, AuthentificationCoreError>(.loginNeeded)
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -124,33 +123,46 @@ final class AuthentificationCore {
     }
     
     private func subscribe() {
-        currentUserSubject
+        authentificationStateSubject
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print("AuthentificationCore Error: \(error)")
-                    #endif
-                    
-                    UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
+                case .failure:
+                    self?.resetAuthentifcationState()
                     self?.mediator?.notify(event: .userDidLogout)
                 }
-            } receiveValue: { [weak self] user in
-                if let user = user, user.nickname != nil {
-                    // 닉네임까지 모두 설정된 회원정보가 발행된 경우
-                    UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
-                    self?._pendingSocialUserID = nil
-                    self?.isRegistrationNeededSubject.send(false)
+            } receiveValue: { [weak self] state in
+                switch state {
+                case .loginCompleted(let user):
+                    self?._pendingSocialUser = nil
                     self?._currentUser = user
+                    UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
                     self?.mediator?.notify(event: .userDidLogin(user: user))
-                } else {
-                    // 회원정보가 nil 이거나(로그아웃), 닉네임이 설정되지 않은 임시적 소셜 회원정보가 발행된 경우
+                    
+                case .registrationNeeded(let user):
+                    self?._pendingSocialUser = user
+                    self?._currentUser = nil
                     UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
+                    
+                case .loginNeeded:
+                    self?.resetAuthentifcationState()
                     self?.mediator?.notify(event: .userDidLogout)
                 }
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: - Nested Types
+extension AuthentificationCore {
+    /// 인증 상태의 종류
+    enum AuthentificationState {
+        /// 필수 정보(닉네임)까지 설정된 회원정보 로드 성공
+        case loginCompleted(User)
+        /// 필수 정보(닉네임) 설정 필요
+        case registrationNeeded(User)
+        /// 로그인 필요
+        case loginNeeded
     }
 }
 
@@ -167,29 +179,30 @@ private extension AuthentificationCore {
                 switch completion {
                 case .finished: break
                 case .failure:
-                    self?._pendingSocialUserID = nil
+                    self?.authentificationStateSubject.send(.loginNeeded)
                 }
             } receiveValue: { [weak self] user in
-                self?.currentUserSubject.send(user)
-                self?._pendingSocialUserID = nil
-                self?.isRegistrationNeededSubject.send(false)
+                guard user.nickname != nil else {
+                    self?.authentificationStateSubject.send(.registrationNeeded(user))
+                    return
+                }
+                
+                self?.authentificationStateSubject.send(.loginCompleted(user))
             }
             .store(in: &cancellables)
+    }
+    
+    func resetAuthentifcationState() {
+        _currentUser = nil
+        _pendingSocialUser = nil
+        UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
     }
 }
 
 // MARK: AuthentificationCoreProtocol Conformation
 extension AuthentificationCore: AuthentificationCoreProtocol {
-    var currentUser: AnyPublisher<User?, AuthentificationCoreError> {
-        currentUserSubject.eraseToAnyPublisher()
-    }
-    
-    var isRegistrationNeeded: AnyPublisher<Bool, Never> {
-        isRegistrationNeededSubject.eraseToAnyPublisher()
-    }
-    
-    var isLoginNeeded: Bool {
-        _currentUser == nil
+    var authentificationState: AnyPublisher<AuthentificationState, AuthentificationCoreError> {
+        authentificationStateSubject.eraseToAnyPublisher()
     }
     
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
@@ -210,8 +223,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                   let accessToken = credential.accessToken,
                   let refreshToken = credential.refreshToken
             else {
-                currentUserSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
-                _pendingSocialUserID = nil
+                authentificationStateSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
                 return
             }
             
@@ -220,16 +232,13 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                     switch completion {
                     case .finished: break
                     case .failure(let error):
-                        self?.currentUserSubject.send(completion: .failure(.networkRequestFailed(error)))
-                        self?.isRegistrationNeededSubject.send(false)
-                        self?._pendingSocialUserID = nil
+                        self?.authentificationStateSubject.send(completion: .failure(.networkRequestFailed(error)))
                     }
                 } receiveValue: { [weak self] response in
-                    self?.isRegistrationNeededSubject.send(response.isRegistrationNeeded)
-                    
                     if response.isRegistrationNeeded {
                         // 프로필 설정 필요
-                        self?._pendingSocialUserID = response.userID
+                        let user = User(id: response.userID, imageURL: response.profileImageURL)
+                        self?.authentificationStateSubject.send(.registrationNeeded(user))
                     } else {
                         // 프로필 설정 불필요
                         self?.readUserInfo(userID: response.userID)
@@ -254,8 +263,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func logout() {
-        currentUserSubject.send(nil)
-        mediator?.notify(event: .userDidLogout)
+        // TODO: 서버로 로그아웃 요청
     }
     
     func checkEmailDuplicate(email: String) -> AnyPublisher<Bool, AuthentificationCoreError> {
@@ -284,7 +292,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 .store(in: &cancellables)
 
         } catch {
-            currentUserSubject.send(completion: .failure(.userInfoFetchFailed))
+            authentificationStateSubject.send(completion: .failure(.encodingFailed))
         }
     }
     
@@ -293,71 +301,49 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func createUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError> {
-        guard let user = currentUserSubject.value else {
-            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
+        guard case .registrationNeeded(let user) = authentificationStateSubject.value else {
+            return Fail(error: .notSupported).eraseToAnyPublisher()
         }
         
         return apiService.requestPublisher(Endpoint.uploadProfile(userID: user.id, image: profileImageData), UpdateProfileDTO.Response.self)
             .map {
-                return User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
+                User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
             }
             .handleEvents(receiveOutput: { [weak self] user in
-                self?.currentUserSubject.send(user)
+                self?.readUserInfo(userID: user.id)
             })
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .eraseToAnyPublisher()
     }
     
     func updateUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError> {
-        guard let user = currentUserSubject.value else {
-            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
+        guard case .loginCompleted(let user) = authentificationStateSubject.value,
+              user.imageURL != nil
+        else {
+            return Fail(error: .notSupported).eraseToAnyPublisher()
         }
         
         return apiService.requestPublisher(Endpoint.updateProfile(userID: user.id, image: profileImageData), UpdateProfileDTO.Response.self)
             .map {
-                return User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
+                User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
             }
             .handleEvents(receiveOutput: { [weak self] user in
-                self?.currentUserSubject.send(user)
+                self?.readUserInfo(userID: user.id)
             })
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .eraseToAnyPublisher()
     }
     
     func deleteUserProfile() -> AnyPublisher<Bool, AuthentificationCoreError> {
-        guard let user = currentUserSubject.value else {
-            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
+        guard case .loginCompleted(let user) = authentificationStateSubject.value,
+              user.imageURL != nil
+        else {
+            
         }
-        
-        return apiService.requestPublisher(Endpoint.deleteProfile(userID: user.id), EmptyDTO.Response.self)
-            .map { _ in true }
-            .handleEvents(receiveOutput: { [weak self] isSuccess in
-                if isSuccess {
-                    let user = User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: nil)
-                    self?.currentUserSubject.send(user)
-                }
-            })
-            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
-            .eraseToAnyPublisher()
     }
     
     func updateNickname(_ nickname: String) -> AnyPublisher<Bool, AuthentificationCoreError> {
-        guard let user = currentUserSubject.value else {
-            return Fail(error: AuthentificationCoreError.userInfoFetchFailed).eraseToAnyPublisher()
-        }
         
-        let dto = UpdateNicknameDTO.Request(nickname: nickname)
-        
-        return apiService.requestPublisher(Endpoint.updateNickname(userID: user.id, dto: dto), EmptyDTO.Response.self)
-            .map { _ in true }
-            .handleEvents(receiveOutput: { [weak self] isSuccess in
-                if isSuccess {
-                    let user = User(id: user.id, nickname: nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: user.imageURL)
-                    self?.currentUserSubject.send(user)
-                }
-            })
-            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
-            .eraseToAnyPublisher()
     }
 }
 
@@ -367,39 +353,10 @@ extension AuthentificationCore: AuthentificationMediationProtocol {
         guard let userIDString = UserDefaults.standard.string(forKey: AppStorageKey.currentUserID),
               let userID = UInt64(userIDString)
         else {
-            currentUserSubject.send(nil)
-            _pendingSocialUserID = nil
-            isRegistrationNeededSubject.send(false)
+            authentificationStateSubject.send(completion: .failure(.autoLoginFailed))
             return
         }
         
-        apiService
-            .requestPublisher(Endpoint.readUserInfo(userID: userID), ReadUserInfoDTO.Response.self)
-            .map { $0.toEntity() }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure:
-                    UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
-                    self?.currentUserSubject.send(nil)
-                    self?._pendingSocialUserID = nil
-                    self?.isRegistrationNeededSubject.send(false)
-                }
-            } receiveValue: { [weak self] user in
-                let isFullyRegistered = user.nickname != nil
-                
-                if isFullyRegistered {
-                    // 닉네임까지 모두 설정된 회원정보가 발행된 경우
-                    self?.currentUserSubject.send(user)
-                    self?._pendingSocialUserID = nil
-                    self?.isRegistrationNeededSubject.send(false)
-                } else {
-                    // 기가입자이나 프로필 설정이 완료되지 않은 경우
-                    self?._pendingSocialUserID = user.id
-                    self?.currentUserSubject.send(nil)
-                    self?.isRegistrationNeededSubject.send(true)
-                }
-            }
-            .store(in: &cancellables)
+        readUserInfo(userID: userID)
     }
 }
