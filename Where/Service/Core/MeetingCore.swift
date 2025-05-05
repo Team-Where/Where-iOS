@@ -17,7 +17,8 @@ protocol MeetingCoreProtocol: CoreProtocol {
     var relatedMeetingIDs: AnyPublisher<[UInt64: [UInt64]], Never> { get }
     /// 특정 모임의 초대 현황
     var invitationStatus: AnyPublisher<[UInt64: [MeetingInvitationState]], MeetingCoreError> { get }
-    
+    /// 초대 받은 모임 정보
+    var invitedMeeting: AnyPublisher<Meeting, MeetingCoreError> { get }
     /// 모임 일정 등록
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -70,6 +71,10 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - link: 초대 링크
     func acceptInvitationByLink(_ link: String)
+    /// 초대장 링크로 모임 정보 조회
+    /// - Parameters
+    ///     - invitedCode: 초대 고유 코드
+    func readMeetingDetailForInvitationLink(inviteCode: String)
 }
 
 protocol MeetingMediationProtocol {
@@ -108,6 +113,7 @@ final class MeetingCore {
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
     private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationState]], MeetingCoreError>([:])
+    private let invitedMeetingSubject = PassthroughSubject<Meeting, MeetingCoreError>()
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -149,6 +155,10 @@ extension MeetingCore: MeetingCoreProtocol {
     
     var invitationStatus: AnyPublisher<[UInt64 : [MeetingInvitationState]], MeetingCoreError> {
         invitationStatusSubject.eraseToAnyPublisher()
+    }
+    
+    var invitedMeeting: AnyPublisher<Meeting, MeetingCoreError> {
+        invitedMeetingSubject.eraseToAnyPublisher()
     }
     
     // MARK: - Schedule Related
@@ -479,6 +489,25 @@ extension MeetingCore: MeetingCoreProtocol {
                 meetingsSubject.send(meetings)
             }
             .store(in: &cancellables)
+    }
+    
+    func readMeetingDetailForInvitationLink(inviteCode: String) {
+        guard let _ = currentUser
+        else {
+            // TODO: 초대장 조회를 로그인 안한 상태에서도 가능한지 고민
+            return invitedMeetingSubject.send(completion: .failure(.userIDNotSet))
+        }
+        apiService.requestPublisher(Endpoint.readMeetingDetailForInvitationLink(inviteCode: inviteCode), MeetingDetailFromLinkDTO.Response.self)
+            .map {
+                $0.toEntity()
+            }
+            .sink { completion in
+                // TODO: Error handling
+            } receiveValue: { [weak self] in
+                self?.invitedMeetingSubject.send($0)
+            }
+            .store(in: &cancellables)
+
     }
 }
 
