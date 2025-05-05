@@ -7,7 +7,7 @@
 
 enum CoreEvent {
     // MARK: - Authentification Related
-    case userDidLogin(user: User, isAdmin: Bool)
+    case userDidLogin(user: User)
     case userDidLogout
     
     // MARK: - Community Related
