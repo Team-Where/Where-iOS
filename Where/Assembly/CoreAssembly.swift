@@ -192,15 +192,18 @@ struct CoreAssembly: Assembly {
                   let communityCore = resolver.resolve(CommunityMediationProtocol.self),
                   let meetingCore = resolver.resolve(MeetingMediationProtocol.self),
                   let placeCore = resolver.resolve(PlaceMediationProtocol.self),
-                  let supportCore = resolver.resolve(SupportMediationProtocol.self)
+                  let supportCore = resolver.resolve(SupportMediationProtocol.self),
+                  let notificationCore = resolver.resolve(NotificationMediationProtocol.self)
             else {
                 fatalError("Major cores are not registered")
             }
+            
             mediator.attachAuthentificationCore(authentificationCore)
             mediator.attachCommunityCore(communityCore)
             mediator.attachMeetingCore(meetingCore)
             mediator.attachPlaceCore(placeCore)
             mediator.attachSupportCore(supportCore)
+            mediator.attachNotificationCore(notificationCore)
         }
     }
     

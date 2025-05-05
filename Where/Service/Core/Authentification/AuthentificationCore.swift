@@ -137,19 +137,17 @@ final class AuthentificationCore {
                     self?.mediator?.notify(event: .userDidLogout)
                 }
             } receiveValue: { [weak self] user in
-                guard let self else { return }
-                
                 if let user = user, user.nickname != nil {
                     // 닉네임까지 모두 설정된 회원정보가 발행된 경우
                     UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
-                    _pendingSocialUserID = nil
-                    isRegistrationNeededSubject.send(false)
-                    _currentUser = user
-                    mediator?.notify(event: .userDidLogin(user: user))
+                    self?._pendingSocialUserID = nil
+                    self?.isRegistrationNeededSubject.send(false)
+                    self?._currentUser = user
+                    self?.mediator?.notify(event: .userDidLogin(user: user))
                 } else {
                     // 회원정보가 nil 이거나(로그아웃), 닉네임이 설정되지 않은 임시적 소셜 회원정보가 발행된 경우
                     UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
-                    mediator?.notify(event: .userDidLogout)
+                    self?.mediator?.notify(event: .userDidLogout)
                 }
             }
             .store(in: &cancellables)
