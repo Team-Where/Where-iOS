@@ -43,7 +43,7 @@ final class EditProfileViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] user in
                 guard let user else { return }
-                self?.nicknameFieldText = user.nickname
+                self?.nicknameFieldText = user.nickname ?? String()
             }
             .store(in: &cancellables)
         

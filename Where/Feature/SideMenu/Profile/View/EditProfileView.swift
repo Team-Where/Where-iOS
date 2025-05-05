@@ -29,7 +29,9 @@ struct EditProfileView: View {
                         .frame(width: 155, height: 155)
                         .clipShape(Circle())
                 } else {
-                    AsyncImage(url: viewMo)
+                    AsyncImage(url: viewModel.currentUser?.imageURL)
+                        .frame(width: 155, height: 155)
+                        .clipShape(Circle())
                 }
                 
                 Button {

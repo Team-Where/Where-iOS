@@ -67,7 +67,7 @@ extension HistoryReminderView {
         var body: some View {
             VStack {
                 ZStack(alignment: .top) {
-                    profile(nickname: user.nickname, imageURL: user.imageURL, isMine: true)
+                    profile(nickname: user.nickname ?? String(), imageURL: user.imageURL, isMine: true)
                         .padding(.trailing, 80)
                     
                     profile(nickname: friend.nickname, imageURL: friend.imageURL, isMine: false)

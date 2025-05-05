@@ -415,7 +415,8 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func inviteParticipant(id: UInt64, guest: FriendRelationship) {
-        guard let user = currentUser
+        guard let user = currentUser,
+              let nickname = user.nickname
         else {
             return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
         }
@@ -424,7 +425,7 @@ extension MeetingCore: MeetingCoreProtocol {
             .map { _ in
                 MeetingInvitationState(
                     hostID: user.id,
-                    hostName: user.nickname,
+                    hostName: nickname,
                     guestID: guest.id,
                     guestName: guest.nickname,
                     isInvited: false,
