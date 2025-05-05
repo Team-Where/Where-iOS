@@ -15,6 +15,7 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     @Published var invitedFriends = [MeetingInvitationState]()
     @Published var watingFriends = [MeetingInvitationState]()
     @Published private var _meeting: Meeting!
+    @Published var places = [Place]()
     
     var meeting: Meeting {
         _meeting
@@ -23,6 +24,7 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
+    private let placeCore: PlaceCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
     
@@ -30,6 +32,7 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
         self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
+        self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
         subscribe()
     }
     
@@ -65,7 +68,14 @@ final class MeetingInformationDetailViewModel: ObservableObject {
                 self?._meeting = $0
             }
             .store(in: &cancellables)
-
+        
+        placeCore.places
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] dict in
+                self?.places = dict.values.map { $0 }
+            }
+            .store(in: &cancellables)
     }
 }
 

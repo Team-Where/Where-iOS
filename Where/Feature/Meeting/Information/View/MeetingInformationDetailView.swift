@@ -134,11 +134,11 @@ struct MeetingInformationDetailView: View {
                 fullScreenCoverType = .editMeetingDate
             }
             
-            summaryCell(.sharedPlace(count: 6)) {
+            summaryCell(.sharedPlace(count: viewModel.places.count)) {
                 sheetType = .sharePlace
             }
             
-            summaryCell(.invitedFriends(count: 4)) {
+            summaryCell(.invitedFriends(count: viewModel.invitedFriends.count)) {
                 navigationType = .inviteFriends
             }
         }
@@ -264,8 +264,8 @@ extension MeetingInformationDetailView {
         typealias Content = (primaryIcon: Image, secondaryIcon: Image, buttonLabel: String)
         
         case date(date: Date?)
-        case sharedPlace(count: UInt)
-        case invitedFriends(count: UInt)
+        case sharedPlace(count: Int)
+        case invitedFriends(count: Int)
         
         var id: String { String(describing: self) }
         
@@ -376,7 +376,10 @@ extension MeetingInformationDetailView {
                 .padding(.top)
                 
                 Button {
-                    // TODO: 네이버지도 Universal Link 연결
+                    if MapAppScheme.navermap.isAppInstalled(),
+                       let url = MapAppScheme.navermap.openURL() {
+                        openURL(url)
+                    }
                 } label: {
                     HStack(spacing: 16) {
                         Image(.colorNaverMapLogo)
@@ -389,7 +392,10 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
                 
                 Button {
-                    // TODO: 카카오맵 Universal Link 연결
+                    if MapAppScheme.kakaomap.isAppInstalled(),
+                       let url = MapAppScheme.kakaomap.openURL() {
+                        openURL(url)
+                    }
                 } label: {
                     HStack(spacing: 16) {
                         Image(.colorKakaoMapLogo)
