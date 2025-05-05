@@ -17,15 +17,19 @@ final class RegistrationViewModel: ObservableObject {
     @Published var reInputPasswordFieldText: String = String()
     @Published var remainingTime: Int?
     @Published var floater: FloaterType?
-    @Published var isCompleted: Bool = false
     
-    private(set) var emailValidationState: EmailValidationState = .beforeValidate
-    private(set) var authorizationCodeValidationState: AuthorizationCodeValidationState = .beforeValidate
-    private(set) var passwordValidationState: PasswordValidationState = .beforeValidate
-    private(set) var passwordComparisonResult: PasswordComparisonResult = .unknown
-    private(set) var registrationStep: RegistrationTerminationStep = .email
+    @Published private(set) var emailValidationState: EmailValidationState = .beforeValidate
+    @Published private(set) var authorizationCodeValidationState: AuthorizationCodeValidationState = .beforeValidate
+    @Published private(set) var passwordValidationState: PasswordValidationState = .beforeValidate
+    @Published private(set) var passwordComparisonResult: PasswordComparisonResult = .unknown
+    @Published private(set) var registrationStep: RegistrationTerminationStep = .email
+    
+    private var registrationProcess: AnyPublisher<(email: String, password: String), Never> {
+        registrationProcessSubject.eraseToAnyPublisher()
+    }
     
     private let authCore: AuthentificationCoreProtocol
+    private let registrationProcessSubject = PassthroughSubject<(email: String, password: String), Never>()
     
     var navigationTitle: String {
         switch registrationStep {
@@ -38,16 +42,16 @@ final class RegistrationViewModel: ObservableObject {
     
     var isProceedButtonDisabled: Bool {
         switch registrationStep {
-        case .email: return emailValidationState != .valid || authorizationCodeValidationState != .valid
+        case .email: return authorizationCodeValidationState != .valid
         case .password: return passwordValidationState != .valid || passwordComparisonResult != .same
         }
     }
     
     var emailValidationNotice: String {
         switch emailValidationState {
-        case .beforeValidate, .valid: String()
         case .invalidOnLocal: "잘못된 이메일 주소입니다."
         case .emailDuplicated: "이미 가입된 이메일입니다."
+        default: String()
         }
     }
     
@@ -57,8 +61,8 @@ final class RegistrationViewModel: ObservableObject {
     
     var authorizationCodeValidationNotice: String {
         switch authorizationCodeValidationState {
-        case .beforeValidate, .invalid, .valid: String()
         case .timeout: "인증 시간이 만료되었습니다."
+        default: String()
         }
     }
     
@@ -78,7 +82,13 @@ final class RegistrationViewModel: ObservableObject {
     private func subscribe() {
         $emailFieldText
             .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] email in
+                self?.stopTimer()
+                self?.authorizationCodeFieldText = String()
+                self?.authorizationCodeValidationState = .beforeValidate
+                self?.registrationStep = .email
+                
                 guard email.isEmpty == false else {
                     self?.emailValidationState = .beforeValidate
                     return
@@ -89,41 +99,41 @@ final class RegistrationViewModel: ObservableObject {
                     return
                 }
                 
-                self?.emailValidationState = .beforeValidate
+                self?.checkEmailDuplicate(email)
             }
             .store(in: &cancellables)
         
         $passwordFieldText
             .removeDuplicates()
             .sink { [weak self] password in
+                guard let self else { return }
+                
                 guard password.isEmpty == false else {
-                    self?.passwordValidationState = .beforeValidate
+                    passwordValidationState = .beforeValidate
+                    passwordComparisonResult = .unknown
                     return
                 }
                 
-                guard self?.isPasswordValid(password) ?? false else {
-                    self?.passwordValidationState = .invalid
-                    return
+                if isPasswordValid(password) {
+                    passwordValidationState = .valid
+                } else {
+                    passwordValidationState = .invalid
                 }
-                
-                self?.passwordValidationState = .valid
             }
             .store(in: &cancellables)
         
         $reInputPasswordFieldText
             .removeDuplicates()
             .sink { [weak self] password in
-                guard password.isEmpty == false else {
-                    self?.passwordComparisonResult = .unknown
-                    return
-                }
+                guard let self else { return }
                 
-                guard self?.passwordFieldText == password else {
-                    self?.passwordComparisonResult = .different
-                    return
+                if passwordValidationState == .valid, reInputPasswordFieldText.isEmpty == false {
+                    passwordComparisonResult = passwordFieldText == reInputPasswordFieldText ? .same : .different
+                } else if reInputPasswordFieldText.isEmpty {
+                    passwordComparisonResult = .unknown
+                } else {
+                    passwordComparisonResult = .unknown
                 }
-                
-                self?.passwordComparisonResult = .same
             }
             .store(in: &cancellables)
     }
@@ -131,6 +141,7 @@ final class RegistrationViewModel: ObservableObject {
     private func startTimer(seconds: Int) {
         authorizationCodeValidationState = .beforeValidate
         remainingTime = seconds
+        timer?.cancel()
         
         timer = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
@@ -146,11 +157,17 @@ final class RegistrationViewModel: ObservableObject {
             if authorizationCodeValidationState != .valid {
                 authorizationCodeValidationState = .timeout
             }
-            remainingTime = .zero
+            remainingTime = nil
             return
         }
         
         remainingTime = time - 1
+    }
+    
+    private func stopTimer() {
+        timer?.cancel()
+        timer = nil
+        remainingTime = nil
     }
     
     private func isEmailValid(_ email: String) -> Bool {
@@ -171,6 +188,34 @@ final class RegistrationViewModel: ObservableObject {
         
         return hasUppercase && hasLowercase && hasDigits && hasSpecialCharacters
     }
+    
+    private func verifyAuthorizationCode(_ email: String, code: String) {
+        authorizationCodeValidationState = .checkingAuthorizationCode
+        
+        authCore.verifyAuthorizationCode(email: email, code: code)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure:
+                    self?.floater = .errorOccured(message: "인증코드 확인 작업이 중단되었어요.")
+                    self?.authorizationCodeValidationState = .invalid
+                }
+            } receiveValue: { [weak self] isVerified in
+                if isVerified {
+                    self?.authorizationCodeValidationState = .valid
+                    self?.stopTimer()
+                    self?.registrationStep = .password
+                    self?.passwordValidationState = .beforeValidate
+                    self?.passwordComparisonResult = .unknown
+                    self?.passwordFieldText = String()
+                    self?.reInputPasswordFieldText = String()
+                } else {
+                    self?.floater = .inValidAuthorizationCode
+                    self?.authorizationCodeValidationState = .invalid
+                }
+            }
+            .store(in: &cancellables)
+    }
 }
 
 // MARK: Nested Types
@@ -178,11 +223,13 @@ extension RegistrationViewModel {
     enum FloaterType: FloaterContent {
         case authorizationCodeSended
         case inValidAuthorizationCode
+        case errorOccured(message: String)
         
         var title: String {
             switch self {
             case .authorizationCodeSended: "인증코드가 전송되었습니다."
             case .inValidAuthorizationCode: "인증코드가 잘못되었습니다."
+            case .errorOccured(let message): message
             }
         }
     }
@@ -194,33 +241,59 @@ extension RegistrationViewModel {
 
 // MARK: Interfaces
 extension RegistrationViewModel {
-    func checkEmailDuplicate() {
-        authCore.checkEmailDuplicate(email: emailFieldText)
+    func checkEmailDuplicate(_ email: String) {
+        emailValidationState = .checkingDuplication
+        
+        authCore.checkEmailDuplicate(email: email)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { isDuplecated in
-                guard isDuplecated else {
-                    
-                    return
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure:
+                    self?.floater = .errorOccured(message: "이메일 중복 확인이 이루어지지 않았어요.")
+                    self?.emailValidationState = .beforeValidate
                 }
-                
+            } receiveValue: { [weak self] isDuplecated in
+                self?.emailValidationState = isDuplecated ? .emailDuplicated : .valid
             }
             .store(in: &cancellables)
     }
     
     func requestAuthorizationCode() {
+        guard emailValidationState == .valid else { return }
+        
         authCore.requestAuthorizationCode(email: emailFieldText)
-        floater = .authorizationCodeSended
-        startTimer(seconds: 20)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.floater = .authorizationCodeSended
+                    self?.startTimer(seconds: 3 * 60)
+                    self?.authorizationCodeValidationState = .beforeValidate
+                    self?.authorizationCodeFieldText = String()
+                case .failure:
+                    self?.floater = .errorOccured(message: "잠시 후 다시 시도해주세요.")
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
     
     func proceed() {
+        // TODO: '다음'버튼을 눌러 인증코드 검증 요청 보내는 로직 추가하기
         guard isProceedButtonDisabled == false else { return }
         
         switch registrationStep {
-        case .email: registrationStep = .password
-        case .password: isCompleted = true
+        case .email:
+            guard authorizationCodeValidationState == .valid else { return }
+            
+            registrationStep = .password
+            passwordValidationState = .beforeValidate
+            passwordComparisonResult = .unknown
+            passwordFieldText = String()
+            reInputPasswordFieldText = String()
+            
+        case .password:
+            guard passwordValidationState == .valid, passwordComparisonResult == .same else { return }
+            registrationProcessSubject.send((emailFieldText, passwordFieldText))
         }
     }
     

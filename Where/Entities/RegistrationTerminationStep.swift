@@ -26,6 +26,9 @@ enum EmailValidationState {
     /// - Note: 이메일 중복 검사에 통과하지 못했을 경우를 의미합니다.
     case emailDuplicated
     
+    /// 이미 사용 중인 이메일인지 확인 중
+    case checkingDuplication
+    
     /// 인증코드 전송 전 이메일 유효성 검사 성공
     ///
     /// 이메일 유효성 검사에 성공하면 서버에 인증코드를 요청할 수 있습니다.
@@ -38,6 +41,9 @@ enum AuthorizationCodeValidationState {
     ///
     /// 인증코드를 최초 제출하기 전의 상태입니다.
     case beforeValidate
+    
+    /// 인증코드 확인 중
+    case checkingAuthorizationCode
     
     /// 인증 시간 만료
     ///
@@ -68,7 +74,7 @@ enum PasswordValidationState {
 
 /// 비밀번호 재입력 과정의 상태
 enum PasswordComparisonResult {
-    /// 비밀번호를 재입력하지 않았을 경우의 상태입니다.
+    /// 비밀번호를 재입력하지 않았거나 검증 전 상태입니다.
     case unknown
     /// 입력한 두 비밀번호가 같은 상태입니다.
     case same
