@@ -9,10 +9,10 @@ import SwiftUI
 import Swinject
 
 struct AcceptInvitationView: View {
-    
+    @ObservedObject private var viewModel: AcceptInvitationViewModel
     
     init(resolver: Resolver) {
-        
+        viewModel = resolver.resolve(AcceptInvitationViewModel.self)!
     }
     
     var body: some View {
@@ -76,12 +76,24 @@ struct AcceptInvitationView: View {
     private var invitationInfoArea: some View {
         VStack(spacing: 16) {
             // TODO: 실제 데이터 주입
-            AsyncImage(url: nil)
-                .frame(width: 120, height: 120)
-                .clipShape(.buttonBorder)
+            AsyncImage(url: viewModel.meeting.imageURL) { image in
+                image
+                    .frame(width: 120, height: 120)
+                    .clipShape(.buttonBorder)
+            } placeholder: {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.where(hex: 0xD9D9D9))
+                    .frame(width: 120, height: 120)
+                    .overlay {
+                        Image(.logoShortWhite)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 110, height: 89)
+                    }
+            }
             
             VStack(spacing: 12) {
-                Text("2024 연말파티")
+                Text(viewModel.meeting.title)
                     .whereFont(.title24semibold)
                     .foregroundStyle(.where(.gray900))
                 
