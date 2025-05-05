@@ -107,7 +107,6 @@ struct MeetingInformationDetailView: View {
     }
     
     private var header: some View {
-        // TODO: 하드코딩 데이터 실제 값으로 채우기
         HStack {
             AsyncImage(url: viewModel.meeting.imageURL)
                 .frame(width: 64, height: 64)
@@ -129,6 +128,7 @@ struct MeetingInformationDetailView: View {
     }
     
     private var summaryArea: some View {
+        // TODO: 하드코딩 데이터 실제 값으로 채우기
         VStack(spacing: 8) {
             summaryCell(.date(date: viewModel.selectedDate)) {
                 fullScreenCoverType = .editMeetingDate
