@@ -88,7 +88,7 @@ struct AcceptInvitationView: View {
                         Image(.logoShortWhite)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 110, height: 89)
+                            .frame(width: 69.38, height: 56.54)
                     }
             }
             
