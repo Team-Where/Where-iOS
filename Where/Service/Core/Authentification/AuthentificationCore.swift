@@ -104,6 +104,7 @@ final class AuthentificationCore {
     weak var mediator: Notifiable?
     
     private var _currentUser: User?
+    private var _pendingSocialUserID: UInt64?
     
     private let currentUserSubject = CurrentValueSubject<User?, AuthentificationCoreError>(nil)
     private let isRegistrationNeededSubject = PassthroughSubject<Bool, Never>()
@@ -124,27 +125,56 @@ final class AuthentificationCore {
     
     private func subscribe() {
         currentUserSubject
-            .sink { completion in
+            .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
                     #if DEBUG
                     print("AuthentificationCore Error: \(error)")
                     #endif
+                    
+                    UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
+                    self?.mediator?.notify(event: .userDidLogout)
                 }
             } receiveValue: { [weak self] user in
-                guard let user else {
-                    // 로그아웃 로직 작성
-                    // 1. 사용자가 로그아웃하여 사용자 정보가 없어졌음을 중재자를 통해 알림
-                    // 2. 토큰 및 내부 데이터풀 정리
-//                    if let currentUserID = self?.currentUserId {
-//                        self?.mediator?.notify(event: .userDidLogout(id: currentUserID))
-//                    }
-                    return
+                guard let self else { return }
+                
+                if let user = user, user.nickname != nil {
+                    // 닉네임까지 모두 설정된 회원정보가 발행된 경우
+                    UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
+                    _pendingSocialUserID = nil
+                    isRegistrationNeededSubject.send(false)
+                    _currentUser = user
+                    mediator?.notify(event: .userDidLogin(user: user))
+                } else {
+                    // 회원정보가 nil 이거나(로그아웃), 닉네임이 설정되지 않은 임시적 소셜 회원정보가 발행된 경우
+                    UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
+                    mediator?.notify(event: .userDidLogout)
                 }
-                // TODO: 관리자 계정인지 아닌지 파악 여부 후 로직 구현
-//                self?.mediator?.notify(event: .userDidLogin(id: user.id, isAdmin: ))
-                UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
+            }
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: - Private Methods
+private extension AuthentificationCore {
+    /// 사용자 회원정보 확인
+    ///
+    /// 소셜 로그인 후 필수정보(닉네임) 업데이트 성공 시 호출하여 최종 회원정보를 가져와 로그인 상태로 만듭니다.
+    func readUserInfo(userID: UInt64) {
+        apiService
+            .requestPublisher(Endpoint.readUserInfo(userID: userID), ReadUserInfoDTO.Response.self)
+            .map { $0.toEntity() }
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure:
+                    self?._pendingSocialUserID = nil
+                }
+            } receiveValue: { [weak self] user in
+                self?.currentUserSubject.send(user)
+                self?._pendingSocialUserID = nil
+                self?.isRegistrationNeededSubject.send(false)
             }
             .store(in: &cancellables)
     }
@@ -183,16 +213,29 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                   let refreshToken = credential.refreshToken
             else {
                 currentUserSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
+                _pendingSocialUserID = nil
                 return
             }
             
             apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToken, refreshToken: refreshToken), LoginWithKakaoDTO.Response.self)
-                .sink { completion in
-                    // TODO: 에러 핸들링
+                .sink { [weak self] completion in
+                    switch completion {
+                    case .finished: break
+                    case .failure(let error):
+                        self?.currentUserSubject.send(completion: .failure(.networkRequestFailed(error)))
+                        self?.isRegistrationNeededSubject.send(false)
+                        self?._pendingSocialUserID = nil
+                    }
                 } receiveValue: { [weak self] response in
                     self?.isRegistrationNeededSubject.send(response.isRegistrationNeeded)
-                    let user = User(id: response.userID, imageURL: response.profileImageURL)
-                    self?.currentUserSubject.send(user)
+                    
+                    if response.isRegistrationNeeded {
+                        // 프로필 설정 필요
+                        self?._pendingSocialUserID = response.userID
+                    } else {
+                        // 프로필 설정 불필요
+                        self?.readUserInfo(userID: response.userID)
+                    }
                 }
                 .store(in: &cancellables)
         }
@@ -325,7 +368,12 @@ extension AuthentificationCore: AuthentificationMediationProtocol {
     func loadCurrentUser() {
         guard let userIDString = UserDefaults.standard.string(forKey: AppStorageKey.currentUserID),
               let userID = UInt64(userIDString)
-        else { return }
+        else {
+            currentUserSubject.send(nil)
+            _pendingSocialUserID = nil
+            isRegistrationNeededSubject.send(false)
+            return
+        }
         
         apiService
             .requestPublisher(Endpoint.readUserInfo(userID: userID), ReadUserInfoDTO.Response.self)
@@ -333,10 +381,26 @@ extension AuthentificationCore: AuthentificationMediationProtocol {
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
-                case .failure: self?.currentUserSubject.send(nil)
+                case .failure:
+                    UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
+                    self?.currentUserSubject.send(nil)
+                    self?._pendingSocialUserID = nil
+                    self?.isRegistrationNeededSubject.send(false)
                 }
             } receiveValue: { [weak self] user in
-                self?.currentUserSubject.send(user)
+                let isFullyRegistered = user.nickname != nil
+                
+                if isFullyRegistered {
+                    // 닉네임까지 모두 설정된 회원정보가 발행된 경우
+                    self?.currentUserSubject.send(user)
+                    self?._pendingSocialUserID = nil
+                    self?.isRegistrationNeededSubject.send(false)
+                } else {
+                    // 기가입자이나 프로필 설정이 완료되지 않은 경우
+                    self?._pendingSocialUserID = user.id
+                    self?.currentUserSubject.send(nil)
+                    self?.isRegistrationNeededSubject.send(true)
+                }
             }
             .store(in: &cancellables)
     }
