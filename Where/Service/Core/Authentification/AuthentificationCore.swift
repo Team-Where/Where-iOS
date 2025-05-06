@@ -14,6 +14,12 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 인증 상태
     var authentificationState: AnyPublisher<AuthentificationCore.AuthentificationState, AuthentificationCoreError> { get }
     
+    /// 사용자 정보
+    var currentUser: AnyPublisher<User?, AuthentificationCoreError> { get }
+    
+    /// 로그인 필요 여부
+    var isLoginNeeded: Bool { get }
+    
     /// Redirection URL Handling
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL)
     
@@ -42,7 +48,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<Bool, AuthentificationCoreError>
     
     /// 회원가입
-    func register(email: String, password: String, nickname: String, profileImageData: Data?)
+    func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError>
     
     /// 회원탈퇴
     func unregister()
@@ -205,6 +211,17 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         authentificationStateSubject.eraseToAnyPublisher()
     }
     
+    var currentUser: AnyPublisher<User?, AuthentificationCoreError> {
+        authentificationStateSubject
+            .map {
+                guard case .loginCompleted(let user) = $0 else { return nil }
+                return user
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    var isLoginNeeded: Bool { _currentUser == nil }
+    
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
         strategyContext.handleOpenURL(url)
     }
@@ -275,21 +292,28 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func requestAuthorizationCode(email: String) {
+    func requestAuthorizationCode(email: String) -> AnyPublisher<Void, AuthentificationCoreError> {
         // TODO: 인증 코드 발급 요청 API 연결 필요
+        Just(()).setFailureType(to: AuthentificationCoreError.self).eraseToAnyPublisher()
     }
     
-    func register(email: String, password: String, nickname: String, profileImageData: Data?) {
+    func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<Bool, AuthentificationCoreError> {
+        // TODO: 인증 코드 확인 요청 API 연결 필요
+        Just(true).setFailureType(to: AuthentificationCoreError.self).eraseToAnyPublisher()
+    }
+    
+    func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError> {
         do {
             let dto = RegisterDTO.Request(email: email, password: password, nickname: nickname)
             let encodedUserData = try encoder.encode(dto)
-            apiService.requestPublisher(Endpoint.register(encodedUserData: encodedUserData, profileImageData: profileImageData), RegisterDTO.Response.self)
-                .sink { completion in
-                    // TODO: 에러 핸들링
-                } receiveValue: { [weak self] _ in
-                    // TODO: 구현 방향 결정되면 수정하기
+            
+            return apiService.requestPublisher(Endpoint.register(encodedUserData: encodedUserData, profileImageData: profileImageData), RegisterDTO.Response.self)
+                .map { _ in
+                    // TODO: 응답 스펙 확인 필요
+                    false
                 }
-                .store(in: &cancellables)
+                .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+                .eraseToAnyPublisher()
 
         } catch {
             authentificationStateSubject.send(completion: .failure(.encodingFailed))
