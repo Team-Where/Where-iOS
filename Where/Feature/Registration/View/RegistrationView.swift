@@ -27,43 +27,99 @@ struct RegistrationView: View {
     }
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            emailCell()
-            
-            if viewModel.registrationStep == .email {
-                authorizationCodeCell()
-            } else {
+        content()
+            .floater($viewModel.floater) { type in
+                switch type {
+                case .authorizationCodeSended:
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.accent)
+                case .inValidAuthorizationCode:
+                    Image(systemName: "exclamationmark.circle")
+                        .foregroundStyle(.red)
+                case .errorOccured(message: let message):
+                    Text(message)
+                }
+            }
+            .whereForm(viewModel.navigationTitle) {
+                Button {
+                    viewModel.proceed()
+                } label: {
+                    Text(viewModel.proceedButtonLabel)
+                        .whereFont(.body16semibold)
+                        .frame(width: 350, height: 48)
+                }
+                .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
+                .ignoresSafeArea(.keyboard)
+            }
+            .popup($viewModel.isPopupPresented) {
+                ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { data in
+                    viewModel.profileImageData = data
+                }
+            }
+            .onChange(of: viewModel.isCompleted) { _, isCompleted in
+                guard isCompleted else { return }
+                isLoginNeeded = false
+            }
+    }
+    
+    @ViewBuilder private func content() -> some View {
+        switch viewModel.registrationStep {
+        case .email:
+            ScrollView(.vertical) {
+                emailCell
+                
+                authorizationCodeCell
+                
+                Spacer()
+            }
+        case .password:
+            ScrollView(.vertical) {
+                emailCell
+                
                 passwordCell
+                
+                Spacer()
             }
-        }
-        .scrollDismissesKeyboard(.immediately)
-        .floater($viewModel.floater) { type in
-            switch type {
-            case .authorizationCodeSended:
-                Image(systemName: "checkmark")
-                    .foregroundStyle(.accent)
-            case .inValidAuthorizationCode:
-                Image(systemName: "exclamationmark.circle")
-                    .foregroundStyle(.red)
+        case .profile:
+            ScrollView(.vertical) {
+                ZStack(alignment: .bottomTrailing) {
+                    if let data = viewModel.profileImageData,
+                       let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 155, height: 155)
+                            .clipShape(Circle())
+                    }
+                    
+                    Button {
+                        withAnimation {
+                            viewModel.isPopupPresented = true
+                        }
+                    } label: {
+                        Image("CameraButton")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                .padding(.top, 58)
+                
+                nicknameCell()
             }
-        }
-        .whereForm(viewModel.navigationTitle) {
-            Button {
-                viewModel.proceed()
-            } label: {
-                Text("다음")
-                    .whereFont(.body16semibold)
-                    .frame(width: 350, height: 48)
+        case .completed:
+            VStack {
+                Image("SignUpCharacter")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 274.85, height: 264)
+                    .padding(.top, 40)
             }
-            .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
-            .ignoresSafeArea(.keyboard)
-        }
-        .navigationDestination(isPresented: $viewModel.isCompleted) {
-            ProfileCreationView($isLoginNeeded, resolver: resolver)
         }
     }
     
-    @ViewBuilder private func emailCell() -> some View {
+    private var emailCell: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("이메일")
                 .whereFont(.body14regular)
@@ -73,7 +129,7 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
                     text: $viewModel.emailFieldText,
-                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .emailTextField))
+                    lineColor: textFieldLineColor(focus: .emailTextField)
                 )
                 .frame(width: 350)
                 .focused($textFieldFocus, equals: .emailTextField)
@@ -93,7 +149,7 @@ struct RegistrationView: View {
     
     @ViewBuilder private func authorizationCodeRequestButton(_ state: EmailValidationState) -> some View {
         switch state {
-        case .beforeValidate, .invalidOnLocal, .emailDuplicated:
+        case .beforeValidate, .invalidOnLocal, .emailDuplicated, .checkingDuplication:
             Button {
                 viewModel.requestAuthorizationCode()
             } label: {
@@ -131,22 +187,20 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "코드 6자리 입력해주세요",
                     text: $viewModel.authorizationCodeFieldText,
-                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .authorizationCodeTextField))
+                    lineColor: textFieldLineColor(focus: .authorizationCodeTextField)
                 )
                 .frame(width: 350)
                 .focused($textFieldFocus, equals: .authorizationCodeTextField)
-                .keyboardType(.emailAddress)
+                .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
                 
                 timerCell(viewModel.remainingTime)
                     .padding(.trailing)
             }
             
-            if viewModel.authorizationCodeValidationState == .timeout {
-                Text("인증 시간이 만료되었습니다.")
-                    .whereFont(.body14regular)
-                    .foregroundStyle(.red)
-            }
+            Text(viewModel.authorizationCodeValidationNotice)
+                .whereFont(.body14regular)
+                .foregroundStyle(.red)
         }
     }
     
@@ -170,7 +224,7 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $viewModel.passwordFieldText,
-                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .passwordTextField))
+                    lineColor: textFieldLineColor(focus: .passwordTextField)
                 )
                 .secured()
                 .frame(width: 350)
@@ -196,7 +250,7 @@ struct RegistrationView: View {
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
                     text: $viewModel.reInputPasswordFieldText,
-                    lineColor: .where(hex: viewModel.textFieldLineColorHex(currentFocused: textFieldFocus, focus: .reInputPasswordTextField))
+                    lineColor: textFieldLineColor(focus: .reInputPasswordTextField)
                 )
                 .secured()
                 .frame(width: 350)
@@ -214,8 +268,79 @@ struct RegistrationView: View {
             }
         }
     }
+    
+    @ViewBuilder private func nicknameCell() -> some View {
+        VStack(alignment: .leading) {
+            Text("닉네임")
+                .whereFont(.body14regular)
+                .foregroundStyle(.where(.gray700))
+                .padding(.top, 38)
+            
+            RoundedTextField(
+                "닉네임을 입력해주세요",
+                text: $viewModel.nicknameFieldText,
+                lineColor: textFieldLineColor(focus: .nicknameTextField)
+            )
+            .foregroundStyle(Color(hex: 0x6B7280))
+            .background(
+                ZStack(alignment: .trailing) {
+                    HStack {
+                        Spacer()
+                        
+                        if viewModel.nicknameValidationState == .valid {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.green)
+                                .padding(.trailing, 30)
+                        }
+                    }
+                }
+            )
+            
+            Text(viewModel.nicknameValidationNotice)
+                .whereFont(.body14regular)
+                .foregroundColor(nicknameValidationNoticeColor())
+                .padding(.top, 8)
+        }
+    }
+    
+    private func textFieldLineColor(focus: KeyboardFocusState) -> Color {
+        var isInvalid: Bool
+        
+        switch focus {
+        case .emailTextField:
+            isInvalid = viewModel.emailValidationState == .invalidOnLocal || viewModel.emailValidationState == .emailDuplicated
+        case .authorizationCodeTextField:
+            isInvalid = viewModel.authorizationCodeValidationState == .timeout
+        case .passwordTextField:
+            isInvalid = viewModel.passwordValidationState == .invalid
+        case .reInputPasswordTextField:
+            isInvalid = viewModel.passwordComparisonResult == .different
+        case .nicknameTextField:
+            break
+        }
+        
+        guard isInvalid == false else { return .red }
+        return textFieldFocus == focus ? .accent : .where(hex: 0xE5E7EB)
+    }
+    
+    private func nicknameValidationNoticeColor() -> Color {
+        switch viewModel.nicknameValidationState {
+        case .valid: .green
+        case .beforeValidate: .where(.gray700)
+        case .invalid, .duplicated: .red
+        }
+    }
+}
+
+// MARK: Nested Types
+extension RegistrationView {
+    enum KeyboardFocusState: Hashable {
+        case emailTextField, authorizationCodeTextField, passwordTextField, reInputPasswordTextField, nicknameTextField
+    }
 }
 
 #Preview {
-    RegistrationView(.constant(true), resolver: PreviewHelper.shared.resolver)
+    NavigationStack {
+        RegistrationView(.constant(true), resolver: PreviewHelper.shared.resolver)
+    }
 }

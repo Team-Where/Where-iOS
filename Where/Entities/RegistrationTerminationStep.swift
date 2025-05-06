@@ -100,6 +100,10 @@ enum RegistrationTerminationStep {
     case email
     /// 비밀번호 검증 및 입력 단계
     case password
+    /// 프로필 설정 단계
+    case profile
+    /// 회원가입 완료 단계
+    case completed
 }
 
 /// 프로필 설정 과정 단계
@@ -108,4 +112,10 @@ enum ProfileCreationStep {
     case profile
     /// 회원가입 완료 단계
     case completed
+}
+
+/// 로그인 및 회원가입 플로우
+enum RegistrationFlow {
+    case traditionalRegistration(email: String, password: String)
+    case socialRegistration(user: User)
 }
