@@ -37,8 +37,6 @@ protocol PlaceCoreProtocol: CoreProtocol {
     func updateComment(comment: Comment, description: String)
     /// 장소에 대한 코멘트 삭제
     func deleteComment(comment: Comment)
-    /// 사용자가 작성한 코멘트 여부 확인
-    func isMyComment(comment: Comment) -> Bool
 }
 
 protocol PlaceMediationProtocol {
@@ -289,12 +287,6 @@ extension PlaceCore: PlaceCoreProtocol {
                 self?.commentsSubject.send(comments)
             }
             .store(in: &cancellables)
-    }
-    
-    func isMyComment(comment: Comment) -> Bool {
-        // TODO: 로직 보완하기
-        guard let userID = currentUserID else { return false }
-        return true
     }
 }
 

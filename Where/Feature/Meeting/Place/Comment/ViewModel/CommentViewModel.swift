@@ -80,8 +80,4 @@ extension CommentViewModel {
         guard let currentComment else { return }
         placeCore.updateComment(comment: currentComment, description: commentTextField)
     }
-    
-    func isMyComment(_ comment: Comment) -> Bool {
-        placeCore.isMyComment(comment: comment)
-    }
 }
