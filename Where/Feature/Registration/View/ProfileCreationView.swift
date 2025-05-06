@@ -59,7 +59,7 @@ struct ProfileCreationView: View {
                             .frame(width: 155, height: 155)
                             .clipShape(Circle())
                     } else {
-                        AsyncImage(url: viewModel.currentUser?.imageURL) { image in
+                        AsyncImage(url: viewModel.socialUser?.imageURL) { image in
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
