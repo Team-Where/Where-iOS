@@ -48,9 +48,21 @@ final class MyMeetingViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        authCore.isRegistrationNeeded
+        authCore.authentificationState
+            .map {
+                guard case .registrationNeeded = $0 else { return false }
+                return true
+            }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isNeeded in
+            .sink { completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    #if DEBUG
+                    print(error)
+                    #endif
+                }
+            } receiveValue: { [weak self] isNeeded in
                 self?.isRegistrationNeeded = isNeeded
             }
             .store(in: &cancellables)

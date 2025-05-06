@@ -27,7 +27,7 @@ final class KakaoLoginStrategy {
     }
     
     private func handleKakaoLoginResult(token: OAuthToken?, error: Error?) throws(AuthentificationCoreError) -> UserCredential {
-        if let error = error {
+        if let _ = error {
             throw .socialAuthProviderAuthorizationFailed
         }
         

@@ -68,7 +68,7 @@ struct RegistrationView: View {
             ScrollView(.vertical) {
                 emailCell
                 
-                authorizationCodeCell
+                authorizationCodeCell()
                 
                 Spacer()
             }
@@ -205,13 +205,11 @@ struct RegistrationView: View {
     }
     
     @ViewBuilder private func timerCell(_ seconds: Int?) -> some View {
-        if let time = seconds {
-            let remainingTime = String(format: "%01d:%02d", time / 60, time % 60)
-            
-            Text(remainingTime)
-                .whereFont(.body16regular)
-                .foregroundStyle(seconds == .zero ? .red : .accent)
-        }
+        let remainingTime = String(format: "%01d:%02d", (seconds ?? .zero) / 60, (seconds ?? .zero) % 60)
+        
+        Text(remainingTime)
+            .whereFont(.body16regular)
+            .foregroundStyle(seconds == .zero ? .red : .accent)
     }
     
     private var passwordCell: some View {
@@ -316,7 +314,7 @@ struct RegistrationView: View {
         case .reInputPasswordTextField:
             isInvalid = viewModel.passwordComparisonResult == .different
         case .nicknameTextField:
-            break
+            isInvalid = viewModel.nicknameValidationState == .invalid || viewModel.nicknameValidationState == .duplicated
         }
         
         guard isInvalid == false else { return .red }

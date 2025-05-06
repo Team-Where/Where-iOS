@@ -121,10 +121,8 @@ final class ProfileCreationViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 // TODO: 에러 핸들링
-            } receiveValue: { [weak self] (_, isDone) in
-                if isDone {
-                    self?.profileCreationStep = .completed
-                }
+            } receiveValue: { [weak self] _ in
+                self?.profileCreationStep = .completed
             }
             .store(in: &cancellables)
     }
