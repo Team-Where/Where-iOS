@@ -14,8 +14,8 @@ struct Comment: Hashable {
     let placeId: UInt64
     /// 코멘트 내용
     let description: String
-    /// 코멘트 작성자의 식별자
-//    let writerId: UInt64
+    /// 로그인한 사용자가 작성한 코멘트인지
+    let isMyComment: Bool
     /// 코멘트 생성 시각
     let createdAt: Date
     
@@ -23,6 +23,6 @@ struct Comment: Hashable {
         hasher.combine(id)
         hasher.combine(placeId)
         hasher.combine(description)
-//        hasher.combine(writerId)
+        hasher.combine(isMyComment)
     }
 }

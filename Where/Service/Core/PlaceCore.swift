@@ -37,8 +37,6 @@ protocol PlaceCoreProtocol: CoreProtocol {
     func updateComment(comment: Comment, description: String)
     /// 장소에 대한 코멘트 삭제
     func deleteComment(comment: Comment)
-    /// 사용자가 작성한 코멘트 여부 확인
-    func isMyComment(comment: Comment) -> Bool
 }
 
 protocol PlaceMediationProtocol {
@@ -227,18 +225,13 @@ extension PlaceCore: PlaceCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.createComment(dto: dto), CreateCommentDTO.Response.self)
+            .map {
+                $0.toEntity(placeID)
+            }
             .sink { completion in
                 // TODO: 에러 핸들링
-            } receiveValue: { [weak self] response in
+            } receiveValue: { [weak self] comment in
                 guard var comments = self?.commentsSubject.value else { return }
-                
-                let comment = Comment(
-                    id: response.commentID,
-                    placeId: placeID,
-                    description: response.description,
-//                    writerId: userID
-                    createdAt: .now
-                )
                 
                 comments[comment.id] = comment
                 self?.commentsSubject.send(comments)
@@ -267,7 +260,7 @@ extension PlaceCore: PlaceCoreProtocol {
                     id: oldComment.id,
                     placeId: oldComment.placeId,
                     description: response.description,
-//                    writerId: oldComment.writerId
+                    isMyComment: true,
                     createdAt: oldComment.createdAt
                 )
                 comments[response.commentID] = newComment
@@ -294,12 +287,6 @@ extension PlaceCore: PlaceCoreProtocol {
                 self?.commentsSubject.send(comments)
             }
             .store(in: &cancellables)
-    }
-    
-    func isMyComment(comment: Comment) -> Bool {
-        // TODO: 로직 보완하기
-        guard let userID = currentUserID else { return false }
-        return true
     }
 }
 

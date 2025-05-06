@@ -27,5 +27,15 @@ enum CreateCommentDTO {
             case description
             case commentID = "commentId"
         }
+        
+        func toEntity(_ placeID: UInt64) -> Comment {
+            return .init(
+                id: commentID,
+                placeId: placeID,
+                description: description,
+                isMyComment: true,
+                createdAt: .now
+            )
+        }
     }
 }

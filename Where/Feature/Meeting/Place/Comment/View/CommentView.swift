@@ -95,8 +95,6 @@ struct CommentView: View {
     }
     
     @ViewBuilder private func commentCell(_ comment: Comment) -> some View {
-        let isMine = viewModel.isMyComment(comment)
-        
         Text(comment.description)
             .whereFont(.body14regular)
             .foregroundStyle(.where(.gray800))
@@ -105,10 +103,10 @@ struct CommentView: View {
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(.white)
-                    .strokeBorder(isMine ? .accent : .where(.gray800))
+                    .strokeBorder(comment.isMyComment ? .accent : .where(.gray800))
             )
             .onTapGesture {
-                guard isMine else { return }
+                guard comment.isMyComment else { return }
                 viewModel.presentReadingSheet(comment: comment)
             }
     }

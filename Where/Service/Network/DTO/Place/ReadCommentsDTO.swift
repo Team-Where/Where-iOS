@@ -17,11 +17,13 @@ extension ReadCommentsDTO {
         let id: UInt64
         let placeID: UInt64
         let description: String
-        let createdAt: String
+        let createdAt: String?
+        let isMyComment: Bool
         
         enum CodingKeys: String, CodingKey {
             case id, description, createdAt
             case placeID = "placeId"
+            case isMyComment = "isMine"
         }
         
         func toEntity() -> Comment {
@@ -29,7 +31,8 @@ extension ReadCommentsDTO {
                 id: id,
                 placeId: placeID,
                 description: description,
-                createdAt: createdAt.toDate(by: .serverDateTimeWithMS) ?? .now
+                isMyComment: isMyComment,
+                createdAt: createdAt?.toDate(by: .serverDateTimeWithMS) ?? .now
             )
         }
     }
