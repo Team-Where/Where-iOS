@@ -59,15 +59,6 @@ struct SideMenuModifier<SideMenuContent: View>: ViewModifier {
     }
 }
 
-extension View {
-    func sideMenu<SideMenuContent: View>(
-        isPresented: Binding<Bool>,
-        @ViewBuilder content: @escaping () -> SideMenuContent
-    ) -> some View {
-        modifier(SideMenuModifier<SideMenuContent>(isPresented, content: content))
-    }
-}
-
 #Preview {
     ContentView(resolver: PreviewHelper.shared.resolver)
 }

@@ -61,12 +61,3 @@ struct Popup<Based: View, Popup: View>: View {
         }
     }
 }
-
-extension View {
-    func popup(
-        _ isPresented: Binding<Bool>,
-        @ViewBuilder content: @escaping () -> some View
-    ) -> some View {
-        modifier(PopupModifier(isPresented, popupContent: content))
-    }
-}

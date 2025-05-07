@@ -40,9 +40,3 @@ struct WhereFormModifier<ActionButton: View>: ViewModifier {
         }
     }
 }
-
-extension View {
-    func whereForm<ActionButton: View>(_ title: String, @ViewBuilder actionButton: @escaping () -> ActionButton) -> some View {
-        modifier(WhereFormModifier(title, actionButton: actionButton()))
-    }
-}

@@ -90,29 +90,3 @@ struct FloaterView<Icon: View>: View {
         }
     }
 }
-
-extension View {
-    func floater(
-        _ isPresented: Binding<Bool>,
-        title: String
-    ) -> some View {
-        modifier(FloaterModifier<EmptyView>(isPresented, title, nil))
-    }
-
-    func floater<Icon: View>(
-        _ isPresented: Binding<Bool>,
-        title: String,
-        @ViewBuilder icon: @escaping () -> Icon
-    ) -> some View {
-        modifier(FloaterModifier(isPresented, title, icon))
-    }
-
-    func floater<Item: FloaterContent, Icon: View>(
-        _ item: Binding<Item?>,
-        @ViewBuilder content: @escaping (Item) -> Icon
-    ) -> some View {
-        let isPresented = Binding<Bool> { item.wrappedValue != nil } set: { if !$0 { item.wrappedValue = nil } }
-        let title = item.wrappedValue?.title ?? String()
-        return modifier(FloaterModifier(isPresented, title, { item.wrappedValue.map(content) }))
-    }
-}
