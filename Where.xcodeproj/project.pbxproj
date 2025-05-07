@@ -10,6 +10,9 @@
 		041BC3F72DC657CB0035C825 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */; };
 		041BC4052DC74E210035C825 /* UpdateNicknameDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC4042DC74E210035C825 /* UpdateNicknameDTO.swift */; };
 		041BC4072DC752760035C825 /* UpdateProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC4062DC752760035C825 /* UpdateProfileDTO.swift */; };
+		041BC40B2DCB95EA0035C825 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC40A2DCB95EA0035C825 /* Date.swift */; };
+		041BC40D2DCB96410035C825 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC40C2DCB96410035C825 /* String.swift */; };
+		041BC4102DCB970E0035C825 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC40F2DCB970C0035C825 /* View.swift */; };
 		041DF3BE2DB000C100A0E51F /* NotificationCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041DF3BD2DB000C100A0E51F /* NotificationCore.swift */; };
 		042A79D32D9EAD2F004105E2 /* WhereAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */; };
 		042A79D52D9EB464004105E2 /* MeetingInformationDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */; };
@@ -218,6 +221,9 @@
 		041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
 		041BC4042DC74E210035C825 /* UpdateNicknameDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNicknameDTO.swift; sourceTree = "<group>"; };
 		041BC4062DC752760035C825 /* UpdateProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileDTO.swift; sourceTree = "<group>"; };
+		041BC40A2DCB95EA0035C825 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		041BC40C2DCB96410035C825 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		041BC40F2DCB970C0035C825 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		041DF3BD2DB000C100A0E51F /* NotificationCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCore.swift; sourceTree = "<group>"; };
 		042A79D12D9EAD2F004105E2 /* WhereAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereAuthenticator.swift; sourceTree = "<group>"; };
 		042A79D42D9EB464004105E2 /* MeetingInformationDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationDetailViewModel.swift; sourceTree = "<group>"; };
@@ -434,6 +440,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		041BC4082DCB95CD0035C825 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				041BC40E2DCB97010035C825 /* SwiftUI */,
+				041BC4092DCB95D40035C825 /* Foundation */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		041BC4092DCB95D40035C825 /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				041BC40A2DCB95EA0035C825 /* Date.swift */,
+				041BC40C2DCB96410035C825 /* String.swift */,
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		041BC40E2DCB97010035C825 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				041BC40F2DCB970C0035C825 /* View.swift */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
 		042A79E72DA3EC49004105E2 /* Authentification */ = {
 			isa = PBXGroup;
 			children = (
@@ -557,6 +589,7 @@
 			isa = PBXGroup;
 			children = (
 				045B44C42D21659700514A27 /* Info.plist */,
+				041BC4082DCB95CD0035C825 /* Extensions */,
 				045B44992D2150AF00514A27 /* Entities */,
 				045B449D2D2150AF00514A27 /* Service */,
 				045B449F2D2150AF00514A27 /* Utility */,
@@ -1471,6 +1504,7 @@
 				046833EC2D3B8E8E009D2357 /* MeetingInformationDetailView.swift in Sources */,
 				046A64492DBFA4E9006ED90C /* EditInquiryViewModel.swift in Sources */,
 				046833F02D3B8F65009D2357 /* DayOfWeek+Day+Month.swift in Sources */,
+				041BC40B2DCB95EA0035C825 /* Date.swift in Sources */,
 				04A530A92D8FB9E6004E58AD /* RadioButton.swift in Sources */,
 				04C6F2322DB2715F0099874F /* CoreProtocol.swift in Sources */,
 				046833F12D3B8F65009D2357 /* Place.swift in Sources */,
@@ -1487,6 +1521,7 @@
 				046455D92D93EF5000B74A01 /* Text.swift in Sources */,
 				046A64562DC114F8006ED90C /* NotificationListViewModel.swift in Sources */,
 				04A530BA2D929D71004E58AD /* EditProfileViewModel.swift in Sources */,
+				041BC4102DCB970E0035C825 /* View.swift in Sources */,
 				04A4F45F2D42153F0041FD02 /* Comment.swift in Sources */,
 				04A5309E2D8EDDD4004E58AD /* Notification.swift in Sources */,
 				0497F6AC2DA951100037B1CC /* CommentViewModel.swift in Sources */,
@@ -1544,6 +1579,7 @@
 				04C6F23D2DB923080099874F /* MeetingSummary.swift in Sources */,
 				046833DE2D3B8DB8009D2357 /* LoginView.swift in Sources */,
 				04C6F2342DB297B80099874F /* CoreEvent.swift in Sources */,
+				041BC40D2DCB96410035C825 /* String.swift in Sources */,
 				046834182D3E26E2009D2357 /* PreferenceView.swift in Sources */,
 				0497F6A32DA6B85F0037B1CC /* PlaceCore.swift in Sources */,
 				045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */,
