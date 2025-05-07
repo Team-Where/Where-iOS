@@ -8,6 +8,8 @@
 import SwiftUI
 import Swinject
 
+fileprivate typealias FriendCellDataSource = InviteFriendsViewModel.FriendCellDataSource
+
 struct InviteFriendsView: View {
     @Environment(\.openURL) private var openURL
     @ObservedObject private var viewModel:InviteFriendsViewModel
@@ -168,7 +170,7 @@ struct InviteFriendsView: View {
         )
     }
     
-    @ViewBuilder private func friendsList(_ friends: [FriendRelationship]) -> some View {
+    @ViewBuilder private func friendsList(_ friends: [FriendCellDataSource]) -> some View {
         LazyVStack(spacing: 20) {
             Section {
                 ForEach(friends, id: \.id) { friend in
@@ -199,28 +201,25 @@ struct InviteFriendsView: View {
         .padding(.top)
     }
     
-    @ViewBuilder private func friendsListCell(_ friend: FriendRelationship) -> some View {
+    @ViewBuilder private func friendsListCell(_ dataSource: FriendCellDataSource) -> some View {
         HStack(spacing: 12) {
-            AsyncImage(url: friend.imageURL)
+            AsyncImage(url: dataSource.friend.imageURL)
                 .frame(width: 40, height: 40)
                 .clipShape(.circle)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(friend.nickname)
+                Text(dataSource.friend.nickname)
                     .whereFont(.body16medium)
                     .foregroundStyle(Color(hex: 0x1F2937))
                 
-                Text("\(2)번 만남")
+                Text("\(dataSource.meetingCount)번 만남")
                     .whereFont(.caption11regular)
                     .foregroundStyle(Color(hex: 0x9CA3AF))
             }
             
             Spacer()
             
-            // TODO: 도메인 모델 나오면 수정 예정
-            Button {
-                
-            } label: {
+            if dataSource.isInvited {
                 HStack {
                     Image(systemName: "checkmark")
                     
@@ -236,23 +235,24 @@ struct InviteFriendsView: View {
                         .strokeBorder(Color(hex: 0xDEE2E6))
                         .frame(width: 72, height: 32)
                 )
-            }
-            
-            // TODO: 도메인 모델 나오면 수정 예정
-            Button {
-                viewModel.inviteFriend(friend)
-            } label: {
-                Text("초대")
-                    .whereFont(.body14medium)
-                    .foregroundStyle(.accent)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 14)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(.white)
-                            .strokeBorder(Color(hex: 0xDEE2E6))
-                            .frame(width: 52, height: 32)
-                    )
+            } else {
+                Button {
+                    withAnimation {
+                        viewModel.inviteFriend(dataSource.friend)
+                    }
+                } label: {
+                    Text("초대")
+                        .whereFont(.body14medium)
+                        .foregroundStyle(.accent)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(.white)
+                                .strokeBorder(Color(hex: 0xDEE2E6))
+                                .frame(width: 52, height: 32)
+                        )
+                }
             }
         }
     }

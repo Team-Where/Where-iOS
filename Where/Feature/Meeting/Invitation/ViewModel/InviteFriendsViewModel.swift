@@ -10,19 +10,17 @@ import Combine
 import Swinject
 
 final class InviteFriendsViewModel: ObservableObject {
-    @Published var friends = [FriendRelationship]()
-    @Published var searchedFriends = [FriendRelationship]()
+    @Published private(set) var friendsDataSource = [FriendCellDataSource]()
+    @Published private(set) var searchedFriends = [FriendCellDataSource]()
+    @Published private(set) var invitationStates = [MeetingInvitationState]()
     @Published var isFloaterPresented: Bool = false
     @Published var isSearching: Bool = false
     @Published var searchingText: String = String()
-    @Published var invitedFriends = [MeetingInvitationState]()
-    @Published var pendingFriends = [MeetingInvitationState]()
     @Published private var _meetingID: UInt64!
     
-    
-    var invitationStates: [MeetingInvitationState] {
-        invitedFriends + pendingFriends
-    }
+    private var invitationStatesDict = [UInt64: MeetingInvitationState]()
+    var invitedFriends: [MeetingInvitationState] { invitationStates.filter { $0.isInvited } }
+    var pendingFriends: [MeetingInvitationState] { invitationStates.filter { $0.isInvited == false } }
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
@@ -40,7 +38,7 @@ final class InviteFriendsViewModel: ObservableObject {
             .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
             .sink { [weak self] text in
                 guard text.isEmpty == false,
-                      let filtered = self?.friends.filter({ $0.nickname.contains(text) })
+                      let filtered = self?.friendsDataSource.filter({ $0.friend.nickname.contains(text) })
                 else {
                     self?.searchedFriends.removeAll()
                     return
@@ -51,17 +49,52 @@ final class InviteFriendsViewModel: ObservableObject {
             .store(in: &cancellables)
         
         communityCore.friends
+            .mapError { ViewModelError.communityError($0) }
+            .combineLatest(
+                meetingCore.relatedMeetingIDs
+                    .setFailureType(to: ViewModelError.self),
+                meetingCore.meetingSummaries
+                    .mapError { ViewModelError.meetingError($0) }
+            )
+            .map { [weak self] friends, relatedMeetings, summaries in
+                guard let self else { return [] }
+                
+                var dataSource = [FriendCellDataSource]()
+                let now = Date.now
+                
+                for friend in friends.values {
+                    let friendID = friend.id
+                    let sharedMeetingIDs = relatedMeetings[friendID] ?? []
+                    let count = sharedMeetingIDs.count
+                    let isInvited = self.invitationStatesDict[friendID]?.isInvited ?? false
+                    let isRecent = sharedMeetingIDs.contains {
+                        guard let summary = summaries[$0] else { return false }
+                        return summary.finishedAt.isRecent(compareTo: now)
+                    }
+                    let item = FriendCellDataSource(
+                        id: friendID,
+                        friend: friend,
+                        meetingCount: count,
+                        isInvited: isInvited,
+                        isRecent: isRecent
+                    )
+                    dataSource.append(item)
+                }
+                
+                dataSource.sort {
+                    $0.isRecent == $1.isRecent ? $0.friend.nickname < $1.friend.nickname : $0.isRecent
+                }
+                
+                return dataSource
+            }
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print("Error: \(error)")
-                    #endif
+                case .failure(let error): print(error)
                 }
-            } receiveValue: { [weak self] dict in
-                self?.friends = dict.values.sorted { $0.nickname < $1.nickname }
+            } receiveValue: { [weak self] dataSource in
+                self?.friendsDataSource = dataSource
             }
             .store(in: &cancellables)
         
@@ -78,11 +111,26 @@ final class InviteFriendsViewModel: ObservableObject {
                 case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] status in
-                self?.invitedFriends = status.filter { $0.isInvited }
-                self?.pendingFriends = status.filter { !$0.isInvited }
+                self?.invitationStatesDict = status.reduce(into: [:]) { $0[$1.guestID] = $1 }
+                self?.invitationStates = status
             }
             .store(in: &cancellables)
+    }
+}
 
+// MARK: - Nested Types
+extension InviteFriendsViewModel {
+    struct FriendCellDataSource: Identifiable {
+        /// 친구 식별자
+        let id: UInt64
+        /// 친구 정보
+        let friend: FriendRelationship
+        /// 함께한 모임의 횟수
+        let meetingCount: Int
+        /// 해당 모임의 초대 여부
+        var isInvited: Bool
+        /// 최근 만난 친구 상태
+        let isRecent: Bool
     }
 }
 
