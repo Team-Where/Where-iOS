@@ -74,7 +74,7 @@ struct InviteFriendsView: View {
                     }
                     .padding(.vertical)
                     
-                    friendsList([])
+                    friendsList(viewModel.friendsDataSource)
                 }
             }
         }
