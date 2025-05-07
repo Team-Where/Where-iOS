@@ -13,14 +13,11 @@ struct InviteFriendsView: View {
     @ObservedObject private var viewModel:InviteFriendsViewModel
     @FocusState private var isFocused: Bool
     
-    private let resolver: Resolver
-    
     init(
         meetingID: UInt64,
         resolver: Resolver
     ) {
         self.viewModel = resolver.resolve(InviteFriendsViewModel.self)!
-        self.resolver = resolver
         self.viewModel.setMeeting(id: meetingID)
     }
     
