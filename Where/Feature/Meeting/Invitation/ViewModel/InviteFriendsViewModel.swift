@@ -24,6 +24,7 @@ final class InviteFriendsViewModel: ObservableObject {
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
+    private var inviteParticipantCancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     
     init(resolver: Resolver) {
@@ -144,7 +145,7 @@ extension InviteFriendsViewModel {
             } receiveValue: { [weak self] _ in
                 self?.isFloaterPresented = true
             }
-            .store(in: &cancellables)
+            .cancel()
     }
     
     func setMeeting(id: UInt64) {
