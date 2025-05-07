@@ -1,8 +1,8 @@
 //
-//  Color Extension.swift
+//  Color.swift
 //  Where
 //
-//  Created by 이현호 on 12/29/24.
+//  Created by Swain Yun on 5/8/25.
 //
 
 import SwiftUI
