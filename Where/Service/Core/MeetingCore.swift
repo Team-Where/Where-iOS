@@ -62,7 +62,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
     ///     - participantId: 초대 대상의 식별자
-    func inviteParticipant(id: UInt64, guest: FriendRelationship)
+    func inviteParticipant(id: UInt64, guest: FriendRelationship) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 초대 수락
     /// - Parameters:
     ///     - id: 초대장 식별자
@@ -465,16 +465,19 @@ extension MeetingCore: MeetingCoreProtocol {
             .store(in: &cancellables)
     }
     
-    func inviteParticipant(id: UInt64, guest: FriendRelationship) {
+    func inviteParticipant(id: UInt64, guest: FriendRelationship) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser,
               let nickname = user.nickname
         else {
-            return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
+        
         let dto = InviteFriendsDTO.Request(meetingID: id, hostID: user.id, guestID: guest.id)
-        apiService.requestPublisher(Endpoint.inviteFriends(dto: dto), EmptyDTO.Response.self)
-            .map { _ in
-                MeetingInvitationState(
+        
+        return apiService.requestPublisher(Endpoint.inviteFriends(dto: dto), EmptyDTO.Response.self)
+            .map { _ in () }
+            .handleEvents(receiveOutput: { [weak self] _ in
+                let state = MeetingInvitationState(
                     hostID: user.id,
                     hostName: nickname,
                     guestID: guest.id,
@@ -482,20 +485,13 @@ extension MeetingCore: MeetingCoreProtocol {
                     isInvited: false,
                     guestImageURLString: guest.imageURL?.absoluteString
                 )
-            }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.invitationStatusSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] invitationState in
-                guard let self else { return }
-                var status = invitationStatusSubject.value
-                status[id]?.append(invitationState)
-                invitationStatusSubject.send(status)
-            }
-            .store(in: &cancellables)
+                
+                guard var status = self?.invitationStatusSubject.value else { return }
+                status[id]?.append(state)
+                self?.invitationStatusSubject.send(status)
+            })
+            .mapError { MeetingCoreError.networkingError($0) }
+            .eraseToAnyPublisher()
     }
     
     func acceptInvitation(id: UInt64) {

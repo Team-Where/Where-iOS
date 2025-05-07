@@ -89,8 +89,14 @@ final class InviteFriendsViewModel: ObservableObject {
 // MARK: - Interfaces
 extension InviteFriendsViewModel {
     func inviteFriend(_ friend: FriendRelationship) {
-        isFloaterPresented.toggle()
         meetingCore.inviteParticipant(id: _meetingID, guest: friend)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] _ in
+                self?.isFloaterPresented = true
+            }
+            .store(in: &cancellables)
     }
     
     func setMeeting(id: UInt64) {
