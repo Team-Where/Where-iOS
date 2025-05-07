@@ -131,7 +131,16 @@ final class MeetingCore {
     private func subscribe() {
         meetingsSubject
             .sink { completion in
-                // TODO: 에러 핸들링 강화
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    switch error {
+                    case .encodingError(let type): print("Encoding Failed: \(String(describing: type))")
+                    case .networkingError(let error): print(error)
+                    case .userIDNotSet: break
+                    case .noSuchMeeting: break
+                    }
+                }
             } receiveValue: { [weak self] dict in
                 self?._meetings = dict
             }
@@ -188,8 +197,12 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: meeting.isFinished
                 )
             }
-            .sink { completion in
-                // TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] newMeeting in
                 guard let self else { return }
                 var meetings = meetingsSubject.value
@@ -228,8 +241,12 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: meeting.isFinished
                 )
             }
-            .sink { completion in
-                // TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] newMeeting in
                 guard let self else { return }
                 var meetings = meetingsSubject.value
@@ -262,8 +279,12 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: meeting.isFinished
                 )
             }
-            .sink { completion in
-                // TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] newMeeting in
                 guard let self else { return }
                 var meetings = meetingsSubject.value
@@ -288,8 +309,12 @@ extension MeetingCore: MeetingCoreProtocol {
             
             apiService.requestPublisher(Endpoint.createMeeting(encodedMeetingData: encodedMeeting, imageData: imageData), CreateMeetingDTO.Response.self)
                 .map { $0.toEntity() }
-                .sink { completion in
-                    // TODO: error handling
+                .sink { [weak self] completion in
+                    switch completion {
+                    case .finished: break
+                    case .failure(let error):
+                        self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                    }
                 } receiveValue: { [weak self] meeting in
                     guard let self else { return }
                     var meetings = meetingsSubject.value
@@ -334,8 +359,12 @@ extension MeetingCore: MeetingCoreProtocol {
                         isFinished: meeting.isFinished
                     )
                 }
-                .sink { completion in
-                    // TODO: Error 핸들링 강화
+                .sink { [weak self] completion in
+                    switch completion {
+                    case .finished: break
+                    case .failure(let error):
+                        self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                    }
                 } receiveValue: { [weak self] newMeeting in
                     guard let self else { return }
                     var meetings = meetingsSubject.value
@@ -372,8 +401,12 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: true
                 )
             }
-            .sink { completion in
-                //TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] endedMeeting in
                 guard let self else { return }
                 var meetngs = meetingsSubject.value
@@ -391,8 +424,12 @@ extension MeetingCore: MeetingCoreProtocol {
         }
         let dto = LeaveMeetingDTO.Request(meetingID: id, userID: user.id)
         apiService.requestPublisher(Endpoint.leaveMeeting(dto: dto), EmptyDTO.Response.self)
-            .sink { completion in
-                //TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] _ in
                 guard let self else { return }
                 var meetings = meetingsSubject.value
@@ -413,8 +450,12 @@ extension MeetingCore: MeetingCoreProtocol {
             .map { response in
                 response.map { $0.toEntity() }
             }
-            .sink { completion in
-                //TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.invitationStatusSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] invitaionState in
                 guard let self else { return }
                 var newInvitationStatusDict = invitationStatusSubject.value
@@ -442,8 +483,12 @@ extension MeetingCore: MeetingCoreProtocol {
                     guestImageURLString: guest.imageURL?.absoluteString
                 )
             }
-            .sink { completion in
-                // TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.invitationStatusSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] invitationState in
                 guard let self else { return }
                 var status = invitationStatusSubject.value
@@ -461,8 +506,12 @@ extension MeetingCore: MeetingCoreProtocol {
         let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
         apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
             .map { $0.toEntity() }
-            .sink { completion in
-                // TODO: 에러핸들링 강화
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] meeting in
                 guard let self else { return }
                 var meetings = meetingsSubject.value
@@ -480,8 +529,12 @@ extension MeetingCore: MeetingCoreProtocol {
         let dto = AcceptMeetingInvitationByLinkDTO.Request(userID: user.id, invitationLink: link)
         apiService.requestPublisher(Endpoint.acceptMeetingInvitationByLink(dto: dto), AcceptMeetingInvitationByLinkDTO.Response.self)
             .map { $0.toEntity() }
-            .sink { completion in
-                //TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] meeting in
                 guard let self else { return }
                 var meetings = meetingsSubject.value
@@ -501,8 +554,12 @@ extension MeetingCore: MeetingCoreProtocol {
             .map {
                 $0.toEntity()
             }
-            .sink { completion in
-                // TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.invitedMeetingSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] in
                 self?.invitedMeetingSubject.send($0)
             }
@@ -513,7 +570,6 @@ extension MeetingCore: MeetingCoreProtocol {
 
 // MARK: - MeetingMediationProtocol Conformation
 extension MeetingCore: MeetingMediationProtocol {
-    
     func loadAllMeetings() {
         guard let user = currentUser
         else {
@@ -523,20 +579,19 @@ extension MeetingCore: MeetingMediationProtocol {
             .map { meetings in
                 meetings.reduce(into: [:]) { $0[$1.meetingID] = $1.toEntity() }
             }
-            .sink { completions in
-                // TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] in
                 self?.meetingsSubject.send($0)
             }
             .store(in: &cancellables)
     }
     
-    
     func updateRelatedMeetings(meetingIDs: [UInt64 : [UInt64]], summaries: [UInt64 : MeetingSummary]) {
-        return
-    }
-    
-    func friendListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary]) {
         relatedMeetingIDsSubject.send(meetingIDs)
         _summaries = summaries
     }

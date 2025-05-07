@@ -129,7 +129,6 @@ struct FriendsListView: View {
                 Section {
                     LazyVStack {
                         ForEach(friends) { friend in
-                            // TODO: 강제 언래핑 개선하기
                             Cell(viewModel: viewModel, friend)
                         }
                     }

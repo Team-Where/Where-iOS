@@ -160,10 +160,6 @@ extension FriendsListViewModel {
     }
     
     func presentHistoryReminder(friend: FriendRelationship) {
-        // TODO: 추후 리팩토링 고려
-        // 현재로서는 비로그인 상태에서 절대 동작할 수 없는 로직이기에 단순 return
-        // 추후 토큰 만료 등으로 인해 재로그인이 필요한 상황에서 동작할 수 없도록
-        // 얼럿을 띄운다던가 하는 식으로 개선할 수 있을 것 같음.
         guard let user else { return }
         dismissSheet()
         route = .historyReminder(user: user, friend: friend)

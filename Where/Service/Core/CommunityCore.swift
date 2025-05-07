@@ -57,7 +57,14 @@ final class CommunityCore {
     private func subscribe() {
         friendsSubject
             .sink { completion in
-                // TODO: 에러 핸들링 강화
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    switch error {
+                    case .networkingError(let error): print(error)
+                    case .userIDNotSet: break
+                    }
+                }
             } receiveValue: { [weak self] dict in
                 self?._friends = dict
             }
@@ -85,8 +92,12 @@ extension CommunityCore: CommunityCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.deleteFriend(dto: dto), EmptyDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.friendsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] _ in
                 guard var friends = self?.friendsSubject.value else { return }
                 friends[id] = nil
@@ -105,8 +116,12 @@ extension CommunityCore: CommunityCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.bookmarkFriend(dto: dto), BookmarkFriendDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.friendsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 guard var friends = self?.friendsSubject.value,
                       let oldFriend = friends[response.friendID]
@@ -131,8 +146,12 @@ extension CommunityCore: CommunityMediationProtocol {
     func loadFriends(userID: UInt64) {
         apiService
             .requestPublisher(Endpoint.readFriends(userID: userID), ReadFriendsDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.friendsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let friends: [(friend: FriendRelationship, meetingSummaries: [MeetingSummary])] = response
                     .map { dto in

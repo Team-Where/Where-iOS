@@ -9,6 +9,7 @@ import SwiftUI
 import Swinject
 
 struct InviteFriendsView: View {
+    @Environment(\.openURL) private var openURL
     @ObservedObject private var viewModel:InviteFriendsViewModel
     @FocusState private var isFocused: Bool
     

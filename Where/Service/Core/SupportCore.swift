@@ -90,16 +90,22 @@ final class SupportCore {
     
     private func subscribe() {
         inquiriesSubject
-            .sink { completion in
-                // TODO: 에러 핸들링 강화
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error): print(error)
+                }
             } receiveValue: { [weak self] dict in
                 self?._inquiries = dict
             }
             .store(in: &cancellables)
         
         announcementsSubject
-            .sink { completion in
-                // TODO: 에러 핸들링 강화
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error): print(error)
+                }
             } receiveValue: { [weak self] dict in
                 self?._announcements = dict
             }
@@ -129,8 +135,12 @@ extension SupportCore: SupportCoreProtocol {
             
             apiService
                 .requestPublisher(Endpoint.createUserInquiry(inquiryData: inquiryData, imageDatas: images), CreateUserInquiryDTO.Response.self)
-                .sink { completion in
-                    // TODO: 에러 핸들링
+                .sink { [weak self] completion in
+                    switch completion {
+                    case .finished: break
+                    case .failure(let error):
+                        self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
+                    }
                 } receiveValue: { [weak self] response in
                     let inquiry = response.toEntity()
                     guard var inquiries = self?.inquiriesSubject.value else { return }
@@ -149,8 +159,12 @@ extension SupportCore: SupportCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.createAdminInquiryReply(dto: dto), CreateAdminInquiryReplyDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let inquiry = response.toEntity()
                 guard var inquiries = self?.inquiriesSubject.value else { return }
@@ -165,8 +179,12 @@ extension SupportCore: SupportCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.createAnnouncement(dto: dto), CreateAnnouncementDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let announcement = response.toEntity()
                 guard var announcements = self?.announcementsSubject.value else { return }
@@ -181,8 +199,12 @@ extension SupportCore: SupportCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.updateAnnouncement(dto: dto), UpdateAnnouncementDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let announcement = Announcement(
                     id: response.announcementID,
@@ -203,8 +225,12 @@ extension SupportCore: SupportCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.deleteAnnouncement(dto: dto), EmptyDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] _ in
                 guard var announcements = self?.announcementsSubject.value else { return }
                 announcements.removeValue(forKey: id)
@@ -218,8 +244,12 @@ extension SupportCore: SupportCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.createFAQ(dto: dto), CreateFAQDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let faq = response.toEntity()
                 guard var announcements = self?.announcementsSubject.value else { return }
@@ -234,8 +264,12 @@ extension SupportCore: SupportCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.updateFAQ(dto: dto), UpdateFAQDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let faq = Announcement(
                     id: response.id,
@@ -257,8 +291,12 @@ extension SupportCore: SupportCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.deleteFAQ(dto: dto), EmptyDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] _ in
                 guard var announcements = self?.announcementsSubject.value else { return }
                 announcements.removeValue(forKey: id)
@@ -271,7 +309,6 @@ extension SupportCore: SupportCoreProtocol {
 // MARK: - SupportMediationProtocol Conformation
 extension SupportCore: SupportMediationProtocol {
     func loadInquiries() {
-        // TODO: 1:1 문의 목록 로직 구현
         guard let userID = currentUserID else {
             inquiriesSubject.send(completion: .failure(.userIDNotSet))
             return
@@ -279,8 +316,12 @@ extension SupportCore: SupportMediationProtocol {
         
         apiService
             .requestPublisher(Endpoint.readUserInquiries(userID: userID), ReadUserInquiriesDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let inquiries = response.map { $0.toEntity() }
                 let inquiriesDict = inquiries.reduce(into: [:]) { $0[$1.id] = $1 }
@@ -290,11 +331,15 @@ extension SupportCore: SupportMediationProtocol {
     }
     
     func loadAdminInquiries() {
-        // TODO: 관리자 1:1문의 조회 API에서 검색 기준을 받고 있는데, 사실 프론트에서 항상 모든 문의에 대해서 조회하고 있으므로 실질적으론 Criteria 설정값은 '3' 외에 쓸 일이 없음.
+        /// - Note: 관리자 1:1문의 조회 API에서 검색 기준을 받고 있는데, 사실 프론트에서 항상 모든 문의에 대해서 조회하고 있으므로 실질적으론 Criteria 설정값은 '3' 외에 쓸 일이 없음.
         apiService
             .requestPublisher(Endpoint.readAdminInquiries(criteria: 3), ReadAdminInquiriesDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let inquiries = response.map { $0.toEntity() }
                 let inquiriesDict = inquiries.reduce(into: [:]) { $0[$1.id] = $1 }
@@ -309,8 +354,12 @@ extension SupportCore: SupportMediationProtocol {
         
         announcementsPublisher
             .combineLatest(faqPublisher)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] (announcementsResponse, faqsResponse) in
                 let announcements = announcementsResponse.map { $0.toEntity() }
                 let faqs = faqsResponse.map { $0.toEntity() }

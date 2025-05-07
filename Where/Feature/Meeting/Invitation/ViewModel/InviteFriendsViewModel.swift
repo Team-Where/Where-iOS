@@ -73,7 +73,10 @@ final class InviteFriendsViewModel: ObservableObject {
                 return dict[id]
             }
             .sink { completion in
-                // TODO: 에러 핸들링
+                switch completion {
+                case .finished: break
+                case .failure(let error): print(error)
+                }
             } receiveValue: { [weak self] status in
                 self?.invitedFriends = status.filter { $0.isInvited }
                 self?.pendingFriends = status.filter { !$0.isInvited }

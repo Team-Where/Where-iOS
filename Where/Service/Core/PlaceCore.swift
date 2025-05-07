@@ -96,8 +96,12 @@ extension PlaceCore: PlaceCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.createPlace(dto: dto), CreatePlaceDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let place = response.toEntity()
                 guard var places = self?.placesSubject.value else { return }
@@ -115,8 +119,12 @@ extension PlaceCore: PlaceCoreProtocol {
                     .map { $0.toEntity() }
                     .reduce(into: [:]) { $0[$1.id] = $1 }
             }
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] comments in
                 self?.commentsSubject.send(comments)
             }
@@ -133,8 +141,12 @@ extension PlaceCore: PlaceCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.deletePlace(dto: dto), EmptyDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] _ in
                 guard var places = self?.placesSubject.value else { return }
                 places[id] = nil
@@ -153,8 +165,12 @@ extension PlaceCore: PlaceCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.pickPlace(dto: dto), PickPlaceDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 guard var places = self?.placesSubject.value,
                       let oldPlace = places[response.id]
@@ -189,8 +205,12 @@ extension PlaceCore: PlaceCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.togglePlaceLike(dto: dto), TogglePlaceLikeDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 guard var places = self?.placesSubject.value,
                       let oldPlace = places[response.id]
@@ -228,8 +248,12 @@ extension PlaceCore: PlaceCoreProtocol {
             .map {
                 $0.toEntity(placeID)
             }
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.commentsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] comment in
                 guard var comments = self?.commentsSubject.value else { return }
                 
@@ -249,8 +273,12 @@ extension PlaceCore: PlaceCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.updateComment(dto: dto), UpdateCommentDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.commentsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 guard var comments = self?.commentsSubject.value,
                       let oldComment = comments[response.commentID]
@@ -279,8 +307,12 @@ extension PlaceCore: PlaceCoreProtocol {
         
         apiService
             .requestPublisher(Endpoint.deleteComment(dto: dto), EmptyDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.commentsSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] _ in
                 guard var comments = self?.commentsSubject.value else { return }
                 comments[comment.id] = nil
@@ -300,8 +332,12 @@ extension PlaceCore: PlaceMediationProtocol {
         
         apiService
             .requestPublisher(Endpoint.readPlaceDetail(userID: userID, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                }
             } receiveValue: { [weak self] response in
                 let places = response.map { $0.toEntity() }
                 let placesDict = places.reduce(into: [:]) { $0[$1.id] = $1 }
