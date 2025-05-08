@@ -13,7 +13,7 @@ final class SideMenuContentViewModel: ObservableObject {
     @Published var user: User?
     @Published var totalMeetingsCount = Int.zero
     
-    var isLoginNeeded: Bool { authCore.isLoginNeeded }
+    var isLoginNeeded: Bool { user == nil }
     
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol

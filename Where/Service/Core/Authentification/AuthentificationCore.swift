@@ -17,9 +17,6 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 사용자 정보
     var currentUser: AnyPublisher<User?, AuthentificationCoreError> { get }
     
-    /// 로그인 필요 여부
-    var isLoginNeeded: Bool { get }
-    
     /// Redirection URL Handling
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL)
     
@@ -109,9 +106,6 @@ private extension AuthentificationCore {
 final class AuthentificationCore {
     weak var mediator: Notifiable?
     
-    private var _currentUser: User?
-    private var _pendingSocialUser: User?
-    
     private let authentificationStateSubject = CurrentValueSubject<AuthentificationState, AuthentificationCoreError>(.loginNeeded)
     
     private let apiService: APIServable
@@ -133,22 +127,20 @@ final class AuthentificationCore {
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
-                case .failure:
+                case .failure(let error):
+                    print(error)
+                    
                     self?.resetAuthentifcationState()
                     self?.mediator?.notify(event: .userDidLogout)
                 }
             } receiveValue: { [weak self] state in
                 switch state {
                 case .loginCompleted(let user):
-                    self?._pendingSocialUser = nil
-                    self?._currentUser = user
                     UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
                     self?.mediator?.notify(event: .userDidLogin(user: user))
                     
-                case .registrationNeeded(let user):
-                    self?._pendingSocialUser = user
-                    self?._currentUser = nil
-                    UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
+                case .registrationNeeded:
+                    self?.resetAuthentifcationState()
                     
                 case .loginNeeded:
                     self?.resetAuthentifcationState()
@@ -199,8 +191,6 @@ private extension AuthentificationCore {
     }
     
     func resetAuthentifcationState() {
-        _currentUser = nil
-        _pendingSocialUser = nil
         UserDefaults.standard.removeObject(forKey: AppStorageKey.currentUserID)
     }
 }
@@ -219,8 +209,6 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             }
             .eraseToAnyPublisher()
     }
-    
-    var isLoginNeeded: Bool { _currentUser == nil }
     
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
         strategyContext.handleOpenURL(url)
