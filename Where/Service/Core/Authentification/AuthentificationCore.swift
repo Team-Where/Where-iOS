@@ -111,6 +111,7 @@ final class AuthentificationCore {
     private let apiService: APIServable
     private let encoder: JSONEncoder
     private let strategyContext = AuthentificationStrategyContext()
+    private var loginCancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     
     init(
@@ -128,8 +129,6 @@ final class AuthentificationCore {
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    print(error)
-                    
                     self?.resetAuthentifcationState()
                     self?.mediator?.notify(event: .userDidLogout)
                 }
@@ -221,35 +220,43 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func loginWithKakao() {
-        strategyContext.login(by: .kakao) { [weak self] result in
-            guard let self else { return }
-            
-            guard case .success(let credential) = result,
-                  let accessToken = credential.accessToken,
+        loginCancellable?.cancel()
+        
+        loginCancellable = Future<UserCredential, AuthentificationCoreError> { [weak self] promise in
+            self?.strategyContext.login(by: .kakao) { result in
+                switch result {
+                case .failure(let error): promise(.failure(error))
+                case .success(let credential): promise(.success(credential))
+                }
+            }
+        }
+        .flatMap { [weak self] credential -> AnyPublisher<LoginWithKakaoDTO.Response, AuthentificationCoreError> in
+            guard let self,
+                  let accessToekn = credential.accessToken,
                   let refreshToken = credential.refreshToken
             else {
-                authentificationStateSubject.send(completion: .failure(.socialAuthProviderAuthorizationFailed))
-                return
+                return Fail(error: .socialAuthProviderAuthorizationFailed).eraseToAnyPublisher()
             }
             
-            apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToken, refreshToken: refreshToken), LoginWithKakaoDTO.Response.self)
-                .sink { [weak self] completion in
-                    switch completion {
-                    case .finished: break
-                    case .failure(let error):
-                        self?.authentificationStateSubject.send(completion: .failure(.networkRequestFailed(error)))
-                    }
-                } receiveValue: { [weak self] response in
-                    if response.isRegistrationNeeded {
-                        // 프로필 설정 필요
-                        let user = User(id: response.userID, imageURL: response.profileImageURL)
-                        self?.authentificationStateSubject.send(.registrationNeeded(user))
-                    } else {
-                        // 프로필 설정 불필요
-                        self?.readUserInfo(userID: response.userID)
-                    }
-                }
-                .store(in: &cancellables)
+            return apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToekn, refreshToken: refreshToken), LoginWithKakaoDTO.Response.self)
+                .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+                .eraseToAnyPublisher()
+        }
+        .sink { [weak self] completion in
+            switch completion {
+            case .finished: break
+            case .failure:
+                self?.authentificationStateSubject.send(.loginNeeded)
+            }
+        } receiveValue: { [weak self] response in
+            if response.isRegistrationNeeded {
+                // 프로필 설정 필요
+                let user = User(id: response.userID, imageURL: response.profileImageURL)
+                self?.authentificationStateSubject.send(.registrationNeeded(user))
+            } else {
+                // 프로필 설정 불필요
+                self?.readUserInfo(userID: response.userID)
+            }
         }
     }
     
@@ -264,8 +271,8 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         
         apiService.requestPublisher(Endpoint.login(dto: dto), EmptyDTO.Response.self)
             .sink { [weak self] completion in
-                guard case .failure(let error) = completion else { return }
-                self?.authentificationStateSubject.send(completion: .failure(.networkRequestFailed(error)))
+                guard case .failure = completion else { return }
+                self?.authentificationStateSubject.send(.loginNeeded)
             } receiveValue: { [weak self] _ in
                 // TODO: 발급된 토큰 저장할 수 있는지 확인
                 // TODO: API 응답 스펙 맞춰서 로직 구현해야함
@@ -308,24 +315,25 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 }
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
-
+            
         } catch {
-            authentificationStateSubject.send(completion: .failure(.encodingFailed))
+            print("Failed Encoding")
             return Fail(error: .networkRequestFailed(error)).eraseToAnyPublisher()
         }
     }
     
     func unregister() {
         guard case .loginCompleted(let user) = authentificationStateSubject.value else {
-            return authentificationStateSubject.send(completion: .failure(.userInfoFetchFailed))
+            return authentificationStateSubject.send(.loginNeeded)
         }
         
         apiService
             .requestPublisher(Endpoint.unregister(userID: user.id), EmptyDTO.Response.self)
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error): self?.authentificationStateSubject.send(completion: .failure(.networkRequestFailed(error)))
+                case .failure(let error):
+                    print(error)
                 }
             } receiveValue: { [weak self] _ in
                 self?.authentificationStateSubject.send(.loginNeeded)
@@ -361,7 +369,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 })
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
-
+            
         case .loginNeeded:
             return Fail(error: .notSupported).eraseToAnyPublisher()
         }
@@ -389,7 +397,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 .map { _ in () }
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
-                
+            
         case .loginNeeded:
             return Fail(error: .notSupported).eraseToAnyPublisher()
         }
@@ -401,10 +409,7 @@ extension AuthentificationCore: AuthentificationMediationProtocol {
     func loadCurrentUser() {
         guard let userIDString = UserDefaults.standard.string(forKey: AppStorageKey.currentUserID),
               let userID = UInt64(userIDString)
-        else {
-            authentificationStateSubject.send(completion: .failure(.autoLoginFailed))
-            return
-        }
+        else { return }
         
         readUserInfo(userID: userID)
     }
