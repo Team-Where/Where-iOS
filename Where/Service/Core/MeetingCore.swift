@@ -134,7 +134,7 @@ final class MeetingCore {
     private func subscribe() {
         meetingsSubject
             .sink { [weak self] dict in
-                self?.meetingsSubject.send(dict)
+                self?._meetings = dict
             }
             .store(in: cancellableBag, key: "MeetingsSubject")
     }
