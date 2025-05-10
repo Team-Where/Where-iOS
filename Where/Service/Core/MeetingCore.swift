@@ -19,6 +19,8 @@ protocol MeetingCoreProtocol: CoreProtocol {
     var invitationStatus: AnyPublisher<[UInt64: [MeetingInvitationState]], Never> { get }
     /// 초대 받은 모임 정보
     var invitedMeeting: AnyPublisher<Meeting, Never> { get }
+    /// 새로 생성된 모임 정보
+    var createdMeeting: AnyPublisher<Meeting, Never> { get }
     /// 모임 일정 등록
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -114,6 +116,7 @@ final class MeetingCore {
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], Never>([:])
     private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationState]], Never>([:])
     private let invitedMeetingSubject = PassthroughSubject<Meeting, Never>()
+    private let createdMeetingSubject = PassthroughSubject<Meeting, Never>()
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -157,6 +160,10 @@ extension MeetingCore: MeetingCoreProtocol {
     
     var invitedMeeting: AnyPublisher<Meeting, Never> {
         invitedMeetingSubject.eraseToAnyPublisher()
+    }
+    
+    var createdMeeting: AnyPublisher<Meeting, Never> {
+        createdMeetingSubject.eraseToAnyPublisher()
     }
     
     // MARK: - Schedule Related
@@ -279,6 +286,7 @@ extension MeetingCore: MeetingCoreProtocol {
                 guard var meetings = self?.meetingsSubject.value else { return newMeeting }
                 meetings[newMeeting.id] = newMeeting
                 self?.meetingsSubject.send(meetings)
+                self?.createdMeetingSubject.send(newMeeting)
                 return newMeeting
             }
             .eraseToAnyPublisher()

@@ -28,8 +28,6 @@ final class ContentViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        // TODO: 모임이 새로 생기면 화면 띄울 수 있게 구독하기
-        
         authCore.authentificationState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
@@ -43,6 +41,13 @@ final class ContentViewModel: ObservableObject {
                 }
             }
             .store(in: cancellableBag, key: "AuthentificationState")
+        
+        meetingCore.createdMeeting
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] meeting in
+                self?.fullScreenCoverType = .completeCreation(meeting)
+            }
+            .store(in: cancellableBag, key: "CreatedMeeting")
     }
 }
 
