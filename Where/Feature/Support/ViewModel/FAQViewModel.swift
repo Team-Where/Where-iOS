@@ -14,7 +14,7 @@ final class FAQViewModel: ObservableObject {
     @Published var faqs = [Announcement]()
     
     private let supportCore: SupportCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.supportCore = resolver.resolve(SupportCoreProtocol.self)!
@@ -24,14 +24,12 @@ final class FAQViewModel: ObservableObject {
     private func subscribe() {
         supportCore.announcements
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 self?.faqs = dict.values
                     .sorted { $0.date > $1.date }
                     .filter { $0.type == .FAQ }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Announcements")
     }
 }
 

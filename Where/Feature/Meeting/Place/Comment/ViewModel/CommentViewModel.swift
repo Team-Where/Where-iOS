@@ -17,7 +17,7 @@ final class CommentViewModel: ObservableObject {
     @Published var commentTextField = String()
     
     private let placeCore: PlaceCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
@@ -26,13 +26,10 @@ final class CommentViewModel: ObservableObject {
     
     private func subscribe() {
         placeCore.comments
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 self?.comments = dict.values.sorted { $0.createdAt > $1.createdAt }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Comments")
     }
 }
 
@@ -58,7 +55,12 @@ extension CommentViewModel {
     }
     
     func createComment(placeID: UInt64) {
-        placeCore.createComment(placeID: placeID, description: commentTextField)
+        cancellableBag[#function] = placeCore.createComment(placeID: placeID, description: commentTextField)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { _ in
+                //
+            }
     }
     
     func presentReadingSheet(comment: Comment) {
@@ -67,7 +69,12 @@ extension CommentViewModel {
     }
     
     func deleteComment(_ comment: Comment) {
-        placeCore.deleteComment(comment: comment)
+        cancellableBag[#function] = placeCore.deleteComment(comment: comment)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { _ in
+                //
+            }
     }
     
     func presentEditingSheet() {
@@ -78,6 +85,11 @@ extension CommentViewModel {
     
     func editComment() {
         guard let currentComment else { return }
-        placeCore.updateComment(comment: currentComment, description: commentTextField)
+        cancellableBag[#function] = placeCore.updateComment(comment: currentComment, description: commentTextField)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { _ in
+                //
+            }
     }
 }

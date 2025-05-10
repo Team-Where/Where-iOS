@@ -15,7 +15,7 @@ final class InquiryViewModel: ObservableObject {
     @Published private(set) var answerCompleteInquiries = [Inquiry]()
     
     private let supportCore: SupportCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.supportCore = resolver.resolve(SupportCoreProtocol.self)!
@@ -25,14 +25,12 @@ final class InquiryViewModel: ObservableObject {
     private func subscribe() {
         supportCore.inquiries
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 let inquiries = dict.values.sorted { $0.modifiedAt > $1.modifiedAt }
                 self?.waitingForReplyInquiries = inquiries.filter { $0.isAnswered == false }
                 self?.answerCompleteInquiries = inquiries.filter { $0.isAnswered }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Inquiries")
     }
 }
 

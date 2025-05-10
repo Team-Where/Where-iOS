@@ -19,7 +19,7 @@ final class ContentViewModel: ObservableObject {
     
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -32,10 +32,7 @@ final class ContentViewModel: ObservableObject {
         
         authCore.authentificationState
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] state in
-                print(state)
+            .sink { [weak self] state in
                 switch state {
                 case .loginCompleted, .registrationNeeded:
                     self?.fullScreenCoverType = nil
@@ -45,7 +42,7 @@ final class ContentViewModel: ObservableObject {
                     self?.isLoginNeeded = true
                 }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "AuthentificationState")
     }
 }
 

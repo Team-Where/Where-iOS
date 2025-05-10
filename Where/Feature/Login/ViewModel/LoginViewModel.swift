@@ -17,7 +17,7 @@ final class LoginViewModel: ObservableObject {
     @Published private(set) var isLoginCompleted: Bool = false
     
     private let authCore: AuthentificationCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -27,13 +27,11 @@ final class LoginViewModel: ObservableObject {
     private func subscribe() {
         authCore.currentUser
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] user in
-                guard let user else { return }
+            .sink { [weak self] user in
+                guard user != nil else { return }
                 self?.isLoginCompleted = true
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "CurrentUser")
     }
 }
 

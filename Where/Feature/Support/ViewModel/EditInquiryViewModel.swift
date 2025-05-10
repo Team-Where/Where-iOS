@@ -24,7 +24,7 @@ final class EditInquiryViewModel: ObservableObject {
     }
     
     private let supportCore: SupportCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellbleBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.supportCore = resolver.resolve(SupportCoreProtocol.self)!

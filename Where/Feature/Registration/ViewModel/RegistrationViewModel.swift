@@ -11,6 +11,15 @@ import Swinject
 
 @MainActor
 final class RegistrationViewModel: ObservableObject {
+    private struct SubscriptionKey {
+        static let timer = "Timer"
+        static let emailValidation = "EmailValidation"
+        static let authCodeRequest = "AuthCodeRequest"
+        static let authCodeValidation = "AuthCodeValidation"
+        static let nicknameValidation = "NicknameValidation"
+        static let registration = "Registration"
+    }
+    
     @Published var emailFieldText: String = String()
     @Published var authorizationCodeFieldText: String = String()
     @Published var passwordFieldText: String = String()
@@ -28,8 +37,6 @@ final class RegistrationViewModel: ObservableObject {
     @Published private(set) var passwordComparisonResult: PasswordComparisonResult = .unknown
     @Published private(set) var nicknameValidationState: NicknameValidationState = .beforeValidate
     @Published private(set) var registrationStep: RegistrationTerminationStep = .email
-    
-    private let authCore: AuthentificationCoreProtocol
     
     var navigationTitle: String {
         switch registrationStep {
@@ -89,13 +96,8 @@ final class RegistrationViewModel: ObservableObject {
         }
     }
     
-    private var timer: AnyCancellable?
-    private var cancellables = Set<AnyCancellable>()
-    private var emailValidationCancellable: AnyCancellable?
-    private var authCodeRequestCancellable: AnyCancellable?
-    private var authCodeValidationCancellable: AnyCancellable?
-    private var nicknameValidationCancellable: AnyCancellable?
-    private var registrationCancellable: AnyCancellable?
+    private let authCore: AuthentificationCoreProtocol
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -108,9 +110,9 @@ final class RegistrationViewModel: ObservableObject {
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] email in
                 // 이메일 변경 시 이전 API 작업 취소
-                self?.emailValidationCancellable?.cancel()
-                self?.authCodeRequestCancellable?.cancel()
-                self?.authCodeValidationCancellable?.cancel()
+                self?.cancellableBag.cancel(SubscriptionKey.emailValidation)
+                self?.cancellableBag.cancel(SubscriptionKey.authCodeRequest)
+                self?.cancellableBag.cancel(SubscriptionKey.authCodeValidation)
                 
                 self?.stopTimer()
                 self?.authorizationCodeFieldText = String()
@@ -129,7 +131,7 @@ final class RegistrationViewModel: ObservableObject {
                 
                 self?.checkEmailDuplicate(email)
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "EmailFieldText")
         
         $passwordFieldText
             .removeDuplicates()
@@ -148,7 +150,7 @@ final class RegistrationViewModel: ObservableObject {
                     passwordValidationState = .invalid
                 }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "PasswordFieldText")
         
         $reInputPasswordFieldText
             .removeDuplicates()
@@ -163,14 +165,14 @@ final class RegistrationViewModel: ObservableObject {
                     passwordComparisonResult = .unknown
                 }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "ReInputPasswordFieldText")
     }
     
     private func startTimer(seconds: Int) {
         stopTimer()
         remainingTime = seconds
         
-        timer = Timer.publish(every: 1, on: .main, in: .common)
+        cancellableBag[SubscriptionKey.timer] = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 self?.updateTimer()
@@ -191,8 +193,7 @@ final class RegistrationViewModel: ObservableObject {
     }
     
     private func stopTimer() {
-        timer?.cancel()
-        timer = nil
+        cancellableBag[SubscriptionKey.timer]?.cancel()
         remainingTime = nil
     }
     
@@ -216,10 +217,9 @@ final class RegistrationViewModel: ObservableObject {
     }
     
     private func checkEmailDuplicate(_ email: String) {
-        emailValidationCancellable?.cancel()
         emailValidationState = .checkingDuplication
         
-        emailValidationCancellable = authCore.checkEmailDuplicate(email: email)
+        cancellableBag[SubscriptionKey.emailValidation] = authCore.checkEmailDuplicate(email: email)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
@@ -234,10 +234,9 @@ final class RegistrationViewModel: ObservableObject {
     }
     
     private func verifyAuthorizationCode(_ email: String, code: String) {
-        authCodeValidationCancellable?.cancel()
         authorizationCodeValidationState = .checkingAuthorizationCode
         
-        authCodeValidationCancellable = authCore.verifyAuthorizationCode(email: email, code: code)
+        cancellableBag[SubscriptionKey.authCodeValidation] = authCore.verifyAuthorizationCode(email: email, code: code)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished: break
@@ -273,9 +272,7 @@ final class RegistrationViewModel: ObservableObject {
     }
     
     private func register() {
-        registrationCancellable?.cancel()
-        
-        registrationCancellable = authCore.register(email: emailFieldText, password: passwordFieldText, nickname: nicknameFieldText, profileImageData: profileImageData)
+        cancellableBag[SubscriptionKey.registration] = authCore.register(email: emailFieldText, password: passwordFieldText, nickname: nicknameFieldText, profileImageData: profileImageData)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
@@ -315,10 +312,9 @@ extension RegistrationViewModel {
     func requestAuthorizationCode() {
         guard emailValidationState == .valid else { return }
         
-        authCodeRequestCancellable?.cancel()
         authorizationCodeValidationState = .beforeValidate
         
-        authCodeRequestCancellable = authCore.requestAuthorizationCode(email: emailFieldText)
+        cancellableBag[SubscriptionKey.authCodeRequest] = authCore.requestAuthorizationCode(email: emailFieldText)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:
@@ -328,30 +324,6 @@ extension RegistrationViewModel {
                     self?.floater = .errorOccured(message: "잠시 후 다시 시도해주세요.")
                 }
             } receiveValue: { _ in }
-    }
-    
-    func verifyAuthorizationCode() {
-        authorizationCodeValidationState = .checkingAuthorizationCode
-        
-        authCore.verifyAuthorizationCode(email: emailFieldText, code: authorizationCodeFieldText)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure:
-                    self?.floater = .errorOccured(message: "잠시 후 다시 시도해주세요.")
-                    self?.authorizationCodeValidationState = .beforeValidate
-                }
-            } receiveValue: { [weak self] isVerified in
-                if isVerified {
-                    self?.authorizationCodeValidationState = .valid
-                    self?.stopTimer()
-                } else {
-                    self?.floater = .inValidAuthorizationCode
-                    self?.authorizationCodeValidationState = .invalid
-                }
-            }
-            .store(in: &cancellables)
     }
     
     func proceed() {

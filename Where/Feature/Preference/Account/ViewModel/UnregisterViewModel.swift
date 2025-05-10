@@ -15,7 +15,7 @@ final class UnregisterViewModel: ObservableObject {
     @Published var isSheetPresented: Bool = false
     
     private let authCore: AuthentificationCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -23,22 +23,7 @@ final class UnregisterViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        authCore.currentUser
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] user in
-                guard let user else {
-                    self?.selectedUnregisterReason = .infrequentUse
-                    self?.unregisterStep = .unregisterComplete
-                    self?.isSheetPresented = false
-                    return
-                }
-                self?.selectedUnregisterReason = .infrequentUse
-                self?.unregisterStep = .submitUnregisterReason
-                return
-            }
-            .store(in: &cancellables)
+        
     }
 }
 
@@ -80,6 +65,14 @@ extension UnregisterViewModel {
     }
     
     func unregister() {
-        authCore.unregister()
+        cancellableBag[#function] = authCore.unregister()
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] _ in
+                self?.isSheetPresented = false
+                self?.selectedUnregisterReason = .infrequentUse
+                self?.unregisterStep = .unregisterComplete
+            }
     }
 }

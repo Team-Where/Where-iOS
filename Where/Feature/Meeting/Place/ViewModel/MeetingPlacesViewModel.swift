@@ -18,7 +18,7 @@ final class MeetingPlacesViewModel: ObservableObject {
     @Published var places = [Place]()
     
     private let placeCore: PlaceCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
@@ -27,7 +27,7 @@ final class MeetingPlacesViewModel: ObservableObject {
     
     private func subscribe() {
         placeCore.places
-            .combineLatest($sortOption.setFailureType(to: PlaceCoreError.self))
+            .combineLatest($sortOption)
             .map { (dict, option) -> [Place] in
                 switch option {
                 case .all:
@@ -80,7 +80,7 @@ final class MeetingPlacesViewModel: ObservableObject {
             } receiveValue: { [weak self] places in
                 self?.places = places
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Places")
     }
 }
 

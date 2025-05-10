@@ -21,7 +21,7 @@ final class EditProfileViewModel: ObservableObject {
     private(set) var currentUser: User?
     
     private let authCore: AuthentificationCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -31,21 +31,11 @@ final class EditProfileViewModel: ObservableObject {
     private func subscribe() {
         authCore.currentUser
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    self?.step = .errorOccured
-#if DEBUG
-                    print(error)
-#endif
-                }
-            } receiveValue: { [weak self] user in
-                guard let user else { return }
-                self?.nicknameFieldText = user.nickname ?? String()
+            .sink { [weak self] user in
+                guard let nickname = user?.nickname else { return }
+                self?.nicknameFieldText = nickname
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "CurrentUser")
         
         $nicknameFieldText
             .removeDuplicates()
@@ -53,7 +43,7 @@ final class EditProfileViewModel: ObservableObject {
             .sink { [weak self] nickname in
                 self?.isNicknameValid = nickname.isValidNickname()
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "NicknameFieldText")
     }
 }
 
@@ -130,7 +120,7 @@ extension EditProfileViewModel {
             } receiveValue: { (_, isDone) in
                 return
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: #function)
     }
     
     func selectProfileImageData(_ data: Data?) {

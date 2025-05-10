@@ -23,7 +23,8 @@ final class MeetingInformationViewModel: ObservableObject {
     }
     
     private let meetingCore: MeetingCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
+    
     init(resolver: Resolver) {
         meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
     }
@@ -31,22 +32,17 @@ final class MeetingInformationViewModel: ObservableObject {
     
     private func subscribe() {
         meetingCore.meetings
-            .mapError {
-                ViewModelError.meetingError($0)
-            }
-            .combineLatest($meetingID.setFailureType(to: ViewModelError.self))
+            .combineLatest($meetingID)
             .compactMap{ (dict, id) -> Meeting? in
                 guard let id else { return nil }
                 return dict[id]
             }
-            .sink { completion in
-                // TODO: Error handling
-            } receiveValue: { [weak self] in
-                self?._meeting = $0
-                self?.titleText = $0.title
-                self?.descriptionText = $0.description
+            .sink { [weak self] meeting in
+                self?._meeting = meeting
+                self?.titleText = meeting.title
+                self?.descriptionText = meeting.description
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Meetings")
     }
 }
 
@@ -56,25 +52,44 @@ extension MeetingInformationViewModel {
     }
     
     func updateMeetingTitle() {
-        meetingCore.updateMeeting(
+        cancellableBag[#function] = meetingCore.updateMeeting(
             id: meeting.id,
             title: titleText,
             description: nil,
             imageData: nil
         )
+        .sink { completion in
+            // TODO: 에러 핸들링
+        } receiveValue: { [weak self] meeting in
+            self?._meeting = meeting
+            self?.titleText = meeting.title
+            self?.descriptionText = meeting.description
+        }
     }
     
     func updateMeetingDescription() {
-        meetingCore.updateMeeting(
+        cancellableBag[#function] = meetingCore.updateMeeting(
             id: meeting.id,
             title: nil,
             description: descriptionText,
             imageData: nil
         )
+        .sink { completion in
+            // TODO: 에러 핸들링
+        } receiveValue: { [weak self] meeting in
+            self?._meeting = meeting
+            self?.titleText = meeting.title
+            self?.descriptionText = meeting.description
+        }
     }
     
     func exitMeeting() {
         meetingCore.exitMeeting(id: meeting.id)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { _ in
+                //
+            }
     }
 }
 

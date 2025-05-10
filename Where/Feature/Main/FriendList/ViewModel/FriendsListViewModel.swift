@@ -24,7 +24,7 @@ final class FriendsListViewModel: ObservableObject {
     private let authCore: AuthentificationCoreProtocol
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -36,43 +36,24 @@ final class FriendsListViewModel: ObservableObject {
     private func subscribe() {
         authCore.currentUser
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    // TODO: 에러 핸들링
-                    #if DEBUG
-                    print(error)
-                    #endif
-                }
-            } receiveValue: { [weak self] user in
+            .sink { [weak self] user in
                 self?.user = user
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "CurrentUser")
         
         communityCore.friends
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print(error)
-                    #endif
-                }
-            } receiveValue: { [weak self] dict in
-                self?.friends = dict.values.map { $0 }.sorted { $0.nickname < $1.nickname }
+            .sink { [weak self] dict in
+                self?.friends = dict.values.sorted { $0.nickname < $1.nickname }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Friends")
         
         meetingCore.meetingSummaries
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 self?.meetingsCount = dict.count
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "MeetingSummaries")
         
         $searchingText
             .removeDuplicates()
@@ -87,7 +68,7 @@ final class FriendsListViewModel: ObservableObject {
                 
                 self?.searchedFriends = filtered
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "SearchingText")
     }
 }
 
@@ -150,7 +131,13 @@ extension FriendsListViewModel {
     }
     
     func deleteFriend(by id: UInt64) {
-        communityCore.deleteFriend(id: id)
+        cancellableBag[#function] = communityCore.deleteFriend(id: id)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: {
+                // TODO: 로딩 인디케이터 해제 등
+            }
     }
     
     func presentHistoryWithFriend(friend: FriendRelationship) {

@@ -24,8 +24,7 @@ final class InviteFriendsViewModel: ObservableObject {
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
-    private var inviteParticipantCancellable: AnyCancellable?
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
@@ -47,15 +46,12 @@ final class InviteFriendsViewModel: ObservableObject {
                 
                 self?.searchedFriends = filtered
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "SearchingText")
         
         communityCore.friends
-            .mapError { ViewModelError.communityError($0) }
             .combineLatest(
-                meetingCore.relatedMeetingIDs
-                    .setFailureType(to: ViewModelError.self),
+                meetingCore.relatedMeetingIDs,
                 meetingCore.meetingSummaries
-                    .mapError { ViewModelError.meetingError($0) }
             )
             .map { [weak self] friends, relatedMeetings, summaries in
                 guard let self else { return [] }
@@ -97,11 +93,10 @@ final class InviteFriendsViewModel: ObservableObject {
             } receiveValue: { [weak self] dataSource in
                 self?.friendsDataSource = dataSource
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Friends")
         
         meetingCore.invitationStatus
-            .mapError { ViewModelError.meetingError($0) }
-            .combineLatest($_meetingID.setFailureType(to: ViewModelError.self))
+            .combineLatest($_meetingID)
             .compactMap { (dict, id) -> [MeetingInvitationState]? in
                 guard let id = id else { return nil }
                 return dict[id]
@@ -115,7 +110,7 @@ final class InviteFriendsViewModel: ObservableObject {
                 self?.invitationStatesDict = status.reduce(into: [:]) { $0[$1.guestID] = $1 }
                 self?.invitationStates = status
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "InvitationStatus")
     }
 }
 
@@ -138,9 +133,7 @@ extension InviteFriendsViewModel {
 // MARK: - Interfaces
 extension InviteFriendsViewModel {
     func inviteFriend(_ friend: FriendRelationship) {
-        inviteParticipantCancellable?.cancel()
-        
-        inviteParticipantCancellable = meetingCore.inviteParticipant(id: _meetingID, guest: friend)
+        cancellableBag[#function] = meetingCore.inviteParticipant(id: _meetingID, guest: friend)
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 // TODO: 에러 핸들링

@@ -19,7 +19,7 @@ final class MyMeetingViewModel: ObservableObject {
     
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -30,35 +30,22 @@ final class MyMeetingViewModel: ObservableObject {
     private func subscribe() {
         meetingCore.meetings
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error): print(error)
-                }
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 self?.meetings = dict.values.map { $0 }
                 self?.sortMeetings(by: self?.sortType ?? .scheduled)
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Meetings")
         
         $sortType
             .dropFirst()
             .sink { [weak self] type in
                 self?.sortMeetings(by: type)
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "SortType")
         
         authCore.authentificationState
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print(error)
-                    #endif
-                }
-            } receiveValue: { [weak self] state in
+            .sink { [weak self] state in
                 switch state {
                 case .loginCompleted:
                     self?.isLoginNeeded = false
@@ -71,7 +58,7 @@ final class MyMeetingViewModel: ObservableObject {
                     break
                 }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "AuthentificationState")
     }
     
     private func sortMeetings(by type: MeetingSortType) {

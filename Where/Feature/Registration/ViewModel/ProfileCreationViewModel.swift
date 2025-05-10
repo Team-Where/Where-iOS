@@ -48,7 +48,7 @@ final class ProfileCreationViewModel: ObservableObject {
     }
     
     private let authCore: AuthentificationCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -74,17 +74,15 @@ final class ProfileCreationViewModel: ObservableObject {
                 
                 self?.nicknameValidationState = .valid
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "NicknameFieldText")
         
         authCore.authentificationState
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                //
-            } receiveValue: { [weak self] state in
+            .sink { [weak self] state in
                 guard case .registrationNeeded(let user) = state else { return }
                 self?.socialUser = user
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "AuthentificationState")
     }
     
     private func setUpProfile(_ user: User) {
@@ -116,7 +114,7 @@ final class ProfileCreationViewModel: ObservableObject {
         let nicknameUpdatePublisher = authCore.updateNickname(nicknameFieldText)
         
         // 프로필사진 설정과 닉네임 설정을 같이 요청한 뒤 결과 반영
-        imageUpdatePublisher
+        cancellableBag[#function] = imageUpdatePublisher
             .combineLatest(nicknameUpdatePublisher)
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -124,7 +122,6 @@ final class ProfileCreationViewModel: ObservableObject {
             } receiveValue: { [weak self] _ in
                 self?.profileCreationStep = .completed
             }
-            .store(in: &cancellables)
     }
 }
 

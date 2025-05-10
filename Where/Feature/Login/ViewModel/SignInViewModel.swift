@@ -19,7 +19,7 @@ final class SignInViewModel: ObservableObject {
     }
     
     private let authCore: AuthentificationCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -29,33 +29,15 @@ final class SignInViewModel: ObservableObject {
     private func subscribe() {
         authCore.currentUser
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished:
-                    self?.state = .success
-                case .failure(let error):
-                    switch error {
-                    case .loginFailed, .userInfoFetchFailed:
-                        self?.state = .failure
-                        self?.isPopupPresented = true
-                    case .unknown(let error):
-                        #if DEBUG
-                        if let error = error {
-                            print(error.localizedDescription)
-                        }
-                        #endif
-                        self?.state = .failure
-                    default:
-                        self?.state = .failure
-                    }
+            .sink { [weak self] user in
+                guard user != nil else {
+                    self?.state = .failure
+                    return
                 }
-            } receiveValue: { [weak self] user in
-                #if DEBUG
-                print("자체 로그인: \(user?.nickname ?? "알 수 없음")")
-                #endif
+                
                 self?.state = .success
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "CurrentUser")
     }
 }
 

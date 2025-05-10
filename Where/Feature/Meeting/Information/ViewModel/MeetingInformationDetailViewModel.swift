@@ -21,13 +21,10 @@ final class MeetingInformationDetailViewModel: ObservableObject {
         _meeting
     }
     
-    
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
     private let placeCore: PlaceCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
-    
-    
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
@@ -51,31 +48,24 @@ final class MeetingInformationDetailViewModel: ObservableObject {
                 self?.invitedFriends = status.filter { $0.isInvited }
                 self?.watingFriends = status.filter { $0.isInvited == false }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "InvitationStatus")
         
         meetingCore.meetings
-            .mapError {
-                ViewModelError.meetingError($0)
-            }
-            .combineLatest($_meeting.setFailureType(to: ViewModelError.self))
+            .combineLatest($_meeting)
             .compactMap{ (dict, meeting) -> Meeting? in
                 guard let meeting else { return nil }
                 return dict[meeting.id]
             }
-            .sink { comletion in
-                // TODO: Error handling
-            } receiveValue: { [weak self] in
+            .sink { [weak self] in
                 self?._meeting = $0
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Meetings")
         
         placeCore.places
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 self?.places = dict.values.map { $0 }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Places")
     }
 }
 
@@ -90,6 +80,11 @@ extension MeetingInformationDetailViewModel {
     }
     
     func endMeeting() {
-        meetingCore.endMeeting(id: _meeting.id)
+        cancellableBag[#function] = meetingCore.endMeeting(id: _meeting.id)
+            .sink { completion in
+                
+            } receiveValue: { _ in
+                // 별도의 완료 처리는 없음
+            }
     }
 }

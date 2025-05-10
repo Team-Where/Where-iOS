@@ -26,7 +26,7 @@ final class CreateMeetingViewModel: ObservableObject {
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
@@ -36,12 +36,9 @@ final class CreateMeetingViewModel: ObservableObject {
     
     private func subscribe() {
         communityCore.friends
-            .mapError { ViewModelError.communityError($0) }
             .combineLatest(
-                meetingCore.relatedMeetingIDs
-                    .setFailureType(to: ViewModelError.self),
+                meetingCore.relatedMeetingIDs,
                 meetingCore.meetingSummaries
-                    .mapError { ViewModelError.meetingError($0) }
             )
             .map { [weak self] friends, relatedMeetings, summaries in
                 guard let self else { return [] }
@@ -80,7 +77,7 @@ final class CreateMeetingViewModel: ObservableObject {
             } receiveValue: { [weak self] dataSource in
                 self?.friendsDataSource = dataSource
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Friends")
     }
 }
 

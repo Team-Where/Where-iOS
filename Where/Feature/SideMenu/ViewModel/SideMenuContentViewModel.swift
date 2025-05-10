@@ -17,7 +17,7 @@ final class SideMenuContentViewModel: ObservableObject {
     
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
@@ -28,34 +28,16 @@ final class SideMenuContentViewModel: ObservableObject {
     private func subscribe() {
         authCore.currentUser
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    #if DEBUG
-                    print(error.localizedDescription)
-                    #endif
-                }
-            } receiveValue: { [weak self] user in
+            .sink { [weak self] user in
                 self?.user = user
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "CurrentUser")
         
         meetingCore.meetings
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    #if DEBUG
-                    print(error.localizedDescription)
-                    #endif
-                }
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 self?.totalMeetingsCount = dict.values.count
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "Meetings")
     }
 }
