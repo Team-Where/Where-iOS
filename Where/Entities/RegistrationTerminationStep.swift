@@ -119,3 +119,19 @@ enum RegistrationFlow {
     case traditionalRegistration(email: String, password: String)
     case socialRegistration(user: User)
 }
+
+/// 인증코드 검증 결과
+enum AuthorizationCodeValidationResult {
+    /// 올바른 인증코드
+    case verified
+    /// 올바르지 않은 인증코드
+    case notVerified
+    
+    init(_ rawValue: String) {
+        if rawValue == "Verified" {
+            self = .verified
+        } else {
+            self = .notVerified
+        }
+    }
+}
