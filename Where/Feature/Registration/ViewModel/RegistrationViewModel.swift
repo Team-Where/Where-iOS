@@ -244,8 +244,9 @@ final class RegistrationViewModel: ObservableObject {
                     self?.floater = .errorOccured(message: "인증코드 확인 작업이 중단되었어요.")
                     self?.authorizationCodeValidationState = .invalid
                 }
-            } receiveValue: { [weak self] isVerified in
-                if isVerified {
+            } receiveValue: { [weak self] result in
+                switch result {
+                case .verified:
                     self?.authorizationCodeValidationState = .valid
                     self?.stopTimer()
                     self?.registrationStep = .password
@@ -253,7 +254,8 @@ final class RegistrationViewModel: ObservableObject {
                     self?.passwordComparisonResult = .unknown
                     self?.passwordFieldText = String()
                     self?.reInputPasswordFieldText = String()
-                } else {
+                    
+                case .notVerified:
                     self?.floater = .inValidAuthorizationCode
                     self?.authorizationCodeValidationState = .invalid
                 }

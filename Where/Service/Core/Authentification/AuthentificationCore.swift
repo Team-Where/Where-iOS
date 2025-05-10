@@ -42,7 +42,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func requestAuthorizationCode(email: String) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 인증 코드 검증
-    func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<Bool, AuthentificationCoreError>
+    func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<AuthorizationCodeValidationResult, AuthentificationCoreError>
     
     /// 회원가입
     func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError>
@@ -282,13 +282,18 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func requestAuthorizationCode(email: String) -> AnyPublisher<Void, AuthentificationCoreError> {
-        // TODO: 인증 코드 발급 요청 API 연결 필요
-        Just(()).setFailureType(to: AuthentificationCoreError.self).eraseToAnyPublisher()
+        apiService.requestPublisher(Endpoint.requestAuthCode(email: email), EmptyDTO.Response.self)
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .map { _ in () }
+            .eraseToAnyPublisher()
     }
     
-    func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<Bool, AuthentificationCoreError> {
-        // TODO: 인증 코드 확인 요청 API 연결 필요
-        Just(true).setFailureType(to: AuthentificationCoreError.self).eraseToAnyPublisher()
+    func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<AuthorizationCodeValidationResult, AuthentificationCoreError> {
+        let dto = VerifyAuthCodeDTO.Request(email: email, code: code)
+        return apiService.requestPublisher(Endpoint.verifyAuthCode(dto: dto), String.self)
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .map { .init($0) }
+            .eraseToAnyPublisher()
     }
     
     func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError> {
