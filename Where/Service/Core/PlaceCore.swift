@@ -10,33 +10,33 @@ import Combine
 
 protocol PlaceCoreProtocol: CoreProtocol {
     /// 장소 목록
-    var places: AnyPublisher<[UInt64: Place], PlaceCoreError> { get }
+    var places: AnyPublisher<[UInt64: Place], Never> { get }
     /// 특정 장소에 대한 코멘트 목록
-    var comments: AnyPublisher<[UInt64: Comment], PlaceCoreError> { get }
+    var comments: AnyPublisher<[UInt64: Comment], Never> { get }
     
     /// 장소 생성
     /// - Parameters:
     ///     - meetingID: 모임 식별자
     ///     - name: 장소명
     ///     - address: 장소 주소
-    func createPlace(meetingID: UInt64, name: String, address: String)
+    func createPlace(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Place, PlaceCoreError>
     /// 특정 장소의 상세 정보 조회
     func readSpecificPlace(id: UInt64)
     /// 장소 삭제
-    func deletePlace(id: UInt64)
+    func deletePlace(id: UInt64) -> AnyPublisher<Void, PlaceCoreError>
     /// 장소 선택
-    func pickPlace(id: UInt64)
+    func pickPlace(id: UInt64) -> AnyPublisher<Void, PlaceCoreError>
     /// 장소 좋아요 변경
-    func togglePlaceLike(id: UInt64)
+    func togglePlaceLike(id: UInt64) -> AnyPublisher<Void, PlaceCoreError>
     /// 장소에 대한 코멘트 작성
     /// - Parameters:
     ///     - placeID: 장소 식별자
     ///     - description: 코멘트 내용
-    func createComment(placeID: UInt64, description: String)
+    func createComment(placeID: UInt64, description: String) -> AnyPublisher<Comment, PlaceCoreError>
     /// 장소에 대한 코멘트 수정
-    func updateComment(comment: Comment, description: String)
+    func updateComment(comment: Comment, description: String) -> AnyPublisher<Void, PlaceCoreError>
     /// 장소에 대한 코멘트 삭제
-    func deleteComment(comment: Comment)
+    func deleteComment(comment: Comment) -> AnyPublisher<Void, PlaceCoreError>
 }
 
 protocol PlaceMediationProtocol {
@@ -58,11 +58,11 @@ final class PlaceCore {
     
     private var currentUserID: UInt64?
     
-    private let placesSubject = CurrentValueSubject<[UInt64: Place], PlaceCoreError>([:])
-    private let commentsSubject = CurrentValueSubject<[UInt64: Comment], PlaceCoreError>([:])
+    private let placesSubject = CurrentValueSubject<[UInt64: Place], Never>([:])
+    private let commentsSubject = CurrentValueSubject<[UInt64: Comment], Never>([:])
     
     private let apiService: APIServable
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(
         apiService: APIServable
@@ -78,100 +78,75 @@ final class PlaceCore {
 
 // MARK: - PlaceCoreProtocol Confirmation
 extension PlaceCore: PlaceCoreProtocol {
-    var places: AnyPublisher<[UInt64 : Place], PlaceCoreError> {
+    var places: AnyPublisher<[UInt64 : Place], Never> {
         placesSubject.eraseToAnyPublisher()
     }
     
-    var comments: AnyPublisher<[UInt64 : Comment], PlaceCoreError> {
+    var comments: AnyPublisher<[UInt64 : Comment], Never> {
         commentsSubject.eraseToAnyPublisher()
     }
     
-    func createPlace(meetingID: UInt64, name: String, address: String) {
+    func createPlace(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Place, PlaceCoreError> {
         guard let userID = currentUserID else {
-            placesSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = CreatePlaceDTO.Request(meetingID: meetingID, userID: userID, name: name, address: address)
-        
-        apiService
-            .requestPublisher(Endpoint.createPlace(dto: dto), CreatePlaceDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
-                let place = response.toEntity()
-                guard var places = self?.placesSubject.value else { return }
-                places[place.id] = place
+        return apiService.requestPublisher(Endpoint.createPlace(dto: dto), CreatePlaceDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .map { [weak self] in
+                let newPlace = $0.toEntity()
+                guard var places = self?.placesSubject.value else { return newPlace }
+                places[newPlace.id] = newPlace
                 self?.placesSubject.send(places)
+                return newPlace
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
     func readSpecificPlace(id: UInt64) {
-        apiService
+        cancellableBag[#function] = apiService
             .requestPublisher(Endpoint.readComments(placeID: id), ReadCommentsDTO.Response.self)
             .map { response -> [UInt64: Comment] in
                 response
                     .map { $0.toEntity() }
                     .reduce(into: [:]) { $0[$1.id] = $1 }
             }
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error):
-                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] comments in
                 self?.commentsSubject.send(comments)
             }
-            .store(in: &cancellables)
     }
     
-    func deletePlace(id: UInt64) {
+    func deletePlace(id: UInt64) -> AnyPublisher<Void, PlaceCoreError> {
         guard let userID = currentUserID else {
-            placesSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = DeletePlaceDTO.Request(id: id, userID: userID)
-        
-        apiService
-            .requestPublisher(Endpoint.deletePlace(dto: dto), EmptyDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] _ in
+        return apiService.requestPublisher(Endpoint.deletePlace(dto: dto), EmptyDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .map { [weak self] _ in
                 guard var places = self?.placesSubject.value else { return }
                 places[id] = nil
                 self?.placesSubject.send(places)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func pickPlace(id: UInt64) {
+    func pickPlace(id: UInt64) -> AnyPublisher<Void, PlaceCoreError> {
         guard let userID = currentUserID else {
-            placesSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = PickPlaceDTO.Request(id: id, userID: userID)
-        
-        apiService
-            .requestPublisher(Endpoint.pickPlace(dto: dto), PickPlaceDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.pickPlace(dto: dto), PickPlaceDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .map { [weak self] response in
                 guard var places = self?.placesSubject.value,
                       let oldPlace = places[response.id]
                 else { return }
@@ -192,26 +167,18 @@ extension PlaceCore: PlaceCoreProtocol {
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func togglePlaceLike(id: UInt64) {
+    func togglePlaceLike(id: UInt64) -> AnyPublisher<Void, PlaceCoreError> {
         guard let userID = currentUserID else {
-            placesSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = TogglePlaceLikeDTO.Request(id: id, userID: userID)
-        
-        apiService
-            .requestPublisher(Endpoint.togglePlaceLike(dto: dto), TogglePlaceLikeDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.togglePlaceLike(dto: dto), TogglePlaceLikeDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .map { [weak self] response in
                 guard var places = self?.placesSubject.value,
                       let oldPlace = places[response.id]
                 else { return }
@@ -232,54 +199,36 @@ extension PlaceCore: PlaceCoreProtocol {
                 places[response.id] = newPlace
                 self?.placesSubject.send(places)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func createComment(placeID: UInt64, description: String) {
+    func createComment(placeID: UInt64, description: String) -> AnyPublisher<Comment, PlaceCoreError> {
         guard let userID = currentUserID else {
-            commentsSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = CreateCommentDTO.Request(placeID: placeID, userID: userID, description: description)
-        
-        apiService
-            .requestPublisher(Endpoint.createComment(dto: dto), CreateCommentDTO.Response.self)
-            .map {
-                $0.toEntity(placeID)
-            }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.commentsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] comment in
-                guard var comments = self?.commentsSubject.value else { return }
-                
-                comments[comment.id] = comment
+        return apiService.requestPublisher(Endpoint.createComment(dto: dto), CreateCommentDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .map { [weak self] response in
+                let newComment = response.toEntity(placeID)
+                guard var comments = self?.commentsSubject.value else { return newComment }
+                comments[newComment.id] = newComment
                 self?.commentsSubject.send(comments)
+                return newComment
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func updateComment(comment: Comment, description: String) {
+    func updateComment(comment: Comment, description: String) -> AnyPublisher<Void, PlaceCoreError> {
         guard let userID = currentUserID else {
-            commentsSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = UpdateCommentDTO.Request(id: comment.id, userID: userID, description: description)
-        
-        apiService
-            .requestPublisher(Endpoint.updateComment(dto: dto), UpdateCommentDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.commentsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.updateComment(dto: dto), UpdateCommentDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .map { [weak self] response in
                 guard var comments = self?.commentsSubject.value,
                       let oldComment = comments[response.commentID]
                 else { return }
@@ -294,56 +243,43 @@ extension PlaceCore: PlaceCoreProtocol {
                 comments[response.commentID] = newComment
                 self?.commentsSubject.send(comments)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func deleteComment(comment: Comment) {
+    func deleteComment(comment: Comment) -> AnyPublisher<Void, PlaceCoreError> {
         guard let userID = currentUserID else {
-            commentsSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = DeletePlaceDTO.Request(id: comment.id, userID: userID)
-        
-        apiService
-            .requestPublisher(Endpoint.deleteComment(dto: dto), EmptyDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.commentsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] _ in
+        return apiService.requestPublisher(Endpoint.deleteComment(dto: dto), EmptyDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .map { [weak self] _ in
                 guard var comments = self?.commentsSubject.value else { return }
                 comments[comment.id] = nil
                 self?.commentsSubject.send(comments)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
 }
 
 // MARK: - PlaceMediationProtocol Conformation
 extension PlaceCore: PlaceMediationProtocol {
     func loadPlaces(meetingID: UInt64) {
-        guard let userID = currentUserID else {
-            placesSubject.send(completion: .failure(.userIDNotSet))
-            return
-        }
+        guard let userID = currentUserID else { return }
         
-        apiService
-            .requestPublisher(Endpoint.readPlaceDetail(userID: userID, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
-            .sink { [weak self] completion in
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.readPlaceDetail(userID: userID, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
+            .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    self?.placesSubject.send(completion: .failure(.networkingError(error)))
+                    print(error)
                 }
             } receiveValue: { [weak self] response in
                 let places = response.map { $0.toEntity() }
                 let placesDict = places.reduce(into: [:]) { $0[$1.id] = $1 }
                 self?.placesSubject.send(placesDict)
             }
-            .store(in: &cancellables)
     }
     
     func setCurrentUserID(_ id: UInt64?) {

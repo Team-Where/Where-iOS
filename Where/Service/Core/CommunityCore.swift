@@ -10,12 +10,12 @@ import Combine
 
 protocol CommunityCoreProtocol: CoreProtocol {
     /// 나의 친구 목록
-    var friends: AnyPublisher<[UInt64: FriendRelationship], CommunityCoreError> { get }
+    var friends: AnyPublisher<[UInt64: FriendRelationship], Never> { get }
     
     /// 특정 친구와 함께한 모임 조회
     func readHistoryWithFriend(id: UInt64)
     /// 친구 삭제
-    func deleteFriend(id: UInt64)
+    func deleteFriend(id: UInt64) -> AnyPublisher<Void, CommunityCoreError>
     /// 친구 즐겨찾기 토글
     func toggleBookmarkFriend(id: UInt64)
 }
@@ -42,10 +42,10 @@ final class CommunityCore {
     private var _friends = [UInt64: FriendRelationship]()
     private var currentUserID: UInt64?
     
-    private let friendsSubject = CurrentValueSubject<[UInt64: FriendRelationship], CommunityCoreError>([:])
+    private let friendsSubject = CurrentValueSubject<[UInt64: FriendRelationship], Never>([:])
     
     private let apiService: APIServable
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(
         apiService: APIServable
@@ -56,25 +56,16 @@ final class CommunityCore {
     
     private func subscribe() {
         friendsSubject
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    switch error {
-                    case .networkingError(let error): print(error)
-                    case .userIDNotSet: break
-                    }
-                }
-            } receiveValue: { [weak self] dict in
+            .sink { [weak self] dict in
                 self?._friends = dict
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "FriendsSubject")
     }
 }
 
 // MARK: CommunityCoreProtocol Confirmation
 extension CommunityCore: CommunityCoreProtocol {
-    var friends: AnyPublisher<[UInt64 : FriendRelationship], CommunityCoreError> {
+    var friends: AnyPublisher<[UInt64 : FriendRelationship], Never> {
         friendsSubject.eraseToAnyPublisher()
     }
     
@@ -82,46 +73,33 @@ extension CommunityCore: CommunityCoreProtocol {
         mediator?.notify(event: .historyWithFriendWillUpdate(friendID: id))
     }
     
-    func deleteFriend(id: UInt64) {
+    func deleteFriend(id: UInt64) -> AnyPublisher<Void, CommunityCoreError> {
         guard let userID = currentUserID else {
-            friendsSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
         let dto = DeleteFriendDTO.Request(userID: userID, friendID: id)
         
-        apiService
+        return apiService
             .requestPublisher(Endpoint.deleteFriend(dto: dto), EmptyDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.friendsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] _ in
+            .mapError { CommunityCoreError.networkingError($0) }
+            .map { [weak self] _ in
                 guard var friends = self?.friendsSubject.value else { return }
                 friends[id] = nil
                 self?.friendsSubject.send(friends)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
     func toggleBookmarkFriend(id: UInt64) {
-        guard let userID = currentUserID else {
-            friendsSubject.send(completion: .failure(.userIDNotSet))
-            return
-        }
+        guard let userID = currentUserID else { return }
         
         let dto = BookmarkFriendDTO.Request(userID: userID, friendID: id)
         
-        apiService
+        cancellableBag[#function] = apiService
             .requestPublisher(Endpoint.bookmarkFriend(dto: dto), BookmarkFriendDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.friendsSubject.send(completion: .failure(.networkingError(error)))
-                }
+            .sink { completion in
+                
             } receiveValue: { [weak self] response in
                 guard var friends = self?.friendsSubject.value,
                       let oldFriend = friends[response.friendID]
@@ -137,20 +115,19 @@ extension CommunityCore: CommunityCoreProtocol {
                 friends[response.friendID] = newFriend
                 self?.friendsSubject.send(friends)
             }
-            .store(in: &cancellables)
     }
 }
 
 // MARK: - CommunityMediationProtocol Conformation
 extension CommunityCore: CommunityMediationProtocol {
     func loadFriends(userID: UInt64) {
-        apiService
+        cancellableBag[#function] = apiService
             .requestPublisher(Endpoint.readFriends(userID: userID), ReadFriendsDTO.Response.self)
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    self?.friendsSubject.send(completion: .failure(.networkingError(error)))
+                    print(error)
                 }
             } receiveValue: { [weak self] response in
                 let friends: [(friend: FriendRelationship, meetingSummaries: [MeetingSummary])] = response
@@ -165,10 +142,8 @@ extension CommunityCore: CommunityMediationProtocol {
                 let meetingSummaryDict = Set(friends.flatMap ({ $0.meetingSummaries })).reduce(into: [:]) { $0[$1.id] = $1 }
                 
                 self?.friendsSubject.send(friendsDict)
-                
                 self?.mediator?.notify(event: .friendsListUpdated(meetingIDs: meetingIDsDict, summaries: meetingSummaryDict))
             }
-            .store(in: &cancellables)
     }
     
     func setCurrentUserID(_ id: UInt64?) {

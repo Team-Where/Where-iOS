@@ -10,7 +10,7 @@ import Combine
 
 protocol NotificationCoreProtocol: CoreProtocol {
     /// 알림 목록
-    var notifications: AnyPublisher<[UInt64: Notification], NotificationCoreError> { get }
+    var notifications: AnyPublisher<[UInt64: Notification], Never> { get }
     
     /// 알림 읽음 처리
     func markNotificationAsRead(id: UInt64)
@@ -33,9 +33,9 @@ final class NotificationCore {
     
     private var _notifications = [UInt64: Notification]()
     
-    private let notificationsSubject = CurrentValueSubject<[UInt64: Notification], NotificationCoreError>([:])
+    private let notificationsSubject = CurrentValueSubject<[UInt64: Notification], Never>([:])
     
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init() {
         subscribe()
@@ -48,13 +48,13 @@ final class NotificationCore {
             } receiveValue: { [weak self] dict in
                 self?._notifications = dict
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "NotificationsSubject")
     }
 }
 
 // MARK: - NotificationCoreProtocol Conformation
 extension NotificationCore: NotificationCoreProtocol {
-    var notifications: AnyPublisher<[UInt64 : Notification], NotificationCoreError> {
+    var notifications: AnyPublisher<[UInt64 : Notification], Never> {
         notificationsSubject.eraseToAnyPublisher()
     }
     

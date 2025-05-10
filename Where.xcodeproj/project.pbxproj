@@ -142,6 +142,8 @@
 		04EA3DEB2DCBB8AF003297A3 /* TextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EA3DEA2DCBB8AF003297A3 /* TextEditor.swift */; };
 		04EA3DED2DCBB960003297A3 /* RoundedImageModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EA3DEC2DCBB95A003297A3 /* RoundedImageModifier.swift */; };
 		04EA3DEF2DCBB97B003297A3 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EA3DEE2DCBB97B003297A3 /* Image.swift */; };
+		04EA3DF22DCE40DD003297A3 /* CancellableBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EA3DF12DCE40DD003297A3 /* CancellableBag.swift */; };
+		04EA3DF42DCE4A8F003297A3 /* AnyCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EA3DF32DCE4A8F003297A3 /* AnyCancellable.swift */; };
 		04F0517E2D422B01000892C0 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 04F0517D2D422B01000892C0 /* KakaoSDKAuth */; };
 		04F051802D422B01000892C0 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 04F0517F2D422B01000892C0 /* KakaoSDKCommon */; };
 		04F051822D422B01000892C0 /* KakaoSDKFriend in Frameworks */ = {isa = PBXBuildFile; productRef = 04F051812D422B01000892C0 /* KakaoSDKFriend */; };
@@ -353,6 +355,8 @@
 		04EA3DEA2DCBB8AF003297A3 /* TextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditor.swift; sourceTree = "<group>"; };
 		04EA3DEC2DCBB95A003297A3 /* RoundedImageModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageModifier.swift; sourceTree = "<group>"; };
 		04EA3DEE2DCBB97B003297A3 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
+		04EA3DF12DCE40DD003297A3 /* CancellableBag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancellableBag.swift; sourceTree = "<group>"; };
+		04EA3DF32DCE4A8F003297A3 /* AnyCancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCancellable.swift; sourceTree = "<group>"; };
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
 		7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationViewModel.swift; sourceTree = "<group>"; };
 		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -447,6 +451,7 @@
 		041BC4082DCB95CD0035C825 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				04EA3DF02DCE40C2003297A3 /* Combine */,
 				041BC40E2DCB97010035C825 /* SwiftUI */,
 				041BC4092DCB95D40035C825 /* Foundation */,
 			);
@@ -757,6 +762,15 @@
 				04C6F23F2DBA656A0099874F /* HistoryReminderViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		04EA3DF02DCE40C2003297A3 /* Combine */ = {
+			isa = PBXGroup;
+			children = (
+				04EA3DF12DCE40DD003297A3 /* CancellableBag.swift */,
+				04EA3DF32DCE4A8F003297A3 /* AnyCancellable.swift */,
+			);
+			path = Combine;
 			sourceTree = "<group>";
 		};
 		04F0518E2D424BF1000892C0 /* Storage */ = {
@@ -1489,6 +1503,7 @@
 				045B44BA2D21650200514A27 /* Pretendard.swift in Sources */,
 				04EA3DE32DCBB4CE003297A3 /* BulletPointModifier.swift in Sources */,
 				04A4F4612D42189F0041FD02 /* Announcement.swift in Sources */,
+				04EA3DF22DCE40DD003297A3 /* CancellableBag.swift in Sources */,
 				042A79F42DA3FC28004105E2 /* AuthentificationStrategyContext.swift in Sources */,
 				046833E02D3B8DD1009D2357 /* FriendsListView.swift in Sources */,
 				046833E92D3B8E8E009D2357 /* MeetingInformationView.swift in Sources */,
@@ -1555,6 +1570,7 @@
 				04A4F43F2D3F92730041FD02 /* RegistrationViewModel.swift in Sources */,
 				04A4F4462D40D8E20041FD02 /* RegistrationTerminationStep.swift in Sources */,
 				7F488A3B2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift in Sources */,
+				04EA3DF42DCE4A8F003297A3 /* AnyCancellable.swift in Sources */,
 				046833DB2D3B8DB8009D2357 /* RegistrationTermView.swift in Sources */,
 				04A530AF2D900251004E58AD /* UnregisterView.swift in Sources */,
 				04854C452D954B02007AADE4 /* SideMenu.swift in Sources */,

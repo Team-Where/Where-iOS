@@ -10,39 +10,39 @@ import Combine
 
 protocol SupportCoreProtocol: CoreProtocol {
     /// 1:1 문의 목록
-    var inquiries: AnyPublisher<[UInt64: Inquiry], SupportCoreError> { get }
+    var inquiries: AnyPublisher<[UInt64: Inquiry], Never> { get }
     /// 공지사항 목록
-    var announcements: AnyPublisher<[UInt64: Announcement], SupportCoreError> { get }
+    var announcements: AnyPublisher<[UInt64: Announcement], Never> { get }
     
     /// 1:1문의 작성 - 사용자
-    func createInquiry(title: String, content: String, images: [Data]?)
+    func createInquiry(title: String, content: String, images: [Data]?) -> AnyPublisher<Void, SupportCoreError>
     /// 1:1문의 답변 작성 - 관리자
     /// - Parameters:
     ///     - id: 문의 식별자
     ///     - content: 답변 내용
-    func createAdminInquiryReply(id: UInt64, content: String)
+    func createAdminInquiryReply(id: UInt64, content: String) -> AnyPublisher<Void, SupportCoreError>
     /// 공지사항 등록
-    func createAnnouncement(title: String, content: String)
+    func createAnnouncement(title: String, content: String) -> AnyPublisher<Void, SupportCoreError>
     /// 공지사항 수정
     /// - Parameters:
     ///     - id: 공지사항 식별자
     ///     - title: 문의 제목
     ///     - content: 문의 내용
-    func updateAnnouncement(id: UInt64, title: String?, content: String?)
+    func updateAnnouncement(id: UInt64, title: String?, content: String?) -> AnyPublisher<Void, SupportCoreError>
     /// 공지사항 삭제
     /// - Parameters:
     ///     - id: 문의 식별자
-    func deleteAnnouncement(id: UInt64)
+    func deleteAnnouncement(id: UInt64) -> AnyPublisher<Void, SupportCoreError>
     /// FAQ 등록
-    func createFAQ(title: String, content: String)
+    func createFAQ(title: String, content: String) -> AnyPublisher<Void, SupportCoreError>
     /// FAQ 수정
     /// - Parameters:
     ///     - id: 공지사항 식별자
     ///     - title: 공지사항 제목
     ///     - content: 공지사항 내용
-    func updateFAQ(id: UInt64, title: String?, content: String?)
+    func updateFAQ(id: UInt64, title: String?, content: String?) -> AnyPublisher<Void, SupportCoreError>
     /// FAQ 삭제
-    func deleteFAQ(id: UInt64)
+    func deleteFAQ(id: UInt64) -> AnyPublisher<Void, SupportCoreError>
 }
 
 protocol SupportMediationProtocol {
@@ -72,12 +72,12 @@ final class SupportCore {
     private var _announcements = [UInt64: Announcement]()
     private var currentUserID: UInt64?
     
-    private let inquiriesSubject = CurrentValueSubject<[UInt64: Inquiry], SupportCoreError>([:])
-    private let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], SupportCoreError>([:])
+    private let inquiriesSubject = CurrentValueSubject<[UInt64: Inquiry], Never>([:])
+    private let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], Never>([:])
     
     private let encoder: JSONEncoder
     private let apiService: APIServable
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(
         encoder: JSONEncoder,
@@ -90,122 +90,85 @@ final class SupportCore {
     
     private func subscribe() {
         inquiriesSubject
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error): print(error)
-                }
+            .sink { completion in
+                
             } receiveValue: { [weak self] dict in
                 self?._inquiries = dict
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "InquiriesSubject")
         
         announcementsSubject
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error): print(error)
-                }
+            .sink { completion in
+                
             } receiveValue: { [weak self] dict in
                 self?._announcements = dict
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "AnnouncementsSubject")
     }
 }
 
 // MARK: - SupportCoreProtocol Confirmation
 extension SupportCore: SupportCoreProtocol {
-    var inquiries: AnyPublisher<[UInt64 : Inquiry], SupportCoreError> {
+    var inquiries: AnyPublisher<[UInt64 : Inquiry], Never> {
         inquiriesSubject.eraseToAnyPublisher()
     }
     
-    var announcements: AnyPublisher<[UInt64 : Announcement], SupportCoreError> {
+    var announcements: AnyPublisher<[UInt64 : Announcement], Never> {
         announcementsSubject.eraseToAnyPublisher()
     }
     
-    func createInquiry(title: String, content: String, images: [Data]?) {
+    func createInquiry(title: String, content: String, images: [Data]?) -> AnyPublisher<Void, SupportCoreError> {
         guard let userID = currentUserID else {
-            inquiriesSubject.send(completion: .failure(.userIDNotSet))
-            return
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
-        do {
-            let dto = CreateUserInquiryDTO.Request(title: title, content: content, userID: userID)
-            let inquiryData = try encoder.encode(dto)
-            
-            apiService
-                .requestPublisher(Endpoint.createUserInquiry(inquiryData: inquiryData, imageDatas: images), CreateUserInquiryDTO.Response.self)
-                .sink { [weak self] completion in
-                    switch completion {
-                    case .finished: break
-                    case .failure(let error):
-                        self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
-                    }
-                } receiveValue: { [weak self] response in
-                    let inquiry = response.toEntity()
-                    guard var inquiries = self?.inquiriesSubject.value else { return }
-                    inquiries[inquiry.id] = inquiry
-                    self?.inquiriesSubject.send(inquiries)
-                }
-                .store(in: &cancellables)
-
-        } catch {
-            inquiriesSubject.send(completion: .failure(.encodingError))
+        let dto = CreateUserInquiryDTO.Request(title: title, content: content, userID: userID)
+        guard let inquiryData = try? encoder.encode(dto) else {
+            return Fail(error: .encodingError).eraseToAnyPublisher()
         }
-    }
-    
-    func createAdminInquiryReply(id: UInt64, content: String) {
-        let dto = CreateAdminInquiryReplyDTO.Request(inquiryID: id, answerContent: content)
         
-        apiService
-            .requestPublisher(Endpoint.createAdminInquiryReply(dto: dto), CreateAdminInquiryReplyDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.createUserInquiry(inquiryData: inquiryData, imageDatas: images), CreateUserInquiryDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] response in
                 let inquiry = response.toEntity()
                 guard var inquiries = self?.inquiriesSubject.value else { return }
                 inquiries[inquiry.id] = inquiry
                 self?.inquiriesSubject.send(inquiries)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func createAnnouncement(title: String, content: String) {
+    func createAdminInquiryReply(id: UInt64, content: String) -> AnyPublisher<Void, SupportCoreError> {
+        let dto = CreateAdminInquiryReplyDTO.Request(inquiryID: id, answerContent: content)
+        return apiService.requestPublisher(Endpoint.createAdminInquiryReply(dto: dto), CreateAdminInquiryReplyDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] response in
+                let inquiry = response.toEntity()
+                guard var inquiries = self?.inquiriesSubject.value else { return }
+                inquiries[inquiry.id] = inquiry
+                self?.inquiriesSubject.send(inquiries)
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    func createAnnouncement(title: String, content: String) -> AnyPublisher<Void, SupportCoreError> {
         let dto = CreateAnnouncementDTO.Request(title: title, content: content)
-        
-        apiService
-            .requestPublisher(Endpoint.createAnnouncement(dto: dto), CreateAnnouncementDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.createAnnouncement(dto: dto), CreateAnnouncementDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] response in
                 let announcement = response.toEntity()
                 guard var announcements = self?.announcementsSubject.value else { return }
                 announcements[announcement.id] = announcement
                 self?.announcementsSubject.send(announcements)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func updateAnnouncement(id: UInt64, title: String?, content: String?) {
+    func updateAnnouncement(id: UInt64, title: String?, content: String?) -> AnyPublisher<Void, SupportCoreError> {
         let dto = UpdateAnnouncementDTO.Request(announcementID: id, title: title, content: content)
-        
-        apiService
-            .requestPublisher(Endpoint.updateAnnouncement(dto: dto), UpdateAnnouncementDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.updateAnnouncement(dto: dto), UpdateAnnouncementDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] response in
                 let announcement = Announcement(
                     id: response.announcementID,
                     title: response.title,
@@ -217,60 +180,39 @@ extension SupportCore: SupportCoreProtocol {
                 announcements[announcement.id] = announcement
                 self?.announcementsSubject.send(announcements)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func deleteAnnouncement(id: UInt64) {
+    func deleteAnnouncement(id: UInt64) -> AnyPublisher<Void, SupportCoreError> {
         let dto = DeleteAnnouncementDTO.Request(announcementID: id)
-        
-        apiService
-            .requestPublisher(Endpoint.deleteAnnouncement(dto: dto), EmptyDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] _ in
+        return apiService.requestPublisher(Endpoint.deleteAnnouncement(dto: dto), EmptyDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] _ in
                 guard var announcements = self?.announcementsSubject.value else { return }
                 announcements.removeValue(forKey: id)
                 self?.announcementsSubject.send(announcements)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func createFAQ(title: String, content: String) {
+    func createFAQ(title: String, content: String) -> AnyPublisher<Void, SupportCoreError> {
         let dto = CreateFAQDTO.Request(title: title, content: content)
-        
-        apiService
-            .requestPublisher(Endpoint.createFAQ(dto: dto), CreateFAQDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.createFAQ(dto: dto), CreateFAQDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] response in
                 let faq = response.toEntity()
                 guard var announcements = self?.announcementsSubject.value else { return }
                 announcements[faq.id] = faq
                 self?.announcementsSubject.send(announcements)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func updateFAQ(id: UInt64, title: String?, content: String?) {
+    func updateFAQ(id: UInt64, title: String?, content: String?) -> AnyPublisher<Void, SupportCoreError> {
         let dto = UpdateFAQDTO.Request(id: id, title: title, content: content)
-        
-        apiService
-            .requestPublisher(Endpoint.updateFAQ(dto: dto), UpdateFAQDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] response in
+        return apiService.requestPublisher(Endpoint.updateFAQ(dto: dto), UpdateFAQDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] response in
                 let faq = Announcement(
                     id: response.id,
                     title: response.title,
@@ -283,82 +225,68 @@ extension SupportCore: SupportCoreProtocol {
                 announcements[faq.id] = faq
                 self?.announcementsSubject.send(announcements)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func deleteFAQ(id: UInt64) {
+    func deleteFAQ(id: UInt64) -> AnyPublisher<Void, SupportCoreError> {
         let dto = DeleteFAQDTO.Request(id: id)
-        
-        apiService
-            .requestPublisher(Endpoint.deleteFAQ(dto: dto), EmptyDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] _ in
+        return apiService.requestPublisher(Endpoint.deleteFAQ(dto: dto), EmptyDTO.Response.self)
+            .mapError { SupportCoreError.networkingError($0) }
+            .map { [weak self] _ in
                 guard var announcements = self?.announcementsSubject.value else { return }
                 announcements.removeValue(forKey: id)
                 self?.announcementsSubject.send(announcements)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
 }
 
 // MARK: - SupportMediationProtocol Conformation
 extension SupportCore: SupportMediationProtocol {
     func loadInquiries() {
-        guard let userID = currentUserID else {
-            inquiriesSubject.send(completion: .failure(.userIDNotSet))
-            return
-        }
+        guard let userID = currentUserID else { return }
         
-        apiService
-            .requestPublisher(Endpoint.readUserInquiries(userID: userID), ReadUserInquiriesDTO.Response.self)
-            .sink { [weak self] completion in
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.readUserInquiries(userID: userID), ReadUserInquiriesDTO.Response.self)
+            .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
+                    print(error)
                 }
             } receiveValue: { [weak self] response in
                 let inquiries = response.map { $0.toEntity() }
                 let inquiriesDict = inquiries.reduce(into: [:]) { $0[$1.id] = $1 }
                 self?.inquiriesSubject.send(inquiriesDict)
             }
-            .store(in: &cancellables)
     }
     
     func loadAdminInquiries() {
         /// - Note: 관리자 1:1문의 조회 API에서 검색 기준을 받고 있는데, 사실 프론트에서 항상 모든 문의에 대해서 조회하고 있으므로 실질적으론 Criteria 설정값은 '3' 외에 쓸 일이 없음.
-        apiService
-            .requestPublisher(Endpoint.readAdminInquiries(criteria: 3), ReadAdminInquiriesDTO.Response.self)
-            .sink { [weak self] completion in
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.readAdminInquiries(criteria: 3), ReadAdminInquiriesDTO.Response.self)
+            .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    self?.inquiriesSubject.send(completion: .failure(.networkingError(error)))
+                    print(error)
                 }
             } receiveValue: { [weak self] response in
                 let inquiries = response.map { $0.toEntity() }
                 let inquiriesDict = inquiries.reduce(into: [:]) { $0[$1.id] = $1 }
                 self?.inquiriesSubject.send(inquiriesDict)
             }
-            .store(in: &cancellables)
     }
     
     func loadAnnouncements() {
         let announcementsPublisher = apiService.requestPublisher(Endpoint.readAnnouncements, ReadAnnouncementsDTO.Response.self)
         let faqPublisher = apiService.requestPublisher(Endpoint.readFAQs, ReadFAQsDTO.Response.self)
         
-        announcementsPublisher
+        cancellableBag[#function] = announcementsPublisher
             .combineLatest(faqPublisher)
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    self?.announcementsSubject.send(completion: .failure(.networkingError(error)))
+                    print(error)
                 }
             } receiveValue: { [weak self] (announcementsResponse, faqsResponse) in
                 let announcements = announcementsResponse.map { $0.toEntity() }
@@ -366,7 +294,6 @@ extension SupportCore: SupportMediationProtocol {
                 let announcementsDict = (announcements + faqs).reduce(into: [:]) { $0[$1.id] = $1 }
                 self?.announcementsSubject.send(announcementsDict)
             }
-            .store(in: &cancellables)
     }
     
     func setCurrentUserID(_ id: UInt64?) {

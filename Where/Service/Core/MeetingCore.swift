@@ -10,19 +10,19 @@ import Combine
 
 protocol MeetingCoreProtocol: CoreProtocol {
     /// 나와 연관된 모임 목록
-    var meetings: AnyPublisher<[UInt64: Meeting], MeetingCoreError> { get }
+    var meetings: AnyPublisher<[UInt64: Meeting], Never> { get }
     /// 친구와 함께한 모임 목록
-    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> { get }
+    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], Never> { get }
     /// 친구와 연관된 모임 식별자
     var relatedMeetingIDs: AnyPublisher<[UInt64: [UInt64]], Never> { get }
     /// 특정 모임의 초대 현황
-    var invitationStatus: AnyPublisher<[UInt64: [MeetingInvitationState]], MeetingCoreError> { get }
+    var invitationStatus: AnyPublisher<[UInt64: [MeetingInvitationState]], Never> { get }
     /// 초대 받은 모임 정보
-    var invitedMeeting: AnyPublisher<Meeting, MeetingCoreError> { get }
+    var invitedMeeting: AnyPublisher<Meeting, Never> { get }
     /// 모임 일정 등록
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func createSchedule(id: UInt64, date: Date, time: Date)
+    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError>
     /// 모임 일정 조회
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -30,30 +30,30 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 일정 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func updateSchedule(id: UInt64, date: Date, time: Date)
+    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError>
     /// 모임 일정 삭제
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func deleteSchedule(id: UInt64)
+    func deleteSchedule(id: UInt64) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 생성
     /// - Parameters:
     ///     - info: 생성 중인 모임의 임시 정보
-    func createMeeting(info: TemporaryMeetingInfo)
+    func createMeeting(info: TemporaryMeetingInfo) -> AnyPublisher<Meeting, MeetingCoreError>
     /// 모임 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
     ///     - title: 모임의 제목
     ///     - description: 모임의 메모 및 설명
     ///     - imageData: 모임 대표 이미지 Data
-    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?)
+    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) -> AnyPublisher<Meeting, MeetingCoreError>
     /// 모임 종료
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func endMeeting(id: UInt64)
+    func endMeeting(id: UInt64) -> AnyPublisher<Meeting, MeetingCoreError>
     /// 모임 탈퇴
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func exitMeeting(id: UInt64)
+    func exitMeeting(id: UInt64) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 초대 현황 조회
     ///  - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -66,7 +66,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 초대 수락
     /// - Parameters:
     ///     - id: 초대장 식별자
-    func acceptInvitation(id: UInt64)
+    func acceptInvitation(id: UInt64) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 초대 수락 링크
     /// - Parameters:
     ///     - link: 초대 링크
@@ -108,16 +108,16 @@ final class MeetingCore {
     /// 모임 관련 Subject
     /// - Key: meeting.id
     /// - Value: Meeting
-    private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], MeetingCoreError>([:])
+    private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], Never>([:])
     
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
-    private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], MeetingCoreError>([:])
-    private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationState]], MeetingCoreError>([:])
-    private let invitedMeetingSubject = PassthroughSubject<Meeting, MeetingCoreError>()
+    private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], Never>([:])
+    private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationState]], Never>([:])
+    private let invitedMeetingSubject = PassthroughSubject<Meeting, Never>()
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(
         apiService: APIServable,
@@ -130,31 +130,20 @@ final class MeetingCore {
     
     private func subscribe() {
         meetingsSubject
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    switch error {
-                    case .encodingError(let type): print("Encoding Failed: \(String(describing: type))")
-                    case .networkingError(let error): print(error)
-                    case .userIDNotSet: break
-                    case .noSuchMeeting: break
-                    }
-                }
-            } receiveValue: { [weak self] dict in
-                self?._meetings = dict
+            .sink { [weak self] dict in
+                self?.meetingsSubject.send(dict)
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "MeetingsSubject")
     }
 }
 
 // MARK: - MeetingCoreProtocol Confirmation
 extension MeetingCore: MeetingCoreProtocol {
-    var meetings: AnyPublisher<[UInt64 : Meeting], MeetingCoreError> {
+    var meetings: AnyPublisher<[UInt64 : Meeting], Never> {
         meetingsSubject.eraseToAnyPublisher()
     }
     
-    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], MeetingCoreError> {
+    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], Never> {
         meetingSummariesSubject.eraseToAnyPublisher()
     }
     
@@ -162,114 +151,98 @@ extension MeetingCore: MeetingCoreProtocol {
         relatedMeetingIDsSubject.eraseToAnyPublisher()
     }
     
-    var invitationStatus: AnyPublisher<[UInt64 : [MeetingInvitationState]], MeetingCoreError> {
+    var invitationStatus: AnyPublisher<[UInt64 : [MeetingInvitationState]], Never> {
         invitationStatusSubject.eraseToAnyPublisher()
     }
     
-    var invitedMeeting: AnyPublisher<Meeting, MeetingCoreError> {
+    var invitedMeeting: AnyPublisher<Meeting, Never> {
         invitedMeetingSubject.eraseToAnyPublisher()
     }
     
     // MARK: - Schedule Related
-
-    func createSchedule(id: UInt64, date: Date, time: Date) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+    
+    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError> {
+        guard let user = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
-        guard let meeting = _meetings[id]
-        else {
-            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        guard let meeting = _meetings[id] else {
+            return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
         }
-
+        
         let dto = CreateScheduleDTO.Request(meetingID: id, date: date.toString(by: .yyyyMMddHyphen), time: time.toString(by: .HHmm), userID: user.id)
-        apiService.requestPublisher(Endpoint.createSchedule(dto: dto), CreateScheduleDTO.Response.self)
-            .map {
-                Meeting(
+        
+        return apiService.requestPublisher(Endpoint.createSchedule(dto: dto), CreateScheduleDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] response in
+                let newMeeting = Meeting(
                     id: id,
                     title: meeting.title,
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
-                    scheduleDate: $0.date.toDate(by: .yyyyMMddHyphen),
-                    scheduleTime: $0.time.toDate(by: .HHmm),
+                    scheduleDate: response.date.toDate(by: .yyyyMMddHyphen),
+                    scheduleTime: response.time.toDate(by: .HHmm),
                     shareLink: meeting.shareLink,
                     isFinished: meeting.isFinished
                 )
-            }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] newMeeting in
-                guard let self else { return }
-                var meetings = meetingsSubject.value
+                
+                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
                 meetings[id] = newMeeting
-                meetingsSubject.send(meetings)
+                self?.meetingsSubject.send(meetings)
+                return newMeeting
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
     func readSchedule(id: UInt64) {
         
     }
     
-    func updateSchedule(id: UInt64, date: Date, time: Date) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError> {
+        guard let user = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
-        guard let meeting = _meetings[id]
-        else {
-            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        guard let meeting = _meetings[id] else {
+            return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
         }
-
+        
         let dto = UpdateScheduleDTO.Request(meetingID: id, date: date.toString(by: .yyyyMMddHyphen), time: time.toString(by: .HHmm), userID: user.id)
-        apiService.requestPublisher(Endpoint.updateSchedule(dto: dto), UpdateScheduleDTO.Response.self)
-            .map {
-                Meeting(
+        return apiService.requestPublisher(Endpoint.updateSchedule(dto: dto), UpdateScheduleDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] response in
+                let newMeeting = Meeting(
                     id: id,
                     title: meeting.title,
                     description: meeting.description,
                     imageURL: meeting.imageURL,
                     createdAt: meeting.createdAt,
-                    scheduleDate: $0.date.toDate(by: .yyyyMMddHyphen),
-                    scheduleTime: $0.time.toDate(by: .HHmm),
+                    scheduleDate: response.date.toDate(by: .yyyyMMddHyphen),
+                    scheduleTime: response.time.toDate(by: .HHmm),
                     shareLink: meeting.shareLink,
                     isFinished: meeting.isFinished
                 )
-            }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] newMeeting in
-                guard let self else { return }
-                var meetings = meetingsSubject.value
+                
+                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
                 meetings[id] = newMeeting
-                meetingsSubject.send(meetings)
+                self?.meetingsSubject.send(meetings)
+                return newMeeting
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
-    func deleteSchedule(id: UInt64) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+    func deleteSchedule(id: UInt64) -> AnyPublisher<Void, MeetingCoreError> {
+        guard let user = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
-        guard let meeting = _meetings[id]
-        else {
-            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        guard let meeting = _meetings[id] else {
+            return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
         }
-                
+        
         let dto = DeleteScheduleDTO.Request(meetingID: id, userID: user.id)
-        apiService.requestPublisher(Endpoint.deleteSchedule(dto: dto), EmptyDTO.Response.self)
-            .map { _ in
-                Meeting(
+        return apiService.requestPublisher(Endpoint.deleteSchedule(dto: dto), EmptyDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] _ in
+                let newMeeting = Meeting(
                     id: id,
                     title: meeting.title,
                     description: meeting.description,
@@ -278,64 +251,45 @@ extension MeetingCore: MeetingCoreProtocol {
                     shareLink: meeting.shareLink,
                     isFinished: meeting.isFinished
                 )
-            }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] newMeeting in
-                guard let self else { return }
-                var meetings = meetingsSubject.value
+                
+                guard var meetings = self?.meetingsSubject.value else { return }
                 meetings[id] = newMeeting
-                meetingsSubject.send(meetings)
+                self?.meetingsSubject.send(meetings)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
     // MARK: - Meeting Related
-
-    func createMeeting(info: TemporaryMeetingInfo) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+    
+    func createMeeting(info: TemporaryMeetingInfo) -> AnyPublisher<Meeting, MeetingCoreError> {
+        guard let user = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
-        do {
-            let dto = CreateMeetingDTO.Request(title: info.title, creatorID: user.id, description: info.description, participants: info.participants)
-            let encodedMeeting = try encoder.encode(dto)
-            let imageData = info.imageData
-            
-            apiService.requestPublisher(Endpoint.createMeeting(encodedMeetingData: encodedMeeting, imageData: imageData), CreateMeetingDTO.Response.self)
-                .map { $0.toEntity() }
-                .sink { [weak self] completion in
-                    switch completion {
-                    case .finished: break
-                    case .failure(let error):
-                        self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                    }
-                } receiveValue: { [weak self] meeting in
-                    guard let self else { return }
-                    var meetings = meetingsSubject.value
-                    meetings[meeting.id] = meeting
-                    meetingsSubject.send(meetings)
-                }
-                .store(in: &cancellables)
-        } catch {
-            meetingsSubject.send(completion: .failure(.encodingError(type: CreateMeetingDTO.Request.self)))
+        let dto = CreateMeetingDTO.Request(title: info.title, creatorID: user.id, description: info.description, participants: info.participants)
+        let imageData = info.imageData
+        guard let encodedMeeting = try? encoder.encode(dto) else {
+            return Fail(error: .encodingError(type: CreateMeetingDTO.Request.self)).eraseToAnyPublisher()
         }
+        
+        return apiService.requestPublisher(Endpoint.createMeeting(encodedMeetingData: encodedMeeting, imageData: imageData), CreateMeetingDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] response in
+                let newMeeting = response.toEntity()
+                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
+                meetings[newMeeting.id] = newMeeting
+                self?.meetingsSubject.send(meetings)
+                return newMeeting
+            }
+            .eraseToAnyPublisher()
     }
     
-    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) -> AnyPublisher<Meeting, MeetingCoreError> {
+        guard let user = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
-        
-        guard let meeting = _meetings[id]
-        else {
-            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        guard let meeting = _meetings[id] else {
+            return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
         }
         
         let dto = UpdateMeetingDTO.Request(
@@ -345,51 +299,44 @@ extension MeetingCore: MeetingCoreProtocol {
             userID: user.id
         )
         
-        do {
-            let encodedMeetingData = try encoder.encode(dto)
-            apiService.requestPublisher(Endpoint.updateMeeting(encodedMeetingData: encodedMeetingData, imageData: imageData), UpdateMeetingDTO.Response.self)
-                .map {
-                    Meeting(
-                        id: meeting.id,
-                        title: $0.title,
-                        description: $0.description,
-                        imageURL: URL(string: $0.imageURLString ?? ""),
-                        createdAt: meeting.createdAt,
-                        shareLink: URL(string: $0.invitationLink),
-                        isFinished: meeting.isFinished
-                    )
-                }
-                .sink { [weak self] completion in
-                    switch completion {
-                    case .finished: break
-                    case .failure(let error):
-                        self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                    }
-                } receiveValue: { [weak self] newMeeting in
-                    guard let self else { return }
-                    var meetings = meetingsSubject.value
-                    meetings[meeting.id] = newMeeting
-                    meetingsSubject.send(meetings)
-                }
-                .store(in: &cancellables)
-        } catch {
-            meetingsSubject.send(completion: .failure(MeetingCoreError.encodingError(type: UpdateMeetingDTO.Request.self)))
+        guard let encodedMeetingData = try? encoder.encode(dto) else {
+            return Fail(error: .encodingError(type: UpdateMeetingDTO.Request.self)).eraseToAnyPublisher()
         }
+        
+        return apiService.requestPublisher(Endpoint.updateMeeting(encodedMeetingData: encodedMeetingData, imageData: imageData), UpdateMeetingDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] in
+                let newMeeting = Meeting(
+                    id: meeting.id,
+                    title: $0.title,
+                    description: $0.description,
+                    imageURL: URL(string: $0.imageURLString ?? ""),
+                    createdAt: meeting.createdAt,
+                    shareLink: URL(string: $0.invitationLink),
+                    isFinished: meeting.isFinished
+                )
+                
+                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
+                meetings[newMeeting.id] = newMeeting
+                self?.meetingsSubject.send(meetings)
+                return newMeeting
+            }
+            .eraseToAnyPublisher()
     }
     
-    func endMeeting(id: UInt64) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
+    func endMeeting(id: UInt64) -> AnyPublisher<Meeting, MeetingCoreError> {
+        guard let user = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
-        guard let meeting = _meetings[id]
-        else {
-            return meetingsSubject.send(completion: .failure(.noSuchMeeting))
+        guard let meeting = _meetings[id] else {
+            return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
         }
+        
         let dto = EndMeetingDTO.Request(meetingID: id, userID: user.id)
-        apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
-            .map { _ in
-                Meeting(
+        return apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] _ in
+                let endedMeeting = Meeting(
                     id: meeting.id,
                     title: meeting.title,
                     description: meeting.description,
@@ -400,61 +347,44 @@ extension MeetingCore: MeetingCoreProtocol {
                     shareLink: meeting.shareLink,
                     isFinished: true
                 )
+                
+                guard var meetings = self?.meetingsSubject.value else { return endedMeeting }
+                meetings[id] = endedMeeting
+                self?.meetingsSubject.send(meetings)
+                return endedMeeting
             }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] endedMeeting in
-                guard let self else { return }
-                var meetngs = meetingsSubject.value
-                meetngs[id] = endedMeeting
-                meetingsSubject.send(meetngs)
-            }
-            .store(in: &cancellables)
-
+            .eraseToAnyPublisher()
     }
     
-    func exitMeeting(id: UInt64) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(MeetingCoreError.userIDNotSet))
+    func exitMeeting(id: UInt64) -> AnyPublisher<Void, MeetingCoreError> {
+        guard let user = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
+        
         let dto = LeaveMeetingDTO.Request(meetingID: id, userID: user.id)
-        apiService.requestPublisher(Endpoint.leaveMeeting(dto: dto), EmptyDTO.Response.self)
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] _ in
-                guard let self else { return }
-                var meetings = meetingsSubject.value
+        return apiService.requestPublisher(Endpoint.leaveMeeting(dto: dto), EmptyDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] _ in
+                guard var meetings = self?.meetingsSubject.value else { return }
                 meetings.removeValue(forKey: id)
-                meetingsSubject.send(meetings)
+                self?.meetingsSubject.send(meetings)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
     // MARK: - Invitation Related
 
     func readInvitaionStatus(id: UInt64) {
-        guard let _ = currentUser
-        else {
-            return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
-        }
-        apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
+        guard let _ = currentUser else { return }
+        
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
             .map { response in
                 response.map { $0.toEntity() }
             }
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error):
-                    self?.invitationStatusSubject.send(completion: .failure(.networkingError(error)))
+                case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] invitaionState in
                 guard let self else { return }
@@ -462,7 +392,6 @@ extension MeetingCore: MeetingCoreProtocol {
                 newInvitationStatusDict[id] = invitaionState
                 invitationStatusSubject.send(newInvitationStatusDict)
             }
-            .store(in: &cancellables)
     }
     
     func inviteParticipant(id: UInt64, guest: FriendRelationship) -> AnyPublisher<Void, MeetingCoreError> {
@@ -494,42 +423,34 @@ extension MeetingCore: MeetingCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func acceptInvitation(id: UInt64) {
+    func acceptInvitation(id: UInt64) -> AnyPublisher<Void, MeetingCoreError> {
         guard let _ = currentUser
         else {
-            return invitationStatusSubject.send(completion: .failure(.userIDNotSet))
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
+        
         let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
-        apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
-            .map { $0.toEntity() }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] meeting in
-                guard let self else { return }
-                var meetings = meetingsSubject.value
-                meetings[meeting.id] = meeting
-                meetingsSubject.send(meetings)
+        return apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] in
+                let newMeeting = $0.toEntity()
+                guard var meetings = self?.meetingsSubject.value else { return }
+                meetings[newMeeting.id] = newMeeting
+                self?.meetingsSubject.send(meetings)
             }
-            .store(in: &cancellables)
+            .eraseToAnyPublisher()
     }
     
     func acceptInvitationByLink(_ link: String) {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
-        }
+        guard let user = currentUser else { return }
+                
         let dto = AcceptMeetingInvitationByLinkDTO.Request(userID: user.id, invitationLink: link)
-        apiService.requestPublisher(Endpoint.acceptMeetingInvitationByLink(dto: dto), AcceptMeetingInvitationByLinkDTO.Response.self)
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.acceptMeetingInvitationByLink(dto: dto), AcceptMeetingInvitationByLinkDTO.Response.self)
             .map { $0.toEntity() }
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] meeting in
                 guard let self else { return }
@@ -537,54 +458,43 @@ extension MeetingCore: MeetingCoreProtocol {
                 meetings[meeting.id] = meeting
                 meetingsSubject.send(meetings)
             }
-            .store(in: &cancellables)
     }
     
     func readMeetingDetailForInvitationLink(inviteCode: String) {
-        guard let _ = currentUser
-        else {
-            // TODO: 초대장 조회를 로그인 안한 상태에서도 가능한지 고민
-            return invitedMeetingSubject.send(completion: .failure(.userIDNotSet))
-        }
-        apiService.requestPublisher(Endpoint.readMeetingDetailForInvitationLink(inviteCode: inviteCode), MeetingDetailFromLinkDTO.Response.self)
+        guard let _ = currentUser else { return }
+        
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.readMeetingDetailForInvitationLink(inviteCode: inviteCode), MeetingDetailFromLinkDTO.Response.self)
             .map {
                 $0.toEntity()
             }
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error):
-                    self?.invitedMeetingSubject.send(completion: .failure(.networkingError(error)))
+                case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] in
                 self?.invitedMeetingSubject.send($0)
             }
-            .store(in: &cancellables)
-
     }
 }
 
 // MARK: - MeetingMediationProtocol Conformation
 extension MeetingCore: MeetingMediationProtocol {
     func loadAllMeetings() {
-        guard let user = currentUser
-        else {
-            return meetingsSubject.send(completion: .failure(.userIDNotSet))
-        }
-        apiService.requestPublisher(Endpoint.readMeetingDetail(userID: user.id), ReadMeetingDetailDTO.Response.self)
+        guard let user = currentUser else { return }
+        
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.readMeetingDetail(userID: user.id), ReadMeetingDetailDTO.Response.self)
             .map { meetings in
                 meetings.reduce(into: [:]) { $0[$1.meetingID] = $1.toEntity() }
             }
-            .sink { [weak self] completion in
+            .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
+                case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] in
                 self?.meetingsSubject.send($0)
             }
-            .store(in: &cancellables)
     }
     
     func updateRelatedMeetings(meetingIDs: [UInt64 : [UInt64]], summaries: [UInt64 : MeetingSummary]) {

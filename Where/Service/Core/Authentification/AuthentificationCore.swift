@@ -12,10 +12,10 @@ import Moya
 
 protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 인증 상태
-    var authentificationState: AnyPublisher<AuthentificationCore.AuthentificationState, AuthentificationCoreError> { get }
+    var authentificationState: AnyPublisher<AuthentificationCore.AuthentificationState, Never> { get }
     
     /// 사용자 정보
-    var currentUser: AnyPublisher<User?, AuthentificationCoreError> { get }
+    var currentUser: AnyPublisher<User?, Never> { get }
     
     /// Redirection URL Handling
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL)
@@ -48,7 +48,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError>
     
     /// 회원탈퇴
-    func unregister()
+    func unregister() -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 프로필 생성
     func createUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError>
@@ -106,13 +106,12 @@ private extension AuthentificationCore {
 final class AuthentificationCore {
     weak var mediator: Notifiable?
     
-    private let authentificationStateSubject = CurrentValueSubject<AuthentificationState, AuthentificationCoreError>(.loginNeeded)
+    private let authentificationStateSubject = CurrentValueSubject<AuthentificationState, Never>(.loginNeeded)
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
     private let strategyContext = AuthentificationStrategyContext()
-    private var loginCancellable: AnyCancellable?
-    private var cancellables = Set<AnyCancellable>()
+    private let cancellableBag = CancellableBag()
     
     init(
         apiService: APIServable,
@@ -125,14 +124,7 @@ final class AuthentificationCore {
     
     private func subscribe() {
         authentificationStateSubject
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.resetAuthentifcationState()
-                    self?.mediator?.notify(event: .userDidLogout)
-                }
-            } receiveValue: { [weak self] state in
+            .sink { [weak self] state in
                 switch state {
                 case .loginCompleted(let user):
                     UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
@@ -146,7 +138,7 @@ final class AuthentificationCore {
                     self?.mediator?.notify(event: .userDidLogout)
                 }
             }
-            .store(in: &cancellables)
+            .store(in: cancellableBag, key: "AuthentificationStateSubject")
     }
 }
 
@@ -169,7 +161,7 @@ private extension AuthentificationCore {
     ///
     /// 소셜 로그인 후 필수정보(닉네임) 업데이트 성공 시 호출하여 최종 회원정보를 가져와 로그인 상태로 만듭니다.
     func readUserInfo(userID: UInt64) {
-        apiService
+        cancellableBag[#function] = apiService
             .requestPublisher(Endpoint.readUserInfo(userID: userID), ReadUserInfoDTO.Response.self)
             .map { $0.toEntity() }
             .sink { [weak self] completion in
@@ -186,7 +178,6 @@ private extension AuthentificationCore {
                 
                 self?.authentificationStateSubject.send(.loginCompleted(user))
             }
-            .store(in: &cancellables)
     }
     
     func resetAuthentifcationState() {
@@ -196,11 +187,11 @@ private extension AuthentificationCore {
 
 // MARK: AuthentificationCoreProtocol Conformation
 extension AuthentificationCore: AuthentificationCoreProtocol {
-    var authentificationState: AnyPublisher<AuthentificationState, AuthentificationCoreError> {
+    var authentificationState: AnyPublisher<AuthentificationState, Never> {
         authentificationStateSubject.eraseToAnyPublisher()
     }
     
-    var currentUser: AnyPublisher<User?, AuthentificationCoreError> {
+    var currentUser: AnyPublisher<User?, Never> {
         authentificationStateSubject
             .map {
                 guard case .loginCompleted(let user) = $0 else { return nil }
@@ -220,9 +211,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func loginWithKakao() {
-        loginCancellable?.cancel()
-        
-        loginCancellable = Future<UserCredential, AuthentificationCoreError> { [weak self] promise in
+        cancellableBag[#function] = Future<UserCredential, AuthentificationCoreError> { [weak self] promise in
             self?.strategyContext.login(by: .kakao) { result in
                 switch result {
                 case .failure(let error): promise(.failure(error))
@@ -269,7 +258,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     func login(email: String, password: String) {
         let dto = LoginDTO.Request(email: email, password: password)
         
-        apiService.requestPublisher(Endpoint.login(dto: dto), EmptyDTO.Response.self)
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.login(dto: dto), EmptyDTO.Response.self)
             .sink { [weak self] completion in
                 guard case .failure = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
@@ -277,7 +266,6 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 // TODO: 발급된 토큰 저장할 수 있는지 확인
                 // TODO: API 응답 스펙 맞춰서 로직 구현해야함
             }
-            .store(in: &cancellables)
     }
     
     func logout() {
@@ -322,23 +310,18 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         }
     }
     
-    func unregister() {
+    func unregister() -> AnyPublisher<Void, AuthentificationCoreError> {
         guard case .loginCompleted(let user) = authentificationStateSubject.value else {
-            return authentificationStateSubject.send(.loginNeeded)
+            return Fail(error: .userInfoFetchFailed).eraseToAnyPublisher()
         }
         
-        apiService
+        return apiService
             .requestPublisher(Endpoint.unregister(userID: user.id), EmptyDTO.Response.self)
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    print(error)
-                }
-            } receiveValue: { [weak self] _ in
+            .map { [weak self] _ in
                 self?.authentificationStateSubject.send(.loginNeeded)
             }
-            .store(in: &cancellables)
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .eraseToAnyPublisher()
     }
     
     func createUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError> {
