@@ -33,6 +33,10 @@ enum Endpoint {
     case updateNickname(userID: UInt64, dto: UpdateNicknameDTO.Request)
     /// accessToken 재발급
     case reissueAccessToken(refreshToken: String)
+    /// 인증코드 발급 요청
+    case requestAuthCode(email: String)
+    /// 인증코드 검증
+    case verifyAuthCode(dto: VerifyAuthCodeDTO.Request)
     
     // MARK: - Friends Related
     /// 친구 조회
@@ -167,6 +171,10 @@ extension Endpoint: TargetType {
             return "\(basePath)/\(userID)/nickname"
         case .reissueAccessToken:
             return "\(basePath)/refresh"
+        case .requestAuthCode(let email):
+            return "\(basePath)/auth/\(email)"
+        case .verifyAuthCode:
+            return "\(basePath)/verify"
             
             // MARK: - Friends Related
         case .readFriends(let userID):
@@ -235,8 +243,8 @@ extension Endpoint: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink: .get
-        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao: .post
+        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink, .requestAuthCode: .get
+        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao, .verifyAuthCode: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend, .updateProfile, .updateNickname: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister, .deleteProfile: .delete
         }
@@ -277,6 +285,10 @@ extension Endpoint: TargetType {
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(refreshToken.data(using: .utf8) ?? Data()), name: "refreshToken", mimeType: "application/json"))
             return .uploadMultipart(formData)
+        case .requestAuthCode:
+            return .requestPlain
+        case .verifyAuthCode(let dto):
+            return .requestJSONEncodable(dto)
         case .readFriends:
             return .requestPlain
         case .deleteFriend(let dto):
@@ -405,6 +417,8 @@ private extension Endpoint {
             return "/admin"
         case .reissueAccessToken:
             return "/token"
+        case .requestAuthCode, .verifyAuthCode:
+            return "/email"
         case .readAnnouncements, .readFAQs:
             return ""
         @unknown default:
