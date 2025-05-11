@@ -15,7 +15,9 @@ enum CoreEvent {
     case historyWithFriendWillUpdate(friendID: UInt64)
     
     // MARK: - Meeting Related
-    
+    case readAllMeeting(meetings: [Meeting])
+    case updateMeetingSchedule(meeting: Meeting)
+    case removeNotification(id: UInt64)
     
     // MARK: - Place Related
     case currentMeetingWillUpdate(meetingID: UInt64)
