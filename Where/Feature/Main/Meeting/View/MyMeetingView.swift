@@ -10,12 +10,15 @@ import Swinject
 
 struct MyMeetingView: View {
     @ObservedObject private var viewModel: MyMeetingViewModel
+    @Binding var isSideMenuPresented: Bool
     
     private let resolver: Resolver
     
     init(
+        _ isSideMenuPresented: Binding<Bool>,
         resolver: Resolver
     ) {
+        self._isSideMenuPresented = isSideMenuPresented
         self.viewModel = resolver.resolve(MyMeetingViewModel.self)!
         self.resolver = resolver
     }
@@ -36,9 +39,9 @@ struct MyMeetingView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .allowsHitTesting(viewModel.isSideMenuPresented == false)
-            .sideMenu(isPresented: $viewModel.isSideMenuPresented) {
-                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver, onLoginButtonTapped: viewModel.presentLoginView)
+            .allowsHitTesting(isSideMenuPresented == false)
+            .sideMenu(isPresented: $isSideMenuPresented) {
+                SideMenuContentView($isSideMenuPresented, resolver: resolver, onLoginButtonTapped: viewModel.presentLoginView)
             }
         }
         .overlay(alignment: .bottom) {
@@ -55,10 +58,10 @@ struct MyMeetingView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     withAnimation {
-                        viewModel.toggleSideMenuPresentation()
+                        isSideMenuPresented.toggle()
                     }
                 } label: {
-                    Image(systemName: viewModel.isSideMenuPresented ? "xmark" : "line.3.horizontal")
+                    Image(systemName: isSideMenuPresented ? "xmark" : "line.3.horizontal")
                         .foregroundStyle(.black)
                 }
             }

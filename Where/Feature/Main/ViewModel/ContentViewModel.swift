@@ -14,6 +14,7 @@ final class ContentViewModel: ObservableObject {
     @Published var previousTab: TabItem = .myMeeting
     @Published var isCreateMeetingSheetPresented = false
     @Published var fullScreenCoverType: FullScreenCoverType?
+    @Published var isLoginNeededPopupPresented: Bool = false
     
     private var isLoginNeeded: Bool = true
     
@@ -68,8 +69,6 @@ extension ContentViewModel {
     enum FullScreenCoverType: Identifiable {
         /// 모임 생성 완료 화면
         case completeCreation(Meeting)
-        /// 로그인 화면
-        case login
         
         var id: String { String(describing: self) }
     }
@@ -84,8 +83,8 @@ extension ContentViewModel {
         
         // 새 모임 만들기 탭이 선택 됐으면 로그인 필요한지 확인해야함
         guard isLoginNeeded == false else {
-            // 비로그인 상황이라면 새 모임 만들기 진행 불가, 로그인 화면 등장
-            return fullScreenCoverType = .login
+            // 비로그인 상황이라면 새 모임 만들기 진행 불가, 로그인하도록 안내
+            return isLoginNeededPopupPresented = true
         }
         
         // 로그인한 상황이라면 새 모임 만들기 진행 가능
@@ -95,5 +94,10 @@ extension ContentViewModel {
     
     func willFullScreenCoverDisappear() {
         selectedTab = previousTab
+    }
+    
+    func onDismissLoginNeededPopup() {
+        selectedTab = .myMeeting
+        isLoginNeededPopupPresented = false
     }
 }

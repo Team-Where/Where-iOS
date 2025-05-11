@@ -11,7 +11,6 @@ import Swinject
 
 final class MyMeetingViewModel: ObservableObject {
     @Published var sortType: MeetingSortType = .created
-    @Published var isSideMenuPresented = false
     @Published var isMeetingInformationViewPresented = false
     @Published var isLoginNeeded = false
     @Published var isRegistrationNeeded = false
@@ -73,10 +72,6 @@ final class MyMeetingViewModel: ObservableObject {
 
 // MARK: Interfaces
 extension MyMeetingViewModel {
-    func toggleSideMenuPresentation() {
-        isSideMenuPresented.toggle()
-    }
-    
     func presentLoginView() {
         isLoginNeeded = true
     }

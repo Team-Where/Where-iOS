@@ -12,6 +12,7 @@ fileprivate typealias TabItem = ContentViewModel.TabItem
 
 struct ContentView: View {
     @ObservedObject private var viewModel: ContentViewModel
+    @State private var isSideMenuPresented: Bool = false
     
     private let resolver: Resolver
     
@@ -24,7 +25,7 @@ struct ContentView: View {
         TabView(selection: $viewModel.selectedTab) {
             // 내모임 뷰
             NavigationStack {
-                MyMeetingView(resolver: resolver)
+                MyMeetingView($isSideMenuPresented, resolver: resolver)
             }
             .tabItem {
                 Label("내 모임", systemImage: "person.2")
@@ -61,9 +62,41 @@ struct ContentView: View {
             switch type {
             case .completeCreation(let meeting):
                 CompleteCreationView(meeting: meeting)
-            case .login:
-                LoginView(resolver: resolver, viewModel.willFullScreenCoverDisappear)
             }
+        }
+        .popup($viewModel.isLoginNeededPopupPresented) {
+            VStack(spacing: 22) {
+                Text("로그인이 필요합니다.")
+                    .whereFont(.body14medium)
+                    .foregroundStyle(Color(hex: 0x343A40))
+                    .multilineTextAlignment(.center)
+                
+                HStack(spacing: 10) {
+                    Button {
+                        withAnimation {
+                            viewModel.onDismissLoginNeededPopup()
+                        }
+                    } label: {
+                        Text("취소")
+                            .whereFont(.body16semibold)
+                            .padding(10)
+                    }
+                    .buttonStyle(.whereRoundedProminent(background: .where(.gray500)))
+                    
+                    Button {
+                        withAnimation {
+                            viewModel.onDismissLoginNeededPopup()
+                            isSideMenuPresented = true
+                        }
+                    } label: {
+                        Text("확인")
+                            .whereFont(.body16semibold)
+                            .padding(10)
+                    }
+                    .buttonStyle(.whereRoundedProminent())
+                }
+            }
+            .padding()
         }
     }
 }
