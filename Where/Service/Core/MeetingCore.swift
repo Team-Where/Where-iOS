@@ -252,6 +252,7 @@ extension MeetingCore: MeetingCoreProtocol {
                 var meetings = meetingsSubject.value
                 meetings[id] = newMeeting
                 meetingsSubject.send(meetings)
+                mediator?.notify(event: .updateMeetingSchedule(meeting: newMeeting))
             }
             .store(in: &cancellables)
     }
@@ -290,6 +291,7 @@ extension MeetingCore: MeetingCoreProtocol {
                 var meetings = meetingsSubject.value
                 meetings[id] = newMeeting
                 meetingsSubject.send(meetings)
+                mediator?.notify(event: .removeNotification(id: id))
             }
             .store(in: &cancellables)
     }
@@ -435,6 +437,7 @@ extension MeetingCore: MeetingCoreProtocol {
                 var meetings = meetingsSubject.value
                 meetings.removeValue(forKey: id)
                 meetingsSubject.send(meetings)
+                mediator?.notify(event: .removeNotification(id: id))
             }
             .store(in: &cancellables)
     }
@@ -513,6 +516,7 @@ extension MeetingCore: MeetingCoreProtocol {
                 var meetings = meetingsSubject.value
                 meetings[meeting.id] = meeting
                 meetingsSubject.send(meetings)
+                mediator?.notify(event: .updateMeetingSchedule(meeting: meeting))
             }
             .store(in: &cancellables)
     }
