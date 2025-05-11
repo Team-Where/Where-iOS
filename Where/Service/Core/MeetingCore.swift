@@ -24,7 +24,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 일정 등록
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError>
+    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 일정 조회
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -32,7 +32,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 일정 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError>
+    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 일정 삭제
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -40,18 +40,18 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 생성
     /// - Parameters:
     ///     - info: 생성 중인 모임의 임시 정보
-    func createMeeting(info: TemporaryMeetingInfo) -> AnyPublisher<Meeting, MeetingCoreError>
+    func createMeeting(info: TemporaryMeetingInfo) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
     ///     - title: 모임의 제목
     ///     - description: 모임의 메모 및 설명
     ///     - imageData: 모임 대표 이미지 Data
-    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) -> AnyPublisher<Meeting, MeetingCoreError>
+    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 종료
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func endMeeting(id: UInt64) -> AnyPublisher<Meeting, MeetingCoreError>
+    func endMeeting(id: UInt64) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 탈퇴
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -168,7 +168,7 @@ extension MeetingCore: MeetingCoreProtocol {
     
     // MARK: - Schedule Related
     
-    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError> {
+    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -193,10 +193,9 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: meeting.isFinished
                 )
                 
-                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
+                guard var meetings = self?.meetingsSubject.value else { return }
                 meetings[id] = newMeeting
                 self?.meetingsSubject.send(meetings)
-                return newMeeting
             }
             .eraseToAnyPublisher()
     }
@@ -205,7 +204,7 @@ extension MeetingCore: MeetingCoreProtocol {
         
     }
     
-    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Meeting, MeetingCoreError> {
+    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -229,7 +228,7 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: meeting.isFinished
                 )
                 
-                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
+                guard var meetings = self?.meetingsSubject.value else { return }
                 meetings[id] = newMeeting
                 self?.meetingsSubject.send(meetings)
                 self?.mediator?.notify(event: .updateMeetingSchedule(meeting: newMeeting))
@@ -269,7 +268,7 @@ extension MeetingCore: MeetingCoreProtocol {
     
     // MARK: - Meeting Related
     
-    func createMeeting(info: TemporaryMeetingInfo) -> AnyPublisher<Meeting, MeetingCoreError> {
+    func createMeeting(info: TemporaryMeetingInfo) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -284,16 +283,15 @@ extension MeetingCore: MeetingCoreProtocol {
             .mapError { MeetingCoreError.networkingError($0) }
             .map { [weak self] response in
                 let newMeeting = response.toEntity()
-                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
+                guard var meetings = self?.meetingsSubject.value else { return }
                 meetings[newMeeting.id] = newMeeting
                 self?.meetingsSubject.send(meetings)
                 self?.createdMeetingSubject.send(newMeeting)
-                return newMeeting
             }
             .eraseToAnyPublisher()
     }
     
-    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) -> AnyPublisher<Meeting, MeetingCoreError> {
+    func updateMeeting(id: UInt64, title: String?, description: String?, imageData: Data?) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -325,15 +323,14 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: meeting.isFinished
                 )
                 
-                guard var meetings = self?.meetingsSubject.value else { return newMeeting }
+                guard var meetings = self?.meetingsSubject.value else { return }
                 meetings[newMeeting.id] = newMeeting
                 self?.meetingsSubject.send(meetings)
-                return newMeeting
             }
             .eraseToAnyPublisher()
     }
     
-    func endMeeting(id: UInt64) -> AnyPublisher<Meeting, MeetingCoreError> {
+    func endMeeting(id: UInt64) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -357,10 +354,9 @@ extension MeetingCore: MeetingCoreProtocol {
                     isFinished: true
                 )
                 
-                guard var meetings = self?.meetingsSubject.value else { return endedMeeting }
+                guard var meetings = self?.meetingsSubject.value else { return }
                 meetings[id] = endedMeeting
                 self?.meetingsSubject.send(meetings)
-                return endedMeeting
             }
             .eraseToAnyPublisher()
     }

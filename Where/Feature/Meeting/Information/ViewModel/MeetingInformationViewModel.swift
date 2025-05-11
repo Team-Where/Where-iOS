@@ -60,11 +60,7 @@ extension MeetingInformationViewModel {
         )
         .sink { completion in
             // TODO: 에러 핸들링
-        } receiveValue: { [weak self] meeting in
-            self?._meeting = meeting
-            self?.titleText = meeting.title
-            self?.descriptionText = meeting.description
-        }
+        } receiveValue: { _ in }
     }
     
     func updateMeetingDescription() {
@@ -76,15 +72,11 @@ extension MeetingInformationViewModel {
         )
         .sink { completion in
             // TODO: 에러 핸들링
-        } receiveValue: { [weak self] meeting in
-            self?._meeting = meeting
-            self?.titleText = meeting.title
-            self?.descriptionText = meeting.description
-        }
+        } receiveValue: { _ in }
     }
     
     func exitMeeting() {
-        meetingCore.exitMeeting(id: meeting.id)
+        cancellableBag[#function] = meetingCore.exitMeeting(id: meeting.id)
             .sink { completion in
                 // TODO: 에러 핸들링
             } receiveValue: { _ in
