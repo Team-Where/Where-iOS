@@ -57,6 +57,15 @@ extension Meeting: Hashable {
     }
 }
 
+// 알림에 사용될 시각
+extension Meeting {
+    /// 알림(UserNotification)에 사용될 시각 (년 월 일 시 분 초)
+    var combinedSchedule: Date? {
+        guard let scheduleDate else { return nil }
+        return scheduleDate.combine(withTime: scheduleTime)
+    }
+}
+
 /// 모임 참여 인원
 struct Participant {
     /// 모임 초대자 식별자

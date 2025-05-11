@@ -134,6 +134,46 @@ extension Date {
         return combinedDate
     }
     
+    /// 날짜에서 시간 결합해주는 메소드
+    ///
+    /// - Parameters:
+    ///     * time: 합칠 시간(시, 분, 초) 값
+    /// - Returns:
+    ///     년 월 일 시 분 초 합친 값
+    func combine(withTime time: Self?) -> Date? {
+        guard let time else { return nil }
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from: self)
+        let timeComponents = calendar.dateComponents([.hour, .minute, .second], from: time)
+        var combinedComponents = DateComponents()
+        combinedComponents.year = dateComponents.year
+        combinedComponents.month = dateComponents.month
+        combinedComponents.day = dateComponents.day
+        combinedComponents.hour = timeComponents.hour
+        combinedComponents.minute = timeComponents.minute
+        combinedComponents.second = timeComponents.second
+        return calendar.date(from: combinedComponents)
+    }
+    
+    /// 시간에서 날짜 결합해주는 메소드
+    ///
+    /// - Parameters:
+    ///     * time: 합칠 날짜(년, 월, 일) 값
+    /// - Returns:
+    ///     년 월 일 시 분 초 합친 값
+    func combine(withDate date: Self?) -> Date? {
+        guard let date else { return nil }
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        let timeComponents = calendar.dateComponents([.hour, .minute, .second], from: self)
+        var combinedComponents = DateComponents()
+        combinedComponents.year = dateComponents.year
+        combinedComponents.month = dateComponents.month
+        combinedComponents.day = dateComponents.day
+        combinedComponents.hour = timeComponents.hour
+        combinedComponents.minute = timeComponents.minute
+        combinedComponents.second = timeComponents.second
+        return calendar.date(from: combinedComponents)
+    }
+    
     func dateComponents() -> DateComponents {
         let components = calendar.dateComponents([.year, .month, .day, .hour], from: self)
         return components

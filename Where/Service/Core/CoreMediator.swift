@@ -84,9 +84,13 @@ extension CoreMediator: Notifiable {
             meetingCore.updateRelatedMeetings(meetingIDs: meetingIDs, summaries: summaries)
         case .historyWithFriendWillUpdate(let friendID):
             meetingCore.loadCurrentMeetingsWithFriend(friendID: friendID)
-            
-            
-            
+        case .readAllMeeting(let meetings):
+            // TODO: 전체 모임 목록 부를 시 알람 동기화
+            // userDidLogin에서 해야할지 고민.
+        case .updateMeetingSchedule(let meeting):
+            notificationCore.updateNotifications(for: meeting)
+        case .removeNotification(let id):
+            notificationCore.removeNotifications(for: id)
             
         case .currentMeetingWillUpdate(let meetingID):
             placeCore.loadPlaces(meetingID: meetingID)
