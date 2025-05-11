@@ -148,6 +148,7 @@
 		04F051842D422B01000892C0 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 04F051832D422B01000892C0 /* KakaoSDKUser */; };
 		04F051902D424C01000892C0 /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0518F2D424C01000892C0 /* TokenStorage.swift */; };
 		7F488A3B2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */; };
+		7F63AE2C2DD08507002FCCCD /* LocalNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */; };
 		7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */; };
 		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
 		7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */; };
@@ -355,6 +356,7 @@
 		04EA3DEE2DCBB97B003297A3 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
 		7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationViewModel.swift; sourceTree = "<group>"; };
+		7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationService.swift; sourceTree = "<group>"; };
 		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationState.swift; sourceTree = "<group>"; };
@@ -578,6 +580,7 @@
 			children = (
 				0438BA7A2D97DA86008C628F /* Core */,
 				7FE7BD942DB68E160097CC30 /* Network */,
+				7F63AE2A2DD084C7002FCCCD /* Notifications */,
 				04F0518E2D424BF1000892C0 /* Storage */,
 			);
 			path = Service;
@@ -766,6 +769,14 @@
 				0450E85C2D9AC0F000DB029A /* Tokens.swift */,
 			);
 			path = Storage;
+			sourceTree = "<group>";
+		};
+		7F63AE2A2DD084C7002FCCCD /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		7F7E67BC2DA105B500833376 /* Feature */ = {
@@ -1534,6 +1545,7 @@
 				04A530A32D8EE312004E58AD /* NotificationListView.swift in Sources */,
 				04A530B52D914C82004E58AD /* SelectionTab.swift in Sources */,
 				046833F92D3B8FE5009D2357 /* InviteFriendsViewModel.swift in Sources */,
+				7F63AE2C2DD08507002FCCCD /* LocalNotificationService.swift in Sources */,
 				91446F462D575BEE00C142B2 /* SideMenuContentView.swift in Sources */,
 				045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */,
 				91F6CE402D3D75DB00BD24D1 /* CommentView.swift in Sources */,
