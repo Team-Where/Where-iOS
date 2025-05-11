@@ -33,11 +33,9 @@ struct RegistrationView: View {
                 case .authorizationCodeSended:
                     Image(systemName: "checkmark")
                         .foregroundStyle(.accent)
-                case .inValidAuthorizationCode:
+                case .inValidAuthorizationCode, .errorOccured:
                     Image(systemName: "exclamationmark.circle")
                         .foregroundStyle(.red)
-                case .errorOccured(message: let message):
-                    Text(message)
                 }
             }
             .whereForm(viewModel.navigationTitle) {
@@ -134,6 +132,7 @@ struct RegistrationView: View {
                 .frame(width: 350)
                 .focused($textFieldFocus, equals: .emailTextField)
                 .keyboardType(.emailAddress)
+                .disabled(viewModel.registrationStep != .email)
                 
                 authorizationCodeRequestButton(viewModel.emailValidationState)
                     .padding(.trailing)
@@ -149,7 +148,7 @@ struct RegistrationView: View {
     
     @ViewBuilder private func authorizationCodeRequestButton(_ state: EmailValidationState) -> some View {
         switch state {
-        case .beforeValidate, .invalidOnLocal, .emailDuplicated, .checkingDuplication:
+        case .beforeValidate, .invalidOnLocal, .emailDuplicated, .checkingDuplication, .awaitingCode:
             Button {
                 viewModel.requestAuthorizationCode()
             } label: {
@@ -161,7 +160,9 @@ struct RegistrationView: View {
                     .clipShape(.capsule)
             }
             .disabled(viewModel.requestAuthorizationCodeDisabled)
-        case .valid:
+        case .requesting:
+            ProgressView()
+        case .requested, .checkingAuthorizationCode, .timeout, .invalid, .valid:
             Button {
                 viewModel.requestAuthorizationCode()
                 textFieldFocus = .authorizationCodeTextField
@@ -308,7 +309,7 @@ struct RegistrationView: View {
         case .emailTextField:
             isInvalid = viewModel.emailValidationState == .invalidOnLocal || viewModel.emailValidationState == .emailDuplicated
         case .authorizationCodeTextField:
-            isInvalid = viewModel.authorizationCodeValidationState == .timeout
+            isInvalid = viewModel.emailValidationState == .timeout || viewModel.emailValidationState == .invalid
         case .passwordTextField:
             isInvalid = viewModel.passwordValidationState == .invalid
         case .reInputPasswordTextField:

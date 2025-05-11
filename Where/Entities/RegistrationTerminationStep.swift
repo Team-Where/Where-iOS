@@ -11,7 +11,7 @@ import Foundation
 enum EmailValidationState {
     /// 이메일 인증 전
     ///
-    /// 인증코드 요청하기 전의 상태를 나타냅니다.
+    /// 이메일을 입력하기 전 초기 상태입니다.
     case beforeValidate
     
     /// 인증코드 전송 전 이메일 유효성 검사 실패
@@ -29,18 +29,18 @@ enum EmailValidationState {
     /// 이미 사용 중인 이메일인지 확인 중
     case checkingDuplication
     
-    /// 인증코드 전송 전 이메일 유효성 검사 성공
-    ///
-    /// 이메일 유효성 검사에 성공하면 서버에 인증코드를 요청할 수 있습니다.
-    case valid
-}
-
-/// 인증코드 유효성 검증 과정의 상태
-enum AuthorizationCodeValidationState {
     /// 인증코드 제출 전
     ///
-    /// 인증코드를 최초 제출하기 전의 상태입니다.
-    case beforeValidate
+    /// 이메일 유효성 검증에서 통과 후 인증코드를 최초 제출하기 전의 상태입니다.
+    case awaitingCode
+    
+    /// 인증코드 요청 중
+    case requesting
+    
+    /// 인증코드 발급
+    ///
+    /// 인증코드 발급 후 입력 대기 상태입니다.
+    case requested
     
     /// 인증코드 확인 중
     case checkingAuthorizationCode
@@ -128,7 +128,7 @@ enum AuthorizationCodeValidationResult {
     case notVerified
     
     init(_ rawValue: String) {
-        if rawValue == "Verified" {
+        if rawValue == "\"Verified\"" {
             self = .verified
         } else {
             self = .notVerified

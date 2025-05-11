@@ -65,6 +65,7 @@ final class APIService: APIServable {
                 guard let string = String(data: data, encoding: .utf8) else {
                     throw MoyaError.stringMapping(response)
                 }
+                print(string)
                 return string
             }
             .eraseToAnyPublisher()

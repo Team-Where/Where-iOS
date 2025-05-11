@@ -282,7 +282,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func requestAuthorizationCode(email: String) -> AnyPublisher<Void, AuthentificationCoreError> {
-        apiService.requestPublisher(Endpoint.requestAuthCode(email: email), EmptyDTO.Response.self)
+        apiService.requestPublisher(Endpoint.requestAuthCode(email: email))
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .map { _ in () }
             .eraseToAnyPublisher()
@@ -290,9 +290,9 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     
     func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<AuthorizationCodeValidationResult, AuthentificationCoreError> {
         let dto = VerifyAuthCodeDTO.Request(email: email, code: code)
-        return apiService.requestPublisher(Endpoint.verifyAuthCode(dto: dto), String.self)
+        return apiService.requestPublisher(Endpoint.verifyAuthCode(dto: dto))
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
-            .map { .init($0) }
+            .map { AuthorizationCodeValidationResult($0) }
             .eraseToAnyPublisher()
     }
     
