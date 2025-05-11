@@ -231,8 +231,8 @@ extension MeetingCore: MeetingCoreProtocol {
                 
                 guard var meetings = self?.meetingsSubject.value else { return newMeeting }
                 meetings[id] = newMeeting
-                meetingsSubject.send(meetings)
-                mediator?.notify(event: .updateMeetingSchedule(meeting: newMeeting))
+                self?.meetingsSubject.send(meetings)
+                self?.mediator?.notify(event: .updateMeetingSchedule(meeting: newMeeting))
             }
             .eraseToAnyPublisher()
     }
@@ -261,8 +261,8 @@ extension MeetingCore: MeetingCoreProtocol {
                 
                 guard var meetings = self?.meetingsSubject.value else { return }
                 meetings[id] = newMeeting
-                meetingsSubject.send(meetings)
-                mediator?.notify(event: .removeNotification(id: id))
+                self?.meetingsSubject.send(meetings)
+                self?.mediator?.notify(event: .removeNotification(id: id))
             }
             .eraseToAnyPublisher()
     }
@@ -376,8 +376,8 @@ extension MeetingCore: MeetingCoreProtocol {
             .map { [weak self] _ in
                 guard var meetings = self?.meetingsSubject.value else { return }
                 meetings.removeValue(forKey: id)
-                meetingsSubject.send(meetings)
-                mediator?.notify(event: .removeNotification(id: id))
+                self?.meetingsSubject.send(meetings)
+                self?.mediator?.notify(event: .removeNotification(id: id))
             }
             .eraseToAnyPublisher()
     }
@@ -440,20 +440,14 @@ extension MeetingCore: MeetingCoreProtocol {
         }
         
         let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
-        apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
-            .map { $0.toEntity() }
-            .sink { [weak self] completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    self?.meetingsSubject.send(completion: .failure(.networkingError(error)))
-                }
-            } receiveValue: { [weak self] meeting in
-                guard let self else { return }
-                var meetings = meetingsSubject.value
-                meetings[meeting.id] = meeting
-                meetingsSubject.send(meetings)
-                mediator?.notify(event: .updateMeetingSchedule(meeting: meeting))
+        return apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { [weak self] response in
+                let newMeeting = response.toEntity()
+                guard var meetings = self?.meetingsSubject.value else { return }
+                meetings[newMeeting.id] = newMeeting
+                self?.meetingsSubject.send(meetings)
+                self?.mediator?.notify(event: .updateMeetingSchedule(meeting: newMeeting))
             }
             .eraseToAnyPublisher()
     }
