@@ -17,7 +17,11 @@ final class LocalNotificationService {
             addNotification(meeting, hour: $0)
         }
     }
-        
+    
+    func removeNotification(for meeting: Meeting) {
+        let identifiers = Hour.allCases.map { "\(meeting.id)_\($0.message)"}
+        userNotificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
 }
 
 // MARK: - Nested Type
