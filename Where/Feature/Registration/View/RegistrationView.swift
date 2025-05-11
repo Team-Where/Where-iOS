@@ -58,6 +58,7 @@ struct RegistrationView: View {
                 guard isCompleted else { return }
                 isLoginNeeded = false
             }
+            .onDisappear(perform: viewModel.onDisappear)
     }
     
     @ViewBuilder private func content() -> some View {

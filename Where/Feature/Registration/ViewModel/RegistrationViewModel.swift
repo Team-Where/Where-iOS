@@ -376,4 +376,23 @@ extension RegistrationViewModel {
             isCompleted = true
         }
     }
+    
+    func onDisappear() {
+        emailFieldText = String()
+        authorizationCodeFieldText = String()
+        passwordFieldText = String()
+        reInputPasswordFieldText = String()
+        nicknameFieldText = String()
+        remainingTime = nil
+        profileImageData = nil
+        isPopupPresented = false
+        floater = nil
+        isCompleted = false
+        
+        emailValidationState = .beforeValidate
+        passwordValidationState = .beforeValidate
+        passwordComparisonResult = .unknown
+        nicknameValidationState = .beforeValidate
+        registrationStep = .email
+    }
 }
