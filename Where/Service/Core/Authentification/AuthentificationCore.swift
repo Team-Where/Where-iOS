@@ -36,7 +36,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func logout()
     
     /// 이메일 중복 확인
-    func checkEmailDuplicate(email: String) -> AnyPublisher<Bool, AuthentificationCoreError>
+    func checkEmailDuplicate(email: String) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 인증 코드 요청
     func requestAuthorizationCode(email: String) -> AnyPublisher<Void, AuthentificationCoreError>
@@ -272,12 +272,12 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         // TODO: 서버로 로그아웃 요청
     }
     
-    func checkEmailDuplicate(email: String) -> AnyPublisher<Bool, AuthentificationCoreError> {
+    func checkEmailDuplicate(email: String) -> AnyPublisher<Void, AuthentificationCoreError> {
         let dto = CheckEmailDuplicationDTO.Request(email: email)
         
-        return apiService
-            .requestPublisher(Endpoint.checkEmailDuplication(dto: dto), Bool.self)
+        return apiService.requestPublisher(Endpoint.checkEmailDuplication(dto: dto))
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .map { _ in () }
             .eraseToAnyPublisher()
     }
     
