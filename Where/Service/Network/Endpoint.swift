@@ -132,7 +132,7 @@ enum Endpoint {
     
     var isTokenRequired: Bool {
         switch self {
-        case .readAnnouncements, .readFAQs:
+        case .readAnnouncements, .readFAQs, .checkEmailDuplication:
             return false
         default:
             return true
