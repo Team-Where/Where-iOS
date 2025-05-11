@@ -12,7 +12,7 @@ final class LocalNotificationService {
     private let userNotificationCenter = UNUserNotificationCenter.current()
     
     func setNotification(_ meeting: Meeting) {
-        guard let meetingDate = meeting.combinedSchedule else { return }
+        guard meeting.isFinished else { return }
         Hour.allCases.forEach {
             addNotification(meeting, hour: $0)
         }
@@ -64,7 +64,7 @@ private extension LocalNotificationService {
         let content = createContent(with: meeting, at: hour)
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-        let request = UNNotificationRequest(identifier: "\(meeting.id) \(hour.message)", content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: "\(meeting.id)_\(hour.message)", content: content, trigger: trigger)
         userNotificationCenter.add(request)
     }
     
