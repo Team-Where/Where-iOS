@@ -14,6 +14,7 @@ import CombineMoya
 
 protocol APIServable {
     func requestPublisher<T: TargetType, D: Decodable>(_ targetType: T, _ DTO: D.Type) -> AnyPublisher<D, Error>
+    func requestPublisher<T: TargetType>(_ targetType: T) -> AnyPublisher<String, Error>
 }
 
 final class APIService: APIServable {
@@ -34,6 +35,13 @@ final class APIService: APIServable {
         provider = .init(session: session, plugins: [TokenPlugin(tokenStorage: tokenStorage)])
     }
     
+    private func performResponse(_ response: Publishers.HandleEvents<AnyPublisher<Response, MoyaError>>.Output) throws -> Data {
+        guard (200..<300).contains(response.statusCode) else {
+            throw MoyaError.statusCode(response)
+        }
+        return response.data
+    }
+    
     func requestPublisher<T: TargetType, D: Decodable>(_ targetType: T, _ DTO: D.Type) -> AnyPublisher<D, Error> {
         
         return provider.requestPublisher(MultiTarget(targetType))
@@ -43,13 +51,22 @@ final class APIService: APIServable {
                 }
             })
             .tryMap { response in
-                guard (200..<300).contains(response.statusCode)
-                else {
-                    throw MoyaError.statusCode(response)
-                }
-                return response.data
+                try self.performResponse(response)
             }
             .decode(type: D.self, decoder: decoder)
+            .eraseToAnyPublisher()
+    }
+    
+    func requestPublisher<T: TargetType>(_ targetType: T) -> AnyPublisher<String, Error> {
+        return provider.requestPublisher(MultiTarget(targetType))
+            .tryMap { response in
+                let data = try self.performResponse(response)
+                
+                guard let string = String(data: data, encoding: .utf8) else {
+                    throw MoyaError.stringMapping(response)
+                }
+                return string
+            }
             .eraseToAnyPublisher()
     }
     
