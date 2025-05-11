@@ -1,8 +1,8 @@
 //
-//  Text.swift
+//  BulletPointModifier.swift
 //  Where
 //
-//  Created by Swain Yun on 3/26/25.
+//  Created by Swain Yun on 5/8/25.
 //
 
 import SwiftUI
@@ -13,11 +13,5 @@ struct BulletPointModifier: ViewModifier {
             Text("\u{2022}")
             content
         }
-    }
-}
-
-extension Text {
-    func withBulletPoint() -> some View {
-        modifier(BulletPointModifier())
     }
 }

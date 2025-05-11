@@ -15,6 +15,8 @@ final class ContentViewModel: ObservableObject {
     @Published var isCreateMeetingSheetPresented = false
     @Published var fullScreenCoverType: FullScreenCoverType?
     
+    private var isLoginNeeded: Bool = true
+    
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -27,6 +29,23 @@ final class ContentViewModel: ObservableObject {
     
     private func subscribe() {
         // TODO: 모임이 새로 생기면 화면 띄울 수 있게 구독하기
+        
+        authCore.authentificationState
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                // TODO: 에러 핸들링
+            } receiveValue: { [weak self] state in
+                print(state)
+                switch state {
+                case .loginCompleted, .registrationNeeded:
+                    self?.fullScreenCoverType = nil
+                    self?.isLoginNeeded = false
+                    
+                case .loginNeeded:
+                    self?.isLoginNeeded = true
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -58,7 +77,7 @@ extension ContentViewModel {
         }
         
         // 새 모임 만들기 탭이 선택 됐으면 로그인 필요한지 확인해야함
-        guard authCore.isLoginNeeded == false else {
+        guard isLoginNeeded == false else {
             // 비로그인 상황이라면 새 모임 만들기 진행 불가, 로그인 화면 등장
             return fullScreenCoverType = .login
         }

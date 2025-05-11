@@ -9,6 +9,7 @@ import SwiftUI
 import Swinject
 
 struct EditProfileView: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: EditProfileViewModel
     
     private let resolver: Resolver
