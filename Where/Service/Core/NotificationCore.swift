@@ -22,6 +22,11 @@ protocol NotificationCoreProtocol: CoreProtocol {
 protocol NotificationMediationProtocol {
     /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
     func userDidLogout()
+    
+    func updateNotifications(for meeting: Meeting)
+    
+    func removeNotifications(for meetingID: UInt64)
+    
 }
 
 enum NotificationCoreError: Error {
@@ -37,7 +42,10 @@ final class NotificationCore {
     
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    private let localNotificationService: LocalNotificationService
+    
+    init(_ localNotificationService: LocalNotificationService) {
+        self.localNotificationService = localNotificationService
         subscribe()
     }
     
@@ -81,5 +89,14 @@ extension NotificationCore: NotificationCoreProtocol {
 extension NotificationCore: NotificationMediationProtocol {
     func userDidLogout() {
         notificationsSubject.send([:])
+    }
+    
+    func removeNotifications(for meetingID: UInt64) {
+        localNotificationService.removeNotification(for: meetingID)
+    }
+    
+    func updateNotifications(for meeting: Meeting) {
+        localNotificationService.removeNotification(for: meeting.id)
+        localNotificationService.setNotification(meeting)
     }
 }
