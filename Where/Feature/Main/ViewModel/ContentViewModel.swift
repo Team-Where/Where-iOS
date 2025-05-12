@@ -81,6 +81,8 @@ extension ContentViewModel {
             return previousTab = newTab
         }
         
+        defer { selectedTab = previousTab }
+        
         // 새 모임 만들기 탭이 선택 됐으면 로그인 필요한지 확인해야함
         guard isLoginNeeded == false else {
             // 비로그인 상황이라면 새 모임 만들기 진행 불가, 로그인하도록 안내
@@ -89,7 +91,6 @@ extension ContentViewModel {
         
         // 로그인한 상황이라면 새 모임 만들기 진행 가능
         isCreateMeetingSheetPresented = true
-        selectedTab = previousTab
     }
     
     func willFullScreenCoverDisappear() {
@@ -97,7 +98,7 @@ extension ContentViewModel {
     }
     
     func onDismissLoginNeededPopup() {
-        selectedTab = .myMeeting
+        selectedTab = previousTab
         isLoginNeededPopupPresented = false
     }
 }

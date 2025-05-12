@@ -79,9 +79,10 @@ struct ContentView: View {
                     } label: {
                         Text("다음에")
                             .whereFont(.body16semibold)
+                            .foregroundStyle(.where(hex: 0x4B5563))
                             .padding(10)
                     }
-                    .buttonStyle(.whereRoundedProminent(background: .where(.gray500)))
+                    .buttonStyle(.whereRoundedProminent(background: .where(.gray100)))
                     
                     Button {
                         withAnimation {
