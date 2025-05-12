@@ -47,11 +47,11 @@ struct SideMenuContentView: View {
             
             // 메뉴 리스트
             VStack(alignment: .leading, spacing: 32) {
-                SideMenuItem($navigationType, type: .settings, title: "설정", iconName: "gear")
-                SideMenuItem($navigationType, type: .notifications, title: "알림", iconName: "bell")
-                SideMenuItem($navigationType, type: .FAQs, title: "FAQ", iconName: "bubble")
-                SideMenuItem($navigationType, type: .inquiries, title: "1:1 문의", iconName: "square.and.pencil")
-                SideMenuItem($navigationType, type: .announcements, title: "공지사항", iconName: "megaphone")
+                SideMenuItem($navigationType, type: .notifications, title: "알림", icon: Image(.bell))
+                SideMenuItem($navigationType, type: .FAQs, title: "FAQ", icon: Image(.chat))
+                SideMenuItem($navigationType, type: .inquiries, title: "1:1 문의", icon: Image(.users))
+                SideMenuItem($navigationType, type: .announcements, title: "공지사항", icon: Image(.loudspeaker))
+                SideMenuItem($navigationType, type: .settings, title: "설정", icon: Image(.trailingIcon1))
             }
             .padding(.horizontal)
 
@@ -148,18 +148,18 @@ extension SideMenuContentView {
         @Binding var selectedNavigationType: NavigationType?
         let type: NavigationType
         let title: String
-        let iconName: String
+        let icon: Image
         
         init(
             _ selected: Binding<NavigationType?>,
             type: NavigationType,
             title: String,
-            iconName: String
+            icon: Image
         ) {
             self._selectedNavigationType = selected
             self.type = type
             self.title = title
-            self.iconName = iconName
+            self.icon = icon
         }
 
         var body: some View {
@@ -167,9 +167,10 @@ extension SideMenuContentView {
                 selectedNavigationType = type
             } label: {
                 HStack(spacing: 12) {
-                    Image(systemName: iconName)
-                        .foregroundStyle(.black)
+                    icon
+                        .resizable()
                         .frame(width: 18, height: 18)
+                        .foregroundStyle(.black)
                     
                     Text(title)
                         .whereFont(.body16regular)
