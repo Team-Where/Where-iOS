@@ -27,6 +27,7 @@
 		042A79F92DA53386004105E2 /* KakaoSDKShare in Frameworks */ = {isa = PBXBuildFile; productRef = 042A79F82DA53386004105E2 /* KakaoSDKShare */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		043FAC702DCF740D002B9C23 /* VerifyAuthCodeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043FAC6F2DCF740D002B9C23 /* VerifyAuthCodeDTO.swift */; };
+		043FAC742DD1C6A6002B9C23 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043FAC732DD1C6A6002B9C23 /* Font.swift */; };
 		0450E83B2D990B6D00DB029A /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 0450E83A2D990B6D00DB029A /* Moya */; };
 		0450E8492D99676400DB029A /* CoreAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E8482D99676400DB029A /* CoreAssembly.swift */; };
 		0450E84B2D996E5D00DB029A /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0450E84A2D996E5D00DB029A /* LoginViewModel.swift */; };
@@ -44,7 +45,6 @@
 		045B44AE2D2150AF00514A27 /* WhereApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44A62D2150AF00514A27 /* WhereApp.swift */; };
 		045B44BA2D21650200514A27 /* Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44B92D2164FA00514A27 /* Pretendard.swift */; };
 		045B44C62D2166D000514A27 /* WhereFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44C52D2166D000514A27 /* WhereFont.swift */; };
-		045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44C82D216A3E00514A27 /* Font+Pretendard.swift */; };
 		045B44CB2D216AA700514A27 /* View+Pretendard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44CA2D216AA200514A27 /* View+Pretendard.swift */; };
 		045B44F62D228DC000514A27 /* RoundedProminentButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B44F52D228DC000514A27 /* RoundedProminentButtonStyle.swift */; };
 		045CA15C2D27BC96001B5CEE /* AppStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CA15B2D27BC96001B5CEE /* AppStorageKey.swift */; };
@@ -243,6 +243,7 @@
 		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		043FAC6F2DCF740D002B9C23 /* VerifyAuthCodeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAuthCodeDTO.swift; sourceTree = "<group>"; };
+		043FAC732DD1C6A6002B9C23 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		0450E8482D99676400DB029A /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		0450E84A2D996E5D00DB029A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		0450E84C2D99708900DB029A /* PreviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHelper.swift; sourceTree = "<group>"; };
@@ -259,7 +260,6 @@
 		045B44B92D2164FA00514A27 /* Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pretendard.swift; sourceTree = "<group>"; };
 		045B44C42D21659700514A27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		045B44C52D2166D000514A27 /* WhereFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereFont.swift; sourceTree = "<group>"; };
-		045B44C82D216A3E00514A27 /* Font+Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Pretendard.swift"; sourceTree = "<group>"; };
 		045B44CA2D216AA200514A27 /* View+Pretendard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Pretendard.swift"; sourceTree = "<group>"; };
 		045B44F52D228DC000514A27 /* RoundedProminentButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedProminentButtonStyle.swift; sourceTree = "<group>"; };
 		045CA15B2D27BC96001B5CEE /* AppStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStorageKey.swift; sourceTree = "<group>"; };
@@ -476,6 +476,7 @@
 			isa = PBXGroup;
 			children = (
 				041BC40F2DCB970C0035C825 /* View.swift */,
+				043FAC732DD1C6A6002B9C23 /* Font.swift */,
 				04EA3DDE2DCBB423003297A3 /* Color.swift */,
 				04EA3DE62DCBB847003297A3 /* Text.swift */,
 				04EA3DE82DCBB86F003297A3 /* TextField.swift */,
@@ -644,7 +645,6 @@
 		045B44C72D216A2000514A27 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				045B44C82D216A3E00514A27 /* Font+Pretendard.swift */,
 				045B44CA2D216AA200514A27 /* View+Pretendard.swift */,
 			);
 			path = Extensions;
@@ -1575,7 +1575,6 @@
 				046833FB2D3B902E009D2357 /* CalendarView.swift in Sources */,
 				04EA3DEB2DCBB8AF003297A3 /* TextEditor.swift in Sources */,
 				04A4F4442D40D82E0041FD02 /* AdjustPasswordViewModel.swift in Sources */,
-				045B44C92D216A3E00514A27 /* Font+Pretendard.swift in Sources */,
 				046A644B2DBFC00E006ED90C /* AnnouncementViewModel.swift in Sources */,
 				91A9EABA2D29AFD7005F09D2 /* MyMeetingView.swift in Sources */,
 				04A4F4412D40D7EC0041FD02 /* AdjustPasswordView.swift in Sources */,
@@ -1626,6 +1625,7 @@
 				046833F52D3B8F99009D2357 /* User.swift in Sources */,
 				91F6CE442D3D7B3100BD24D1 /* PlaceDelete.swift in Sources */,
 				7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */,
+				043FAC742DD1C6A6002B9C23 /* Font.swift in Sources */,
 				046A64722DC3E03F006ED90C /* ProfileCreationViewModel.swift in Sources */,
 				04EA3DE52DCBB564003297A3 /* CharacterLimitModifier.swift in Sources */,
 				046A644F2DBFC7A9006ED90C /* FAQViewModel.swift in Sources */,
