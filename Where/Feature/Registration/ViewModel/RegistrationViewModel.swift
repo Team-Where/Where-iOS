@@ -110,6 +110,7 @@ final class RegistrationViewModel: ObservableObject {
     
     private func subscribe() {
         $emailFieldText
+            .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] email in
                 // 이메일 변경 시 이전 API 작업 취소

@@ -89,6 +89,12 @@ struct RegistrationView: View {
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 155, height: 155)
                             .clipShape(Circle())
+                    } else {
+                        Image(.person)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 155, height: 155)
+                            .clipShape(Circle())
                     }
                     
                     Button {
