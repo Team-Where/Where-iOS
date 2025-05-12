@@ -33,9 +33,13 @@ final class ContentViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 switch state {
-                case .loginCompleted, .registrationNeeded:
+                case .loginCompleted:
                     self?.fullScreenCoverType = nil
                     self?.isLoginNeeded = false
+                    
+                case .registrationNeeded:
+                    self?.fullScreenCoverType = nil
+                    self?.isLoginNeeded = true
                     
                 case .loginNeeded:
                     self?.isLoginNeeded = true
