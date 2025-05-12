@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-private struct WhereFontViewModifier: ViewModifier {
+struct WhereFontViewModifier: ViewModifier {
     let font: WhereFont
     var name: String { font.pretendard.rawValue }
     var size: CGFloat { font.size }
@@ -21,11 +21,5 @@ private struct WhereFontViewModifier: ViewModifier {
             .font(.pretendard(font.pretendard, size: size))
             .lineSpacing(lineSpacing)
             .padding(.vertical, lineSpacing / 2)
-    }
-}
-
-extension View {
-    func whereFont(_ whereFont: WhereFont) -> some View {
-        modifier(WhereFontViewModifier(font: whereFont))
     }
 }

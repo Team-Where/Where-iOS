@@ -1,12 +1,13 @@
 //
-//  Font+Pretendard.swift
+//  Font.swift
 //  Where
 //
-//  Created by Swain Yun on 12/29/24.
+//  Created by Swain Yun on 5/12/25.
 //
 
 import SwiftUI
 
+// MARK: - Font+Pretendard
 extension Font {
     static func pretendard(_ type: Pretendard, size: CGFloat) -> Font {
         .custom(type.rawValue, size: size)

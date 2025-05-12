@@ -83,3 +83,10 @@ extension View {
         modifier(SideMenuModifier<SideMenuContent>(isPresented, content: content))
     }
 }
+
+// MARK: - View+WhereFont
+extension View {
+    func whereFont(_ whereFont: WhereFont) -> some View {
+        modifier(WhereFontViewModifier(font: whereFont))
+    }
+}
