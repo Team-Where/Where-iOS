@@ -29,8 +29,8 @@
 		<string>kakaolink</string>
 		<string>naversearchapp</string>
 		<string>naversearchthirdlogin</string>
-        <string>kakaomap</string>
-        <string>nmap</string>
+		<string>kakaomap</string>
+		<string>nmap</string>
 	</array>
 	<key>NidAppName</key>
 	<string>약속을 새롭게 정의하다, 어디</string>
