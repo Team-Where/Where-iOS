@@ -10,17 +10,18 @@ import Swinject
 
 struct MyMeetingView: View {
     @ObservedObject private var viewModel: MyMeetingViewModel
-    @Binding var isSideMenuPresented: Bool
+    @Binding var isLoginNeeded: Bool
     
     private let resolver: Resolver
     
     init(
-        _ isSideMenuPresented: Binding<Bool>,
+        _ isLoginNeeded: Binding<Bool>,
         resolver: Resolver
     ) {
-        self._isSideMenuPresented = isSideMenuPresented
+        self._isLoginNeeded = isLoginNeeded
         self.viewModel = resolver.resolve(MyMeetingViewModel.self)!
         self.resolver = resolver
+        self.viewModel.isLoginNeeded = isLoginNeeded.wrappedValue
     }
     
     var body: some View {
@@ -39,9 +40,9 @@ struct MyMeetingView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .allowsHitTesting(isSideMenuPresented == false)
-            .sideMenu(isPresented: $isSideMenuPresented) {
-                SideMenuContentView($isSideMenuPresented, resolver: resolver, onLoginButtonTapped: viewModel.presentLoginView)
+            .allowsHitTesting(viewModel.isSideMenuPresented == false)
+            .sideMenu(isPresented: $viewModel.isSideMenuPresented) {
+                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver, onLoginButtonTapped: viewModel.presentLoginView)
             }
         }
         .overlay(alignment: .bottom) {
@@ -58,10 +59,10 @@ struct MyMeetingView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     withAnimation {
-                        isSideMenuPresented.toggle()
+                        viewModel.toggleSideMenuPresentation()
                     }
                 } label: {
-                    Image(systemName: isSideMenuPresented ? "xmark" : "line.3.horizontal")
+                    Image(systemName: viewModel.isSideMenuPresented ? "xmark" : "line.3.horizontal")
                         .foregroundStyle(.black)
                 }
             }
@@ -71,6 +72,16 @@ struct MyMeetingView: View {
         }
         .fullScreenCover(isPresented: $viewModel.isLoginNeeded) {
             LoginView(resolver: resolver)
+        }
+        .onChange(of: isLoginNeeded) { _, newValue in
+            if viewModel.isLoginNeeded != newValue {
+                viewModel.isLoginNeeded = newValue
+            }
+        }
+        .onChange(of: viewModel.isLoginNeeded) { _, newValue in
+            if isLoginNeeded != newValue {
+                isLoginNeeded = newValue
+            }
         }
     }
     

@@ -12,7 +12,7 @@ fileprivate typealias TabItem = ContentViewModel.TabItem
 
 struct ContentView: View {
     @ObservedObject private var viewModel: ContentViewModel
-    @State private var isSideMenuPresented: Bool = false
+    @State private var isLoginNeeded: Bool = false
     
     private let resolver: Resolver
     
@@ -25,7 +25,7 @@ struct ContentView: View {
         TabView(selection: $viewModel.selectedTab) {
             // 내모임 뷰
             NavigationStack {
-                MyMeetingView($isSideMenuPresented, resolver: resolver)
+                MyMeetingView($isLoginNeeded, resolver: resolver)
             }
             .tabItem {
                 Label("내 모임", systemImage: "person.2")
@@ -86,7 +86,7 @@ struct ContentView: View {
                     Button {
                         withAnimation {
                             viewModel.onDismissLoginNeededPopup()
-                            isSideMenuPresented = true
+                            isLoginNeeded = true
                         }
                     } label: {
                         Text("로그인하기")
