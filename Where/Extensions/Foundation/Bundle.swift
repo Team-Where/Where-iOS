@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - Bundle+AppSecret
 extension Bundle {
     typealias Key = String
     
@@ -46,5 +47,12 @@ extension Bundle {
             print(error.debugDescription)
             return nil
         }
+    }
+}
+
+// MARK: - Bundle+AppVersion
+extension Bundle {
+    var appVersion: String {
+        infoDictionary?["CFBundleShortVersionString"] as? String ?? "-"
     }
 }

@@ -130,9 +130,12 @@ enum Endpoint {
     /// FAQ 삭제
     case deleteFAQ(dto: DeleteFAQDTO.Request)
     
+    // MARK: - Common Related
+    case checkLatestVersion(version: String)
+    
     var isTokenRequired: Bool {
         switch self {
-        case .readAnnouncements, .readFAQs, .checkEmailDuplication, .requestAuthCode, .verifyAuthCode:
+        case .readAnnouncements, .readFAQs, .checkEmailDuplication, .requestAuthCode, .verifyAuthCode, .checkLatestVersion:
             return false
         default:
             return true
@@ -238,12 +241,16 @@ extension Endpoint: TargetType {
             return "/FAQ"
         case .createFAQ, .updateFAQ, .deleteFAQ:
             return "\(basePath)/FAQ"
+            
+            // MARK: - Common Related
+        case .checkLatestVersion:
+            return "/version"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink, .requestAuthCode: .get
+        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink, .requestAuthCode, .checkLatestVersion: .get
         case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao, .verifyAuthCode: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend, .updateProfile, .updateNickname: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister, .deleteProfile: .delete
@@ -382,7 +389,8 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .deleteFAQ(let dto):
             return .requestJSONEncodable(dto)
-            
+        case .checkLatestVersion(let version):
+            return .requestParameters(parameters: ["type": "apple", "version": "\(version)"], encoding: URLEncoding.queryString)
         }
     }
     
@@ -419,7 +427,7 @@ private extension Endpoint {
             return "/token"
         case .requestAuthCode, .verifyAuthCode:
             return "/email"
-        case .readAnnouncements, .readFAQs:
+        case .readAnnouncements, .readFAQs, .checkLatestVersion:
             return ""
         @unknown default:
             return ""

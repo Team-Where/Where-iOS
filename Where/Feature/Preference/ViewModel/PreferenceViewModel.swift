@@ -9,11 +9,26 @@ import Foundation
 import Swinject
 import Combine
 
+@MainActor
 final class PreferenceViewModel: ObservableObject {
+    @Published var versionNotice = String()
+    
     private let authCore: AuthentificationCoreProtocol
+    private let supportCore: SupportCoreProtocol
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
+        self.supportCore = resolver.resolve(SupportCore.self)!
+        subscribe()
+    }
+    
+    private func subscribe() {
+        supportCore.latestVersion
+            .sink { [weak self] notice in
+                self?.versionNotice = notice
+            }
+            .store(in: cancellableBag, key: "LatestVersion")
     }
 }
 

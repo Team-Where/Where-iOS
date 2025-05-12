@@ -156,14 +156,15 @@ struct PreferenceView: View {
                                 .whereFont(.body16medium)
                                 .foregroundStyle(.black)
                             
-                            Text("1.0.0")
+                            Text(Bundle.main.appVersion)
                                 .whereFont(.body14regular)
                                 .foregroundStyle(Color(hex: 0x495057))
                         }
                         
                         Spacer()
                         
-                        Text("최신버전")
+                        // TODO: 최신버전 아닐 경우 앱스토어로 이동시키도록 해야함
+                        Text(viewModel.versionNotice)
                             .whereFont(.body16regular)
                             .foregroundStyle(Color(hex: 0x495057))
                     }

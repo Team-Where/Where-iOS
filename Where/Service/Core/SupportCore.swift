@@ -14,6 +14,8 @@ protocol SupportCoreProtocol: CoreProtocol {
     /// 공지사항 목록
     var announcements: AnyPublisher<[UInt64: Announcement], Never> { get }
     
+    var latestVersion: AnyPublisher<String, Never> { get }
+    
     /// 1:1문의 작성 - 사용자
     func createInquiry(title: String, content: String, images: [Data]?) -> AnyPublisher<Void, SupportCoreError>
     /// 1:1문의 답변 작성 - 관리자
@@ -74,6 +76,7 @@ final class SupportCore {
     
     private let inquiriesSubject = CurrentValueSubject<[UInt64: Inquiry], Never>([:])
     private let announcementsSubject = CurrentValueSubject<[UInt64: Announcement], Never>([:])
+    private let latestVersionSubject = CurrentValueSubject<String, Never>(String())
     
     private let encoder: JSONEncoder
     private let apiService: APIServable
@@ -115,6 +118,10 @@ extension SupportCore: SupportCoreProtocol {
     
     var announcements: AnyPublisher<[UInt64 : Announcement], Never> {
         announcementsSubject.eraseToAnyPublisher()
+    }
+    
+    var latestVersion: AnyPublisher<String, Never> {
+        latestVersionSubject.eraseToAnyPublisher()
     }
     
     func createInquiry(title: String, content: String, images: [Data]?) -> AnyPublisher<Void, SupportCoreError> {
@@ -298,6 +305,30 @@ extension SupportCore: SupportMediationProtocol {
     
     func setCurrentUserID(_ id: UInt64?) {
         currentUserID = id
+        
+        let latestVersion = Bundle.main.appVersion
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.checkLatestVersion(version: latestVersion))
+            .map { isLatestVersionString in
+                isLatestVersionString == "true"
+            }
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure:
+                    guard latestVersion == UserDefaults.standard.string(forKey: AppStorageKey.latestVersion) else {
+                        self?.latestVersionSubject.send("업데이트")
+                        return
+                    }
+                    self?.latestVersionSubject.send("최신버전")
+                }
+            } receiveValue: { [weak self] isLatestVersion in
+                guard isLatestVersion else {
+                    self?.latestVersionSubject.send("업데이트")
+                    return
+                }
+                UserDefaults.standard.set(latestVersion, forKey: AppStorageKey.latestVersion)
+                self?.latestVersionSubject.send("최신버전")
+            }
     }
     
     func userDidLogout() {
