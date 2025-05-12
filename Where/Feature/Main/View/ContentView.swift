@@ -66,7 +66,7 @@ struct ContentView: View {
         }
         .popup($viewModel.isLoginNeededPopupPresented) {
             VStack(spacing: 22) {
-                Text("로그인이 필요합니다.")
+                Text("로그인 후 모임을 만들 수 있어요.")
                     .whereFont(.body14medium)
                     .foregroundStyle(Color(hex: 0x343A40))
                     .multilineTextAlignment(.center)
@@ -77,7 +77,7 @@ struct ContentView: View {
                             viewModel.onDismissLoginNeededPopup()
                         }
                     } label: {
-                        Text("취소")
+                        Text("다음에")
                             .whereFont(.body16semibold)
                             .padding(10)
                     }
@@ -89,7 +89,7 @@ struct ContentView: View {
                             isSideMenuPresented = true
                         }
                     } label: {
-                        Text("확인")
+                        Text("로그인하기")
                             .whereFont(.body16semibold)
                             .padding(10)
                     }
