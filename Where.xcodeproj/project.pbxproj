@@ -154,6 +154,7 @@
 		7F63AE2C2DD08507002FCCCD /* LocalNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */; };
 		7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */; };
 		7F9154272DD385860065D85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7F9154262DD385860065D85B /* GoogleService-Info.plist */; };
+		7F91542A2DD388950065D85B /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 7F9154292DD388950065D85B /* FirebaseMessaging */; };
 		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
 		7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */; };
 		7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */; };
@@ -368,6 +369,7 @@
 		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationState.swift; sourceTree = "<group>"; };
 		7F9154262DD385860065D85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7F91542B2DD388B20065D85B /* Where.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Where.entitlements; sourceTree = "<group>"; };
 		7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD642DB68E160097CC30 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 			files = (
 				04F051842D422B01000892C0 /* KakaoSDKUser in Frameworks */,
 				042A79F92DA53386004105E2 /* KakaoSDKShare in Frameworks */,
+				7F91542A2DD388950065D85B /* FirebaseMessaging in Frameworks */,
 				7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */,
 				04F051802D422B01000892C0 /* KakaoSDKCommon in Frameworks */,
 				0450E8522D998CC800DB029A /* Swinject in Frameworks */,
@@ -611,6 +614,7 @@
 		045B44A72D2150AF00514A27 /* Where */ = {
 			isa = PBXGroup;
 			children = (
+				7F91542B2DD388B20065D85B /* Where.entitlements */,
 				045B44C42D21659700514A27 /* Info.plist */,
 				041BC4082DCB95CD0035C825 /* Extensions */,
 				045B44992D2150AF00514A27 /* Entities */,
@@ -1406,6 +1410,7 @@
 				0450E8512D998CC800DB029A /* Swinject */,
 				042A79F82DA53386004105E2 /* KakaoSDKShare */,
 				7FE7BCA32DB673550097CC30 /* CombineMoya */,
+				7F9154292DD388950065D85B /* FirebaseMessaging */,
 			);
 			productName = Where;
 			productReference = 7F716C7F2DAE86B10076D4DD /* Where.app */;
@@ -1464,6 +1469,7 @@
 				04CBC1AA2D774410002CA364 /* XCRemoteSwiftPackageReference "naveridlogin-sdk-ios-swift" */,
 				0450E8392D990B6D00DB029A /* XCRemoteSwiftPackageReference "Moya" */,
 				0450E8502D998CC800DB029A /* XCRemoteSwiftPackageReference "Swinject" */,
+				7F9154282DD388950065D85B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 045B446C2D2146B000514A27;
@@ -1841,7 +1847,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = Where/Where.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -1887,7 +1893,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = Where/Where.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -2027,6 +2033,14 @@
 				minimumVersion = 2.23.0;
 			};
 		};
+		7F9154282DD388950065D85B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.12.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2069,6 +2083,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 04F0517C2D422B01000892C0 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
 			productName = KakaoSDKUser;
+		};
+		7F9154292DD388950065D85B /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7F9154282DD388950065D85B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 		7FE7BCA32DB673550097CC30 /* CombineMoya */ = {
 			isa = XCSwiftPackageProductDependency;
