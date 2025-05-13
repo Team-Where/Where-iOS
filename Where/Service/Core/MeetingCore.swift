@@ -492,7 +492,11 @@ extension MeetingCore: MeetingMediationProtocol {
         
         cancellableBag[#function] = apiService.requestPublisher(Endpoint.readMeetingDetail(userID: user.id), ReadMeetingDetailDTO.Response.self)
             .map { meetings in
-                meetings.reduce(into: [:]) { $0[$1.meetingID] = $1.toEntity() }
+                meetings.reduce(into: [:]) { [weak self] in
+                    let meeting = $1.toEntity()
+                    self?.mediator?.notify(event: .updateMeetingSchedule(meeting: meeting))
+                    $0[$1.meetingID] = meeting
+                }
             }
             .sink { completion in
                 switch completion {
