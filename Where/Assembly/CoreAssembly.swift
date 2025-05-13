@@ -71,11 +71,12 @@ struct CoreAssembly: Assembly {
         
         container.register(MeetingCore.self) { resolver in
             guard let encoder = resolver.resolve(JSONEncoder.self),
-                  let apiService = resolver.resolve(APIServable.self)
+                  let apiService = resolver.resolve(APIServable.self),
+                  let kakaoShareService = resolver.resolve(KakaoShareServiceProtocol.self)
             else {
                 fatalError("Failed Initializing MeetingCore")
             }
-            return MeetingCore(apiService: apiService, encoder: encoder)
+            return MeetingCore(apiService: apiService, kakaoShareService: kakaoShareService, encoder: encoder)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
