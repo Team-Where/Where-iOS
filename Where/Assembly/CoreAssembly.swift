@@ -158,8 +158,11 @@ struct CoreAssembly: Assembly {
             return core
         }
         
-        container.register(NotificationCore.self) { _ in
-            return NotificationCore()
+        container.register(NotificationCore.self) { resolver in
+            guard let service = resolver.resolve(LocalNotificationService.self) else {
+                fatalError("LocalNotificationService not resolvable")
+            }
+            return NotificationCore(service)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in
