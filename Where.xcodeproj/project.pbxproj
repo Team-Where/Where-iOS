@@ -245,6 +245,8 @@
 		042A79F12DA3FA38004105E2 /* AppleLoginStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginStrategy.swift; sourceTree = "<group>"; };
 		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
 		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
+		042BA6312DD375C1005237B3 /* KakaoShareService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoShareService.swift; sourceTree = "<group>"; };
+		042BA6342DD38A51005237B3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		043FAC6F2DCF740D002B9C23 /* VerifyAuthCodeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAuthCodeDTO.swift; sourceTree = "<group>"; };
 		043FAC732DD1C6A6002B9C23 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
@@ -530,6 +532,14 @@
 			path = Implementation;
 			sourceTree = "<group>";
 		};
+		042BA6362DD39588005237B3 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				042BA6342DD38A51005237B3 /* GoogleService-Info.plist */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		0438BA7A2D97DA86008C628F /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -564,6 +574,7 @@
 				04832B452D266819003FFE3B /* WhereTests */,
 				7F716C7F2DAE86B10076D4DD /* Where.app */,
 				7F716C802DAE86B10076D4DD /* WhereTests.xctest */,
+				042BA6362DD39588005237B3 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
