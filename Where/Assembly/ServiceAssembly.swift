@@ -43,6 +43,10 @@ struct ServiceAssembly: Assembly {
         }
         .inObjectScope(.container)
         
+        container.register(LocalNotificationService.self) { _ in
+            return LocalNotificationService()
+        }
+        .inObjectScope(.container)
         container.register(KakaoShareServiceProtocol.self) { _ in
             KakaoShareService()
         }
