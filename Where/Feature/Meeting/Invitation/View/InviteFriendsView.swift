@@ -66,7 +66,7 @@ struct InviteFriendsView: View {
                     invitedFriends()
                     
                     Button {
-                        // TODO: KakaoTalk Universal Link
+                        viewModel.inviteFriendWithKakao { openURL($0) }
                     } label: {
                         Image(.kakaoInvitationButton)
                             .resizable()

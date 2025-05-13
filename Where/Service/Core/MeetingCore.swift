@@ -65,6 +65,10 @@ protocol MeetingCoreProtocol: CoreProtocol {
     ///     - id: 모임의 고유 식별자
     ///     - participantId: 초대 대상의 식별자
     func inviteParticipant(id: UInt64, guest: FriendRelationship) -> AnyPublisher<Void, MeetingCoreError>
+    /// 카카오톡으로 모임 초대
+    /// - Parameters:
+    ///     - id: 모임의 고유 식별자
+    func inviteParticipantWithKakao(id: UInt64) -> AnyPublisher<URL, MeetingCoreError>
     /// 모임 초대 수락
     /// - Parameters:
     ///     - id: 초대장 식별자
@@ -97,6 +101,7 @@ enum MeetingCoreError: Error {
     case userIDNotSet
     case encodingError(type: Encodable.Type)
     case noSuchMeeting
+    case notSupported
 }
 
 final class MeetingCore {
@@ -119,14 +124,17 @@ final class MeetingCore {
     private let createdMeetingSubject = PassthroughSubject<Meeting, Never>()
     
     private let apiService: APIServable
+    private let kakaoShareService: KakaoShareServiceProtocol
     private let encoder: JSONEncoder
     private let cancellableBag = CancellableBag()
     
     init(
         apiService: APIServable,
+        kakaoShareService: KakaoShareServiceProtocol,
         encoder: JSONEncoder
     ) {
         self.apiService = apiService
+        self.kakaoShareService = kakaoShareService
         self.encoder = encoder
         subscribe()
     }
@@ -427,6 +435,18 @@ extension MeetingCore: MeetingCoreProtocol {
             })
             .mapError { MeetingCoreError.networkingError($0) }
             .eraseToAnyPublisher()
+    }
+    
+    func inviteParticipantWithKakao(id: UInt64) -> AnyPublisher<URL, MeetingCoreError> {
+        guard let inviter = currentUser else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
+        }
+        
+        guard let meeting = meetingsSubject.value[id] else {
+            return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
+        }
+        
+        return kakaoShareService.share(inviter: inviter, meeting: meeting)
     }
     
     func acceptInvitation(id: UInt64) -> AnyPublisher<Void, MeetingCoreError> {

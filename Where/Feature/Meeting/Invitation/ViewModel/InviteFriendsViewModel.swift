@@ -155,8 +155,17 @@ extension InviteFriendsViewModel {
             } receiveValue: { _ in }
     }
     
-    func inviteFriendWithKakao() {
-        
+    func inviteFriendWithKakao(_ completion: @escaping (URL) -> Void) {
+        cancellableBag[#function] = meetingCore.inviteParticipantWithKakao(id: _meetingID)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure: self?.floaterType = .errorOccured(message: "잠시 후 다시 시도해주세요.")
+                }
+            } receiveValue: { url in
+                completion(url)
+            }
     }
     
     func setMeeting(id: UInt64) {
