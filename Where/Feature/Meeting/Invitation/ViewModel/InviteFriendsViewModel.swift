@@ -13,7 +13,7 @@ final class InviteFriendsViewModel: ObservableObject {
     @Published private(set) var friendsDataSource = [FriendCellDataSource]()
     @Published private(set) var searchedFriends = [FriendCellDataSource]()
     @Published private(set) var invitationStates = [MeetingInvitationState]()
-    @Published var isFloaterPresented: Bool = false
+    @Published var floaterType: FloaterType?
     @Published var isSearching: Bool = false
     @Published var searchingText: String = String()
     @Published private var _meetingID: UInt64!
@@ -128,6 +128,18 @@ extension InviteFriendsViewModel {
         /// 최근 만난 친구 상태
         let isRecent: Bool
     }
+    
+    enum FloaterType: FloaterContent {
+        case invited
+        case errorOccured(message: String)
+        
+        var title: String {
+            switch self {
+            case .invited: return "초대되었습니다."
+            case .errorOccured(let message): return message
+            }
+        }
+    }
 }
 
 // MARK: - Interfaces
@@ -135,11 +147,16 @@ extension InviteFriendsViewModel {
     func inviteFriend(_ friend: FriendRelationship) {
         cancellableBag[#function] = meetingCore.inviteParticipant(id: _meetingID, guest: friend)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { [weak self] _ in
-                self?.isFloaterPresented = true
-            }
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: self?.floaterType = .invited
+                case .failure: self?.floaterType = .errorOccured(message: "친구 초대가 이루어지지 않았어요.")
+                }
+            } receiveValue: { _ in }
+    }
+    
+    func inviteFriendWithKakao() {
+        
     }
     
     func setMeeting(id: UInt64) {

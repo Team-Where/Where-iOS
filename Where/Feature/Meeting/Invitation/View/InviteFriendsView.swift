@@ -106,9 +106,15 @@ struct InviteFriendsView: View {
             }
         }
         .scrollIndicators(.never)
-        .floater($viewModel.isFloaterPresented, title: "초대되었습니다.") {
-            Image(systemName: "checkmark")
-                .foregroundStyle(.accent)
+        .floater($viewModel.floaterType) { type in
+            switch type {
+            case .invited:
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.accent)
+            case .errorOccured:
+                Image(systemName: "exclamationmark.circle")
+                    .foregroundStyle(.red)
+            }
         }
         .padding([.top, .horizontal])
     }
