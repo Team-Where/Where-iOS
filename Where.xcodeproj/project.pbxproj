@@ -26,7 +26,6 @@
 		042A79F62DA4124F004105E2 /* MeetingCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042A79F52DA4124F004105E2 /* MeetingCore.swift */; };
 		042A79F92DA53386004105E2 /* KakaoSDKShare in Frameworks */ = {isa = PBXBuildFile; productRef = 042A79F82DA53386004105E2 /* KakaoSDKShare */; };
 		042BA6322DD375C1005237B3 /* KakaoShareService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042BA6312DD375C1005237B3 /* KakaoShareService.swift */; };
-		042BA6352DD38A51005237B3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 042BA6342DD38A51005237B3 /* GoogleService-Info.plist */; };
 		0438BA762D96B353008C628F /* CompleteCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0438BA752D96B353008C628F /* CompleteCreationView.swift */; };
 		043FAC702DCF740D002B9C23 /* VerifyAuthCodeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043FAC6F2DCF740D002B9C23 /* VerifyAuthCodeDTO.swift */; };
 		043FAC742DD1C6A6002B9C23 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043FAC732DD1C6A6002B9C23 /* Font.swift */; };
@@ -1502,7 +1501,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */,
-				042BA6352DD38A51005237B3 /* GoogleService-Info.plist in Resources */,
 				91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */,
 				91A9EAB12D26EE45005F09D2 /* Preview Assets.xcassets in Resources */,
 				046833E32D3B8DE5009D2357 /* Splash.storyboard in Resources */,
