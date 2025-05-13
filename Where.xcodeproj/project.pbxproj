@@ -369,8 +369,6 @@
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
 		7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationViewModel.swift; sourceTree = "<group>"; };
 		7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationService.swift; sourceTree = "<group>"; };
-		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Where.app; path = "/Users/swain/Desktop/Project/Where-iOS/build/Debug-iphoneos/Where.app"; sourceTree = "<absolute>"; };
-		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = WhereTests.xctest; path = "/Users/swain/Desktop/Project/Where-iOS/build/Debug-iphoneos/Where.app/PlugIns/WhereTests.xctest"; sourceTree = "<absolute>"; };
 		7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationState.swift; sourceTree = "<group>"; };
 		7F91542B2DD388B20065D85B /* Where.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Where.entitlements; sourceTree = "<group>"; };
 		7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
