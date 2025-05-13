@@ -153,6 +153,7 @@
 		7F488A3B2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */; };
 		7F63AE2C2DD08507002FCCCD /* LocalNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */; };
 		7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */; };
+		7F9154272DD385860065D85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7F9154262DD385860065D85B /* GoogleService-Info.plist */; };
 		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
 		7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */; };
 		7FE7BD962DB68E160097CC30 /* DeleteFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */; };
@@ -366,6 +367,7 @@
 		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationState.swift; sourceTree = "<group>"; };
+		7F9154262DD385860065D85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD642DB68E160097CC30 /* ReadFriendsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFriendsDTO.swift; sourceTree = "<group>"; };
@@ -598,6 +600,7 @@
 			isa = PBXGroup;
 			children = (
 				04854C422D95069F007AADE4 /* AppSecret.xcconfig */,
+				7F9154262DD385860065D85B /* GoogleService-Info.plist */,
 				045B44B72D2164E800514A27 /* DesignSystem */,
 				045CA15B2D27BC96001B5CEE /* AppStorageKey.swift */,
 				046833F32D3B8F77009D2357 /* DateFormat.swift */,
@@ -1483,6 +1486,7 @@
 				91A9EAB12D26EE45005F09D2 /* Preview Assets.xcassets in Resources */,
 				046833E32D3B8DE5009D2357 /* Splash.storyboard in Resources */,
 				91A9EAB22D26EE45005F09D2 /* Pretendard-Medium.otf in Resources */,
+				7F9154272DD385860065D85B /* GoogleService-Info.plist in Resources */,
 				91A9EAB32D26EE45005F09D2 /* Assets.xcassets in Resources */,
 				91A9EAB42D26EE45005F09D2 /* Pretendard-SemiBold.otf in Resources */,
 			);
