@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040283CA2DD39DD0004DAC22 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 040283C82DD39DD0004DAC22 /* AppSecret.xcconfig */; };
+		040283CB2DD39DD0004DAC22 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 040283C92DD39DD0004DAC22 /* GoogleService-Info.plist */; };
 		041BC3F72DC657CB0035C825 /* AuthentificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */; };
 		041BC4052DC74E210035C825 /* UpdateNicknameDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC4042DC74E210035C825 /* UpdateNicknameDTO.swift */; };
 		041BC4072DC752760035C825 /* UpdateProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041BC4062DC752760035C825 /* UpdateProfileDTO.swift */; };
@@ -154,7 +156,6 @@
 		7F488A3B2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */; };
 		7F63AE2C2DD08507002FCCCD /* LocalNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */; };
 		7F831B1C2DBBCB73006FFAA0 /* MeetingInvitationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */; };
-		7F9154272DD385860065D85B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7F9154262DD385860065D85B /* GoogleService-Info.plist */; };
 		7F91542A2DD388950065D85B /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 7F9154292DD388950065D85B /* FirebaseMessaging */; };
 		7FE7BCA42DB673550097CC30 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 7FE7BCA32DB673550097CC30 /* CombineMoya */; };
 		7FE7BD952DB68E160097CC30 /* BookmarkFriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */; };
@@ -227,6 +228,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		040283C82DD39DD0004DAC22 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
+		040283C92DD39DD0004DAC22 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		041BC3F62DC657CB0035C825 /* AuthentificationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationProvider.swift; sourceTree = "<group>"; };
 		041BC4042DC74E210035C825 /* UpdateNicknameDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNicknameDTO.swift; sourceTree = "<group>"; };
 		041BC4062DC752760035C825 /* UpdateProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileDTO.swift; sourceTree = "<group>"; };
@@ -245,7 +248,6 @@
 		042A79F32DA3FC28004105E2 /* AuthentificationStrategyContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationStrategyContext.swift; sourceTree = "<group>"; };
 		042A79F52DA4124F004105E2 /* MeetingCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingCore.swift; sourceTree = "<group>"; };
 		042BA6312DD375C1005237B3 /* KakaoShareService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoShareService.swift; sourceTree = "<group>"; };
-		042BA6342DD38A51005237B3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0438BA752D96B353008C628F /* CompleteCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteCreationView.swift; sourceTree = "<group>"; };
 		043FAC6F2DCF740D002B9C23 /* VerifyAuthCodeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAuthCodeDTO.swift; sourceTree = "<group>"; };
 		043FAC732DD1C6A6002B9C23 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
@@ -315,7 +317,6 @@
 		04832B442D266819003FFE3B /* WhereTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhereTests.swift; sourceTree = "<group>"; };
 		04832B472D266F55003FFE3B /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		04854C3D2D950260007AADE4 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
-		04854C422D95069F007AADE4 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		04854C442D954B02007AADE4 /* SideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenu.swift; sourceTree = "<group>"; };
 		04854C462D958817007AADE4 /* CreateMeetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMeetingView.swift; sourceTree = "<group>"; };
 		0497F6A22DA6B85F0037B1CC /* PlaceCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceCore.swift; sourceTree = "<group>"; };
@@ -368,10 +369,9 @@
 		04F0518F2D424C01000892C0 /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
 		7F488A3A2DBFCDE7004ADCC9 /* MeetingInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInformationViewModel.swift; sourceTree = "<group>"; };
 		7F63AE2B2DD08507002FCCCD /* LocalNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationService.swift; sourceTree = "<group>"; };
-		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhereTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F716C7F2DAE86B10076D4DD /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Where.app; path = "/Users/swain/Desktop/Project/Where-iOS/build/Debug-iphoneos/Where.app"; sourceTree = "<absolute>"; };
+		7F716C802DAE86B10076D4DD /* WhereTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = WhereTests.xctest; path = "/Users/swain/Desktop/Project/Where-iOS/build/Debug-iphoneos/Where.app/PlugIns/WhereTests.xctest"; sourceTree = "<absolute>"; };
 		7F831B1B2DBBCB73006FFAA0 /* MeetingInvitationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationState.swift; sourceTree = "<group>"; };
-		7F9154262DD385860065D85B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7F91542B2DD388B20065D85B /* Where.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Where.entitlements; sourceTree = "<group>"; };
 		7FE7BD622DB68E160097CC30 /* BookmarkFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFriendDTO.swift; sourceTree = "<group>"; };
 		7FE7BD632DB68E160097CC30 /* DeleteFriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFriendDTO.swift; sourceTree = "<group>"; };
@@ -531,14 +531,6 @@
 			path = Implementation;
 			sourceTree = "<group>";
 		};
-		042BA6362DD39588005237B3 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				042BA6342DD38A51005237B3 /* GoogleService-Info.plist */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		0438BA7A2D97DA86008C628F /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -571,9 +563,6 @@
 			children = (
 				045B44A72D2150AF00514A27 /* Where */,
 				04832B452D266819003FFE3B /* WhereTests */,
-				7F716C7F2DAE86B10076D4DD /* Where.app */,
-				7F716C802DAE86B10076D4DD /* WhereTests.xctest */,
-				042BA6362DD39588005237B3 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -615,8 +604,8 @@
 		045B449F2D2150AF00514A27 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				04854C422D95069F007AADE4 /* AppSecret.xcconfig */,
-				7F9154262DD385860065D85B /* GoogleService-Info.plist */,
+				040283C82DD39DD0004DAC22 /* AppSecret.xcconfig */,
+				040283C92DD39DD0004DAC22 /* GoogleService-Info.plist */,
 				045B44B72D2164E800514A27 /* DesignSystem */,
 				045CA15B2D27BC96001B5CEE /* AppStorageKey.swift */,
 				046833F32D3B8F77009D2357 /* DateFormat.swift */,
@@ -1501,11 +1490,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				91A9EAAF2D26EE45005F09D2 /* Pretendard-Bold.otf in Resources */,
+				040283CA2DD39DD0004DAC22 /* AppSecret.xcconfig in Resources */,
+				040283CB2DD39DD0004DAC22 /* GoogleService-Info.plist in Resources */,
 				91A9EAB02D26EE45005F09D2 /* Pretendard-Regular.otf in Resources */,
 				91A9EAB12D26EE45005F09D2 /* Preview Assets.xcassets in Resources */,
 				046833E32D3B8DE5009D2357 /* Splash.storyboard in Resources */,
 				91A9EAB22D26EE45005F09D2 /* Pretendard-Medium.otf in Resources */,
-				7F9154272DD385860065D85B /* GoogleService-Info.plist in Resources */,
 				91A9EAB32D26EE45005F09D2 /* Assets.xcassets in Resources */,
 				91A9EAB42D26EE45005F09D2 /* Pretendard-SemiBold.otf in Resources */,
 			);
@@ -1856,7 +1846,6 @@
 		};
 		045B44842D2146B200514A27 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04854C422D95069F007AADE4 /* AppSecret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1901,7 +1890,6 @@
 		};
 		045B44852D2146B200514A27 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04854C422D95069F007AADE4 /* AppSecret.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
