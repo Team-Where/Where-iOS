@@ -8,6 +8,7 @@
 import UIKit
 import Swinject
 import UserNotifications
+import Firebase
 
 final class AppDelegate: NSObject {
     private var notificationCore: NotificationCoreProtocol!
@@ -24,8 +25,8 @@ final class AppDelegate: NSObject {
 // MARK: - UIApplicationDelegate Conformation
 extension AppDelegate: UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        // FirebaseApp.configure()
-        // Messaging.messaging().delegate = self
+        FirebaseApp.configure()
+        Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         
         Task { @MainActor in
@@ -46,11 +47,12 @@ extension AppDelegate: UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // Messaging.messaging().apnsToken = deviceToken
+        Messaging.messaging().apnsToken = deviceToken
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: any Error) {
         // APNs 토큰 등록 실패 시 호출됨
+        print(error)
         return
     }
     
@@ -85,24 +87,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 // MARK: - MessagingDelegate Conformation
-//extension AppDelegate: MessagingDelegate {
-//    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-//        guard let fcmToken = fcmToken else { return }
-//        // NotificationCore 통해서 fcmToken을 업데이트, 서버로 전달
-//        
-//        Messaging.messaging().token { token, error in
-//            if let error = error {
-//                print("Error Occured: FCM registration token. \(error)")
-//            } else {
-//                print("FCM registration Success: Received. \(token)")
-//            }
-//        }
-//        
-//        let dataDict: [String: String] = ["token", fcmToken]
+extension AppDelegate: MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let fcmToken = fcmToken else { return }
+        // TODO: NotificationCore 통해서 fcmToken을 업데이트, 서버로 전달
+        print("fcmToken: ------------------------\n\(fcmToken)\n -------------------------")
+        let dataDict: [String: String] = ["token": fcmToken]
 //        NotificationCenter.default.post(
-//            name: Notification.Name("FCMToken"),
+//            name:,
 //            object: nil,
 //            userInfo: dataDict
 //        )
-//    }
-//}
+    }
+}
