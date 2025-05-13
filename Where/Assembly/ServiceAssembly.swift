@@ -42,5 +42,10 @@ struct ServiceAssembly: Assembly {
             return APIService(decoder, encoder, tokenStorage)
         }
         .inObjectScope(.container)
+        
+        container.register(LocalNotificationService.self) { _ in
+            return LocalNotificationService()
+        }
+        .inObjectScope(.container)
     }
 }
