@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Swinject
+import KakaoSDKCommon
 
 @main
 struct WhereApp: App {
@@ -35,5 +36,10 @@ struct WhereApp: App {
                 ContentView(resolver: resolver)
             }
         }
+    }
+    
+    private func configureKakaoAPI() {
+        guard let key = Bundle.fetchKey(provider: .kakao) else { fatalError("카카오SDK 초기화 실패: 잘못된 앱키") }
+        KakaoSDK.initSDK(appKey: key)
     }
 }

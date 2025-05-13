@@ -14,18 +14,6 @@ import KakaoSDKAuth
 final class KakaoLoginStrategy {
     private let kakaoAPI: UserApi = .shared
     
-    init() {
-        _configureKakaoAPI()
-    }
-    
-    private func _configureKakaoAPI() {
-        guard let key = Bundle.fetchKey(provider: .kakao) else {
-            fatalError("카카오SDK 초기화 실패: 잘못된 앱키")
-        }
-        
-        KakaoSDK.initSDK(appKey: key)
-    }
-    
     private func handleKakaoLoginResult(token: OAuthToken?, error: Error?) throws(AuthentificationCoreError) -> UserCredential {
         if let _ = error {
             throw .socialAuthProviderAuthorizationFailed
