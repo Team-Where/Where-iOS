@@ -124,5 +124,5 @@ xcuserdata
 
 ### AppSecret ###
 AppSecret.xcconfig
-
+GoogleService-Info.plist
 # End of https://www.toptal.com/developers/gitignore/api/swift,macos,swiftpackagemanager
