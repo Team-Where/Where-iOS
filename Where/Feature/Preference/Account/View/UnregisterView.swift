@@ -174,7 +174,11 @@ extension UnregisterView {
                     Button {
                         viewModel.unregister()
                     } label: {
-                        Text("확인")
+                        if viewModel.isProcessing {
+                            ProgressView()
+                        } else {
+                            Text("확인")
+                        }
                     }
                     .whereFont(.body16medium)
                     .padding()
@@ -184,6 +188,7 @@ extension UnregisterView {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(.accent)
                     )
+                    .disabled(viewModel.isProcessing)
                 }
             }
             .padding()

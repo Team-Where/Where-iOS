@@ -13,6 +13,7 @@ final class UnregisterViewModel: ObservableObject {
     @Published var selectedUnregisterReason: UnregisterReasonType = .infrequentUse
     @Published var unregisterStep: UnregisterStep = .submitUnregisterReason
     @Published var isSheetPresented: Bool = false
+    @Published private(set) var isProcessing: Bool = false
     
     private let authCore: AuthentificationCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -65,14 +66,16 @@ extension UnregisterViewModel {
     }
     
     func unregister() {
+        isProcessing = true
         cancellableBag[#function] = authCore.unregister()
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 // TODO: 에러 핸들링
             } receiveValue: { [weak self] _ in
+                self?.isProcessing = false
                 self?.isSheetPresented = false
-                self?.selectedUnregisterReason = .infrequentUse
                 self?.unregisterStep = .unregisterComplete
+                self?.selectedUnregisterReason = .infrequentUse
             }
     }
 }
