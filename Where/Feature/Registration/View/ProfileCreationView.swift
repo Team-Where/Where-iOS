@@ -28,12 +28,17 @@ struct ProfileCreationView: View {
                 Button {
                     viewModel.proceed()
                 } label: {
-                    Text(viewModel.proceedButtonLabel)
-                        .whereFont(.body16semibold)
-                        .frame(width: 350, height: 48)
+                    if viewModel.isProcessing {
+                        ProgressView()
+                    } else {
+                        Text(viewModel.proceedButtonLabel)
+                            .whereFont(.body16semibold)
+                    }
                 }
+                .frame(width: 350, height: 48)
                 .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
                 .ignoresSafeArea(.keyboard)
+                .disabled(viewModel.isProcessing)
             }
             .popup($viewModel.isPopupPresented) {
                 ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { data in
@@ -91,6 +96,7 @@ struct ProfileCreationView: View {
                 nicknameCell()
             }
             .scrollDismissesKeyboard(.immediately)
+            .floater($viewModel.isFloaterPresented, title: "프로필 설정이 완료되지 않았어요.")
         case .completed:
             VStack {
                 Image("SignUpCharacter")
