@@ -225,6 +225,19 @@ struct MeetingInformationDetailView: View {
                     
                     Spacer()
                     
+                    if isInvited == false {
+                        Text("대기중")
+                            .whereFont(.caption12regular)
+                            .foregroundStyle(Color(hex: 0x6B7280))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                RoundedRectangle(cornerRadius: 26)
+                                    .fill(Color(hex: 0xF3F4F6))
+                            )
+                    }
+                    
+                    /* - TODO: (WIP)
                     if isInvited {
                         Button {
                             // TODO: 친구 편집화면으로 이동한다던데 디자인이 없음;; (WIP)
@@ -244,6 +257,7 @@ struct MeetingInformationDetailView: View {
                                     .fill(Color(hex: 0xF3F4F6))
                             )
                     }
+                     */
                 }
             }
         }
