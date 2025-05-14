@@ -18,6 +18,7 @@ final class FriendsListViewModel: ObservableObject {
     @Published var searchingText: String = String()
     @Published var isEditing: Bool = false
     @Published var meetingsCount: Int = .zero
+    @Published private(set) var isDeletionProcessing: Bool = false
     
     var isSearching: Bool { searchingText.isEmpty == false }
     
@@ -131,13 +132,13 @@ extension FriendsListViewModel {
     }
     
     func deleteFriend(by id: UInt64) {
+        isDeletionProcessing = true
+        
         cancellableBag[#function] = communityCore.deleteFriend(id: id)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: {
-                // TODO: 로딩 인디케이터 해제 등
-            }
+            .sink { [weak self] _ in
+                self?.isDeletionProcessing = false
+            } receiveValue: { _ in }
     }
     
     func presentHistoryWithFriend(friend: FriendRelationship) {

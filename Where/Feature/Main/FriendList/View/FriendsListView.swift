@@ -179,13 +179,17 @@ extension FriendsListView {
             Button {
                 viewModel.deleteFriend(by: friend.id)
             } label: {
-                Text("친구 삭제")
-                    .whereFont(.body16medium)
-                    .foregroundStyle(Color(hex: 0xEF4444))
-                    .frame(maxWidth: .infinity, maxHeight: 23)
-                    .padding()
-                    .background(Color(hex: 0xF3F4F6))
-                    .clipShape(.rect(cornerRadius: 16))
+                if viewModel.isDeletionProcessing {
+                    ProgressView()
+                } else {
+                    Text("친구 삭제")
+                        .whereFont(.body16medium)
+                        .foregroundStyle(Color(hex: 0xEF4444))
+                        .frame(maxWidth: .infinity, maxHeight: 23)
+                        .padding()
+                        .background(Color(hex: 0xF3F4F6))
+                        .clipShape(.rect(cornerRadius: 16))
+                }
             }
             .padding(.horizontal)
             .presentationDetents([.height(150)])
