@@ -43,7 +43,7 @@ struct FAQView: View {
             .padding(.horizontal)
         }
         .navigationDestination(item: $viewModel.navigationType) { type in
-            // TODO: 화면 연결 필요
+            // TODO: 화면 연결 필요 (WIP)
             switch type {
             case .editAnnouncement:
                 EmptyView()
@@ -65,7 +65,7 @@ struct FAQView: View {
                     .foregroundStyle(.where(.gray800))
             }
             
-            // MARK: 관리자 권한인지 판단해서 노출할 수 있도록 수정해야함
+            // TODO: 관리자 권한인지 판단해서 노출할 수 있도록 수정해야함 (WIP)
 //            ToolbarItem(placement: .topBarTrailing) {
 //                Button {
 //                    navigationType = .editAnnouncement
