@@ -47,7 +47,7 @@ extension InquiryViewModel {
 // MARK: - Interfaces
 extension InquiryViewModel {
     func updateInquiry(_ inquiry: Inquiry) {
-        // TODO: 문의 수정 기능 연결
+        // TODO: 문의 수정 기능 연결 (WIP)
     }
     
     func presentDeleteInquirySheet(for inquiry: Inquiry) {
@@ -55,6 +55,6 @@ extension InquiryViewModel {
     }
     
     func deleteInquiry(_ inquiry: Inquiry) {
-        // TODO: 문의 삭제 기능 연결
+        // TODO: 문의 삭제 기능 연결 (WIP)
     }
 }

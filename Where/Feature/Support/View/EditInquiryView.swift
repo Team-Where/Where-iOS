@@ -45,7 +45,7 @@ struct EditInquiryView: View {
             Spacer()
             
             Button {
-                // TODO: 문의 작성/수정 기능 연결
+                // TODO: 문의 작성/수정 기능 연결 (WIP)
             } label: {
                 Text("등록")
                     .whereFont(.body16medium)
