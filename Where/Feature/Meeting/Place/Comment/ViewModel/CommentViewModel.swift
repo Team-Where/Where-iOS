@@ -15,6 +15,9 @@ final class CommentViewModel: ObservableObject {
     @Published var comments = [Comment]()
     @Published var currentComment: Comment?
     @Published var commentTextField = String()
+    @Published private(set) var isCreationProcessing: Bool = false
+    @Published private(set) var isDeletionProcessing: Bool = false
+    @Published private(set) var isUpdatingProcessing: Bool = false
     
     private let placeCore: PlaceCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -54,13 +57,16 @@ extension CommentViewModel {
         sheetType = .create
     }
     
+    func dismissSheet() {
+        sheetType = nil
+    }
+    
     func createComment(placeID: UInt64) {
+        isCreationProcessing = true
         cancellableBag[#function] = placeCore.createComment(placeID: placeID, description: commentTextField)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { _ in
-                //
-            }
+            .sink { [weak self] _ in
+                self?.isCreationProcessing = false
+            } receiveValue: { _ in }
     }
     
     func presentReadingSheet(comment: Comment) {
@@ -69,12 +75,11 @@ extension CommentViewModel {
     }
     
     func deleteComment(_ comment: Comment) {
+        isDeletionProcessing = true
         cancellableBag[#function] = placeCore.deleteComment(comment: comment)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { _ in
-                //
-            }
+            .sink { [weak self] _ in
+                self?.isDeletionProcessing = false
+            } receiveValue: { _ in }
     }
     
     func presentEditingSheet() {
@@ -85,11 +90,11 @@ extension CommentViewModel {
     
     func editComment() {
         guard let currentComment else { return }
+        
+        isUpdatingProcessing = true
         cancellableBag[#function] = placeCore.updateComment(comment: currentComment, description: commentTextField)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { _ in
-                //
-            }
+            .sink { [weak self] _ in
+                self?.isUpdatingProcessing = false
+            } receiveValue: { _ in }
     }
 }

@@ -39,21 +39,13 @@ struct CommentView: View {
         .sheet(item: $viewModel.sheetType) { type in
             switch type {
             case .create:
-                CommentCreationSheet($viewModel.sheetType, commentTextField: $viewModel.commentTextField) {
-                    viewModel.createComment(placeID: place.id)
-                }
+                CommentCreationSheet(viewModel, placeID: place.id)
                 
             case .read(let comment):
-                CommentReadingSheet($viewModel.sheetType, comment) { comment in
-                    viewModel.deleteComment(comment)
-                } onEdit: {
-                    viewModel.presentEditingSheet()
-                }
+                CommentReadingSheet(viewModel, comment)
                 
             case .edit:
-                CommentEditingSheet($viewModel.sheetType, commentTextField: $viewModel.commentTextField) {
-                    viewModel.editComment()
-                }
+                CommentEditingSheet(viewModel)
             }
         }
     }
@@ -115,22 +107,22 @@ struct CommentView: View {
 // MARK: - Nested Types
 extension CommentView {
     struct CommentCreationSheet: View {
-        @Binding fileprivate var sheetType: SheetType?
-        @Binding var commentTextField: String
+        @ObservedObject private var viewModel: CommentViewModel
         @FocusState private var commentFieldFocused: Bool
-        let onSubmit: () -> Void
-        
         private let headerTitle = "코멘트 남기기"
         private let presentationCornerRadius: CGFloat = 8
+        private let placeID: UInt64
+        
+        private var creationButtonDisabled: Bool {
+            viewModel.commentTextField.isEmpty || viewModel.isCreationProcessing
+        }
         
         fileprivate init(
-            _ sheetType: Binding<SheetType?>,
-            commentTextField: Binding<String>,
-            onSubmit: @escaping () -> Void
+            _ viewModel: CommentViewModel,
+            placeID: UInt64
         ) {
-            self._sheetType = sheetType
-            self._commentTextField = commentTextField
-            self.onSubmit = onSubmit
+            self.viewModel = viewModel
+            self.placeID = placeID
         }
         
         var body: some View {
@@ -143,7 +135,7 @@ extension CommentView {
                     Spacer()
                     
                     Button {
-                        sheetType = nil
+                        viewModel.dismissSheet()
                     } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.where(.gray800))
@@ -151,7 +143,7 @@ extension CommentView {
                 }
                 .padding(.top)
                 
-                TextField(text: $commentTextField) {
+                TextField(text: $viewModel.commentTextField) {
                     Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
                         .whereFont(.body16regular)
                 }
@@ -162,8 +154,8 @@ extension CommentView {
                 HStack(spacing: 12) {
                     Button {
                         commentFieldFocused = false
-                        commentTextField.removeAll()
-                        sheetType = .none
+                        viewModel.commentTextField.removeAll()
+                        viewModel.dismissSheet()
                     } label: {
                         Text("취소")
                     }
@@ -178,10 +170,14 @@ extension CommentView {
                     
                     Button {
                         commentFieldFocused = false
-                        onSubmit()
-                        sheetType = .none
+                        viewModel.createComment(placeID: placeID)
+                        viewModel.dismissSheet()
                     } label: {
-                        Text("확인")
+                        if viewModel.isCreationProcessing {
+                            ProgressView()
+                        } else {
+                            Text("확인")
+                        }
                     }
                     .whereFont(.body16medium)
                     .padding()
@@ -191,7 +187,7 @@ extension CommentView {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(.accent)
                     )
-                    .disabled(commentTextField.isEmpty)
+                    .disabled(creationButtonDisabled)
                 }
             }
             .onAppear {
@@ -206,24 +202,21 @@ extension CommentView {
     }
     
     struct CommentReadingSheet: View {
-        @Binding fileprivate var sheetType: SheetType?
-        
+        @ObservedObject private var viewModel: CommentViewModel
         private let comment: Comment
-        private let onDelete: (Comment) -> Void
-        private let onEdit: () -> Void
         private let headerTitle = "코멘트"
         private let presentationCornerRadius: CGFloat = 8
         
+        private var deletionButtonDisabled: Bool {
+            viewModel.isDeletionProcessing
+        }
+        
         fileprivate init(
-            _ sheetType: Binding<SheetType?>,
-            _ comment: Comment,
-            onDelete: @escaping (Comment) -> Void,
-            onEdit: @escaping () -> Void
+            _ viewModel: CommentViewModel,
+            _ comment: Comment
         ) {
-            self._sheetType = sheetType
+            self.viewModel = viewModel
             self.comment = comment
-            self.onDelete = onDelete
-            self.onEdit = onEdit
         }
         
         var body: some View {
@@ -236,7 +229,7 @@ extension CommentView {
                     Spacer()
                     
                     Button {
-                        sheetType = nil
+                        viewModel.dismissSheet()
                     } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.where(.gray800))
@@ -252,9 +245,13 @@ extension CommentView {
                 
                 HStack(spacing: 12) {
                     Button {
-                        onDelete(comment)
+                        viewModel.deleteComment(comment)
                     } label: {
-                        Text("삭제")
+                        if viewModel.isDeletionProcessing {
+                            ProgressView()
+                        } else {
+                            Text("삭제")
+                        }
                     }
                     .whereFont(.body16medium)
                     .padding()
@@ -264,9 +261,10 @@ extension CommentView {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(.where(.gray100))
                     )
+                    .disabled(deletionButtonDisabled)
                     
                     Button {
-                        onEdit()
+                        viewModel.presentEditingSheet()
                     } label: {
                         Text("수정")
                     }
@@ -289,21 +287,19 @@ extension CommentView {
     }
     
     struct CommentEditingSheet: View {
-        @Binding fileprivate var sheetType: SheetType?
-        @Binding var commentTextField: String
+        @ObservedObject private var viewModel: CommentViewModel
         @FocusState private var commentFieldFocused: Bool
-        private let onSubmit: () -> Void
         private let headerTitle = "코멘트 수정"
         private let presentationCornerRadius: CGFloat = 8
         
+        private var updatingButtonDisabled: Bool {
+            viewModel.commentTextField.isEmpty || viewModel.isUpdatingProcessing
+        }
+        
         fileprivate init(
-            _ sheetType: Binding<SheetType?>,
-            commentTextField: Binding<String>,
-            onSubmit: @escaping () -> Void
+            _ viewModel: CommentViewModel
         ) {
-            self._sheetType = sheetType
-            self._commentTextField = commentTextField
-            self.onSubmit = onSubmit
+            self.viewModel = viewModel
         }
         
         var body: some View {
@@ -316,8 +312,8 @@ extension CommentView {
                     Spacer()
                     
                     Button {
-                        sheetType = nil
-                        commentTextField.removeAll()
+                        viewModel.dismissSheet()
+                        viewModel.commentTextField.removeAll()
                     } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.where(.gray800))
@@ -325,7 +321,7 @@ extension CommentView {
                 }
                 .padding(.top)
                 
-                TextField(text: $commentTextField) {
+                TextField(text: $viewModel.commentTextField) {
                     Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
                         .whereFont(.body16regular)
                 }
@@ -348,9 +344,13 @@ extension CommentView {
                     )
                     
                     Button {
-                        onSubmit()
+                        viewModel.editComment()
                     } label: {
-                        Text("확인")
+                        if viewModel.isUpdatingProcessing {
+                           ProgressView()
+                        } else {
+                            Text("확인")
+                        }
                     }
                     .whereFont(.body16medium)
                     .padding()
@@ -360,7 +360,7 @@ extension CommentView {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(.accent)
                     )
-                    .disabled(commentTextField.isEmpty)
+                    .disabled(updatingButtonDisabled)
                 }
             }
             .padding()
@@ -372,8 +372,8 @@ extension CommentView {
         
         private func onDismiss() {
             commentFieldFocused = false
-            commentTextField.removeAll()
-            sheetType = .none
+            viewModel.commentTextField.removeAll()
+            viewModel.dismissSheet()
         }
     }
 }
