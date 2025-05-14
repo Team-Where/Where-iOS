@@ -15,6 +15,9 @@ final class PlaceDetailViewModel: ObservableObject {
     @Published var isTipPresented = false
     @Published var commentCount: Int = .zero
     
+    @Published private(set) var isDeletionProcessing: Bool = false
+    @Published private(set) var isTogglingProcessing: Bool = false
+    
     private let placeCore: PlaceCoreProtocol
     private let cancellableBag = CancellableBag()
     
@@ -49,20 +52,18 @@ extension PlaceDetailViewModel {
     }
     
     func deletePlace(id: UInt64) {
+        isDeletionProcessing = true
         cancellableBag[#function] = placeCore.deletePlace(id: id)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { _ in
-                
-            }
+            .sink { [weak self] _ in
+                self?.isDeletionProcessing = false
+            } receiveValue: { _ in }
     }
     
     func togglePick(id: UInt64) {
+        isTogglingProcessing = true
         cancellableBag[#function] = placeCore.pickPlace(id: id)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { _ in
-                
-            }
+            .sink { [weak self] _ in
+                self?.isTogglingProcessing = false
+            } receiveValue: { _ in }
     }
 }

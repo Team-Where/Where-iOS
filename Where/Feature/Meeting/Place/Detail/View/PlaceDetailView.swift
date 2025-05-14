@@ -69,7 +69,7 @@ struct PlaceDetailView: View {
             }
         }
         .sheet(isPresented: $viewModel.isDeletionSheetPresented) {
-            PlaceDelete { viewModel.deletePlace(id: place.id) }
+            PlaceDelete(isProcessing: viewModel.isDeletionProcessing) { viewModel.deletePlace(id: place.id) }
         }
     }
     
@@ -242,15 +242,20 @@ struct PlaceDetailView: View {
             Button {
                 viewModel.togglePick(id: place.id)
             } label: {
-                Image(.whereCheckmark)
-                    .resizable()
-                    .frame(width: 20, height: 20)
-                    .padding(6)
-                    .background(
-                        Circle()
-                            .fill(isPicked ? .accent : .where(hex: 0xDEE2E6))
-                    )
+                if viewModel.isTogglingProcessing {
+                    ProgressView()
+                } else {
+                    Image(.whereCheckmark)
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .padding(6)
+                        .background(
+                            Circle()
+                                .fill(isPicked ? .accent : .where(hex: 0xDEE2E6))
+                        )
+                }
             }
+            .disabled(viewModel.isTogglingProcessing)
             .whereTip($viewModel.isTipPresented, configuration: tipConfiguration) {
                 Text("이 장소로 정했다면 Pick을 눌러주세요!")
                     .whereFont(.body14regular)
