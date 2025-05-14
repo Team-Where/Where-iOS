@@ -69,7 +69,7 @@ final class ProfileCreationViewModel: ObservableObject {
                     return
                 }
                 
-                // TODO: 닉네임 중복 검사
+                // TODO: 닉네임 중복 검사 (WIP)
                 
                 
                 self?.nicknameValidationState = .valid

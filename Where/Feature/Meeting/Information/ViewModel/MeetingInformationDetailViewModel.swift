@@ -43,7 +43,7 @@ final class MeetingInformationDetailViewModel: ObservableObject {
             }
             .receive(on: DispatchQueue.main)
             .sink { completion in
-                // TODO: 에러 핸들링
+                
             } receiveValue: { [weak self] status in
                 self?.invitedFriends = status.filter { $0.isInvited }
                 self?.watingFriends = status.filter { $0.isInvited == false }

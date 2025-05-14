@@ -73,7 +73,7 @@ final class CreateMeetingViewModel: ObservableObject {
             }
             .receive(on: DispatchQueue.main)
             .sink { completion in
-                // TODO: 에러 핸들링
+                
             } receiveValue: { [weak self] dataSource in
                 self?.friendsDataSource = dataSource
             }

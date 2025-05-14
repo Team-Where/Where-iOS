@@ -128,7 +128,6 @@ struct MeetingInformationDetailView: View {
     }
     
     private var summaryArea: some View {
-        // TODO: 하드코딩 데이터 실제 값으로 채우기
         VStack(spacing: 8) {
             summaryCell(.date(date: viewModel.selectedDate)) {
                 fullScreenCoverType = .editMeetingDate
