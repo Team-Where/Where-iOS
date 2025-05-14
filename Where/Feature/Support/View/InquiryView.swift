@@ -147,7 +147,7 @@ extension InquiryView {
                             .foregroundStyle(.where(.gray700))
                             .multilineTextAlignment(.leading)
                     }
-                    
+                    /* 1:1 문의 수정, 삭제 기능 없음 (WIP)
                     HStack(spacing: 10) {
                         Spacer()
                         
@@ -181,6 +181,7 @@ extension InquiryView {
                                 )
                         }
                     }
+                     */
                     
                     if let answerContent = inquiry.answerContent {
                         VStack(alignment: .leading, spacing: 10) {
