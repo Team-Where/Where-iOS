@@ -52,7 +52,7 @@ final class NotificationCore {
     private func subscribe() {
         notificationsSubject
             .sink { completion in
-                // TODO: 에러 핸들링 강화
+                
             } receiveValue: { [weak self] dict in
                 self?._notifications = dict
             }
