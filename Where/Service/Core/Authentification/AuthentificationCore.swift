@@ -51,10 +51,10 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func unregister() -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 프로필 생성
-    func createUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError>
+    func createUserProfile(profileImageData: Data) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 프로필 수정
-    func updateUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError>
+    func updateUserProfile(profileImageData: Data) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 프로필 삭제
     func deleteUserProfile() -> AnyPublisher<Void, AuthentificationCoreError>
@@ -329,32 +329,42 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func createUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError> {
+    func createUserProfile(profileImageData: Data) -> AnyPublisher<Void, AuthentificationCoreError> {
         guard case .registrationNeeded(let user) = authentificationStateSubject.value else {
             return Fail(error: .notSupported).eraseToAnyPublisher()
         }
         
         return apiService.requestPublisher(Endpoint.uploadProfile(userID: user.id, image: profileImageData), UpdateProfileDTO.Response.self)
-            .map {
-                User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
-            }
-            .handleEvents(receiveOutput: { [weak self] user in
+            .handleEvents(receiveOutput: { [weak self] response in
+                let user = User(
+                    id: user.id,
+                    nickname: user.nickname,
+                    smsVerificationToken: user.smsVerificationToken,
+                    createdAt: user.createdAt,
+                    imageURL: response.profileImageURL
+                )
                 self?.readUserInfo(userID: user.id)
             })
+            .map { _ in }
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .eraseToAnyPublisher()
     }
     
-    func updateUserProfile(profileImageData: Data) -> AnyPublisher<User, AuthentificationCoreError> {
+    func updateUserProfile(profileImageData: Data) -> AnyPublisher<Void, AuthentificationCoreError> {
         switch authentificationStateSubject.value {
         case .loginCompleted(let user), .registrationNeeded(let user):
             return apiService.requestPublisher(Endpoint.updateProfile(userID: user.id, image: profileImageData), UpdateProfileDTO.Response.self)
-                .map {
-                    User(id: user.id, nickname: user.nickname, smsVerificationToken: user.smsVerificationToken, createdAt: user.createdAt, imageURL: $0.profileImageURL)
-                }
-                .handleEvents(receiveOutput: { [weak self] user in
+                .handleEvents(receiveOutput: { [weak self] response in
+                    let user = User(
+                        id: user.id,
+                        nickname: user.nickname,
+                        smsVerificationToken: user.smsVerificationToken,
+                        createdAt: user.createdAt,
+                        imageURL: response.profileImageURL
+                    )
                     self?.readUserInfo(userID: user.id)
                 })
+                .map { _ in }
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
             
