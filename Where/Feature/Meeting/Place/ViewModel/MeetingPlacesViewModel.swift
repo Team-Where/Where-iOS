@@ -118,4 +118,8 @@ extension MeetingPlacesViewModel {
     func changeSortOption(option: PlaceSortOption) {
         sortOption = option
     }
+    
+    func presentShareSheet() {
+        sheetType = .sharePlace
+    }
 }

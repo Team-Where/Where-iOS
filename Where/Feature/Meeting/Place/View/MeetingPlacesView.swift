@@ -126,7 +126,7 @@ struct MeetingPlacesView: View {
             Spacer()
             
             Button {
-                // TODO: 장소 공유 시트 연결
+                viewModel.presentShareSheet()
             } label: {
                 Label {
                     Text("장소 공유")
