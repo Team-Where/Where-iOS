@@ -23,8 +23,8 @@ final class NotificationListViewModel: ObservableObject {
     private func subscribe() {
         notificationCore.notifications
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                // TODO: 에러 핸들링
+            .sink { _ in
+                
             } receiveValue: { [weak self] dict in
                 self?.notifications = dict.values.sorted { $0.date > $1.date }
             }
