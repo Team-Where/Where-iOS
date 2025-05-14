@@ -18,6 +18,14 @@ final class MeetingInformationViewModel: ObservableObject {
     @Published var descriptionText = String()
     @Published var editStep: EditStep = .entry
     
+    @Published private(set) var isTitleUpdatingProcessing: Bool = false
+    @Published private(set) var isDescriptionUpdatingProcessing: Bool = false
+    @Published private(set) var isExitProcessing: Bool = false
+    
+    var titleUpdateButtonDisabled: Bool { isTitleUpdatingProcessing || titleText.isEmpty }
+    var descriptionUpdateButtonDisabled: Bool { isDescriptionUpdatingProcessing }
+    var exitButtonDisabled: Bool { isExitProcessing }
+    
     var meeting: Meeting {
         _meeting
     }
@@ -28,7 +36,6 @@ final class MeetingInformationViewModel: ObservableObject {
     init(resolver: Resolver) {
         meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
     }
-    
     
     private func subscribe() {
         meetingCore.meetings
@@ -52,36 +59,40 @@ extension MeetingInformationViewModel {
     }
     
     func updateMeetingTitle() {
+        isTitleUpdatingProcessing = true
         cancellableBag[#function] = meetingCore.updateMeeting(
             id: meeting.id,
             title: titleText,
             description: nil,
             imageData: nil
         )
-        .sink { completion in
-            // TODO: 에러 핸들링
+        .sink { [weak self] _ in
+            self?.isTitleUpdatingProcessing = false
+            self?.editStep = .entry
         } receiveValue: { _ in }
     }
     
     func updateMeetingDescription() {
+        isDescriptionUpdatingProcessing = true
         cancellableBag[#function] = meetingCore.updateMeeting(
             id: meeting.id,
             title: nil,
             description: descriptionText,
             imageData: nil
         )
-        .sink { completion in
-            // TODO: 에러 핸들링
+        .sink { [weak self] completion in
+            self?.isDescriptionUpdatingProcessing = false
+            self?.editStep = .entry
         } receiveValue: { _ in }
     }
     
     func exitMeeting() {
+        isExitProcessing = true
         cancellableBag[#function] = meetingCore.exitMeeting(id: meeting.id)
-            .sink { completion in
-                // TODO: 에러 핸들링
-            } receiveValue: { _ in
-                //
-            }
+            .sink { [weak self] completion in
+                self?.isExitProcessing = false
+                self?.editStep = .entry
+            } receiveValue: { _ in }
     }
 }
 

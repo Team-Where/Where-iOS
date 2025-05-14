@@ -173,14 +173,19 @@ extension MeetingInformationView {
                     // 모임 삭제(또는 나가기)
                     viewModel.exitMeeting()
                 } label: {
-                    Text("모임에서 나가기")
-                        .whereFont(.body16medium)
-                        .foregroundColor(.red)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(hex: 0xF3F4F6))
-                        .clipShape(.rect(cornerRadius: 16))
+                    if viewModel.isExitProcessing {
+                        ProgressView()
+                    } else {
+                        Text("모임에서 나가기")
+                            .whereFont(.body16medium)
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(hex: 0xF3F4F6))
+                            .clipShape(.rect(cornerRadius: 16))
+                    }
                 }
+                .disabled(viewModel.exitButtonDisabled)
             }
             .presentationDetents([.fraction(0.3)])
         }
@@ -231,17 +236,20 @@ extension MeetingInformationView {
                         // 모임명 업데이트 기능
                         viewModel.updateMeetingTitle()
                         textFieldFocused = .none
-                        viewModel.editStep = .entry
                     } label: {
-                        Text("확인")
-                            .whereFont(.body16medium)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(.accent)
-                            .clipShape(.rect(cornerRadius: 16))
+                        if viewModel.isTitleUpdatingProcessing {
+                            ProgressView()
+                        } else {
+                            Text("확인")
+                                .whereFont(.body16medium)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.accent)
+                                .clipShape(.rect(cornerRadius: 16))
+                        }
                     }
-                    .disabled(viewModel.titleText.isEmpty) // 모임명은 필수 입력
+                    .disabled(viewModel.titleUpdateButtonDisabled)
                 }
             }
             .onAppear {
@@ -296,16 +304,20 @@ extension MeetingInformationView {
                         // 메모 업데이트 기능
                         viewModel.updateMeetingDescription()
                         textFieldFocused = .none
-                        viewModel.editStep = .entry
                     } label: {
-                        Text("확인")
-                            .whereFont(.body16medium)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(.accent)
-                            .clipShape(.rect(cornerRadius: 16))
+                        if viewModel.isDescriptionUpdatingProcessing {
+                            ProgressView()
+                        } else {
+                            Text("확인")
+                                .whereFont(.body16medium)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.accent)
+                                .clipShape(.rect(cornerRadius: 16))
+                        }
                     }
+                    .disabled(viewModel.descriptionUpdateButtonDisabled)
                 }
             }
             .onAppear {
