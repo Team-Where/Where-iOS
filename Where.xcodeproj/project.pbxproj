@@ -92,7 +92,6 @@
 		046A64702DC3E034006ED90C /* ProfileCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A646F2DC3E034006ED90C /* ProfileCreationView.swift */; };
 		046A64722DC3E03F006ED90C /* ProfileCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64712DC3E03F006ED90C /* ProfileCreationViewModel.swift */; };
 		046A64762DC509FC006ED90C /* LoginWithKakaoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046A64752DC509FC006ED90C /* LoginWithKakaoDTO.swift */; };
-		0471C3262DD6165800AD11E0 /* WherePlaceShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0471C31C2DD6165800AD11E0 /* WherePlaceShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		04832B2B2D22AA82003FFE3B /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */; };
 		04832B2D2D22B52F003FFE3B /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B2C2D22B52F003FFE3B /* Popup.swift */; };
 		04832B332D23EB93003FFE3B /* Floater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04832B322D23EB93003FFE3B /* Floater.swift */; };
@@ -219,13 +218,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0471C3242DD6165800AD11E0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 045B446D2D2146B000514A27 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0471C31B2DD6165800AD11E0;
-			remoteInfo = WherePlaceShareExtension;
-		};
 		04832B3F2D266813003FFE3B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 045B446D2D2146B000514A27 /* Project object */;
@@ -234,20 +226,6 @@
 			remoteInfo = Where;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		0471C3272DD6165800AD11E0 /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				0471C3262DD6165800AD11E0 /* WherePlaceShareExtension.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		040283C82DD39DD0004DAC22 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
@@ -333,7 +311,6 @@
 		046A646F2DC3E034006ED90C /* ProfileCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationView.swift; sourceTree = "<group>"; };
 		046A64712DC3E03F006ED90C /* ProfileCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCreationViewModel.swift; sourceTree = "<group>"; };
 		046A64752DC509FC006ED90C /* LoginWithKakaoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithKakaoDTO.swift; sourceTree = "<group>"; };
-		0471C31C2DD6165800AD11E0 /* WherePlaceShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WherePlaceShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		04832B2A2D22AA82003FFE3B /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		04832B2C2D22B52F003FFE3B /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		04832B322D23EB93003FFE3B /* Floater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Floater.swift; sourceTree = "<group>"; };
@@ -453,27 +430,6 @@
 		91F6CE432D3D7B3100BD24D1 /* PlaceDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDelete.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0471C32A2DD6165800AD11E0 /* Exceptions for "WherePlaceShareExtension" folder in "WherePlaceShareExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 0471C31B2DD6165800AD11E0 /* WherePlaceShareExtension */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		0471C31D2DD6165800AD11E0 /* WherePlaceShareExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				0471C32A2DD6165800AD11E0 /* Exceptions for "WherePlaceShareExtension" folder in "WherePlaceShareExtension" target */,
-			);
-			path = WherePlaceShareExtension;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		045B44722D2146B000514A27 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -489,13 +445,6 @@
 				04F0517E2D422B01000892C0 /* KakaoSDKAuth in Frameworks */,
 				04F051822D422B01000892C0 /* KakaoSDKFriend in Frameworks */,
 				04CBC1AC2D774410002CA364 /* NidThirdPartyLogin in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		0471C3192DD6165800AD11E0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,8 +561,6 @@
 			children = (
 				045B44A72D2150AF00514A27 /* Where */,
 				04832B452D266819003FFE3B /* WhereTests */,
-				0471C31C2DD6165800AD11E0 /* WherePlaceShareExtension.appex */,
-				0471C31D2DD6165800AD11E0 /* WherePlaceShareExtension */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1447,12 +1394,10 @@
 				045B44712D2146B000514A27 /* Sources */,
 				045B44722D2146B000514A27 /* Frameworks */,
 				045B44732D2146B000514A27 /* Resources */,
-				0471C3272DD6165800AD11E0 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0471C3252DD6165800AD11E0 /* PBXTargetDependency */,
 			);
 			name = Where;
 			packageProductDependencies = (
@@ -1468,29 +1413,8 @@
 				7F9154292DD388950065D85B /* FirebaseMessaging */,
 			);
 			productName = Where;
+			productReference = 7F716C7F2DAE86B10076D4DD /* Where.app */;
 			productType = "com.apple.product-type.application";
-		};
-		0471C31B2DD6165800AD11E0 /* WherePlaceShareExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0471C32B2DD6165800AD11E0 /* Build configuration list for PBXNativeTarget "WherePlaceShareExtension" */;
-			buildPhases = (
-				0471C3182DD6165800AD11E0 /* Sources */,
-				0471C3192DD6165800AD11E0 /* Frameworks */,
-				0471C31A2DD6165800AD11E0 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				0471C31D2DD6165800AD11E0 /* WherePlaceShareExtension */,
-			);
-			name = WherePlaceShareExtension;
-			packageProductDependencies = (
-			);
-			productName = WherePlaceShareExtension;
-			productReference = 0471C31C2DD6165800AD11E0 /* WherePlaceShareExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 		04832B3A2D266813003FFE3B /* WhereTests */ = {
 			isa = PBXNativeTarget;
@@ -1509,6 +1433,7 @@
 			packageProductDependencies = (
 			);
 			productName = WhereTests;
+			productReference = 7F716C802DAE86B10076D4DD /* WhereTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1518,14 +1443,11 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1630;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					045B44742D2146B000514A27 = {
 						CreatedOnToolsVersion = 16.2;
-					};
-					0471C31B2DD6165800AD11E0 = {
-						CreatedOnToolsVersion = 16.3;
 					};
 					04832B3A2D266813003FFE3B = {
 						CreatedOnToolsVersion = 16.2;
@@ -1556,7 +1478,6 @@
 			targets = (
 				045B44742D2146B000514A27 /* Where */,
 				04832B3A2D266813003FFE3B /* WhereTests */,
-				0471C31B2DD6165800AD11E0 /* WherePlaceShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1575,13 +1496,6 @@
 				91A9EAB22D26EE45005F09D2 /* Pretendard-Medium.otf in Resources */,
 				91A9EAB32D26EE45005F09D2 /* Assets.xcassets in Resources */,
 				91A9EAB42D26EE45005F09D2 /* Pretendard-SemiBold.otf in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		0471C31A2DD6165800AD11E0 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1790,13 +1704,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0471C3182DD6165800AD11E0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		04832B372D266813003FFE3B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1808,11 +1715,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0471C3252DD6165800AD11E0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0471C31B2DD6165800AD11E0 /* WherePlaceShareExtension */;
-			targetProxy = 0471C3242DD6165800AD11E0 /* PBXContainerItemProxy */;
-		};
 		04832B402D266813003FFE3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 045B44742D2146B000514A27 /* Where */;
@@ -2028,68 +1930,6 @@
 			};
 			name = Release;
 		};
-		0471C3282DD6165800AD11E0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = Z2NSMKNC4A;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WherePlaceShareExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WherePlaceShareExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.teamwhere.iOS.WherePlaceShareExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = develop_com.teamwhere.iOS;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		0471C3292DD6165800AD11E0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = Z2NSMKNC4A;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WherePlaceShareExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WherePlaceShareExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.teamwhere.iOS.WherePlaceShareExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = develop_com.teamwhere.iOS;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		04832B422D266813003FFE3B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2143,15 +1983,6 @@
 			buildConfigurations = (
 				045B44842D2146B200514A27 /* Debug */,
 				045B44852D2146B200514A27 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		0471C32B2DD6165800AD11E0 /* Build configuration list for PBXNativeTarget "WherePlaceShareExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0471C3282DD6165800AD11E0 /* Debug */,
-				0471C3292DD6165800AD11E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
