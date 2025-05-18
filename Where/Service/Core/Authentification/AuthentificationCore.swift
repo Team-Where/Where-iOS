@@ -66,6 +66,8 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
 protocol AuthentificationMediationProtocol {
     /// 최근 사용자 정보 로드를 지시, 중재자에 의해 호출됨
     func loadCurrentUser()
+    /// 앱에서 받은 FCM Token 저장을 지시, 중재자에 의해 호출됨
+    func fcmTokenUpdated(_ token: String)
 }
 
 enum AuthentificationCoreError: Error {
@@ -105,6 +107,8 @@ private extension AuthentificationCore {
 
 final class AuthentificationCore {
     weak var mediator: Notifiable?
+    
+    private var fcmToken: String?
     
     private let authentificationStateSubject = CurrentValueSubject<AuthentificationState, Never>(.loginNeeded)
     
@@ -410,5 +414,9 @@ extension AuthentificationCore: AuthentificationMediationProtocol {
         else { return }
         
         readUserInfo(userID: userID)
+    }
+    
+    func fcmTokenUpdated(_ token: String) {
+        fcmToken = token
     }
 }

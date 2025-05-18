@@ -92,7 +92,8 @@ extension CoreMediator: Notifiable {
         case .currentMeetingWillUpdate(let meetingID):
             placeCore.loadPlaces(meetingID: meetingID)
             
-        case .applicationDidLaunch:
+        case .applicationDidLaunch(let fcmToken):
+            authentificationCore.fcmTokenUpdated(fcmToken)
             authentificationCore.loadCurrentUser()
             supportCore.loadAnnouncements()
         }

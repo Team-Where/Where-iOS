@@ -28,5 +28,5 @@ enum CoreEvent {
     
     
     // MARK: - Common
-    case applicationDidLaunch
+    case applicationDidLaunch(fcmToken: String)
 }
