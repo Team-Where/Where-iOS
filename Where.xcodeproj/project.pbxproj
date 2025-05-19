@@ -1285,15 +1285,26 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04D546322DDB6659003EEC85 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 		7F7E67EC2DA11DF600833376 /* Common */ = {
 			isa = PBXGroup;
 			children = (
 				7F7E67ED2DA1214B00833376 /* View */,
 				046A64432DBE6021006ED90C /* ViewModelError.swift */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 			path = Common;
 			sourceTree = "<group>";
 		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
 		7F7E67ED2DA1214B00833376 /* View */ = {
 			isa = PBXGroup;
 			children = (
