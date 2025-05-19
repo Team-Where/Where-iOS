@@ -92,10 +92,12 @@ extension CoreMediator: Notifiable {
         case .currentMeetingWillUpdate(let meetingID):
             placeCore.loadPlaces(meetingID: meetingID)
             
-        case .applicationDidLaunch(let fcmToken):
-            authentificationCore.fcmTokenUpdated(fcmToken)
+        case .applicationDidLaunch:
             authentificationCore.loadCurrentUser()
             supportCore.loadAnnouncements()
+            
+        case .fcmTokenUpdated(let fcmToken):
+            authentificationCore.fcmTokenUpdated(fcmToken)
         }
     }
 }

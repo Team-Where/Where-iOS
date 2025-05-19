@@ -2,7 +2,7 @@
 //  ShareViewController.swift
 //  WherePlaceShareExtension
 //
-//  Created by BOMBSGIE on 5/16/25.
+//  Created by Swain Yun on 5/19/25.
 //
 
 import UIKit

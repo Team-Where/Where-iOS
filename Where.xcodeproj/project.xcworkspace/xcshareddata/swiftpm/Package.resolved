@@ -1,5 +1,5 @@
 {
-  "originHash" : "1e9937cf19424987245bc8e34065ed2360e613db9668b6879fe54d0b6b6bef57",
+  "originHash" : "1855e5813b25288d48e9bed6d6d471faf5be28e345d6ba544d4cdcdf9189cc58",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kakao/kakao-ios-sdk.git",
       "state" : {
-        "revision" : "ab4309c1950550add307046ad1e08024c7514603",
-        "version" : "2.23.0"
+        "revision" : "787763e335949dfad6b721aa04771e22d04e1493",
+        "version" : "2.24.2"
       }
     },
     {
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/naver/naveridlogin-sdk-ios-swift",
       "state" : {
-        "revision" : "ad8dc5c0e373720b4688f54a259e131c4e2988bf",
-        "version" : "5.0.0"
+        "revision" : "13bf828da97408d2023cca03920e9f0fa5fcbe60",
+        "version" : "5.0.1"
       }
     },
     {

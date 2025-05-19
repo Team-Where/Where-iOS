@@ -28,7 +28,7 @@ final class KakaoLoginStrategy {
 }
 
 // MARK: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol Confirmation
-extension KakaoLoginStrategy: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol {
+extension KakaoLoginStrategy: AuthentificationStrategyProtocol, @preconcurrency URLHandlerStrategyProtocol {
     func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
         guard case .kakao = provider else { return completion(.failure(.notSupported)) }
         
@@ -51,7 +51,7 @@ extension KakaoLoginStrategy: AuthentificationStrategyProtocol, URLHandlerStrate
         }
     }
     
-    func handleOpenURL(_ url: URL) {
+    @MainActor func handleOpenURL(_ url: URL) {
         if AuthApi.isKakaoTalkLoginUrl(url) {
             _ = AuthController.handleOpenUrl(url: url)
         }
