@@ -75,9 +75,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     /// Foreground 또는 Background에서 푸시 수신 후, 사용자가 터치하여 앱을 열었을 때 호출됨
+    @MainActor
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
-        
         guard let aps = userInfo["aps"] as? [String: Any],
               let alert = userInfo["alert"] as? [String: Any]
         else { return }
