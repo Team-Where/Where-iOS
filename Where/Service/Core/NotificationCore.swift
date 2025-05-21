@@ -81,7 +81,7 @@ extension NotificationCore: NotificationCoreProtocol {
     }
     
     func handleReceivedNotificationPayload(_ payload: [AnyHashable: Any]) {
-        
+        print(payload)
     }
 }
 
