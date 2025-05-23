@@ -223,7 +223,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 }
             }
         }
-        .flatMap { [weak self] credential -> AnyPublisher<LoginWithKakaoDTO.Response, AuthentificationCoreError> in
+        .flatMap { [weak self] credential -> AnyPublisher<SocialLoginDTO.Response, AuthentificationCoreError> in
             guard let self,
                   let accessToekn = credential.accessToken,
                   let refreshToken = credential.refreshToken
@@ -231,7 +231,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 return Fail(error: .socialAuthProviderAuthorizationFailed).eraseToAnyPublisher()
             }
             
-            return apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToekn, refreshToken: refreshToken), LoginWithKakaoDTO.Response.self)
+            return apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToekn, refreshToken: refreshToken), SocialLoginDTO.Response.self)
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
         }
