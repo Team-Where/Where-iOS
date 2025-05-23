@@ -50,6 +50,12 @@ final class APIService: APIServable {
                     print(jsonString)
                 }
             })
+            .handleEvents(receiveCompletion: { completion in
+                #if DEBUG
+                guard case .failure(let error) = completion else { return }
+                print("Error Occured in Networking: \(error)")
+                #endif
+            })
             .tryMap { response in
                 try self.performResponse(response)
             }
