@@ -11,7 +11,7 @@ import Moya
 enum Endpoint {
     // MARK: User Related
     /// 회원가입
-    case register(encodedUserData: Data, profileImageData: Data?)
+    case register(dto: RegisterDTO.Request)
     /// 회원탈퇴
     case unregister(userID: UInt64)
     /// 로그인
@@ -135,7 +135,7 @@ enum Endpoint {
     
     var isTokenRequired: Bool {
         switch self {
-        case .readAnnouncements, .readFAQs, .checkEmailDuplication, .requestAuthCode, .verifyAuthCode, .checkLatestVersion:
+        case .readAnnouncements, .readFAQs, .checkEmailDuplication, .requestAuthCode, .verifyAuthCode, .checkLatestVersion, .register:
             return false
         default:
             return true
@@ -259,13 +259,8 @@ extension Endpoint: TargetType {
     
     var task: Moya.Task {
         switch self {
-        case .register(let userData, let profileImageData):
-            var formData = [MultipartFormData]()
-            formData.append(.init(provider: .data(userData), name: "data"))
-            if let profileImageData = profileImageData {
-                formData.append(.init(provider: .data(profileImageData), name: "image"))
-            }
-            return .uploadMultipart(formData)
+        case .register(let dto):
+            return .requestJSONEncodable(dto)
         case .unregister:
             return .requestPlain
         case .login(let dto):
