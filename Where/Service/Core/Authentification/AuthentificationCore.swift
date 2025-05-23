@@ -301,7 +301,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Void, AuthentificationCoreError> {
-        let dto = RegisterDTO.Request(email: email, password: password, nickname: nickname)
+        let dto = RegisterDTO.Request(email: email, password: password, nickName: nickname)
         return apiService.requestPublisher(Endpoint.register(dto: dto), RegisterDTO.Response.self)
             .map { $0.toEntity() }
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
