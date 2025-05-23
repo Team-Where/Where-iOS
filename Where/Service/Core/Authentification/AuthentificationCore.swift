@@ -209,6 +209,11 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func loginWithApple(auth: ASAuthorization) {
+        // TODO: 애플로그인 로직 구현하기
+        guard let credential = auth.credential as? ASAuthorizationAppleIDCredential,
+              let authCode = credential.authorizationCode
+        else { return }
+        
         strategyContext.login(by: .apple(auth: auth)) { result in
             // TODO: WIP
         }
