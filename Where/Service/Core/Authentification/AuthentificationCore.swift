@@ -45,7 +45,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<AuthorizationCodeValidationResult, AuthentificationCoreError>
     
     /// 회원가입
-    func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError>
+    func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 회원탈퇴
     func unregister() -> AnyPublisher<Void, AuthentificationCoreError>
@@ -300,23 +300,39 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Bool, AuthentificationCoreError> {
-        do {
-            let dto = RegisterDTO.Request(email: email, password: password, nickname: nickname)
-            let encodedUserData = try encoder.encode(dto)
-            
-            return apiService.requestPublisher(Endpoint.register(encodedUserData: encodedUserData, profileImageData: profileImageData), RegisterDTO.Response.self)
-                .map { _ in
-                    // TODO: 응답 스펙 확인 필요
-                    false
+    func register(email: String, password: String, nickname: String, profileImageData: Data?) -> AnyPublisher<Void, AuthentificationCoreError> {
+        let dto = RegisterDTO.Request(email: email, password: password, nickname: nickname)
+        return apiService.requestPublisher(Endpoint.register(dto: dto), RegisterDTO.Response.self)
+            .map { $0.toEntity() }
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .flatMap { [weak self] user -> AnyPublisher<Void, AuthentificationCoreError> in
+                guard let self else {
+                    return Fail(error: .notSupported).eraseToAnyPublisher()
                 }
-                .mapError { AuthentificationCoreError.networkRequestFailed($0) }
-                .eraseToAnyPublisher()
-            
-        } catch {
-            print("Failed Encoding")
-            return Fail(error: .networkRequestFailed(error)).eraseToAnyPublisher()
-        }
+                
+                guard let profileImageData else {
+                    authentificationStateSubject.send(.loginCompleted(user))
+                    return Just(())
+                        .setFailureType(to: AuthentificationCoreError.self)
+                        .eraseToAnyPublisher()
+                }
+                
+                return apiService.requestPublisher(Endpoint.uploadProfile(userID: user.id, image: profileImageData), UpdateProfileDTO.Response.self)
+                    .handleEvents(receiveOutput: { [weak self] response in
+                        let user = User(
+                            id: user.id,
+                            nickname: user.nickname,
+                            smsVerificationToken: user.smsVerificationToken,
+                            createdAt: user.createdAt,
+                            imageURL: response.profileImageURL ?? user.imageURL
+                        )
+                        self?.authentificationStateSubject.send(.loginCompleted(user))
+                    })
+                    .map { _ in () }
+                    .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+                    .eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
     }
     
     func unregister() -> AnyPublisher<Void, AuthentificationCoreError> {
