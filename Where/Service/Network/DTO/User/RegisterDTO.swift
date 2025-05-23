@@ -16,17 +16,31 @@ enum RegisterDTO {
         
         enum CondingKeys: String, CodingKey {
             case email, password
-            case nickname = "name"
+            case nickname = "nickName"
         }
     }
     
     struct Response: Decodable {
-        let statusCode: UInt64
-        let message: String
+        let id: UInt64
+        let email: String
+        let nickname: String
+        let profileImageURLString: String?
+        let isNicknameDuplicated: Bool
         
         enum CodingKeys: String, CodingKey {
-            case statusCode = "status"
-            case message
+            case id, email
+            case nickname = "nickName"
+            case profileImageURLString = "profileImage"
+            case isNicknameDuplicated = "existsByNickName"
+        }
+        
+        func toEntity() -> User {
+            .init(
+                id: id,
+                nickname: nickname,
+                createdAt: .now,
+                imageURL: URL(string: profileImageURLString ?? "")
+            )
         }
     }
 }
