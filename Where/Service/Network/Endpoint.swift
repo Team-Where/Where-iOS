@@ -177,7 +177,7 @@ extension Endpoint: TargetType {
         case .updateProfile(let userID, _):
             return "\(basePath)/\(userID)/edit"
         case .deleteProfile(let userID):
-            return "\(basePath)/\(userID)/edit"
+            return "\(basePath)/\(userID)/delete"
         case .updateNickname(let userID, _):
             return "\(basePath)/\(userID)/nickname"
         case .reissueAccessToken:
