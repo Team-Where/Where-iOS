@@ -9,10 +9,10 @@ import Foundation
 
 enum UpdateNicknameDTO {
     struct Request: Encodable {
-        let nickname: String
+        let nickName: String
         
-        enum CondingKeys: String, CodingKey {
-            case nickname = "nickName"
-        }
+//        enum CondingKeys: String, CodingKey {
+//            case nickname = "nickName"
+//        }
     }
 }
