@@ -7,6 +7,7 @@
 
 enum LoginDTO {
     struct Request: Encodable {
+        // TODO: User ID 받아올 수 있도록 수정
         let email: String
         let password: String
         
