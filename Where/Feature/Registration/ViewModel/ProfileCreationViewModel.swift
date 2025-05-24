@@ -33,7 +33,7 @@ final class ProfileCreationViewModel: ObservableObject {
     var isProceedButtonDisabled: Bool {
         switch profileCreationStep {
         case .profile: return nicknameValidationState != .valid
-        case .completed: return true
+        case .completed: return false
         }
     }
     
