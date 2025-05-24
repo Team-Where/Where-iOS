@@ -145,6 +145,15 @@ enum Endpoint {
             return true
         }
     }
+    
+    var shouldSaveToken: Bool {
+        switch self {
+        case .login, .loginWithApple, .loginWithKakao, .loginWithNaver:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 // MARK: TargetType Confirmation
