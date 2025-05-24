@@ -35,7 +35,7 @@
 	<key>NidAppName</key>
 	<string>약속을 새롭게 정의하다, 어디</string>
 	<key>NidClientID</key>
-	<string>EM6n_yrMpySUgUsU_d4Z</string>
+	<string>SGZLJ93ZEb9rltMykhEO</string>
 	<key>NidClientSecret</key>
 	<string>$(NAVER_NATIVE_APP_KEY)</string>
 	<key>NidUrlScheme</key>

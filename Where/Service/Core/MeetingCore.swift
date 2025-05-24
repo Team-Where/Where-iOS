@@ -253,7 +253,7 @@ extension MeetingCore: MeetingCoreProtocol {
         }
         
         let dto = DeleteScheduleDTO.Request(meetingID: id, userID: user.id)
-        return apiService.requestPublisher(Endpoint.deleteSchedule(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.deleteSchedule(dto: dto))
             .mapError { MeetingCoreError.networkingError($0) }
             .map { [weak self] _ in
                 let newMeeting = Meeting(
@@ -347,7 +347,7 @@ extension MeetingCore: MeetingCoreProtocol {
         }
         
         let dto = EndMeetingDTO.Request(meetingID: id, userID: user.id)
-        return apiService.requestPublisher(Endpoint.endMeeting(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.endMeeting(dto: dto))
             .mapError { MeetingCoreError.networkingError($0) }
             .map { [weak self] _ in
                 let endedMeeting = Meeting(
@@ -375,7 +375,7 @@ extension MeetingCore: MeetingCoreProtocol {
         }
         
         let dto = LeaveMeetingDTO.Request(meetingID: id, userID: user.id)
-        return apiService.requestPublisher(Endpoint.leaveMeeting(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.leaveMeeting(dto: dto))
             .mapError { MeetingCoreError.networkingError($0) }
             .map { [weak self] _ in
                 guard var meetings = self?.meetingsSubject.value else { return }
@@ -417,7 +417,7 @@ extension MeetingCore: MeetingCoreProtocol {
         
         let dto = InviteFriendsDTO.Request(meetingID: id, hostID: user.id, guestID: guest.id)
         
-        return apiService.requestPublisher(Endpoint.inviteFriends(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.inviteFriends(dto: dto))
             .map { _ in () }
             .handleEvents(receiveOutput: { [weak self] _ in
                 let state = MeetingInvitationState(

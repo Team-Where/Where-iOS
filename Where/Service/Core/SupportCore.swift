@@ -192,7 +192,7 @@ extension SupportCore: SupportCoreProtocol {
     
     func deleteAnnouncement(id: UInt64) -> AnyPublisher<Void, SupportCoreError> {
         let dto = DeleteAnnouncementDTO.Request(announcementID: id)
-        return apiService.requestPublisher(Endpoint.deleteAnnouncement(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.deleteAnnouncement(dto: dto))
             .mapError { SupportCoreError.networkingError($0) }
             .map { [weak self] _ in
                 guard var announcements = self?.announcementsSubject.value else { return }
@@ -237,7 +237,7 @@ extension SupportCore: SupportCoreProtocol {
     
     func deleteFAQ(id: UInt64) -> AnyPublisher<Void, SupportCoreError> {
         let dto = DeleteFAQDTO.Request(id: id)
-        return apiService.requestPublisher(Endpoint.deleteFAQ(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.deleteFAQ(dto: dto))
             .mapError { SupportCoreError.networkingError($0) }
             .map { [weak self] _ in
                 guard var announcements = self?.announcementsSubject.value else { return }
@@ -307,7 +307,7 @@ extension SupportCore: SupportMediationProtocol {
         currentUserID = id
         
         let latestVersion = Bundle.main.appVersion
-        cancellableBag[#function] = apiService.requestPublisher(Endpoint.checkLatestVersion(version: latestVersion))
+        cancellableBag[#function] = apiService.requestStringPublisher(Endpoint.checkLatestVersion(version: latestVersion))
             .map { isLatestVersionString in
                 isLatestVersionString == "true"
             }

@@ -291,13 +291,12 @@ final class RegistrationViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
-                case .finished: break
+                case .finished:
+                    self?.isCompleted = true
                 case .failure:
                     self?.floater = .errorOccured(message: "잠시 후 다시 시도해주세요.")
                 }
-            } receiveValue: { [weak self] isDone in
-                self?.isCompleted = isDone
-            }
+            } receiveValue: { _ in }
     }
 }
 

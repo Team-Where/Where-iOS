@@ -26,6 +26,7 @@ struct WhereApp: App {
         )
         self.resolver = assembler.resolver
         self.appDelegate.configure(resolver: resolver)
+        configureKakaoAPI()
     }
     
     var body: some Scene {

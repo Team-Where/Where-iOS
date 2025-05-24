@@ -81,7 +81,7 @@ extension CommunityCore: CommunityCoreProtocol {
         let dto = DeleteFriendDTO.Request(userID: userID, friendID: id)
         
         return apiService
-            .requestPublisher(Endpoint.deleteFriend(dto: dto), EmptyDTO.Response.self)
+            .requestVoidPublisher(Endpoint.deleteFriend(dto: dto))
             .mapError { CommunityCoreError.networkingError($0) }
             .map { [weak self] _ in
                 guard var friends = self?.friendsSubject.value else { return }

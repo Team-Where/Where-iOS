@@ -33,7 +33,7 @@ final class ProfileCreationViewModel: ObservableObject {
     var isProceedButtonDisabled: Bool {
         switch profileCreationStep {
         case .profile: return nicknameValidationState != .valid
-        case .completed: return true
+        case .completed: return false
         }
     }
     
@@ -105,7 +105,7 @@ final class ProfileCreationViewModel: ObservableObject {
                     
                 case (.none, .none):
                     // 새로운 이미지가 없고, 기존 프로필 사진도 없는 경우 -> 별도 작업 없음
-                    return Just(()).setFailureType(to: AuthentificationCoreError.self).eraseToAnyPublisher()
+                    return Empty(outputType: Void.self, failureType: AuthentificationCoreError.self).eraseToAnyPublisher()
                 }
             }
         

@@ -33,9 +33,9 @@ struct ProfileCreationView: View {
                     } else {
                         Text(viewModel.proceedButtonLabel)
                             .whereFont(.body16semibold)
+                            .frame(width: 350, height: 48)
                     }
                 }
-                .frame(width: 350, height: 48)
                 .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
                 .ignoresSafeArea(.keyboard)
                 .disabled(viewModel.isProcessing)

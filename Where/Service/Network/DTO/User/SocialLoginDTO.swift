@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum LoginWithKakaoDTO {
+enum SocialLoginDTO {
     struct Response: Decodable {
         let userID: UInt64
         let isRegistrationNeeded: Bool
