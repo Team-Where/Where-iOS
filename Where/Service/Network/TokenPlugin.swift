@@ -26,10 +26,14 @@ final class TokenPlugin: PluginType {
         do {
             var tokenRequest = request
             
-            if case .loginWithKakao(let accessToken, let refreshToken) = endpoint {
+            switch endpoint {
+            case .loginWithKakao(let accessToken, let refreshToken),
+                    .loginWithNaver(let accessToken, let refreshToken):
                 tokenRequest.setValue("\(accessToken)", forHTTPHeaderField: "Authorization")
                 tokenRequest.setValue("\(refreshToken)", forHTTPHeaderField: "refreshToken")
-            } else {
+            case .loginWithApple(let data):
+                tokenRequest.setValue(String(data: data, encoding: .utf8)!, forHTTPHeaderField: "Authorization")
+            default:
                 let token = try tokenStorage.fetch()
                 tokenRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             }
@@ -54,7 +58,7 @@ final class TokenPlugin: PluginType {
                   let refreshToken = response.response?.headers[Tokens.HeaderKey.refreshToken.rawValue] as? String
             else {
                 #if DEBUG
-                print("\(#function) Error: Failed to extract tokens from headers")
+                print("\(#file) \(#function) Error: Failed to extract tokens from headers")
                 #endif
                 return
             }
@@ -63,13 +67,13 @@ final class TokenPlugin: PluginType {
                 try tokenStorage.store(token)
             } catch {
                 #if DEBUG
-                print("\(#function) Error: Failed to save Token")
+                print("\(#file) \(#function) Error: Failed to save Token")
                 #endif
                 return
             }
         case .failure(let error):
             #if DEBUG
-            print("\(#function) Error:\(error)")
+            print("\(#file) \(#function) Error:\(error)")
             #endif
         }
     }

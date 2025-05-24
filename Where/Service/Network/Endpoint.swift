@@ -412,10 +412,10 @@ extension Endpoint: TargetType {
     
     var headers: [String: String]? {
         switch self {
-        case .unregister, .readUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs, .loginWithKakao:
+        case .unregister, .readUserInfo, .readInvitationStatus, .readMeetingDetail, .readMeetingDetailForInvitationLink, .readPlaceDetail, .readComments, .readSchedule, .readFriends, .readUserInquiries, .readAdminInquiries, .readAnnouncements, .readFAQs,
+                .loginWithKakao, .loginWithNaver, .loginWithApple, .login
+            :
             return nil
-        case .loginWithApple(let authCode):
-            return ["Authorization" : "\(String(data: authCode, encoding: .utf8)!)"]
         default:
             return ["Content-Type": "application/json"]
         }
