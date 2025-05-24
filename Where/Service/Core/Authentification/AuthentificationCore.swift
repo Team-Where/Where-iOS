@@ -51,6 +51,12 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func unregister() -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 프로필 생성
+    ///
+    /// - Note: 소셜유저를 위한 '최초 프로필 생성' 기능입니다.
+    ///     프로필 사진 설정 + 닉네임 설정이 가능합니다.
+    func setUpProfile(_ nickname: String, _ profileImageData: Data?) -> AnyPublisher<Void, AuthentificationCoreError>
+    
+    /// 프로필 생성
     func createUserProfile(profileImageData: Data) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 프로필 수정
@@ -367,6 +373,38 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .eraseToAnyPublisher()
     }
     
+    func setUpProfile(_ nickname: String, _ profileImageData: Data?) -> AnyPublisher<Void, AuthentificationCoreError> {
+        guard case .registrationNeeded(let user) = authentificationStateSubject.value else {
+            return Fail(error: .notSupported).eraseToAnyPublisher()
+        }
+        
+        let updateNicknamePublisher = updateNickname(nickname)
+        let imageUpdatePublisher = Just((profileImageData, user.imageURL))
+            .flatMap { [self] (data, url) -> AnyPublisher<Void, AuthentificationCoreError> in
+                switch (data, url) {
+                case (.some(let data), .some):
+                    // 새로운 이미지가 있고, 기존 프로필 사진이 있는 경우 -> 이미지 변경
+                    return updateUserProfile(profileImageData: data)
+                    
+                case (.some(let data), .none):
+                    // 새로운 이미지가 있고, 기존 프로필 사진이 없는 경우 -> 이미지 등록
+                    return createUserProfile(profileImageData: data)
+                    
+                case (.none, .some):
+                    // 새로운 이미지가 없고, 기존 프로필 사진이 있는 경우 -> 이미지 삭제
+                    return deleteUserProfile()
+                    
+                case (.none, .none):
+                    // 새로운 이미지가 없고, 기존 프로필 사진도 없는 경우 -> 별도 작업 없음
+                    return Empty(outputType: Void.self, failureType: AuthentificationCoreError.self).eraseToAnyPublisher()
+                }
+            }
+        
+        return updateNicknamePublisher.combineLatest(imageUpdatePublisher)
+            .map { _ in }
+            .eraseToAnyPublisher()
+    }
+    
     func createUserProfile(profileImageData: Data) -> AnyPublisher<Void, AuthentificationCoreError> {
         guard case .registrationNeeded(let user) = authentificationStateSubject.value else {
             return Fail(error: .notSupported).eraseToAnyPublisher()
@@ -430,6 +468,10 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         switch authentificationStateSubject.value {
         case .loginCompleted(let user), .registrationNeeded(let user):
             return apiService.requestVoidPublisher(Endpoint.updateNickname(userID: user.id, dto: dto))
+                .handleEvents(receiveCompletion: { [weak self] completion in
+                    guard case .finished = completion else { return }
+                    self?.readUserInfo(userID: user.id)
+                })
                 .map { _ in () }
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()

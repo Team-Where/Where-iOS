@@ -88,32 +88,8 @@ final class ProfileCreationViewModel: ObservableObject {
     }
     
     private func setUpProfile(_ user: User) {
-        let imageUpdatePublisher = Just((profileImageData, user.imageURL))
-            .flatMap { [authCore] (data, url) -> AnyPublisher<Void, AuthentificationCoreError> in
-                switch (data, url) {
-                case (.some(let data), .some):
-                    // 새로운 이미지가 있고, 기존 프로필 사진이 있는 경우 -> 이미지 변경
-                    return authCore.updateUserProfile(profileImageData: data)
-                    
-                case (.some(let data), .none):
-                    // 새로운 이미지가 있고, 기존 프로필 사진이 없는 경우 -> 이미지 등록
-                    return authCore.createUserProfile(profileImageData: data)
-                    
-                case (.none, .some):
-                    // 새로운 이미지가 없고, 기존 프로필 사진이 있는 경우 -> 이미지 삭제
-                    return authCore.deleteUserProfile()
-                    
-                case (.none, .none):
-                    // 새로운 이미지가 없고, 기존 프로필 사진도 없는 경우 -> 별도 작업 없음
-                    return Empty(outputType: Void.self, failureType: AuthentificationCoreError.self).eraseToAnyPublisher()
-                }
-            }
-        
-        let nicknameUpdatePublisher = authCore.updateNickname(nicknameFieldText)
-        
         isProcessing = true
-        cancellableBag[#function] = imageUpdatePublisher
-            .combineLatest(nicknameUpdatePublisher)
+        cancellableBag[#function] = authCore.setUpProfile(nicknameFieldText, profileImageData)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 self?.isProcessing = false
