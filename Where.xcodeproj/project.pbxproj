@@ -143,7 +143,6 @@
 		04D547F12DDB66A9003EEC85 /* RegistrationTermView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546C92DDB66A9003EEC85 /* RegistrationTermView.swift */; };
 		04D547F22DDB66A9003EEC85 /* MeetingDetailFromLinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5470D2DDB66A9003EEC85 /* MeetingDetailFromLinkDTO.swift */; };
 		04D547F32DDB66A9003EEC85 /* UpdateProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D547342DDB66A9003EEC85 /* UpdateProfileDTO.swift */; };
-		04D547F42DDB66A9003EEC85 /* EmptyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D547372DDB66A9003EEC85 /* EmptyDTO.swift */; };
 		04D547F52DDB66A9003EEC85 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5465C2DDB66A9003EEC85 /* User.swift */; };
 		04D547F62DDB66A9003EEC85 /* ServiceAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5464A2DDB66A9003EEC85 /* ServiceAssembly.swift */; };
 		04D547F72DDB66A9003EEC85 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546682DDB66A9003EEC85 /* Image.swift */; };
@@ -406,7 +405,6 @@
 		04D547332DDB66A9003EEC85 /* UpdateNicknameDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNicknameDTO.swift; sourceTree = "<group>"; };
 		04D547342DDB66A9003EEC85 /* UpdateProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProfileDTO.swift; sourceTree = "<group>"; };
 		04D547352DDB66A9003EEC85 /* VerifyAuthCodeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAuthCodeDTO.swift; sourceTree = "<group>"; };
-		04D547372DDB66A9003EEC85 /* EmptyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyDTO.swift; sourceTree = "<group>"; };
 		04D547392DDB66A9003EEC85 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		04D5473A2DDB66A9003EEC85 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		04D5473B2DDB66A9003EEC85 /* TokenPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPlugin.swift; sourceTree = "<group>"; };
@@ -1279,7 +1277,6 @@
 				04D547202DDB66A9003EEC85 /* Schedule */,
 				04D5472D2DDB66A9003EEC85 /* Support */,
 				04D547362DDB66A9003EEC85 /* User */,
-				04D547372DDB66A9003EEC85 /* EmptyDTO.swift */,
 			);
 			path = DTO;
 			sourceTree = "<group>";
@@ -1685,7 +1682,6 @@
 				04D547F12DDB66A9003EEC85 /* RegistrationTermView.swift in Sources */,
 				04D547F22DDB66A9003EEC85 /* MeetingDetailFromLinkDTO.swift in Sources */,
 				04D547F32DDB66A9003EEC85 /* UpdateProfileDTO.swift in Sources */,
-				04D547F42DDB66A9003EEC85 /* EmptyDTO.swift in Sources */,
 				04D547F52DDB66A9003EEC85 /* User.swift in Sources */,
 				04D547F62DDB66A9003EEC85 /* ServiceAssembly.swift in Sources */,
 				04D547F72DDB66A9003EEC85 /* Image.swift in Sources */,
