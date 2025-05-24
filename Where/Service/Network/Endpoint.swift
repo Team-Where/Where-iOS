@@ -17,9 +17,9 @@ enum Endpoint {
     /// 로그인
     case login(dto: LoginDTO.Request)
     /// 카카오 로그인
-    case loginWithKakao
+    case loginWithKakao(accessToken: String, refreshToken: String)
     /// 네이버 로그인
-    case loginWithNaver
+    case loginWithNaver(accessToken: String, refreshToken: String)
     /// 애플 로그인
     case loginWithApple(authCode: Data)
     /// 이메일 중복확인
