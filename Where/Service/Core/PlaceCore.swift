@@ -128,7 +128,7 @@ extension PlaceCore: PlaceCoreProtocol {
         }
         
         let dto = DeletePlaceDTO.Request(id: id, userID: userID)
-        return apiService.requestPublisher(Endpoint.deletePlace(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.deletePlace(dto: dto))
             .mapError { PlaceCoreError.networkingError($0) }
             .map { [weak self] _ in
                 guard var places = self?.placesSubject.value else { return }
@@ -252,7 +252,7 @@ extension PlaceCore: PlaceCoreProtocol {
         }
         
         let dto = DeletePlaceDTO.Request(id: comment.id, userID: userID)
-        return apiService.requestPublisher(Endpoint.deleteComment(dto: dto), EmptyDTO.Response.self)
+        return apiService.requestVoidPublisher(Endpoint.deleteComment(dto: dto))
             .mapError { PlaceCoreError.networkingError($0) }
             .map { [weak self] _ in
                 guard var comments = self?.commentsSubject.value else { return }

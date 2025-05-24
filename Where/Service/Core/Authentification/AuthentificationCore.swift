@@ -262,7 +262,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     func login(email: String, password: String) {
         let dto = LoginDTO.Request(email: email, password: password)
         
-        cancellableBag[#function] = apiService.requestPublisher(Endpoint.login(dto: dto), EmptyDTO.Response.self)
+        cancellableBag[#function] = apiService.requestVoidPublisher(Endpoint.login(dto: dto))
             .sink { [weak self] completion in
                 guard case .failure = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
@@ -279,14 +279,14 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     func checkEmailDuplicate(email: String) -> AnyPublisher<Void, AuthentificationCoreError> {
         let dto = CheckEmailDuplicationDTO.Request(email: email)
         
-        return apiService.requestPublisher(Endpoint.checkEmailDuplication(dto: dto))
+        return apiService.requestStringPublisher(Endpoint.checkEmailDuplication(dto: dto))
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .map { _ in () }
             .eraseToAnyPublisher()
     }
     
     func requestAuthorizationCode(email: String) -> AnyPublisher<Void, AuthentificationCoreError> {
-        apiService.requestPublisher(Endpoint.requestAuthCode(email: email))
+        apiService.requestStringPublisher(Endpoint.requestAuthCode(email: email))
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .map { _ in () }
             .eraseToAnyPublisher()
@@ -294,7 +294,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     
     func verifyAuthorizationCode(email: String, code: String) -> AnyPublisher<AuthorizationCodeValidationResult, AuthentificationCoreError> {
         let dto = VerifyAuthCodeDTO.Request(email: email, code: code)
-        return apiService.requestPublisher(Endpoint.verifyAuthCode(dto: dto))
+        return apiService.requestStringPublisher(Endpoint.verifyAuthCode(dto: dto))
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
             .map { AuthorizationCodeValidationResult($0) }
             .eraseToAnyPublisher()
@@ -341,7 +341,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
         }
         
         return apiService
-            .requestPublisher(Endpoint.unregister(userID: user.id), EmptyDTO.Response.self)
+            .requestVoidPublisher(Endpoint.unregister(userID: user.id))
             .map { [weak self] _ in
                 self?.authentificationStateSubject.send(.loginNeeded)
             }
@@ -396,7 +396,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     func deleteUserProfile() -> AnyPublisher<Void, AuthentificationCoreError> {
         switch authentificationStateSubject.value {
         case .loginCompleted(let user), .registrationNeeded(let user):
-            return apiService.requestPublisher(Endpoint.deleteProfile(userID: user.id), EmptyDTO.Response.self)
+            return apiService.requestVoidPublisher(Endpoint.deleteProfile(userID: user.id))
                 .map { _ in () }
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
@@ -407,11 +407,11 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func updateNickname(_ nickname: String) -> AnyPublisher<Void, AuthentificationCoreError> {
-        let dto = UpdateNicknameDTO.Request(nickname: nickname)
+        let dto = UpdateNicknameDTO.Request(nickName: nickname)
         
         switch authentificationStateSubject.value {
         case .loginCompleted(let user), .registrationNeeded(let user):
-            return apiService.requestPublisher(Endpoint.updateNickname(userID: user.id, dto: dto), EmptyDTO.Response.self)
+            return apiService.requestVoidPublisher(Endpoint.updateNickname(userID: user.id, dto: dto))
                 .map { _ in () }
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
