@@ -209,54 +209,46 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func loginWithApple(auth: ASAuthorization) {
-        strategyContext.login(by: .apple(auth: auth)) { result in
-            // TODO: WIP
-        }
+        // TODO: apple Login 기능 연동
+//        cancellableBag[#function] = strategyContext.login(by: .apple(auth: auth))
     }
     
     func loginWithKakao() {
-        cancellableBag[#function] = Future<UserCredential, AuthentificationCoreError> { [weak self] promise in
-            self?.strategyContext.login(by: .kakao) { result in
-                switch result {
-                case .failure(let error): promise(.failure(error))
-                case .success(let credential): promise(.success(credential))
+        cancellableBag[#function] = strategyContext.login(by: .kakao)
+            .flatMap { [weak self] credential -> AnyPublisher<SocialLoginDTO.Response, AuthentificationCoreError> in
+                guard let self,
+                      let accessToken = credential.accessToken,
+                      let refreshToken = credential.refreshToken
+                else {
+                    return Fail(error: .socialAuthProviderAuthorizationFailed).eraseToAnyPublisher()
+                }
+                
+                return apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToken, refreshToken: refreshToken), SocialLoginDTO.Response.self)
+                    .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+                    .eraseToAnyPublisher()
+            }
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure:
+                    self?.authentificationStateSubject.send(.loginNeeded)
+                }
+            } receiveValue: { [weak self] response in
+                if response.isRegistrationNeeded {
+                    // 프로필 설정 필요
+                    let user = User(id: response.userID, imageURL: response.profileImageURL)
+                    self?.authentificationStateSubject.send(.registrationNeeded(user))
+                } else {
+                    // 프로필 설정 불필요
+                    self?.readUserInfo(userID: response.userID)
                 }
             }
-        }
-        .flatMap { [weak self] credential -> AnyPublisher<SocialLoginDTO.Response, AuthentificationCoreError> in
-            guard let self,
-                  let accessToken = credential.accessToken,
-                  let refreshToken = credential.refreshToken
-            else {
-                return Fail(error: .socialAuthProviderAuthorizationFailed).eraseToAnyPublisher()
-            }
-            
-            return apiService.requestPublisher(Endpoint.loginWithKakao(accessToken: accessToken, refreshToken: refreshToken), SocialLoginDTO.Response.self)
-                .mapError { AuthentificationCoreError.networkRequestFailed($0) }
-                .eraseToAnyPublisher()
-        }
-        .sink { [weak self] completion in
-            switch completion {
-            case .finished: break
-            case .failure:
-                self?.authentificationStateSubject.send(.loginNeeded)
-            }
-        } receiveValue: { [weak self] response in
-            if response.isRegistrationNeeded {
-                // 프로필 설정 필요
-                let user = User(id: response.userID, imageURL: response.profileImageURL)
-                self?.authentificationStateSubject.send(.registrationNeeded(user))
-            } else {
-                // 프로필 설정 불필요
-                self?.readUserInfo(userID: response.userID)
-            }
-        }
     }
     
     func loginWithNaver() {
-        strategyContext.login(by: .naver) { result in
-            // TODO: WIP
-        }
+        // TODO: Combine방식으로 변경된 네이버 로그인 기능 구현
+//        cancellableBag[#function] = strategyContext.login(by: .naver)
+        
     }
     
     func login(email: String, password: String) {
