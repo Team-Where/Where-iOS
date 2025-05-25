@@ -23,14 +23,6 @@ final class AuthentificationStrategyContext {
         }
     }
     
-//    func login(by provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
-//        currentProvider = provider
-//        cache(by: provider)
-//        
-//        guard let strategy = strategies[provider] else { return }
-//        strategy.login(provider: provider, completion: completion)
-//    }
-    
     func login(by provider: AuthentificationProvider) -> AnyPublisher<UserCredential, AuthentificationCoreError> {
         currentProvider = provider
         cache(by: provider)

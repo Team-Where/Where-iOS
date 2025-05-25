@@ -33,18 +33,4 @@ extension AppleLoginStrategy: AuthentificationStrategyProtocol {
         }
     }
     
-    
-    func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
-        guard case .apple(let auth) = provider else { return completion(.failure(.notSupported)) }
-
-        switch auth.credential {
-        case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            let code = appleIDCredential.authorizationCode
-            let credential = UserCredential(authorizationCode: code)
-            return completion(.success(credential))
-            
-        default:
-            return completion(.failure(.socialAuthProviderAuthorizationFailed))
-        }
-    }
 }
