@@ -215,8 +215,32 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func loginWithApple(auth: ASAuthorization) {
-        // TODO: apple Login 기능 연동
-//        cancellableBag[#function] = strategyContext.login(by: .apple(auth: auth))
+        strategyContext.login(by: .apple(auth: auth))
+            .flatMap { [weak self] credential -> AnyPublisher<SocialLoginDTO.Response, AuthentificationCoreError> in
+                guard let self,
+                      let authCode = credential.authorizationCode
+                else {
+                    return Fail(error: .socialAuthProviderAuthorizationFailed).eraseToAnyPublisher()
+                }
+                
+                return apiService.requestPublisher(Endpoint.loginWithApple(authCode: authCode), SocialLoginDTO.Response.self)
+                    .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+                    .eraseToAnyPublisher()
+            }
+            .sink { [weak self] completion in
+                guard case .failure = completion else { return }
+                self?.authentificationStateSubject.send(.loginNeeded)
+            } receiveValue: { [weak self] response in
+                if response.isRegistrationNeeded {
+                    // 프로필 설정 필요
+                    let user = User(id: response.userID, imageURL: response.profileImageURL)
+                    self?.authentificationStateSubject.send(.registrationNeeded(user))
+                } else {
+                    // 프로필 설정 불필요
+                    self?.readUserInfo(userID: response.userID)
+                }
+            }
+            .store(in: cancellableBag, key: #function)
     }
     
     func loginWithKakao() {
