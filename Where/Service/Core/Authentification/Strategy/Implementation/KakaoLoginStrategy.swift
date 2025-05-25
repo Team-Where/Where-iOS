@@ -12,14 +12,11 @@ import KakaoSDKUser
 import KakaoSDKAuth
 
 final class KakaoLoginStrategy {
-    private let kakaoAPI: UserApi = .shared
+    private let kakaoAPI: KakaoLoginPublishable = UserApi.shared
     
-    private func handleKakaoLoginResult(token: OAuthToken?, error: Error?) throws(AuthentificationCoreError) -> UserCredential {
-        if let _ = error {
-            throw .socialAuthProviderAuthorizationFailed
-        }
-        
-        guard let token = token else {
+    private func handleKakaoLoginResult(token: OAuthToken?) throws(AuthentificationCoreError) -> UserCredential {
+        guard let token = token
+        else {
             throw .socialAuthProviderAuthorizationFailed
         }
         
@@ -28,27 +25,25 @@ final class KakaoLoginStrategy {
 }
 
 // MARK: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol Confirmation
-extension KakaoLoginStrategy: AuthentificationStrategyProtocol, @preconcurrency URLHandlerStrategyProtocol {
-    func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
-        guard case .kakao = provider else { return completion(.failure(.notSupported)) }
+extension KakaoLoginStrategy: AuthentificationStrategyProtocol, @preconcurrency URLHandlerStrategyProtocol{
+    
+    func login(provider: AuthentificationProvider) -> AnyPublisher<UserCredential, AuthentificationCoreError> {
+        guard case .kakao = provider
+        else {
+            return Fail(error: .notSupported)
+                .eraseToAnyPublisher()
+        }
         
         let nonce = UUID().uuidString
         
-        if UserApi.isKakaoTalkLoginAvailable() {
-            kakaoAPI.loginWithKakaoTalk(nonce: nonce) { [weak self] token, error in
-                guard let credential = try? self?.handleKakaoLoginResult(token: token, error: error) else {
-                    return completion(.failure(.socialAuthProviderAuthorizationFailed))
-                }
-                return completion(.success(credential))
+        return kakaoAPI.loginPublisher(nonce: nonce)
+            .tryCompactMap { [weak self] token in
+                try self?.handleKakaoLoginResult(token: token)
             }
-        } else {
-            kakaoAPI.loginWithKakaoAccount(nonce: nonce) { [weak self] token, error in
-                guard let credential = try? self?.handleKakaoLoginResult(token: token, error: error) else {
-                    return completion(.failure(.socialAuthProviderAuthorizationFailed))
-                }
-                return completion(.success(credential))
+            .mapError { _ in
+                AuthentificationCoreError.socialAuthProviderAuthorizationFailed
             }
-        }
+            .eraseToAnyPublisher()
     }
     
     @MainActor func handleOpenURL(_ url: URL) {
