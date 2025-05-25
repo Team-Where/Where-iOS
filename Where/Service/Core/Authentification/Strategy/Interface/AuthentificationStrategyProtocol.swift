@@ -10,9 +10,9 @@ import Combine
 import AuthenticationServices
 
 protocol AuthentificationStrategyProtocol: AnyObject {
-    func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void)
+    func login(provider: AuthentificationProvider) -> AnyPublisher<UserCredential, AuthentificationCoreError>
 }
 
-protocol URLHandlerStrategyProtocol: AuthentificationStrategyProtocol {
+protocol URLHandlerStrategyProtocol {
     func handleOpenURL(_ url: URL)
 }
