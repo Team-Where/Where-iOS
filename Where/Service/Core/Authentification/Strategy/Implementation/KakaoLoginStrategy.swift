@@ -57,3 +57,33 @@ extension KakaoLoginStrategy: AuthentificationStrategyProtocol, @preconcurrency 
         }
     }
 }
+
+// MARK: - KakaoLogin with Combine
+
+protocol KakaoLoginPublishable {
+    func loginPublisher(nonce: String) -> AnyPublisher<OAuthToken?, Error>
+}
+
+extension UserApi: KakaoLoginPublishable {
+    func loginPublisher(nonce: String) -> AnyPublisher<OAuthToken?, Error> {
+        return Future<OAuthToken?, Error> { [weak self] promise in
+            
+            if UserApi.isKakaoTalkLoginAvailable() {
+                self?.loginWithKakaoTalk(nonce: nonce) { token, error in
+                    if let error = error {
+                        return promise(.failure(error))
+                    }
+                    return promise(.success(token))
+                }
+            } else {
+                self?.loginWithKakaoAccount(nonce: nonce) { token, error in
+                    if let error = error {
+                        return promise(.failure(error))
+                    }
+                    return promise(.success(token))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+}
