@@ -50,4 +50,32 @@ extension NaverLoginStrategy: AuthentificationStrategyProtocol, URLHandlerStrate
     func handleOpenURL(_ url: URL) {
         _ = naverAPI.handleURL(url)
     }
+    
+}
+
+// MARK: - NaverLogin with Combine
+
+protocol NaverLoginPublishable {
+    func loginPubilsher() -> AnyPublisher<LoginResult, NidError>
+}
+
+extension NaverLoginPublishable {
+    func handleURL(_ url: URL) {
+        _ = NidOAuth.shared.handleURL(url)
+    }
+}
+extension NidOAuth: NaverLoginPublishable {
+    func loginPubilsher() -> AnyPublisher<LoginResult, NidError> {
+        return Future<LoginResult, NidError> { [weak self] promise in
+            self?.requestLogin { result in
+                switch result {
+                case .success(let result):
+                    return promise(.success(result))
+                case .failure(let error):
+                    return promise(.failure(error))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
 }
