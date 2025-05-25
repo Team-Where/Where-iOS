@@ -220,7 +220,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     }
     
     func loginWithKakao() {
-        cancellableBag[#function] = strategyContext.login(by: .kakao)
+        strategyContext.login(by: .kakao)
             .flatMap { [weak self] credential -> AnyPublisher<SocialLoginDTO.Response, AuthentificationCoreError> in
                 guard let self,
                       let accessToken = credential.accessToken,
@@ -249,10 +249,10 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                     self?.readUserInfo(userID: response.userID)
                 }
             }
+            .store(in: cancellableBag, key: #function)
     }
     
     func loginWithNaver() {
-        // TODO: Combine방식으로 변경된 네이버 로그인 기능 구현
         strategyContext.login(by: .naver)
             .flatMap { [weak self] credential -> AnyPublisher<SocialLoginDTO.Response, AuthentificationCoreError> in
                 guard let self,
@@ -280,7 +280,6 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 }
             }
             .store(in: cancellableBag, key: #function)
-
     }
     
     func login(email: String, password: String) {
