@@ -247,8 +247,34 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     
     func loginWithNaver() {
         // TODO: Combine방식으로 변경된 네이버 로그인 기능 구현
-//        cancellableBag[#function] = strategyContext.login(by: .naver)
-        
+        strategyContext.login(by: .naver)
+            .flatMap { [weak self] credential -> AnyPublisher<SocialLoginDTO.Response, AuthentificationCoreError> in
+                guard let self,
+                      let accessToken = credential.accessToken,
+                      let refreshToken = credential.refreshToken
+                else {
+                    return Fail(error: .socialAuthProviderAuthorizationFailed).eraseToAnyPublisher()
+                }
+                return self.apiService.requestPublisher(Endpoint.loginWithNaver(accessToken: accessToken, refreshToken: refreshToken), SocialLoginDTO.Response.self)
+                    .mapError{ AuthentificationCoreError.networkRequestFailed($0) }
+                    .eraseToAnyPublisher()
+            }
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished: break
+                case .failure:
+                    self?.authentificationStateSubject.send(.loginNeeded)
+                }
+            } receiveValue: { [weak self] response in
+                if response.isRegistrationNeeded {
+                    let user = User(id: response.userID, imageURL: response.profileImageURL)
+                    self?.authentificationStateSubject.send(.registrationNeeded( user))
+                } else {
+                    self?.readUserInfo(userID: response.userID)
+                }
+            }
+            .store(in: cancellableBag, key: #function)
+
     }
     
     func login(email: String, password: String) {
