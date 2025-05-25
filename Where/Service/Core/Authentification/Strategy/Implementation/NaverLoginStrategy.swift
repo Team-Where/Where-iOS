@@ -10,41 +10,38 @@ import Combine
 import NidThirdPartyLogin
 
 final class NaverLoginStrategy: NSObject {
-    private let naverAPI: NidOAuth = .shared
+    private let naverAPI: NaverLoginPublishable = NidOAuth.shared
     
     override init() {
         super.init()
-        _configureNaverAPI(naverAPI)
+        _configureNaverAPI()
     }
     
-    private func _configureNaverAPI(_ naver: NidOAuth) {
-        naver.initialize()
-        naver.setLoginBehavior(.appPreferredWithInAppBrowserFallback)
+    private func _configureNaverAPI() {
+        NidOAuth.shared.initialize()
+        NidOAuth.shared.setLoginBehavior(.appPreferredWithInAppBrowserFallback)
     }
     
-    private func handleNaverLoginResult(_ result: Result<LoginResult, NidError>) throws(AuthentificationCoreError) -> UserCredential {
-        switch result {
-        case .success(let tokens):
-            let accessToken = tokens.accessToken.tokenString
-            let refreshToken = tokens.refreshToken.tokenString
-            return UserCredential(accessToken: accessToken, refreshToken: refreshToken)
-        case .failure:
-            throw .socialAuthProviderAuthorizationFailed
-        }
-    }
 }
 
 // MARK: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol Confirmation
 extension NaverLoginStrategy: AuthentificationStrategyProtocol, URLHandlerStrategyProtocol {
-    func login(provider: AuthentificationProvider, completion: @escaping (Result<UserCredential, AuthentificationCoreError>) -> Void) {
-        guard case .naver = provider else { return completion(.failure(.notSupported)) }
-        
-        naverAPI.requestLogin { [weak self] result in
-            guard let credential = try? self?.handleNaverLoginResult(result) else {
-                return completion(.failure(.socialAuthProviderAuthorizationFailed))
-            }
-            return completion(.success(credential))
+
+    func login(provider: AuthentificationProvider) -> AnyPublisher<UserCredential, AuthentificationCoreError> {
+        guard case .naver = provider
+        else {
+            return Fail(error: .notSupported)
+                .eraseToAnyPublisher()
         }
+        return naverAPI.loginPubilsher()
+            .map {
+                UserCredential(accessToken: $0.accessToken.tokenString, refreshToken: $0.refreshToken.tokenString)
+            }
+            .mapError { _ in
+                AuthentificationCoreError.socialAuthProviderAuthorizationFailed
+            }
+            .eraseToAnyPublisher()
+        
     }
     
     func handleOpenURL(_ url: URL) {
