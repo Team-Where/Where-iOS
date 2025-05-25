@@ -286,14 +286,14 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
     func login(email: String, password: String) {
         let dto = LoginDTO.Request(email: email, password: password)
         
-        cancellableBag[#function] = apiService.requestVoidPublisher(Endpoint.login(dto: dto))
+        cancellableBag[#function] = apiService.requestPublisher(Endpoint.login(dto: dto), LoginDTO.Response.self)
+            .handleEvents(receiveOutput: { [weak self] response in
+                self?.readUserInfo(userID: response.userID)
+            })
             .sink { [weak self] completion in
                 guard case .failure = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
-            } receiveValue: { [weak self] _ in
-                // TODO: 발급된 토큰 저장할 수 있는지 확인
-                // TODO: API 응답 스펙 맞춰서 로직 구현해야함
-            }
+            } receiveValue: { _ in }
     }
     
     func logout() {
