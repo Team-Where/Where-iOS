@@ -215,8 +215,8 @@
 		04D548612DDB6A7E003EEC85 /* WherePlaceShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 04D548572DDB6A7E003EEC85 /* WherePlaceShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		04D5486C2DDB6AB2003EEC85 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5486A2DDB6AB2003EEC85 /* ShareViewController.swift */; };
 		04DEC6AB2DDB73DD0091DEF9 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */; };
+		7F6D266D2DE4A00E001F47B9 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */; };
 		7FB0B6002DDCBC4600ED14A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */; };
-		7FB0B6022DDCBC8100ED14A8 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7FB0B6012DDCBC8100ED14A8 /* AppSecret.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -445,8 +445,8 @@
 		04D548672DDB6AB2003EEC85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04D5486A2DDB6AB2003EEC85 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7FB0B6012DDCBC8100ED14A8 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1378,7 +1378,7 @@
 			isa = PBXGroup;
 			children = (
 				04D5475D2DDB66A9003EEC85 /* DesignSystem */,
-				7FB0B6012DDCBC8100ED14A8 /* AppSecret.xcconfig */,
+				7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */,
 				7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */,
 				04D5475F2DDB66A9003EEC85 /* AppStorageKey.swift */,
 				04D547602DDB66A9003EEC85 /* DateFormat.swift */,
@@ -1521,12 +1521,12 @@
 			files = (
 				04D548292DDB66A9003EEC85 /* Pretendard-SemiBold.otf in Resources */,
 				04D5482A2DDB66A9003EEC85 /* Preview Assets.xcassets in Resources */,
+				7F6D266D2DE4A00E001F47B9 /* AppSecret.xcconfig in Resources */,
 				7FB0B6002DDCBC4600ED14A8 /* GoogleService-Info.plist in Resources */,
 				04D5482C2DDB66A9003EEC85 /* Pretendard-Bold.otf in Resources */,
 				04D5482D2DDB66A9003EEC85 /* Pretendard-Regular.otf in Resources */,
 				04D5482E2DDB66A9003EEC85 /* Pretendard-Medium.otf in Resources */,
 				04D5482F2DDB66A9003EEC85 /* Splash.storyboard in Resources */,
-				7FB0B6022DDCBC8100ED14A8 /* AppSecret.xcconfig in Resources */,
 				04D548322DDB66A9003EEC85 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
