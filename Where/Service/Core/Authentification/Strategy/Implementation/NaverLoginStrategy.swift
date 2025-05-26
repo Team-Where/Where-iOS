@@ -14,12 +14,7 @@ final class NaverLoginStrategy: NSObject {
     
     override init() {
         super.init()
-        _configureNaverAPI()
-    }
-    
-    private func _configureNaverAPI() {
-        NidOAuth.shared.initialize()
-        NidOAuth.shared.setLoginBehavior(.appPreferredWithInAppBrowserFallback)
+        naverAPI.configure()
     }
     
 }
@@ -57,6 +52,12 @@ protocol NaverLoginPublishable {
 }
 
 extension NaverLoginPublishable {
+    func configure() {
+        NidOAuth.shared.initialize()
+        NidOAuth.shared.setLoginBehavior(.appPreferredWithInAppBrowserFallback)
+    }
+    
+    
     func handleURL(_ url: URL) {
         _ = NidOAuth.shared.handleURL(url)
     }
