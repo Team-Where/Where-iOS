@@ -30,7 +30,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func loginWithNaver()
     
     /// 자체 로그인
-    func login(email: String, password: String)
+    func login(email: String, password: String) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 로그아웃
     func logout()
@@ -306,17 +306,19 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .store(in: cancellableBag, key: #function)
     }
     
-    func login(email: String, password: String) {
+    func login(email: String, password: String) -> AnyPublisher<Void, AuthentificationCoreError> {
         let dto = LoginDTO.Request(email: email, password: password)
         
-        cancellableBag[#function] = apiService.requestPublisher(Endpoint.login(dto: dto), LoginDTO.Response.self)
+        return apiService.requestPublisher(Endpoint.login(dto: dto), LoginDTO.Response.self)
             .handleEvents(receiveOutput: { [weak self] response in
                 self?.readUserInfo(userID: response.userID)
-            })
-            .sink { [weak self] completion in
+            }, receiveCompletion: { [weak self] completion in
                 guard case .failure = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
-            } receiveValue: { _ in }
+            })
+            .map { _ in }
+            .mapError { AuthentificationCoreError.networkRequestFailed($0) }
+            .eraseToAnyPublisher()
     }
     
     func logout() {
