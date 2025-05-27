@@ -75,9 +75,9 @@ struct CreateMeetingView: View {
     @ViewBuilder private func content(_ step: MeetingCreationStep) -> some View {
         switch step {
         case .basicInformation:
-            BasicInformationView(resolver: resolver)
+            BasicInformationView(viewModel: viewModel)
         case .inviteFriends:
-            InvitationView(resolver: resolver)
+            InvitationView(viewModel: viewModel)
         }
     }
 }
@@ -97,8 +97,8 @@ extension CreateMeetingView {
         @ObservedObject private var viewModel: CreateMeetingViewModel
         @FocusState private var isFocused: TextFieldFocusState?
         
-        init(resolver: Resolver) {
-            self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
+        init(viewModel: CreateMeetingViewModel) {
+            self.viewModel = viewModel
         }
         
         var body: some View {
@@ -238,8 +238,8 @@ extension CreateMeetingView {
     struct InvitationView: View {
         @ObservedObject private var viewModel: CreateMeetingViewModel
         
-        init(resolver: Resolver) {
-            self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
+        init(viewModel: CreateMeetingViewModel) {
+            self.viewModel = viewModel
         }
         
         var body: some View {
@@ -255,6 +255,7 @@ extension CreateMeetingView {
                 
                 Button {
                     viewModel.setInvitedFriends()
+                    
                 } label: {
                     Text("다음")
                         .whereFont(.body16medium)
