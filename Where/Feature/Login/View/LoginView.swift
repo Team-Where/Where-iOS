@@ -118,7 +118,6 @@ struct LoginView: View {
             willDisappear?()
             dismiss()
         }
-        .onAppear(perform: viewModel.onAppear)
     }
     
     private var backButton: some View {
