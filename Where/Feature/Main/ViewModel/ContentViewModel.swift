@@ -65,13 +65,13 @@ extension ContentViewModel {
         case friendsList
     }
     
-    /// 메인(루트) 화면에서 라우팅 가능한 풀스크린커버의 종류
-    enum FullScreenCoverType: Identifiable {
-        /// 모임 생성 완료 화면
-        case completeCreation(Meeting)
-        
-        var id: String { String(describing: self) }
-    }
+}
+/// 메인(루트) 화면에서 라우팅 가능한 풀스크린커버의 종류
+enum FullScreenCoverType: Identifiable {
+    /// 모임 생성 완료 화면
+    case completeCreation(Meeting)
+    
+    var id: String { String(describing: self) }
 }
 
 // MARK: - Interfaces

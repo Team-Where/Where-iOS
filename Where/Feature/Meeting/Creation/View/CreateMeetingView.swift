@@ -16,13 +16,18 @@ struct CreateMeetingView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: CreateMeetingViewModel
     
+    @Binding var isSheetPresented: Bool
+    @Binding var isFullScreenPresented: FullScreenCoverType?
+    
     private let resolver: Resolver
     
-    init(resolver: Resolver) {
+    init(resolver: Resolver, isPresented: Binding<Bool>, isFullScreenPresented: Binding<FullScreenCoverType?>) {
         self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
         self.resolver = resolver
+        self._isSheetPresented = isPresented
+        self._isFullScreenPresented = isFullScreenPresented
     }
-    
+
     var body: some View {
         VStack {
             dismissButton
@@ -255,7 +260,7 @@ extension CreateMeetingView {
                 
                 Button {
                     viewModel.setInvitedFriends()
-                    
+                    viewModel.createMeeting()
                 } label: {
                     Text("다음")
                         .whereFont(.body16medium)
@@ -384,8 +389,8 @@ extension CreateMeetingView.InvitationView {
     }
 }
 
-#Preview {
-    NavigationStack {
-        CreateMeetingView(resolver: PreviewHelper.shared.resolver)
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        CreateMeetingView(resolver: PreviewHelper.shared.resolver)
+//    }
+//}

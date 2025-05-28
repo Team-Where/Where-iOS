@@ -54,7 +54,7 @@ struct ContentView: View {
             viewModel.onChange(newTab)
         }
         .sheet(isPresented: $viewModel.isCreateMeetingSheetPresented) {
-            CreateMeetingView(resolver: resolver)
+            CreateMeetingView(resolver: resolver, isPresented: $viewModel.isCreateMeetingSheetPresented,isFullScreenPresented: $viewModel.fullScreenCoverType)
                 .presentationCornerRadius(24)
                 .presentationDetents([.fraction(0.99)])
         }
