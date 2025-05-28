@@ -82,6 +82,13 @@ final class CreateMeetingViewModel: ObservableObject {
                 self?.friendsDataSource = dataSource
             }
             .store(in: cancellableBag, key: "Friends")
+        
+        meetingCore.createdMeeting
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.viewRoutingSubject.send((false, .completeCreation($0)))
+            }
+            .store(in: cancellableBag, key: "CreatedMeeting")
     }
 }
 
@@ -143,12 +150,17 @@ extension CreateMeetingViewModel {
     }
     
     func setBasicInfo() {
-        tempMeetingInfo = tempMeetingInfo?.setBasicInfo(title: titleFieldText, description: descriptionFieldText, image: selectedImage)
+        tempMeetingInfo = TemporaryMeetingInfo(title: titleFieldText,
+                                               description: descriptionFieldText,
+                                               participants: selectedParticipantIDs.map { $0 },
+                                               imageData: selectedImage)
         step = .inviteFriends
     }
     
     func setInvitedFriends() {
-        tempMeetingInfo = tempMeetingInfo?.setInvitedFriends(selectedParticipantIDs.sorted())
+        if !selectedParticipantIDs.isEmpty {
+            tempMeetingInfo = tempMeetingInfo?.setInvitedFriends(selectedParticipantIDs.sorted())
+        }
     }
     
     func toggleInvitationState(for friendID: UInt64) {
@@ -170,6 +182,22 @@ extension CreateMeetingViewModel {
     }
     
     func createMeeting() {
-        guard let tempMeeting = tempMeetingInfo else { return }
+        guard let tempMeeting = tempMeetingInfo
+        else {
+            return
+        }
+        meetingCore.createMeeting(info: tempMeeting)
+            .sink { completion in
+                switch completion {
+                case .finished: return
+                case .failure(let error):
+                    #if DEBUG
+                    print("\(#function) Error: \(error)")
+                    #endif
+                }
+            } receiveValue: { _ in
+
+            }
+            .store(in: cancellableBag, key: "\(#function)")
     }
 }
