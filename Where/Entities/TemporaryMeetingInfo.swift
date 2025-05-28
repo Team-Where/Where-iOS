@@ -14,7 +14,7 @@ struct TemporaryMeetingInfo {
     /// 모임 설명
     let description: String
     /// 초대받는 인원들의 식별자
-    let participants: [UInt64]
+    let participants: [UInt64]?
     /// 모임 대표 이미지
     let imageData: Data?
     
