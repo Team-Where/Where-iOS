@@ -46,6 +46,14 @@ struct CreateMeetingView: View {
                 viewModel.selectedImage = imageData
             }
         }
+        .onAppear {
+            viewModel.viewRoutingPublisher
+                .sink {
+                    isSheetPresented = $0.sheet
+                    isFullScreenPresented = $0.cover
+                }
+                .store(in: viewModel.cancellableBag, key: #function)
+        }
     }
     
     private var dismissButton: some View {

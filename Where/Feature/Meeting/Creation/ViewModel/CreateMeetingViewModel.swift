@@ -22,11 +22,15 @@ final class CreateMeetingViewModel: ObservableObject {
     @Published private(set) var friendsDataSource = [FriendCellDataSource]()
     @Published private(set) var selectedParticipantIDs = Set<UInt64>()
     
+    let cancellableBag = CancellableBag()
     var disabled: Bool { titleFieldText.isEmpty }
+    var viewRoutingPublisher: AnyPublisher<(sheet: Bool, cover: FullScreenCoverType), Never> { viewRoutingSubject.eraseToAnyPublisher() }
+    
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
-    private let cancellableBag = CancellableBag()
+    
+    private let viewRoutingSubject = PassthroughSubject<(sheet: Bool, cover: FullScreenCoverType), Never>()
     
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
