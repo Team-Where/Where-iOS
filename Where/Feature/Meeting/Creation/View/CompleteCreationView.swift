@@ -30,12 +30,13 @@ struct CompleteCreationView: View {
                 AsyncImage(url: meeting.imageURL) { phase in
                     switch phase {
                     case .empty:
-                        ProgressView()
+                        Image(.defaultCover)
                             .frame(width: 154, height: 154)
                             .background {
                                 RoundedRectangle(cornerRadius: 16)
                                     .fill(.where(.gray200))
                             }
+                        
                     case .success(let image):
                         image
                             .frame(width: 154, height: 154)
