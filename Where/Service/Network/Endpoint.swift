@@ -321,9 +321,7 @@ extension Endpoint: TargetType {
         case .createMeeting(let encodedMeetingData, let imageData):
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(encodedMeetingData), name: "data", mimeType: "application/json"))
-            if let imageData = imageData {
-                formData.append(.init(provider: .data(imageData), name: "image"))
-            }
+            formData.append(.init(provider: .data(imageData ?? Data()), name: "image",fileName: UUID().uuidString))
             return .uploadMultipart(formData)
         case .updateMeeting(let encodedMeetingData, let imageData):
             var formData = [MultipartFormData]()
