@@ -9,13 +9,11 @@ import Foundation
 import Combine
 import Swinject
 
-final class MyMeetingViewModel: ObservableObject {
-    @Published var sortType: MeetingSortType = .created
-    @Published var isMeetingInformationViewPresented = false
-    @Published var isLoginNeeded: Bool = false
-    @Published var isSideMenuPresented: Bool = false
-    @Published var isRegistrationNeeded = false
-    @Published var meetings: [Meeting] = []
+@Observable
+final class MyMeetingViewModel {
+    private(set) var sortType: MeetingSortType = .created
+    private(set) var isRegistrationNeeded: Bool = false
+    var meetings: [Meeting] = []
     
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
@@ -36,27 +34,11 @@ final class MyMeetingViewModel: ObservableObject {
             }
             .store(in: cancellableBag, key: "Meetings")
         
-        $sortType
-            .dropFirst()
-            .sink { [weak self] type in
-                self?.sortMeetings(by: type)
-            }
-            .store(in: cancellableBag, key: "SortType")
-        
         authCore.authentificationState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
-                switch state {
-                case .loginCompleted:
-                    self?.isLoginNeeded = false
-                    
-                case .registrationNeeded:
-                    self?.isLoginNeeded = false
-                    self?.isRegistrationNeeded = true
-                    
-                case .loginNeeded:
-                    break
-                }
+                guard case .registrationNeeded = state else { return }
+                self?.isRegistrationNeeded = true
             }
             .store(in: cancellableBag, key: "AuthentificationState")
     }
@@ -73,19 +55,8 @@ final class MyMeetingViewModel: ObservableObject {
 
 // MARK: Interfaces
 extension MyMeetingViewModel {
-    func toggleSideMenuPresentation() {
-        isSideMenuPresented.toggle()
-    }
-    
-    func presentLoginView() {
-        isLoginNeeded = true
-    }
-    
     func selectSortType(for type: MeetingSortType) {
         sortType = type
-    }
-    
-    func routeToMeetingInformationView(meeting: Meeting) {
-        isMeetingInformationViewPresented = true
+        sortMeetings(by: type)
     }
 }

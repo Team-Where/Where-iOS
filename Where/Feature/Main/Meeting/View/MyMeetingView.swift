@@ -9,10 +9,12 @@ import SwiftUI
 import Swinject
 
 struct MyMeetingView: View {
-    @ObservedObject private var viewModel: MyMeetingViewModel
+    @State private var isSideMenuPresented: Bool = false
+    @State private var isRegistrationNeeded: Bool = false
     
-    private let onLoginButtonTapped: () -> Void
+    private let viewModel: MyMeetingViewModel
     private let resolver: Resolver
+    private let onLoginButtonTapped: () -> Void
     
     init(
         resolver: Resolver,
@@ -39,9 +41,9 @@ struct MyMeetingView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .allowsHitTesting(viewModel.isSideMenuPresented == false)
-            .sideMenu(isPresented: $viewModel.isSideMenuPresented) {
-                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver, onLoginButtonTapped: onLoginButtonTapped)
+            .allowsHitTesting(isSideMenuPresented == false)
+            .sideMenu(isPresented: $isSideMenuPresented) {
+                SideMenuContentView($isSideMenuPresented, resolver: resolver, onLoginButtonTapped: onLoginButtonTapped)
             }
         }
         .overlay(alignment: .bottom) {
@@ -58,17 +60,18 @@ struct MyMeetingView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     withAnimation {
-                        viewModel.toggleSideMenuPresentation()
+                        isSideMenuPresented.toggle()
                     }
                 } label: {
-                    Image(systemName: viewModel.isSideMenuPresented ? "xmark" : "line.3.horizontal")
+                    Image(systemName: isSideMenuPresented ? "xmark" : "line.3.horizontal")
                         .foregroundStyle(.black)
                 }
             }
         }
-        .navigationDestination(isPresented: $viewModel.isRegistrationNeeded) {
-            ProfileCreationView($viewModel.isRegistrationNeeded, resolver: resolver)
+        .navigationDestination(isPresented: $isRegistrationNeeded) {
+            ProfileCreationView($isRegistrationNeeded, resolver: resolver)
         }
+        .onChange(of: viewModel.isRegistrationNeeded, onAuthentificationStateChange)
     }
     
     private var header: some View {
@@ -150,54 +153,61 @@ struct MyMeetingView: View {
     }
     
     @ViewBuilder private func meetingCell(_ meeting: Meeting) -> some View {
-        VStack(spacing: 12) {
-            AsyncImage(url: meeting.imageURL) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(.rect(cornerRadius: 10))
-                    .frame(width: 170, height: 170)
-            } placeholder: {
-                Image(.defaultCover)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(.rect(cornerRadius: 10))
-                    .frame(width: 170, height: 170)
-            }
-            .brightness(meeting.isFinished ? -0.5 : 0)
-            .overlay {
-                if meeting.isFinished {
-                    Text("종료된 모임")
-                        .whereFont(.caption12regular)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(
-                            RoundedRectangle(cornerRadius: 17)
-                                .fill(.accent)
-                        )
+        NavigationLink(value: meeting) {
+            VStack(spacing: 12) {
+                AsyncImage(url: meeting.imageURL) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(.rect(cornerRadius: 10))
+                        .frame(width: 170, height: 170)
+                } placeholder: {
+                    Image(.defaultCover)
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(.rect(cornerRadius: 10))
+                        .frame(width: 170, height: 170)
                 }
-            }
-            
-            HStack {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(meeting.title)
-                        .whereFont(.body16medium)
-                    
-                    DateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
-                        .whereFont(.body14regular)
-                        .foregroundStyle(.where(.gray500))
+                .brightness(meeting.isFinished ? -0.5 : 0)
+                .overlay {
+                    if meeting.isFinished {
+                        Text("종료된 모임")
+                            .whereFont(.caption12regular)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(
+                                RoundedRectangle(cornerRadius: 17)
+                                    .fill(.accent)
+                            )
+                    }
                 }
-                .opacity(meeting.isFinished ? 0.5 : 1)
                 
-                Spacer()
+                HStack {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(meeting.title)
+                            .whereFont(.body16medium)
+                        
+                        DateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
+                            .whereFont(.body14regular)
+                            .foregroundStyle(.where(.gray500))
+                    }
+                    .opacity(meeting.isFinished ? 0.5 : 1)
+                    
+                    Spacer()
+                }
+                .frame(maxWidth: 170)
             }
-            .frame(maxWidth: 170)
+            .padding(.bottom, 20)
         }
-        .padding(.bottom, 20)
-        .onTapGesture {
-            viewModel.routeToMeetingInformationView(meeting: meeting)
-        }
+    }
+}
+
+// MARK: - Methods
+private extension MyMeetingView {
+    func onAuthentificationStateChange(_ : Bool, _ isRegistrationNeeded: Bool) {
+        print("프로필 설정 필요 여부: \(isRegistrationNeeded)")
+        self.isRegistrationNeeded = isRegistrationNeeded
     }
 }
 
