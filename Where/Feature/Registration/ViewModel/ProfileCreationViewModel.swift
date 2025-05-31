@@ -9,45 +9,14 @@ import Foundation
 import Combine
 import Swinject
 
-final class ProfileCreationViewModel: ObservableObject {
-    @Published var profileImageData: Data?
-    @Published var nicknameFieldText: String = String()
-    @Published var isPopupPresented: Bool = false
-    @Published var isCompleted: Bool = false
-    @Published var socialUser: User?
-    @Published var isFloaterPresented: Bool = false
-    
-    @Published private(set) var nicknameValidationState: NicknameValidationState = .beforeValidate
-    @Published private(set) var profileCreationStep: ProfileCreationStep = .profile
-    @Published private(set) var isProcessing: Bool = false
-    
-    var navigationTitle: String {
-        switch profileCreationStep {
-        case .profile:
-            "프로필을 설정해주세요"
-        case .completed:
-            "\(nicknameFieldText)님,\n회원가입을 축하합니다!"
-        }
-    }
-    
-    var isProceedButtonDisabled: Bool {
-        switch profileCreationStep {
-        case .profile: return nicknameValidationState != .valid
-        case .completed: return false
-        }
-    }
-    
-    var proceedButtonLabel: String {
-        profileCreationStep == .completed ? "완료" : "다음"
-    }
-    
-    var nicknameValidationNotice: String {
-        switch nicknameValidationState {
-        case .valid: "사용 가능한 닉네임입니다."
-        case .invalid, .beforeValidate: "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다."
-        case .duplicated: "이미 사용 중인 닉네임입니다."
-        }
-    }
+@Observable
+final class ProfileCreationViewModel {
+    private(set) var socialUser: User?
+    private(set) var profileImageData: Data?
+    private(set) var isProcessing: Bool = false
+    private(set) var isErrorOccured: Bool = false
+    private(set) var profileCreationStep: ProfileCreationStep = .profile
+    private(set) var nicknameValidationState: NicknameValidationState = .beforeValidate
     
     private let authCore: AuthentificationCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -58,26 +27,6 @@ final class ProfileCreationViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        $nicknameFieldText
-            .removeDuplicates()
-            .sink { [weak self] nickname in
-                guard nickname.isEmpty == false else {
-                    self?.nicknameValidationState = .beforeValidate
-                    return
-                }
-                
-                guard nickname.isValidNickname() else {
-                    self?.nicknameValidationState = .invalid
-                    return
-                }
-                
-                // TODO: 닉네임 중복 검사 (WIP)
-                
-                
-                self?.nicknameValidationState = .valid
-            }
-            .store(in: cancellableBag, key: "NicknameFieldText")
-        
         authCore.authentificationState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
@@ -86,34 +35,43 @@ final class ProfileCreationViewModel: ObservableObject {
             }
             .store(in: cancellableBag, key: "AuthentificationState")
     }
+}
+
+// MARK: - Interfaces
+extension ProfileCreationViewModel {
+    func validateNickname(_ nickname: String) {
+        guard nickname.isEmpty == false else {
+            nicknameValidationState = .beforeValidate
+            return
+        }
+        
+        guard nickname.isValidNickname() else {
+            nicknameValidationState = .invalid
+            return
+        }
+        
+        nicknameValidationState = .valid
+    }
     
-    private func setUpProfile(_ user: User) {
+    func setImageData(_ data: Data?) {
+        profileImageData = data
+    }
+    
+    func setUpProfile(_ nickname: String) {
         isProcessing = true
-        cancellableBag[#function] = authCore.setUpProfile(nicknameFieldText, profileImageData)
+        authCore.setUpProfile(nickname, profileImageData)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 self?.isProcessing = false
                 
                 switch completion {
-                case .finished: self?.profileCreationStep = .completed
-                case .failure: self?.isFloaterPresented = true
+                case .finished:
+                    self?.isErrorOccured = false
+                    self?.profileCreationStep = .completed
+                case .failure:
+                    self?.isErrorOccured = true
                 }
             } receiveValue: { _ in }
-    }
-}
-
-// MARK: - Interfaces
-extension ProfileCreationViewModel {
-    func proceed() {
-        guard isProceedButtonDisabled == false else { return }
-        
-        switch profileCreationStep {
-        case .profile:
-            guard let user = socialUser else { return }
-            setUpProfile(user)
-            
-        case .completed:
-            isCompleted = true
-        }
+            .store(in: cancellableBag, key: #function)
     }
 }

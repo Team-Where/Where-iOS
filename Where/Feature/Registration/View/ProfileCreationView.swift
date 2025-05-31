@@ -9,9 +9,41 @@ import SwiftUI
 import Swinject
 
 struct ProfileCreationView: View {
-    @ObservedObject private var viewModel: ProfileCreationViewModel
     @Binding var isRegistrationNeeded: Bool
     @FocusState private var isFocused: Bool
+    @State private var nicknameFieldText = String()
+    @State private var isPopupPresented: Bool = false
+    @State private var isFloaterPresented: Bool = false
+    
+    private var navigationTitle: String {
+        switch viewModel.profileCreationStep {
+        case .profile:
+            "프로필을 설정해주세요"
+        case .completed:
+            "\(nicknameFieldText)님,\n회원가입을 축하합니다!"
+        }
+    }
+    
+    private var isProceedButtonDisabled: Bool {
+        switch viewModel.profileCreationStep {
+        case .profile: return viewModel.nicknameValidationState != .valid
+        case .completed: return false
+        }
+    }
+    
+    private var proceedButtonLabel: String {
+        viewModel.profileCreationStep == .completed ? "완료" : "다음"
+    }
+    
+    private var nicknameValidationNotice: String {
+        switch viewModel.nicknameValidationState {
+        case .valid: "사용 가능한 닉네임입니다."
+        case .invalid, .beforeValidate: "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다."
+        case .duplicated: "이미 사용 중인 닉네임입니다."
+        }
+    }
+    
+    private let viewModel: ProfileCreationViewModel
     
     init(
         _ isRegistrationNeeded: Binding<Bool>,
@@ -24,30 +56,26 @@ struct ProfileCreationView: View {
     var body: some View {
         content()
             .toolbar(.hidden, for: .tabBar)
-            .whereForm(viewModel.navigationTitle) {
+            .whereForm(navigationTitle) {
                 Button {
-                    viewModel.proceed()
+                    proceed()
                 } label: {
                     if viewModel.isProcessing {
                         ProgressView()
                     } else {
-                        Text(viewModel.proceedButtonLabel)
+                        Text(proceedButtonLabel)
                             .whereFont(.body16semibold)
                             .frame(width: 350, height: 48)
                     }
                 }
-                .buttonStyle(.whereRoundedProminent(disabled: viewModel.isProceedButtonDisabled))
+                .buttonStyle(.whereRoundedProminent(disabled: isProceedButtonDisabled))
                 .ignoresSafeArea(.keyboard)
                 .disabled(viewModel.isProcessing)
             }
-            .popup($viewModel.isPopupPresented) {
-                ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { data in
-                    viewModel.profileImageData = data
+            .popup($isPopupPresented) {
+                ImageSelectionPopupView(isPopupPresented: $isPopupPresented) { data in
+                    viewModel.setImageData(data)
                 }
-            }
-            .onChange(of: viewModel.isCompleted) { _, isCompleted in
-                guard isCompleted else { return }
-                isRegistrationNeeded = false
             }
     }
     
@@ -81,7 +109,7 @@ struct ProfileCreationView: View {
                     
                     Button {
                         withAnimation {
-                            viewModel.isPopupPresented = true
+                            isPopupPresented = true
                         }
                     } label: {
                         Image("CameraButton")
@@ -96,7 +124,8 @@ struct ProfileCreationView: View {
                 nicknameCell()
             }
             .scrollDismissesKeyboard(.immediately)
-            .floater($viewModel.isFloaterPresented, title: "프로필 설정이 완료되지 않았어요.")
+            .floater($isFloaterPresented, title: "프로필 설정이 완료되지 않았어요.")
+            .onChange(of: viewModel.isErrorOccured, onErrorOccured)
         case .completed:
             VStack {
                 Image("SignUpCharacter")
@@ -117,7 +146,7 @@ struct ProfileCreationView: View {
             
             RoundedTextField(
                 "닉네임을 입력해주세요",
-                text: $viewModel.nicknameFieldText,
+                text: $nicknameFieldText,
                 lineColor: textFieldLineColor(isFocused)
             )
             .foregroundStyle(Color(hex: 0x6B7280))
@@ -134,22 +163,47 @@ struct ProfileCreationView: View {
                     }
                 }
             )
+            .onChange(of: nicknameFieldText, onNicknameChange)
             
-            Text(viewModel.nicknameValidationNotice)
+            Text(nicknameValidationNotice)
                 .whereFont(.body14regular)
                 .foregroundColor(nicknameValidationNoticeColor())
                 .padding(.top, 8)
         }
     }
+}
+
+// MARK: - Methods
+private extension ProfileCreationView {
+    func proceed() {
+        guard isProceedButtonDisabled == false else { return }
+        
+        switch viewModel.profileCreationStep {
+        case .profile:
+            viewModel.setUpProfile(nicknameFieldText)
+        case .completed:
+            isRegistrationNeeded = false
+        }
+    }
     
-    private func textFieldLineColor(_ isFocused: Bool) -> Color {
+    func onNicknameChange(_ before: String, _ after: String) {
+        guard before != after else { return }
+        viewModel.validateNickname(after)
+    }
+    
+    func onErrorOccured(_ : Bool, _ isErrorOccured: Bool) {
+        guard isErrorOccured else { return }
+        isFloaterPresented = true
+    }
+    
+    func textFieldLineColor(_ isFocused: Bool) -> Color {
         let isInvalid = viewModel.nicknameValidationState == .duplicated || viewModel.nicknameValidationState == .invalid
         
         guard isInvalid == false else { return .red }
         return isFocused ? .accent : Color(hex: 0xE5E7EB)
     }
     
-    private func nicknameValidationNoticeColor() -> Color {
+    func nicknameValidationNoticeColor() -> Color {
         switch viewModel.nicknameValidationState {
         case .valid: .green
         case .beforeValidate: .where(.gray700)
