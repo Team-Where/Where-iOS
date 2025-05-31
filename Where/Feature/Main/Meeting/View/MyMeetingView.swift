@@ -206,8 +206,9 @@ struct MyMeetingView: View {
 // MARK: - Methods
 private extension MyMeetingView {
     func onAuthentificationStateChange(_ : Bool, _ isRegistrationNeeded: Bool) {
-        print("프로필 설정 필요 여부: \(isRegistrationNeeded)")
-        self.isRegistrationNeeded = isRegistrationNeeded
+        guard isRegistrationNeeded else { return }
+        let work = DispatchWorkItem { self.isRegistrationNeeded = isRegistrationNeeded }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
 }
 
