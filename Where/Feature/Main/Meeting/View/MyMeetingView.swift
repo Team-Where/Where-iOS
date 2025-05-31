@@ -10,18 +10,17 @@ import Swinject
 
 struct MyMeetingView: View {
     @ObservedObject private var viewModel: MyMeetingViewModel
-    @Binding var isLoginNeeded: Bool
     
+    private let onLoginButtonTapped: () -> Void
     private let resolver: Resolver
     
     init(
-        _ isLoginNeeded: Binding<Bool>,
-        resolver: Resolver
+        resolver: Resolver,
+        onLoginButtonTapped: @escaping () -> Void
     ) {
-        self._isLoginNeeded = isLoginNeeded
         self.viewModel = resolver.resolve(MyMeetingViewModel.self)!
         self.resolver = resolver
-        self.viewModel.isLoginNeeded = isLoginNeeded.wrappedValue
+        self.onLoginButtonTapped = onLoginButtonTapped
     }
     
     var body: some View {
@@ -42,7 +41,7 @@ struct MyMeetingView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .allowsHitTesting(viewModel.isSideMenuPresented == false)
             .sideMenu(isPresented: $viewModel.isSideMenuPresented) {
-                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver, onLoginButtonTapped: viewModel.presentLoginView)
+                SideMenuContentView($viewModel.isSideMenuPresented, resolver: resolver, onLoginButtonTapped: onLoginButtonTapped)
             }
         }
         .overlay(alignment: .bottom) {

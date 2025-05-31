@@ -78,8 +78,8 @@ struct SideMenuContentView: View {
                 
                 Button {
                     if viewModel.isLoginNeeded {
-                        onLoginButtonTapped()
                         isSideMenuPresented = false
+                        onLoginButtonTapped()
                     } else {
                         navigationType = .editProfile
                     }
