@@ -54,35 +54,39 @@ struct ProfileCreationView: View {
     }
     
     var body: some View {
-        content()
-            .toolbar(.hidden, for: .tabBar)
-            .whereForm(navigationTitle) {
-                Button {
-                    proceed()
-                } label: {
-                    if viewModel.isProcessing {
-                        ProgressView()
-                    } else {
-                        Text(proceedButtonLabel)
-                            .whereFont(.body16semibold)
-                            .frame(width: 350, height: 48)
-                    }
-                }
-                .buttonStyle(.whereRoundedProminent(disabled: isProceedButtonDisabled))
-                .ignoresSafeArea(.keyboard)
-                .disabled(viewModel.isProcessing)
-            }
-            .popup($isPopupPresented) {
-                ImageSelectionPopupView(isPopupPresented: $isPopupPresented) { data in
-                    viewModel.setImageData(data)
+        ScrollView(.vertical) {
+            content()
+        }
+        .toolbar(.hidden, for: .tabBar)
+        .whereForm(navigationTitle) {
+            Button {
+                proceed()
+            } label: {
+                if viewModel.isProcessing {
+                    ProgressView()
+                } else {
+                    Text(proceedButtonLabel)
+                        .whereFont(.body16semibold)
+                        .frame(width: 350, height: 48)
                 }
             }
+            .buttonStyle(.whereRoundedProminent(disabled: isProceedButtonDisabled))
+            .ignoresSafeArea(.keyboard)
+            .disabled(viewModel.isProcessing)
+        }
+        .popup($isPopupPresented) {
+            ImageSelectionPopupView(isPopupPresented: $isPopupPresented) { data in
+                viewModel.setImageData(data)
+            }
+        }
+        .scrollDismissesKeyboard(.immediately)
+        .onChange(of: viewModel.isErrorOccured, onErrorOccured)
     }
     
     @ViewBuilder private func content() -> some View {
         switch viewModel.profileCreationStep {
         case .profile:
-            ScrollView(.vertical) {
+            VStack {
                 ZStack(alignment: .bottomTrailing) {
                     if let data = viewModel.profileImageData,
                        let uiImage = UIImage(data: data) {
@@ -123,9 +127,7 @@ struct ProfileCreationView: View {
                 
                 nicknameCell()
             }
-            .scrollDismissesKeyboard(.immediately)
             .floater($isFloaterPresented, title: "프로필 설정이 완료되지 않았어요.")
-            .onChange(of: viewModel.isErrorOccured, onErrorOccured)
         case .completed:
             VStack {
                 Image("SignUpCharacter")
