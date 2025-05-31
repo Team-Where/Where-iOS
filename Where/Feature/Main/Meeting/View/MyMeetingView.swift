@@ -70,19 +70,6 @@ struct MyMeetingView: View {
         .navigationDestination(isPresented: $viewModel.isRegistrationNeeded) {
             ProfileCreationView($viewModel.isRegistrationNeeded, resolver: resolver)
         }
-        .fullScreenCover(isPresented: $viewModel.isLoginNeeded) {
-            LoginView(resolver: resolver)
-        }
-        .onChange(of: isLoginNeeded) { _, newValue in
-            if viewModel.isLoginNeeded != newValue {
-                viewModel.isLoginNeeded = newValue
-            }
-        }
-        .onChange(of: viewModel.isLoginNeeded) { _, newValue in
-            if isLoginNeeded != newValue {
-                isLoginNeeded = newValue
-            }
-        }
     }
     
     private var header: some View {

@@ -41,6 +41,8 @@ struct CreateMeetingView: View {
                 viewModel.selectedImage = imageData
             }
         }
+        .presentationCornerRadius(24)
+        .presentationDetents([.fraction(0.99)])
     }
     
     private var dismissButton: some View {
