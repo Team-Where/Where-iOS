@@ -148,7 +148,10 @@ private extension ContentView {
     }
     
     func onAuthentificationStateChange(_ : Bool, _ isLoginNeeded: Bool) {
-        guard isLoginNeeded else { return }
+        guard isLoginNeeded else {
+            if case .login = fullScreenCoverType { fullScreenCoverType = nil }
+            return
+        }
         fullScreenCoverType = .login
     }
     
