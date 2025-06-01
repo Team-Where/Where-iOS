@@ -13,8 +13,8 @@ fileprivate typealias TabItem = TabViewSelection.TabItem
 struct ContentView: View {
     @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     @StateObject private var tabViewSelection = TabViewSelection()
-    @State private var fullScreenCoverType: FullScreenCoverType?
-    @State private var sheetType: SheetType?
+    @State private var fullScreenCoverType: MainFullScreenCoverType?
+    @State private var sheetType: MainSheetType?
     @State private var isLoginNeededPopupPresented: Bool = false
     @State private var isRegistrationNeeded: Bool = false
     @State private var isLoginNeeded: Bool = false
@@ -62,7 +62,7 @@ struct ContentView: View {
         .sheet(item: $sheetType) { type in
             switch type {
             case .createMeeting:
-                CreateMeetingView(resolver: resolver)
+                CreateMeetingView(resolver: resolver, sheetType: $sheetType, fullScreenCoverType: $fullScreenCoverType)
             }
         }
         .fullScreenCover(item: $fullScreenCoverType) { type in
@@ -118,9 +118,9 @@ struct ContentView: View {
 }
 
 // MARK: - Nested Types
-private extension ContentView {
+//extension ContentView {
     /// 메인(루트) 화면에서 라우팅 가능한 풀스크린커버의 종류
-    enum FullScreenCoverType: Identifiable {
+    enum MainFullScreenCoverType: Identifiable {
         /// 모임 생성 완료 화면
         case completeCreation(Meeting)
         /// 로그인 화면
@@ -130,13 +130,13 @@ private extension ContentView {
     }
     
     /// 메인(루트) 화면에서 라우팅 가능한 시트의 종류
-    enum SheetType: Identifiable {
+    enum MainSheetType: Identifiable {
         /// 모임 생성 화면
         case createMeeting
         
         var id: String { String(describing: self) }
     }
-}
+//}
 
 // MARK: - Methods
 private extension ContentView {
