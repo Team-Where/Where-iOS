@@ -35,8 +35,9 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     
     private func subscribe() {
         meetingCore.invitationStatus
-            .map { [weak self] dict -> [MeetingInvitationState] in
-                guard let id = self?._meeting.id,
+            .combineLatest($_meeting)
+            .map { (dict, meeting) -> [MeetingInvitationState] in
+                guard let id = meeting?.id,
                       let states = dict[id]
                 else { return [] }
                 return states
