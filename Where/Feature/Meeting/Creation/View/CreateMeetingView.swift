@@ -12,20 +12,25 @@ fileprivate typealias MeetingCreationStep = CreateMeetingViewModel.MeetingCreati
 fileprivate typealias FloaterItem = CreateMeetingViewModel.FloaterItem
 fileprivate typealias FriendCellDataSource = CreateMeetingViewModel.FriendCellDataSource
 
+
 struct CreateMeetingView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: CreateMeetingViewModel
     
-    @Binding var isSheetPresented: Bool
-    @Binding var isFullScreenPresented: FullScreenCoverType?
+    @Binding private var sheetType: MainSheetType?
+    @Binding private var fullScreenCoverType: MainFullScreenCoverType?
     
     private let resolver: Resolver
     
-    init(resolver: Resolver, isPresented: Binding<Bool>, isFullScreenPresented: Binding<FullScreenCoverType?>) {
+    init(
+        resolver: Resolver,
+        sheetType: Binding<MainSheetType?>,
+        fullScreenCoverType: Binding<MainFullScreenCoverType?>
+    ) {
         self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
         self.resolver = resolver
-        self._isSheetPresented = isPresented
-        self._isFullScreenPresented = isFullScreenPresented
+        self._sheetType = sheetType
+        self._fullScreenCoverType = fullScreenCoverType
     }
 
     var body: some View {
@@ -49,8 +54,8 @@ struct CreateMeetingView: View {
         .onAppear {
             viewModel.viewRoutingPublisher
                 .sink {
-                    isSheetPresented = $0.sheet
-                    isFullScreenPresented = $0.cover
+                    sheetType = $0.sheet
+                    fullScreenCoverType = $0.cover
                 }
                 .store(in: viewModel.cancellableBag, key: #function)
         }

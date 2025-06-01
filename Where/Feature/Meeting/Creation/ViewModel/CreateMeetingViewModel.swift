@@ -24,13 +24,13 @@ final class CreateMeetingViewModel: ObservableObject {
     
     let cancellableBag = CancellableBag()
     var disabled: Bool { titleFieldText.isEmpty }
-    var viewRoutingPublisher: AnyPublisher<(sheet: Bool, cover: FullScreenCoverType), Never> { viewRoutingSubject.eraseToAnyPublisher() }
+    var viewRoutingPublisher: AnyPublisher<(sheet: MainSheetType?, cover: MainFullScreenCoverType), Never> { viewRoutingSubject.eraseToAnyPublisher() }
     
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
     
-    private let viewRoutingSubject = PassthroughSubject<(sheet: Bool, cover: FullScreenCoverType), Never>()
+    private let viewRoutingSubject = PassthroughSubject<(sheet: MainSheetType?, cover: MainFullScreenCoverType), Never>()
     
     init(resolver: Resolver) {
         self.communityCore = resolver.resolve(CommunityCoreProtocol.self)!
@@ -86,7 +86,7 @@ final class CreateMeetingViewModel: ObservableObject {
         meetingCore.createdMeeting
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                self?.viewRoutingSubject.send((false, .completeCreation($0)))
+                self?.viewRoutingSubject.send((nil, .completeCreation($0)))
             }
             .store(in: cancellableBag, key: "CreatedMeeting")
     }
