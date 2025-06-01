@@ -26,25 +26,23 @@ struct MyMeetingView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .trailing) {
-            VStack(alignment: .leading) {
-                header
-                
-                Spacer()
-                
-                if viewModel.meetings.isEmpty {
-                    unavailableView()
-                } else {
-                    meetingsSection()
-                }
-                
-                Spacer()
+        VStack(alignment: .leading) {
+            header
+            
+            Spacer()
+            
+            if viewModel.meetings.isEmpty {
+                unavailableView()
+            } else {
+                meetingsSection()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .allowsHitTesting(isSideMenuPresented == false)
-            .sideMenu(isPresented: $isSideMenuPresented) {
-                SideMenuContentView($isSideMenuPresented, resolver: resolver, onLoginButtonTapped: onLoginButtonTapped)
-            }
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .allowsHitTesting(isSideMenuPresented == false)
+        .sideMenu(isPresented: $isSideMenuPresented) {
+            SideMenuContentView($isSideMenuPresented, resolver: resolver, onLoginButtonTapped: onLoginButtonTapped)
         }
         .overlay(alignment: .bottom) {
             Divider()
