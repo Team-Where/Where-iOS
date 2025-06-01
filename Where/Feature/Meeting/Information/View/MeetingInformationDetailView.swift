@@ -108,10 +108,23 @@ struct MeetingInformationDetailView: View {
     
     private var header: some View {
         HStack {
-            AsyncImage(url: viewModel.meeting.imageURL)
-                .frame(width: 64, height: 64)
-                .clipShape(.rect(cornerRadius: 12))
-                .padding(.trailing, 10)
+            AsyncImage(url: viewModel.meeting.imageURL) { image in
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 64, height: 64)
+                    .clipShape(.rect(cornerRadius: 12))
+                    .padding(.trailing, 10)
+    
+            } placeholder: {
+                Image(.defaultCover)
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(.rect(cornerRadius: 12))
+                    .frame(width: 64, height: 64)
+                    .padding(.trailing, 10)
+            }
+
             
             VStack(alignment: .leading, spacing: 6) {
                 Text(viewModel.meeting.title)
