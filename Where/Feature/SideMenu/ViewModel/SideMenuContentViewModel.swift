@@ -9,9 +9,10 @@ import Foundation
 import Combine
 import Swinject
 
-final class SideMenuContentViewModel: ObservableObject {
-    @Published var user: User?
-    @Published var totalMeetingsCount = Int.zero
+@Observable
+final class SideMenuContentViewModel {
+    private(set) var user: User?
+    private(set) var totalMeetingsCount = Int.zero
     
     var isLoginNeeded: Bool { user == nil }
     
