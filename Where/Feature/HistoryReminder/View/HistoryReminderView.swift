@@ -12,10 +12,9 @@ fileprivate typealias MonthGroup = HistoryReminderViewModel.MonthGroup
 fileprivate typealias YearGroup = HistoryReminderViewModel.YearGroup
 
 struct HistoryReminderView: View {
-    @ObservedObject private var viewModel: HistoryReminderViewModel
-    
     private let user: User
     private let friend: FriendRelationship
+    private let viewModel: HistoryReminderViewModel
     private let resolver: Resolver
     
     init(
@@ -38,7 +37,7 @@ struct HistoryReminderView: View {
                 .frame(height: 8)
             
             ScrollView(.vertical) {
-                HistoryArea(resolver: resolver)
+                HistoryArea(viewModel.yearGroups, resolver)
             }
             .padding(.horizontal)
             .scrollIndicators(.hidden)
@@ -103,18 +102,20 @@ extension HistoryReminderView {
     }
     
     struct HistoryArea: View {
-        @ObservedObject private var viewModel: HistoryReminderViewModel
-        
+        private let yearGroups: [YearGroup]
         private let resolver: Resolver
         
-        init(resolver: Resolver) {
-            self.viewModel = resolver.resolve(HistoryReminderViewModel.self)!
+        fileprivate init(
+            _ yearGroups: [YearGroup],
+            _ resolver: Resolver
+        ) {
+            self.yearGroups = yearGroups
             self.resolver = resolver
         }
         
         var body: some View {
             LazyVStack {
-                ForEach(viewModel.yearGroups) { yearGroup in
+                ForEach(yearGroups) { yearGroup in
                     section(yearGroup)
                 }
             }
