@@ -12,7 +12,6 @@ import Swinject
 @Observable
 final class MyMeetingViewModel {
     private(set) var sortType: MeetingSortType = .created
-    private(set) var isRegistrationNeeded: Bool = false
     var meetings: [Meeting] = []
     
     private let authCore: AuthentificationCoreProtocol
@@ -33,16 +32,6 @@ final class MyMeetingViewModel {
                 self?.sortMeetings(by: self?.sortType ?? .scheduled)
             }
             .store(in: cancellableBag, key: "Meetings")
-        
-        authCore.authentificationState
-            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                guard case .registrationNeeded = state else { return }
-                self?.isRegistrationNeeded = true
-            }
-            .store(in: cancellableBag, key: "AuthentificationState")
     }
     
     private func sortMeetings(by type: MeetingSortType) {

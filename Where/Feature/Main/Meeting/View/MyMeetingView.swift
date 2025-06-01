@@ -10,7 +10,6 @@ import Swinject
 
 struct MyMeetingView: View {
     @State private var isSideMenuPresented: Bool = false
-    @State private var isRegistrationNeeded: Bool = false
     
     private let viewModel: MyMeetingViewModel
     private let resolver: Resolver
@@ -27,14 +26,14 @@ struct MyMeetingView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            header
+            Header($isSideMenuPresented, viewModel.sortType, viewModel.selectSortType)
             
             Spacer()
             
             if viewModel.meetings.isEmpty {
-                unavailableView()
+                UnavailableView()
             } else {
-                meetingsSection()
+                MeetingsView(viewModel.meetings, resolver)
             }
             
             Spacer()
@@ -47,171 +46,199 @@ struct MyMeetingView: View {
         .overlay(alignment: .bottom) {
             Divider()
         }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image("HomeLogo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 52, height: 24)
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation {
-                        isSideMenuPresented.toggle()
-                    }
-                } label: {
-                    Image(systemName: isSideMenuPresented ? "xmark" : "line.3.horizontal")
-                        .foregroundStyle(.black)
-                }
-            }
-        }
-        .navigationDestination(isPresented: $isRegistrationNeeded) {
-            ProfileCreationView($isRegistrationNeeded, resolver: resolver)
-        }
-        .onChange(of: viewModel.isRegistrationNeeded, onAuthentificationStateChange)
-    }
-    
-    private var header: some View {
-        HStack(alignment: .bottom) {
-            Text("내 모임")
-                .whereFont(.title24semibold)
-            
-            Spacer()
-            
-            Menu {
-                Button("시간순") { viewModel.selectSortType(for: .scheduled) }
-                Button("생성순") { viewModel.selectSortType(for: .created) }
-            } label: {
-                HStack {
-                    Text(viewModel.sortType == .scheduled ? "시간순" : "생성순")
-                    
-                    Image(systemName: "chevron.down")
-                        .resizable()
-                        .frame(width: 8, height: 4)
-                }
-                .whereFont(.body14medium)
-                .foregroundStyle(.where(.gray700))
-            }
-        }
-        .padding(.top, 40)
-        .padding(.horizontal)
-    }
-    
-    @ViewBuilder private func unavailableView() -> some View {
-        VStack {
-            Image("HomeCharacter")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 81.45, height: 87)
-            
-            Text("아직 모임이 없어요")
-                .whereFont(.body16regular)
-                .foregroundStyle(Color(hex: 0xADB5BD))
-                .padding(.top, 16)
-            
-            NavigationLink {
-                MeetingAdditionGuideView()
-            } label: {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 1)
-                        .frame(width: 144, height: 40)
-                        .padding(.horizontal)
-                    
-                    HStack(spacing: 8) {
-                        Image(systemName: "plus")
-                            .whereFont(.body16regular)
-                            .foregroundStyle(Color(hex: 0x4F46E5))
-                        
-                        Text("모임 추가 방법")
-                            .whereFont(.body16regular)
-                            .foregroundStyle(Color(hex: 0x4F46E5))
-                    }
-                }
-            }
-            .padding(.top, 20)
-        }
-        .frame(maxWidth: .infinity)
-    }
-    
-    @ViewBuilder private func meetingsSection() -> some View {
-        ScrollView(.vertical) {
-            FlowLayout(alignment: .topLeading) {
-                ForEach(viewModel.meetings) { meeting in
-                    meetingCell(meeting)
-                }
-            }
-        }
-        .scrollIndicators(.never)
-        .padding()
-        .navigationDestination(for: Meeting.self) { meeting in
-            MeetingInformationView(resolver: resolver, meetingID: meeting.id)
-        }
-    }
-    
-    @ViewBuilder private func meetingCell(_ meeting: Meeting) -> some View {
-        NavigationLink(value: meeting) {
-            VStack(spacing: 12) {
-                AsyncImage(url: meeting.imageURL) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(.rect(cornerRadius: 10))
-                        .frame(width: 170, height: 170)
-                } placeholder: {
-                    Image(.defaultCover)
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(.rect(cornerRadius: 10))
-                        .frame(width: 170, height: 170)
-                }
-                .brightness(meeting.isFinished ? -0.5 : 0)
-                .overlay {
-                    if meeting.isFinished {
-                        Text("종료된 모임")
-                            .whereFont(.caption12regular)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(
-                                RoundedRectangle(cornerRadius: 17)
-                                    .fill(.accent)
-                            )
-                    }
-                }
-                
-                HStack {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(meeting.title)
-                            .whereFont(.body16medium)
-                        
-                        DateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
-                            .whereFont(.body14regular)
-                            .foregroundStyle(.where(.gray500))
-                    }
-                    .opacity(meeting.isFinished ? 0.5 : 1)
-                    
-                    Spacer()
-                }
-                .frame(maxWidth: 170)
-            }
-            .padding(.bottom, 20)
-        }
     }
 }
 
-// MARK: - Methods
+// MARK: - Subviews
 private extension MyMeetingView {
-    func onAuthentificationStateChange(_ : Bool, _ isRegistrationNeeded: Bool) {
-        guard isRegistrationNeeded else { return }
-        let work = DispatchWorkItem { self.isRegistrationNeeded = isRegistrationNeeded }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
+    struct Header: View {
+        @Binding var isSideMenuPresented: Bool
+        let sortType: MeetingSortType
+        let onSelectSortType: (MeetingSortType) -> Void
+        
+        init(
+            _ isSideMenuPresented: Binding<Bool>,
+            _ sortType: MeetingSortType,
+            _ onSelectSortType: @escaping (MeetingSortType) -> Void
+        ) {
+            self._isSideMenuPresented = isSideMenuPresented
+            self.sortType = sortType
+            self.onSelectSortType = onSelectSortType
+        }
+        
+        var body: some View {
+            VStack {
+                HStack {
+                    Image("HomeLogo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 52, height: 24)
+                    
+                    Spacer()
+                    
+                    Button {
+                        withAnimation {
+                            isSideMenuPresented.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .foregroundStyle(.black)
+                    }
+                }
+                
+                HStack(alignment: .bottom) {
+                    Text("내 모임")
+                        .whereFont(.title24semibold)
+                    
+                    Spacer()
+                    
+                    Menu {
+                        Button("시간순") { onSelectSortType(.scheduled) }
+                        Button("생성순") { onSelectSortType(.created) }
+                    } label: {
+                        HStack {
+                            Text(sortType == .scheduled ? "시간순" : "생성순")
+                            
+                            Image(systemName: "chevron.down")
+                                .resizable()
+                                .frame(width: 8, height: 4)
+                        }
+                        .whereFont(.body14medium)
+                        .foregroundStyle(.where(.gray700))
+                    }
+                }
+                .padding(.top, 40)
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    struct UnavailableView: View {
+        var body: some View {
+            VStack {
+                Image("HomeCharacter")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 81.45, height: 87)
+                
+                Text("아직 모임이 없어요")
+                    .whereFont(.body16regular)
+                    .foregroundStyle(Color(hex: 0xADB5BD))
+                    .padding(.top, 16)
+                
+                NavigationLink {
+                    MeetingAdditionGuideView()
+                } label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.gray, lineWidth: 1)
+                            .frame(width: 144, height: 40)
+                            .padding(.horizontal)
+                        
+                        HStack(spacing: 8) {
+                            Image(systemName: "plus")
+                                .whereFont(.body16regular)
+                                .foregroundStyle(Color(hex: 0x4F46E5))
+                            
+                            Text("모임 추가 방법")
+                                .whereFont(.body16regular)
+                                .foregroundStyle(Color(hex: 0x4F46E5))
+                        }
+                    }
+                }
+                .padding(.top, 20)
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+    
+    struct MeetingsView: View {
+        let meetings: [Meeting]
+        let resolver: Resolver
+        
+        init(
+            _ meetings: [Meeting],
+            _ resolver: Resolver
+        ) {
+            self.meetings = meetings
+            self.resolver = resolver
+        }
+        
+        var body: some View {
+            ScrollView(.vertical) {
+                FlowLayout(alignment: .topLeading) {
+                    ForEach(meetings) { meeting in
+                        MeetingCell(meeting)
+                    }
+                }
+            }
+            .scrollIndicators(.never)
+            .padding()
+            .navigationDestination(for: Meeting.self) { meeting in
+                MeetingInformationView(resolver: resolver, meetingID: meeting.id)
+            }
+        }
+    }
+    
+    struct MeetingCell: View {
+        let meeting: Meeting
+        
+        init(_ meeting: Meeting) {
+            self.meeting = meeting
+        }
+        
+        var body: some View {
+            NavigationLink(value: meeting) {
+                VStack(spacing: 12) {
+                    AsyncImage(url: meeting.imageURL) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(.rect(cornerRadius: 10))
+                            .frame(width: 170, height: 170)
+                    } placeholder: {
+                        Image(.defaultCover)
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(.rect(cornerRadius: 10))
+                            .frame(width: 170, height: 170)
+                    }
+                    .brightness(meeting.isFinished ? -0.5 : 0)
+                    .overlay {
+                        if meeting.isFinished {
+                            Text("종료된 모임")
+                                .whereFont(.caption12regular)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 17)
+                                        .fill(.accent)
+                                )
+                        }
+                    }
+                    
+                    HStack {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(meeting.title)
+                                .whereFont(.body16medium)
+                            
+                            DateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
+                                .whereFont(.body14regular)
+                                .foregroundStyle(.where(.gray500))
+                        }
+                        .opacity(meeting.isFinished ? 0.5 : 1)
+                        
+                        Spacer()
+                    }
+                    .frame(maxWidth: 170)
+                }
+                .padding(.bottom, 20)
+            }
+        }
     }
 }
 
 #Preview {
-    NavigationStack {
-        ContentView(resolver: PreviewHelper.shared.resolver)
-    }
+    ContentView(resolver: PreviewHelper.shared.resolver)
 }
