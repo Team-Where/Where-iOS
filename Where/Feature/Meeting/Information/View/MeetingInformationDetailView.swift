@@ -26,7 +26,7 @@ struct MeetingInformationDetailView: View {
     
     var body: some View {
         VStack {
-            if viewModel.meeting.isFinished == false {
+            if viewModel.meeting.isFinished {
                 HStack(spacing: 6) {
                     Text("✋")
                         .rotationEffect(.degrees(-45))
