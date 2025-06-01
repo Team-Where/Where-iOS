@@ -18,7 +18,7 @@ struct RegistrationTermView: View {
     
     private let terms: [TermType] = TermType.allCases
     private var didAgreedToMandatoryConsent: Bool {
-        termSelections[.ageLimit] == true && termSelections[.agreeToTermsOfService] == true
+        termSelections[.agreeToTermsOfService] == true && termSelections[.agreeToPersonalInfoCollection] == true
     }
     
     private let navigationTitle: String = "어디 이용을 위한\n약관을 동의해주세요"
@@ -84,9 +84,8 @@ struct RegistrationTermView: View {
             
             Spacer()
             
-            Button {
-                // TODO: 약관 표시 방식? 노션으로 이동? 물어보기
-            } label: {
+            // TODO: 노션 페이지로 이동
+            Link(destination: URL(string: "www.naver.com")!) {
                 Text("보기")
                     .whereFont(.caption12regular)
                     .foregroundStyle(Color(hex: 0x747474))
@@ -121,26 +120,31 @@ struct RegistrationTermView: View {
 // MARK: Nested Types
 extension RegistrationTermView {
     enum TermType: CaseIterable, Hashable {
-        /// 연령 제한 (14세 이상)
-        case ageLimit
         /// 서비스 이용약관 동의
         case agreeToTermsOfService
-        /// 광고성 정보 수신 동의
-        case agreeToReceiveAdvertisingInformation
-        /// 마케팅 활용 동의
-        case consentToMarketingUtilization
+        /// 개인정보 수집 및 이용 약관 동의
+        case agreeToPersonalInfoCollection
+        /// 마케팅 정보 수신 동의
+        case agreeToReceiveMarketingInfo
+        /// 개인정보 제3자 제공 동의
+        case agreeToThirdPartySharing
         
         var title: String {
             switch self {
-            case .ageLimit:
-                return "[필수] 만 14세 이상입니다."
             case .agreeToTermsOfService:
-                return "[필수] 어디 서비스 이용약관 동의"
-            case .agreeToReceiveAdvertisingInformation:
-                return "[선택] 광고성 정보 수신 동의"
-            case .consentToMarketingUtilization:
-                return "[선택] 마케팅 활용 동의"
+                return "[필수] 서비스 이용약관 동의"
+            case .agreeToPersonalInfoCollection:
+                return "[필수] 개인정보 수집 및 이용 약관 동의"
+            case .agreeToReceiveMarketingInfo:
+                return "[선택] 마케팅 정보 수신 동의"
+            case .agreeToThirdPartySharing:
+                return "[선택] 개인정보 제3자 제공 동의"
             }
+        }
+        
+        var link: URL? {
+            // TODO: 항목별 노션 페이지 URL 추가
+            nil
         }
     }
     

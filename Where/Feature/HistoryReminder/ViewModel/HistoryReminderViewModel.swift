@@ -8,8 +8,9 @@
 import Foundation
 import Combine
 
-final class HistoryReminderViewModel: ObservableObject {
-    @Published private(set) var yearGroups = [YearGroup]()
+@Observable
+final class HistoryReminderViewModel {
+    private(set) var yearGroups = [YearGroup]()
     
     private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -39,7 +40,7 @@ final class HistoryReminderViewModel: ObservableObject {
                             .sorted(by: { $0.key > $1.key })
                             .map { (month, meetings) in
                                 let sortedMeetings = meetings.sorted(by: { $0.finishedAt > $1.finishedAt })
-                                return MonthGroup(month: month, meetings: sortedMeetings)
+                                return MonthGroup(year: year, month: month, meetings: sortedMeetings)
                             }
                         return YearGroup(year: year, months: monthGroups)
                     }
@@ -53,14 +54,21 @@ final class HistoryReminderViewModel: ObservableObject {
 // MARK: - Nested Types
 extension HistoryReminderViewModel {
     struct MonthGroup: Identifiable {
-        let id = UUID()
+        let id: String
         let month: Int
         let meetings: [MeetingSummary]
+        
+        init(year: Int, month: Int, meetings: [MeetingSummary]) {
+            self.id = "\(year)-\(month)"
+            self.month = month
+            self.meetings = meetings
+        }
     }
     
     struct YearGroup: Identifiable {
-        let id = UUID()
         let year: Int
         let months: [MonthGroup]
+        
+        var id: Int { year }
     }
 }

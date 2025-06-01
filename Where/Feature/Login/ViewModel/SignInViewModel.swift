@@ -23,21 +23,6 @@ final class SignInViewModel: ObservableObject {
     
     init(resolver: Resolver) {
         self.authCore = resolver.resolve(AuthentificationCoreProtocol.self)!
-        subscribe()
-    }
-    
-    private func subscribe() {
-        authCore.currentUser
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] user in
-                guard user != nil else {
-                    self?.state = .failure
-                    return
-                }
-                
-                self?.state = .success
-            }
-            .store(in: cancellableBag, key: "CurrentUser")
     }
 }
 
@@ -51,8 +36,6 @@ extension SignInViewModel {
         case processing
         /// 로그인 성공
         case success
-        /// 로그인 실패
-        case failure
     }
 }
 
@@ -67,5 +50,16 @@ extension SignInViewModel {
     func login() {
         state = .processing
         authCore.login(email: emailFieldText, password: passwordFieldText)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.state = .success
+                case .failure:
+                    self?.isPopupPresented = true
+                    self?.state = .beforeLogin
+                }
+            } receiveValue: { _ in }
+            .store(in: cancellableBag, key: #function)
     }
 }

@@ -29,6 +29,8 @@ struct FriendsListView: View {
     
     var body: some View {
         VStack {
+            Header()
+            
             SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
             
             if friends.isEmpty {
@@ -45,40 +47,6 @@ struct FriendsListView: View {
             Divider()
         }
         .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                if isEditing {
-                    BackButton {
-                        withAnimation {
-                            viewModel.toggleEditMode()
-                        }
-                    }
-                }
-            }
-            
-            ToolbarItem(placement: .navigation) {
-                if isEditing {
-                    Text("목록편집")
-                        .whereFont(.subtitle18semibold)
-                        .foregroundStyle(Color(hex: 0x1F2937))
-                        .padding(.leading)
-                } else {
-                    Text("친구목록")
-                        .whereFont(.title24semibold)
-                }
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation {
-                        viewModel.toggleEditMode()
-                    }
-                } label: {
-                    Text(isEditing ? "완료" : "편집")
-                        .whereFont(.body16medium)
-                }
-            }
-        }
         .sheet(item: $viewModel.sheetType) { type in
             switch type {
             case .deleteFriend(let friend):
@@ -160,8 +128,40 @@ struct FriendsListView: View {
     }
 }
 
-// MARK: Nested Types
-extension FriendsListView {
+// MARK: - Subviews
+private extension FriendsListView {
+    struct Header: View {
+        @State private var isEditing: Bool = false
+        
+        var body: some View {
+            HStack {
+                if isEditing {
+                    BackButton { toggleEditMode() }
+                }
+                
+                Text(isEditing ? "목록편집" : "친구목록")
+                    .whereFont(isEditing ? .subtitle18semibold : .title24semibold)
+                    .foregroundStyle(.where(.gray800))
+                    .padding(.leading, isEditing ? 16 : 0)
+                
+                Spacer()
+                
+                Button {
+                    toggleEditMode()
+                } label: {
+                    Text(isEditing ? "완료" : "편집")
+                        .whereFont(.body16medium)
+                }
+                .tint(.accent)
+            }
+            .padding(.bottom)
+        }
+        
+        func toggleEditMode() {
+            withAnimation { isEditing.toggle() }
+        }
+    }
+    
     struct DeleteFriendSheet: View {
         @ObservedObject private var viewModel: FriendsListViewModel
         
@@ -314,7 +314,5 @@ extension FriendsListView {
 }
 
 #Preview {
-    NavigationStack {
-        ContentView(resolver: PreviewHelper.shared.resolver)
-    }
+    ContentView(resolver: PreviewHelper.shared.resolver)
 }

@@ -37,12 +37,6 @@ final class LoginViewModel: ObservableObject {
 
 // MARK: Interfaces
 extension LoginViewModel {
-    func onAppear() {
-        isRegistrationTermViewPresented = false
-        isSignInViewPresented = false
-        isLoginCompleted = false
-    }
-    
     func onChange() {
         
     }

@@ -13,15 +13,12 @@ struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var viewModel: LoginViewModel
     private let resolver: Resolver
-    private let willDisappear: (() -> Void)? // ContentView의 이전 탭뷰 전환 로직을 위해 사용
     
     init(
-        resolver: Resolver,
-        _ willDisappear: (() -> Void)? = nil
+        resolver: Resolver
     ) {
         self.viewModel = resolver.resolve(LoginViewModel.self)!
         self.resolver = resolver
-        self.willDisappear = willDisappear
     }
     
     var body: some View {
@@ -115,15 +112,12 @@ struct LoginView: View {
         }
         .onChange(of: viewModel.isLoginCompleted) { _, isCompleted in
             guard isCompleted else { return }
-            willDisappear?()
             dismiss()
         }
-        .onAppear(perform: viewModel.onAppear)
     }
     
     private var backButton: some View {
         Button {
-            willDisappear?()
             dismiss()
         } label: {
             Image(systemName: "xmark")

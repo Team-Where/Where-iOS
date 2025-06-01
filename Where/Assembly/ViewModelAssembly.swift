@@ -102,5 +102,9 @@ struct ViewModelAssembly: @preconcurrency Assembly {
         container.register(AcceptInvitationViewModel.self) { resolver in
             return AcceptInvitationViewModel(resolver: resolver)
         }
+        
+        container.register(NotificationListViewModel.self) { resolver in
+            return NotificationListViewModel(resolver: resolver)
+        }
     }
 }

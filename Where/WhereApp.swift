@@ -11,7 +11,6 @@ import KakaoSDKCommon
 
 @main
 struct WhereApp: App {
-    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let resolver: Swinject.Resolver
     
@@ -31,9 +30,7 @@ struct WhereApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if isOnboardingNeeded {
-                OnboardingView()
-            } else {
+            NavigationStack {
                 ContentView(resolver: resolver)
             }
         }
