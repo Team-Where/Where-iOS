@@ -35,6 +35,7 @@ struct SideMenuModifier<SideMenuContent: View>: ViewModifier {
                 .overlay(
                     isPresented ?
                     Color.black.opacity(0.3)
+                        .ignoresSafeArea(edges: .top)
                         .onTapGesture {
                             withAnimation {
                                 isPresented = false
