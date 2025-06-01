@@ -54,7 +54,7 @@ final class ContentViewModel {
                 case .registrationNeeded:
                     self?.isRegistrationNeeded = true
                 case .loginCompleted:
-                    break
+                    self?.isLoginNeeded = false
                 }
             }
             .store(in: cancellableBag, key: "AuthentificationState")
