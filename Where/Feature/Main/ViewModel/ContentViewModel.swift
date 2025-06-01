@@ -29,6 +29,7 @@ final class TabViewSelection: ObservableObject {
 @Observable
 final class ContentViewModel {
     private(set) var isLoginNeeded: Bool = true
+    private(set) var isRegistrationNeeded: Bool = false
     private(set) var createdMeeting: Meeting?
     
     private let authCore: AuthentificationCoreProtocol
@@ -43,13 +44,18 @@ final class ContentViewModel {
     
     private func subscribe() {
         authCore.authentificationState
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
-                guard case .loginNeeded = state else {
-                    self?.isLoginNeeded = false
-                    return
+                switch state {
+                case .loginNeeded:
+                    self?.isLoginNeeded = true
+                case .registrationNeeded:
+                    self?.isRegistrationNeeded = true
+                case .loginCompleted:
+                    break
                 }
-                self?.isLoginNeeded = true
             }
             .store(in: cancellableBag, key: "AuthentificationState")
         

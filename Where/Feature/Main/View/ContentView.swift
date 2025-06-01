@@ -11,10 +11,12 @@ import Swinject
 fileprivate typealias TabItem = TabViewSelection.TabItem
 
 struct ContentView: View {
+    @AppStorage(AppStorageKey.isOnboardingNeeded) private var isOnboardingNeeded: Bool = true
     @StateObject private var tabViewSelection = TabViewSelection()
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var sheetType: SheetType?
     @State private var isLoginNeededPopupPresented: Bool = false
+    @State private var isRegistrationNeeded: Bool = false
     @State private var isLoginNeeded: Bool = false
     
     private let viewModel: ContentViewModel
@@ -28,14 +30,12 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $tabViewSelection.selectedTab) {
             // 내모임 뷰
-            NavigationStack {
-                MyMeetingView(resolver: resolver) { fullScreenCoverType = .login }
-            }
-            .tabItem {
-                Label("내 모임", systemImage: "person.2")
-                    .environment(\.symbolVariants, .none)
-            }
-            .tag(TabItem.myMeeting)
+            MyMeetingView(resolver: resolver) { fullScreenCoverType = .login }
+                .tabItem {
+                    Label("내 모임", systemImage: "person.2")
+                        .environment(\.symbolVariants, .none)
+                }
+                .tag(TabItem.myMeeting)
             
             // 새 모임 만들기
             Color.clear
@@ -45,17 +45,16 @@ struct ContentView: View {
                 .tag(TabItem.createMeeting)
             
             // 친구목록 뷰
-            NavigationStack {
-                FriendsListView(resolver: resolver)
-            }
-            .tabItem {
-                Label("친구목록", systemImage: "list.bullet")
-            }
-            .tag(TabItem.friendsList)
+            FriendsListView(resolver: resolver)
+                .tabItem {
+                    Label("친구목록", systemImage: "list.bullet")
+                }
+                .tag(TabItem.friendsList)
         }
         .tint(.black) // 선택된 탭 아이템의 색상
         .onChange(of: tabViewSelection.selectedTab, onTabSelectionChange)
-        .onChange(of: viewModel.isLoginNeeded, onAuthentificationStateChange)
+        .onChange(of: viewModel.isLoginNeeded, onLoginStateChange)
+        .onChange(of: viewModel.isRegistrationNeeded, onRegistrationStateChange)
         .onChange(of: isLoginNeeded) { _, isNeeded in
             guard isNeeded else { return }
             fullScreenCoverType = .login
@@ -73,6 +72,12 @@ struct ContentView: View {
             case .login:
                 LoginView(resolver: resolver)
             }
+        }
+        .navigationDestination(isPresented: $isRegistrationNeeded) {
+            ProfileCreationView($isRegistrationNeeded, resolver: resolver)
+        }
+        .navigationDestination(isPresented: $isOnboardingNeeded) {
+            OnboardingView()
         }
         .popup($isLoginNeededPopupPresented) {
             VStack(spacing: 22) {
@@ -147,12 +152,18 @@ private extension ContentView {
         isLoginNeededPopupPresented = true
     }
     
-    func onAuthentificationStateChange(_ : Bool, _ isLoginNeeded: Bool) {
+    func onLoginStateChange(_ : Bool, isLoginNeeded: Bool) {
         guard isLoginNeeded else {
             if case .login = fullScreenCoverType { fullScreenCoverType = nil }
             return
         }
         fullScreenCoverType = .login
+    }
+    
+    func onRegistrationStateChange(_ : Bool, isRegistrationNeeded: Bool) {
+        guard isRegistrationNeeded else { return }
+        let work = DispatchWorkItem { self.isRegistrationNeeded = isRegistrationNeeded }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
     
     func onMeetingCreated(_ meeting: Meeting) {
@@ -161,7 +172,5 @@ private extension ContentView {
 }
 
 #Preview {
-    NavigationStack {
-        ContentView(resolver: PreviewHelper.shared.resolver)
-    }
+    ContentView(resolver: PreviewHelper.shared.resolver)
 }
