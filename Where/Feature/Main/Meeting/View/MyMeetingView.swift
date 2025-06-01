@@ -168,27 +168,31 @@ private extension MyMeetingView {
             ScrollView(.vertical) {
                 FlowLayout(alignment: .topLeading) {
                     ForEach(meetings) { meeting in
-                        MeetingCell(meeting)
+                        MeetingCell(meeting, resolver)
                     }
                 }
             }
             .scrollIndicators(.never)
             .padding()
-            .navigationDestination(for: Meeting.self) { meeting in
-                MeetingInformationView(resolver: resolver, meetingID: meeting.id)
-            }
         }
     }
     
     struct MeetingCell: View {
         let meeting: Meeting
+        let resolver: Resolver
         
-        init(_ meeting: Meeting) {
+        init(
+            _ meeting: Meeting,
+            _ resolver: Resolver
+        ) {
             self.meeting = meeting
+            self.resolver = resolver
         }
         
         var body: some View {
-            NavigationLink(value: meeting) {
+            NavigationLink {
+                MeetingInformationView(resolver: resolver, meetingID: meeting.id)
+            } label: {
                 VStack(spacing: 12) {
                     AsyncImage(url: meeting.imageURL) { image in
                         image
