@@ -35,6 +35,8 @@ final class MyMeetingViewModel {
             .store(in: cancellableBag, key: "Meetings")
         
         authCore.authentificationState
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 guard case .registrationNeeded = state else { return }

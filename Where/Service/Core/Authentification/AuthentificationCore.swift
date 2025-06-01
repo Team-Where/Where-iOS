@@ -155,13 +155,17 @@ final class AuthentificationCore {
 // MARK: - Nested Types
 extension AuthentificationCore {
     /// 인증 상태의 종류
-    enum AuthentificationState {
+    enum AuthentificationState: Equatable {
         /// 필수 정보(닉네임)까지 설정된 회원정보 로드 성공
         case loginCompleted(User)
         /// 필수 정보(닉네임) 설정 필요
         case registrationNeeded(User)
         /// 로그인 필요
         case loginNeeded
+        
+        static func == (lhs: AuthentificationCore.AuthentificationState, rhs: AuthentificationCore.AuthentificationState) -> Bool {
+            String(describing: lhs) == String(describing: rhs)
+        }
     }
 }
 
