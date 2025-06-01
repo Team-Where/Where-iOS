@@ -35,6 +35,7 @@ final class MeetingInformationViewModel: ObservableObject {
     
     init(resolver: Resolver) {
         meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
+        subscribe()
     }
     
     private func subscribe() {
@@ -44,6 +45,7 @@ final class MeetingInformationViewModel: ObservableObject {
                 guard let id else { return nil }
                 return dict[id]
             }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] meeting in
                 self?._meeting = meeting
                 self?.titleText = meeting.title
@@ -60,7 +62,7 @@ extension MeetingInformationViewModel {
     
     func updateMeetingTitle() {
         isTitleUpdatingProcessing = true
-        cancellableBag[#function] = meetingCore.updateMeeting(
+        meetingCore.updateMeeting(
             id: meeting.id,
             title: titleText,
             description: nil,
@@ -70,6 +72,7 @@ extension MeetingInformationViewModel {
             self?.isTitleUpdatingProcessing = false
             self?.editStep = .entry
         } receiveValue: { _ in }
+            .store(in: cancellableBag, key: #function)
     }
     
     func updateMeetingDescription() {
