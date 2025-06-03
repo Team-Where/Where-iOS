@@ -30,7 +30,9 @@ final class TabViewSelection: ObservableObject {
 final class ContentViewModel {
     private(set) var isLoginNeeded: Bool = true
     private(set) var isRegistrationNeeded: Bool = false
-    private(set) var createdMeeting: Meeting?
+    private var _meetings: [Meeting] = []
+    private var _sortType: MeetingSortType = .created
+    
     
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
@@ -59,16 +61,45 @@ final class ContentViewModel {
             }
             .store(in: cancellableBag, key: "AuthentificationState")
         
-        meetingCore.createdMeeting
+        meetingCore.meetings
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] meeting in
-                self?.createdMeeting = meeting
+            .sink { [weak self] dict in
+                self?._meetings = dict.values.map { $0 }
+                self?.sortMeetings(by: self?.sortType ?? .scheduled)
             }
-            .store(in: cancellableBag, key: "CreatedMeeting")
+            .store(in: cancellableBag, key: "Meetings")
+        
+    }
+    
+    private func sortMeetings(by type: MeetingSortType) {
+        switch type {
+        case .created:
+            _meetings.sort { $0.createdAt < $1.createdAt }
+        case .scheduled:
+            _meetings.sort { $0.scheduleDate ?? .now < $1.scheduleDate ?? .now }
+        }
     }
 }
 
 // MARK: - Interfaces
-extension ContentViewModel {
+extension ContentViewModel: MyMeetingViewModelType {
+    var meetings: [Meeting] {
+        _meetings
+    }
     
+    var sortType: MeetingSortType {
+        _sortType
+    }
+    
+    func selectSortType(for type: MeetingSortType) {
+        _sortType = type
+        sortMeetings(by: type)
+    }
+}
+
+
+protocol MyMeetingViewModelType {
+    var meetings: [Meeting] { get }
+    var sortType: MeetingSortType { get }
+    func selectSortType(for type: MeetingSortType)
 }
