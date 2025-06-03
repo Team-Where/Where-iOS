@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import Swinject
 
-@MainActor
 final class MeetingInformationDetailViewModel: ObservableObject {
     @Published var selectedDate: Date?
     @Published var invitedFriends = [MeetingInvitationState]()
