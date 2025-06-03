@@ -60,7 +60,12 @@ extension MeetingInformationView {
         case meetingInfo(resolver: Resolver, meeting: Meeting)
         case placeInfo(resolver: Resolver)
         
-        var id: Int { self.hashValue }
+        var id: Int {
+            switch self {
+            case .meetingInfo: 0
+            case .placeInfo: 1
+            }
+        }
         
         var title: String {
             switch self {
