@@ -11,8 +11,9 @@ import Swinject
 fileprivate typealias SheetType = CommentViewModel.SheetType
 
 struct CommentView: View {
-    @ObservedObject private var viewModel: CommentViewModel
+    @State private var sheetType: SheetType?
     
+    private let viewModel: CommentViewModel
     private let place: Place
     
     init(
@@ -36,16 +37,16 @@ struct CommentView: View {
             .whereFont(.body16medium)
         }
         .padding(.horizontal, 20)
-        .sheet(item: $viewModel.sheetType) { type in
+        .sheet(item: $sheetType) { type in
             switch type {
             case .create:
-                CommentCreationSheet(viewModel, placeID: place.id)
+                CommentCreationSheet($sheetType, viewModel, placeID: place.id)
                 
             case .read(let comment):
-                CommentReadingSheet(viewModel, comment)
+                CommentReadingSheet($sheetType, viewModel, comment)
                 
-            case .edit:
-                CommentEditingSheet(viewModel)
+            case .edit(let comment):
+                CommentEditingSheet($sheetType, viewModel, comment)
             }
         }
     }
@@ -60,7 +61,7 @@ struct CommentView: View {
     
     private var createCommentButton: some View {
         Button {
-            viewModel.sheetType = .create
+            sheetType = .create
         } label: {
             Text("코멘트 남기기")
                 .whereFont(.body16medium)
@@ -99,7 +100,8 @@ struct CommentView: View {
             )
             .onTapGesture {
                 guard comment.isMyComment else { return }
-                viewModel.presentReadingSheet(comment: comment)
+                viewModel.readComment(comment)
+                sheetType = .read(comment: comment)
             }
     }
 }
@@ -107,20 +109,25 @@ struct CommentView: View {
 // MARK: - Nested Types
 extension CommentView {
     struct CommentCreationSheet: View {
-        @ObservedObject private var viewModel: CommentViewModel
+        @Binding fileprivate var sheetType: SheetType?
         @FocusState private var commentFieldFocused: Bool
+        @State private var commentTextField = String()
         private let headerTitle = "코멘트 남기기"
         private let presentationCornerRadius: CGFloat = 8
         private let placeID: UInt64
         
+        private let viewModel: CommentViewModel
+        
         private var creationButtonDisabled: Bool {
-            viewModel.commentTextField.isEmpty || viewModel.isCreationProcessing
+            commentTextField.isEmpty || viewModel.isCreationProcessing
         }
         
         fileprivate init(
+            _ sheetType: Binding<SheetType?>,
             _ viewModel: CommentViewModel,
             placeID: UInt64
         ) {
+            self._sheetType = sheetType
             self.viewModel = viewModel
             self.placeID = placeID
         }
@@ -135,7 +142,7 @@ extension CommentView {
                     Spacer()
                     
                     Button {
-                        viewModel.dismissSheet()
+                        onDismiss()
                     } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.where(.gray800))
@@ -143,7 +150,7 @@ extension CommentView {
                 }
                 .padding(.top)
                 
-                TextField(text: $viewModel.commentTextField) {
+                TextField(text: $commentTextField) {
                     Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
                         .whereFont(.body16regular)
                 }
@@ -153,9 +160,7 @@ extension CommentView {
                 
                 HStack(spacing: 12) {
                     Button {
-                        commentFieldFocused = false
-                        viewModel.commentTextField.removeAll()
-                        viewModel.dismissSheet()
+                        onDismiss()
                     } label: {
                         Text("취소")
                     }
@@ -169,9 +174,7 @@ extension CommentView {
                     )
                     
                     Button {
-                        commentFieldFocused = false
-                        viewModel.createComment(placeID: placeID)
-                        viewModel.dismissSheet()
+                        viewModel.createComment(placeID: placeID, commentTextField)
                     } label: {
                         if viewModel.isCreationProcessing {
                             ProgressView()
@@ -193,28 +196,45 @@ extension CommentView {
             .onAppear {
                 commentFieldFocused = true
             }
+            .onChange(of: viewModel.isCreationProcessing, onCommentCreated)
             .padding()
             .presentationCornerRadius(presentationCornerRadius)
             .presentationDragIndicator(.hidden)
             .interactiveDismissDisabled()
             .presentationDetents(commentFieldFocused ? [.fraction(0.2)] : [.medium])
         }
+        
+        private func onCommentCreated(_ : Bool, _ isDone: Bool) {
+            guard isDone else { return }
+            onDismiss()
+        }
+        
+        private func onDismiss() {
+            commentFieldFocused = false
+            sheetType = nil
+            commentTextField.removeAll()
+        }
     }
     
     struct CommentReadingSheet: View {
-        @ObservedObject private var viewModel: CommentViewModel
+        @Binding fileprivate var sheetType: SheetType?
+        
         private let comment: Comment
         private let headerTitle = "코멘트"
         private let presentationCornerRadius: CGFloat = 8
+        
+        private let viewModel: CommentViewModel
         
         private var deletionButtonDisabled: Bool {
             viewModel.isDeletionProcessing
         }
         
         fileprivate init(
+            _ sheetType: Binding<SheetType?>,
             _ viewModel: CommentViewModel,
             _ comment: Comment
         ) {
+            self._sheetType = sheetType
             self.viewModel = viewModel
             self.comment = comment
         }
@@ -229,7 +249,7 @@ extension CommentView {
                     Spacer()
                     
                     Button {
-                        viewModel.dismissSheet()
+                        onDismiss()
                     } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.where(.gray800))
@@ -264,7 +284,7 @@ extension CommentView {
                     .disabled(deletionButtonDisabled)
                     
                     Button {
-                        viewModel.presentEditingSheet()
+                        sheetType = .edit(comment: comment)
                     } label: {
                         Text("수정")
                     }
@@ -278,28 +298,46 @@ extension CommentView {
                     )
                 }
             }
+            .onChange(of: viewModel.isDeletionProcessing, onCommentDeleted)
             .padding()
             .presentationCornerRadius(presentationCornerRadius)
             .presentationDragIndicator(.hidden)
             .interactiveDismissDisabled()
             .presentationDetents([.fraction(0.3)])
         }
+        
+        private func onCommentDeleted(_ : Bool, _ isDone: Bool) {
+            guard isDone else { return }
+            onDismiss()
+        }
+        
+        private func onDismiss() {
+            sheetType = nil
+        }
     }
     
     struct CommentEditingSheet: View {
-        @ObservedObject private var viewModel: CommentViewModel
+        @Binding fileprivate var sheetType: SheetType?
         @FocusState private var commentFieldFocused: Bool
+        @State private var commentTextField = String()
+        private let comment: Comment
         private let headerTitle = "코멘트 수정"
         private let presentationCornerRadius: CGFloat = 8
         
+        private let viewModel: CommentEditable
+        
         private var updatingButtonDisabled: Bool {
-            viewModel.commentTextField.isEmpty || viewModel.isUpdatingProcessing
+            commentTextField.isEmpty || viewModel.isUpdatingProcessing
         }
         
         fileprivate init(
-            _ viewModel: CommentViewModel
+            _ sheetType: Binding<SheetType?>,
+            _ viewModel: CommentEditable,
+            _ comment: Comment
         ) {
+            self._sheetType = sheetType
             self.viewModel = viewModel
+            self.comment = comment
         }
         
         var body: some View {
@@ -312,8 +350,7 @@ extension CommentView {
                     Spacer()
                     
                     Button {
-                        viewModel.dismissSheet()
-                        viewModel.commentTextField.removeAll()
+                        onDismiss()
                     } label: {
                         Image(systemName: "xmark")
                             .foregroundStyle(.where(.gray800))
@@ -321,7 +358,7 @@ extension CommentView {
                 }
                 .padding(.top)
                 
-                TextField(text: $viewModel.commentTextField) {
+                TextField(text: $commentTextField) {
                     Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
                         .whereFont(.body16regular)
                 }
@@ -344,7 +381,7 @@ extension CommentView {
                     )
                     
                     Button {
-                        viewModel.editComment()
+                        viewModel.editComment(commentTextField)
                     } label: {
                         if viewModel.isUpdatingProcessing {
                            ProgressView()
@@ -364,16 +401,26 @@ extension CommentView {
                 }
             }
             .padding()
+            .onAppear {
+                commentTextField = comment.description
+                commentFieldFocused = true
+            }
+            .onChange(of: viewModel.isUpdatingProcessing, onCommentUpdated)
             .presentationCornerRadius(presentationCornerRadius)
             .presentationDragIndicator(.hidden)
             .interactiveDismissDisabled()
             .presentationDetents(commentFieldFocused ? [.fraction(0.2)] : [.medium])
         }
         
+        private func onCommentUpdated(_ : Bool, _ isDone: Bool) {
+            guard isDone else { return }
+            onDismiss()
+        }
+        
         private func onDismiss() {
             commentFieldFocused = false
-            viewModel.commentTextField.removeAll()
-            viewModel.dismissSheet()
+            sheetType = nil
+            commentTextField.removeAll()
         }
     }
 }
