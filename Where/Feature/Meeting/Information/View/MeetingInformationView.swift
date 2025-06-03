@@ -47,7 +47,7 @@ struct MeetingInformationView: View {
             .sheet(item: $viewModel.sheetType) { type in
                 switch type {
                 case .editMeetingInfo:
-                    EditMeetingInfoSheet (resolver: resolver)
+                    EditMeetingInfoSheet(viewModel: viewModel)
 
                 }
             }
@@ -100,8 +100,8 @@ extension MeetingInformationView {
 
         @FocusState private var textFieldFocused: EditMeetingFocusState?
         
-        init(resolver: Resolver) {
-            viewModel = resolver.resolve(MeetingInformationViewModel.self)!
+        init(viewModel: MeetingInformationViewModel) {
+            self.viewModel = viewModel
         }
         
         var body: some View {
