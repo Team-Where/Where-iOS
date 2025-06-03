@@ -12,9 +12,12 @@ fileprivate typealias PlaceSortOption = MeetingPlacesViewModel.PlaceSortOption
 fileprivate typealias SheetType = MeetingPlacesViewModel.SheetType
 
 struct MeetingPlacesView: View {
-    @ObservedObject private var viewModel: MeetingPlacesViewModel
+    @State private var sheetType: SheetType?
+    @State private var isPickTipPresented: Bool = false
+    @State private var isShareTipPresented: Bool = false
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing)
+    private let viewModel: MeetingPlacesViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {
@@ -39,13 +42,13 @@ struct MeetingPlacesView: View {
         .contentShape(.interaction, .containerRelative)
         .onTapGesture {
             withAnimation {
-                viewModel.isPickTipPresented = false
-                viewModel.isShareTipPresented = false
+                isPickTipPresented = false
+                isShareTipPresented = false
             }
         }
-        .sheet(item: $viewModel.sheetType) { type in
+        .sheet(item: $sheetType) { type in
             switch type {
-            case .sharePlace: SharePlaceSheet(sheetType: $viewModel.sheetType)
+            case .sharePlace: SharePlaceSheet(sheetType: $sheetType)
             }
         }
     }
@@ -83,13 +86,13 @@ struct MeetingPlacesView: View {
                 
                 Button {
                     withAnimation {
-                        viewModel.isPickTipPresented.toggle()
+                        isPickTipPresented.toggle()
                     }
                 } label: {
                     Image(systemName: "info.circle")
                         .foregroundStyle(Color(hex: 0x9CA3AF))
                 }
-                .whereTip($viewModel.isPickTipPresented, configuration: tipConfiguration) {
+                .whereTip($isPickTipPresented, configuration: tipConfiguration) {
                     Text("친구들과 가기로 결정한 장소 목록입니다")
                         .whereFont(.caption12regular)
                         .foregroundStyle(.white)
@@ -126,7 +129,7 @@ struct MeetingPlacesView: View {
             Spacer()
             
             Button {
-                viewModel.presentShareSheet()
+                sheetType = .sharePlace
             } label: {
                 Label {
                     Text("장소 공유")
@@ -136,7 +139,7 @@ struct MeetingPlacesView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 15, height: 15)
-                        .whereTip($viewModel.isShareTipPresented, configuration: tipConfiguration) {
+                        .whereTip($isShareTipPresented, configuration: tipConfiguration) {
                             Text("가장 먼저 장소를 공유해보세요!")
                                 .whereFont(.caption12regular)
                                 .foregroundStyle(.white)
@@ -147,9 +150,6 @@ struct MeetingPlacesView: View {
             }
         }
         .padding()
-        .onAppear {
-            viewModel.onAppear()
-        }
     }
     
     @ViewBuilder private func candidatePlacesList(_ sortOption: PlaceSortOption, places: [Place]) -> some View {
