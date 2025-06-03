@@ -12,13 +12,13 @@ fileprivate typealias SectionType = FriendsListViewModel.SectionType
 fileprivate typealias SheetType = FriendsListViewModel.SheetType
 
 struct FriendsListView: View {
-    @ObservedObject private var viewModel: FriendsListViewModel
+    @StateObject private var viewModel: FriendsListViewModel
     @FocusState private var isFocused: Bool
     
     private let resolver: Resolver
     
     init(resolver: Resolver) {
-        self.viewModel = resolver.resolve(FriendsListViewModel.self)!
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(FriendsListViewModel.self)!)
         self.resolver = resolver
     }
     
