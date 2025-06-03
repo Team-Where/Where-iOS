@@ -11,7 +11,6 @@ import Swinject
 
 final class FriendsListViewModel: ObservableObject {
     @Published var sheetType: SheetType?
-    @Published var route: Route?
     @Published var user: User?
     @Published var friends: [FriendRelationship] = []
     @Published var searchedFriends: [FriendRelationship] = []
@@ -99,22 +98,6 @@ extension FriendsListViewModel {
         
         var id: String { String(describing: self) }
     }
-    
-    /// 친구목록 내에서 라우팅 가능한 Path의 종류
-    enum Route: Identifiable, Hashable {
-        /// 나와의 모임활동 상세 보기
-        case historyReminder(user: User, friend: FriendRelationship)
-        
-        var id: String { String(describing: self) }
-        
-        static func == (lhs: Route, rhs: Route) -> Bool {
-            lhs.id == rhs.id
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-        }
-    }
 }
 
 // MARK: Interfaces
@@ -145,12 +128,6 @@ extension FriendsListViewModel {
         guard let user else { return }
         sheetType = .historyWithFriend(user: user, friend: friend)
         communityCore.readHistoryWithFriend(id: friend.id)
-    }
-    
-    func presentHistoryReminder(friend: FriendRelationship) {
-        guard let user else { return }
-        dismissSheet()
-        route = .historyReminder(user: user, friend: friend)
     }
     
     func toggleFavorite(by id: UInt64) {
