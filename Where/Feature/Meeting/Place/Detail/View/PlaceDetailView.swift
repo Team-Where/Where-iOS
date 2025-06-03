@@ -10,10 +10,12 @@ import Swinject
 
 struct PlaceDetailView: View {
     @Environment(\.openURL) private var openURL
-    @ObservedObject private var viewModel: PlaceDetailViewModel
+    @State private var isDeletionSheetPresented = false
+    @State private var isTipPresented = false
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing, backgroundColor: .accent, cornerRadius: 4)
     private let place: Place
+    private let viewModel: PlaceDetailViewModel
     private let resolver: Resolver
     
     private var isPicked: Bool { place.pickedState == .picked }
@@ -53,7 +55,12 @@ struct PlaceDetailView: View {
         }
         .scrollIndicators(.never)
         .onAppear {
-            viewModel.onAppear(place)
+            isTipPresented = place.pickedState == .unpicked
+            
+            guard isTipPresented == true else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                self.isTipPresented = false
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -61,14 +68,14 @@ struct PlaceDetailView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    viewModel.presentDeletionSheet()
+                    isDeletionSheetPresented = true
                 } label: {
                     Text("삭제")
                         .whereFont(.body16medium)
                 }
             }
         }
-        .sheet(isPresented: $viewModel.isDeletionSheetPresented) {
+        .sheet(isPresented: $isDeletionSheetPresented) {
             PlaceDelete(isProcessing: viewModel.isDeletionProcessing) { viewModel.deletePlace(id: place.id) }
         }
     }
@@ -256,7 +263,7 @@ struct PlaceDetailView: View {
                 }
             }
             .disabled(viewModel.isTogglingProcessing)
-            .whereTip($viewModel.isTipPresented, configuration: tipConfiguration) {
+            .whereTip($isTipPresented, configuration: tipConfiguration) {
                 Text("이 장소로 정했다면 Pick을 눌러주세요!")
                     .whereFont(.body14regular)
                     .foregroundStyle(.white)
