@@ -30,7 +30,7 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $tabViewSelection.selectedTab) {
             // 내모임 뷰
-            MyMeetingView(resolver: resolver) { fullScreenCoverType = .login }
+            MyMeetingView(resolver: resolver, viewModel: viewModel) { fullScreenCoverType = .login }
                 .tabItem {
                     Label("내 모임", systemImage: "person.2")
                         .environment(\.symbolVariants, .none)

@@ -11,15 +11,16 @@ import Swinject
 struct MyMeetingView: View {
     @State private var isSideMenuPresented: Bool = false
     
-    private let viewModel: MyMeetingViewModel
+    private let viewModel: MyMeetingViewModelType
     private let resolver: Resolver
     private let onLoginButtonTapped: () -> Void
     
     init(
         resolver: Resolver,
+        viewModel: MyMeetingViewModelType,
         onLoginButtonTapped: @escaping () -> Void
     ) {
-        self.viewModel = resolver.resolve(MyMeetingViewModel.self)!
+        self.viewModel = viewModel
         self.resolver = resolver
         self.onLoginButtonTapped = onLoginButtonTapped
     }
