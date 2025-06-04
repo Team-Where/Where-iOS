@@ -12,14 +12,14 @@ fileprivate typealias MeetingCreationStep = CreateMeetingViewModel.MeetingCreati
 fileprivate typealias FloaterItem = CreateMeetingViewModel.FloaterItem
 fileprivate typealias FriendCellDataSource = CreateMeetingViewModel.FriendCellDataSource
 
+
 struct CreateMeetingView: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: CreateMeetingViewModel
+    
     @Binding private var sheetType: MainSheetType?
     @Binding private var fullScreenCoverType: MainFullScreenCoverType?
-    @State private var isPopupPresented: Bool = false
-    @State private var selectedImageData: Data?
     
-    private let viewModel: CreateMeetingViewModel
     private let resolver: Resolver
     
     init(
@@ -27,7 +27,7 @@ struct CreateMeetingView: View {
         sheetType: Binding<MainSheetType?>,
         fullScreenCoverType: Binding<MainFullScreenCoverType?>
     ) {
-        self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(CreateMeetingViewModel.self)!)
         self.resolver = resolver
         self._sheetType = sheetType
         self._fullScreenCoverType = fullScreenCoverType
@@ -46,9 +46,9 @@ struct CreateMeetingView: View {
             Spacer()
         }
         .padding()
-        .popup($isPopupPresented) {
-            ImageSelectionPopupView(isPopupPresented: $isPopupPresented) { imageData in
-                selectedImageData = imageData
+        .popup($viewModel.isPopupPresented) {
+            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { imageData in
+                viewModel.selectedImage = imageData
             }
         }
         .onAppear {
@@ -93,7 +93,7 @@ struct CreateMeetingView: View {
     @ViewBuilder private func content(_ step: MeetingCreationStep) -> some View {
         switch step {
         case .basicInformation:
-            BasicInformationView($isPopupPresented, $selectedImageData, viewModel)
+            BasicInformationView(viewModel: viewModel)
         case .inviteFriends:
             InvitationView(viewModel: viewModel)
         }
@@ -112,24 +112,10 @@ extension CreateMeetingView {
             case title, description
         }
         
-        @Binding var isPopupPresented: Bool
-        @Binding var imageData: Data?
+        @ObservedObject private var viewModel: CreateMeetingViewModel
         @FocusState private var isFocused: TextFieldFocusState?
-        @State private var isFloaterPresented: Bool = false
-        @State private var titleFieldText = String()
-        @State private var descriptionFieldText = String()
         
-        private var disabled: Bool { titleFieldText.isEmpty }
-        
-        private let viewModel: BasicInformationPerformable
-        
-        init(
-            _ isPopupPresented: Binding<Bool>,
-            _ selectedImageData: Binding<Data?>,
-            _ viewModel: BasicInformationPerformable
-        ) {
-            self._isPopupPresented = isPopupPresented
-            self._imageData = selectedImageData
+        init(viewModel: CreateMeetingViewModel) {
             self.viewModel = viewModel
         }
         
@@ -141,27 +127,31 @@ extension CreateMeetingView {
                         textFieldSection
                     }
                 }
-                .floater($isFloaterPresented, title: "모임 이름과 사진은 생성 후에도 변경할 수 있어요.")
+                .floater($viewModel.isFloaterPresented, title: "모임 이름과 사진은 생성 후에도 변경할 수 있어요.")
                 
                 Button {
-                    viewModel.setBasicInfo(title: titleFieldText, description: descriptionFieldText, imageData: imageData)
+                    viewModel.setBasicInfo()
                 } label: {
                     Text("다음")
                         .whereFont(.body16medium)
                         .frame(height: 48)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.whereRoundedProminent(disabled: disabled))
+                .buttonStyle(.whereRoundedProminent(disabled: viewModel.disabled))
             }
             .clipShape(.rect)
-            .onTapGesture { isFocused = nil }
-            .onAppear { isFloaterPresented = true }
+            .onTapGesture {
+                isFocused = nil
+            }
+            .onAppear {
+                viewModel.isFloaterPresented = true
+            }
         }
         
         private var profileImageSection: some View {
             Button {
                 withAnimation {
-                    isPopupPresented = true
+                    viewModel.isPopupPresented = true
                 }
             } label: {
                 if viewModel.isImageSelected == false {
@@ -182,7 +172,7 @@ extension CreateMeetingView {
                             .fill(.where(.gray100))
                     )
                 } else {
-                    if let data = imageData,
+                    if let data = viewModel.selectedImage,
                        let image = UIImage(data: data) {
                         Image(uiImage: image)
                             .resizable()
@@ -201,16 +191,16 @@ extension CreateMeetingView {
                 HStack {
                     TextField(
                         "",
-                        text: $titleFieldText,
+                        text: $viewModel.titleFieldText,
                         prompt: Text(verbatim: "모임이름을 입력해주세요")
                             .foregroundStyle(.where(.gray600))
                     )
-                    .characterLimit(text: $titleFieldText, limit: Constants.titleCharacterLimit)
+                    .characterLimit(text: $viewModel.titleFieldText, limit: Constants.titleCharacterLimit)
                     .focused($isFocused, equals: .title)
                     
-                    if titleFieldText.isEmpty == false {
+                    if viewModel.titleFieldText.isEmpty == false {
                         Button {
-                            titleFieldText.removeAll()
+                            viewModel.titleFieldText.removeAll()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .resizable()
@@ -224,7 +214,7 @@ extension CreateMeetingView {
                     .frame(height: 1)
                     .foregroundStyle(isFocused == .title ? .accent : .where(.gray200))
                 
-                Text("(\(titleFieldText.count)/\(Constants.titleCharacterLimit))")
+                Text("(\(viewModel.titleFieldText.count)/\(Constants.titleCharacterLimit))")
                     .foregroundStyle(.where(.gray700))
             }
             .whereFont(.body16regular)
@@ -233,16 +223,16 @@ extension CreateMeetingView {
                 HStack {
                     TextField(
                         "",
-                        text: $descriptionFieldText,
+                        text: $viewModel.descriptionFieldText,
                         prompt: Text(verbatim: "모임에 대한 간단한 소개를 입력해주세요")
                             .foregroundStyle(.where(.gray600))
                     )
-                    .characterLimit(text: $descriptionFieldText, limit: Constants.descriptionCharacterLimit)
+                    .characterLimit(text: $viewModel.descriptionFieldText, limit: Constants.descriptionCharacterLimit)
                     .focused($isFocused, equals: .description)
                     
-                    if descriptionFieldText.isEmpty == false {
+                    if viewModel.descriptionFieldText.isEmpty == false {
                         Button {
-                            descriptionFieldText.removeAll()
+                            viewModel.descriptionFieldText.removeAll()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .resizable()
@@ -256,7 +246,7 @@ extension CreateMeetingView {
                     .frame(height: 1)
                     .foregroundStyle(isFocused == .description ? .accent : .where(.gray200))
                 
-                Text("(\(descriptionFieldText.count)/\(Constants.descriptionCharacterLimit))")
+                Text("(\(viewModel.descriptionFieldText.count)/\(Constants.descriptionCharacterLimit))")
                     .foregroundStyle(.where(.gray700))
             }
             .whereFont(.body16regular)
@@ -264,13 +254,9 @@ extension CreateMeetingView {
     }
     
     struct InvitationView: View {
-        @State private var floaterItem: FloaterItem?
+        @ObservedObject private var viewModel: CreateMeetingViewModel
         
-        private var participantsIDs: Set<UInt64> { viewModel.selectedParticipantIDs }
-        
-        private let viewModel: InvitationStatePerformable
-        
-        init(viewModel: InvitationStatePerformable) {
+        init(viewModel: CreateMeetingViewModel) {
             self.viewModel = viewModel
         }
         
@@ -280,12 +266,13 @@ extension CreateMeetingView {
                     friendsSections(viewModel.friendsDataSource)
                 }
                 .scrollIndicators(.never)
-                .floater($floaterItem) { _ in
+                .floater($viewModel.floaterItem) { _ in
                     Image(systemName: "checkmark")
                         .foregroundStyle(.accent)
                 }
                 
                 Button {
+                    viewModel.setInvitedFriends()
                     viewModel.createMeeting()
                 } label: {
                     Text("다음")
@@ -300,16 +287,8 @@ extension CreateMeetingView {
         @ViewBuilder private func friendsSections(_ friends: [FriendCellDataSource]) -> some View {
             Section {
                 LazyVStack(spacing: 16) {
-                    let friends = friends.filter { $0.isRecent }
-                    
-                    ForEach(friends.indices, id: \.self) { index in
-                        Cell(
-                            friend: friends[index],
-                            participants: participantsIDs,
-                            index: index
-                        ) { index in
-                            viewModel.toggleInvitationState(by: index)
-                        }
+                    ForEach(friends.filter { $0.isRecent }) { friend in
+                        Cell(viewModel, friend: friend)
                     }
                 }
             } header: {
@@ -325,14 +304,8 @@ extension CreateMeetingView {
             
             Section {
                 LazyVStack(spacing: 16) {
-                    ForEach(friends.indices, id: \.self) { index in
-                        Cell(
-                            friend: friends[index],
-                            participants: participantsIDs,
-                            index: index
-                        ) { index in
-                            viewModel.toggleInvitationState(by: index)
-                        }
+                    ForEach(friends) { friend in
+                        Cell(viewModel, friend: friend)
                     }
                 }
             } header: {
@@ -352,25 +325,20 @@ extension CreateMeetingView {
 // MARK: Nested Types
 extension CreateMeetingView.InvitationView {
     struct Cell: View {
+        @ObservedObject private var viewModel: CreateMeetingViewModel
+        
         fileprivate let dataSource: FriendCellDataSource
-        private let participants: Set<UInt64>
-        private let index: Int
-        private let onToggle: (_ index: Int) -> Void
         
         private var isSelected: Bool {
-            participants.contains(dataSource.id)
+            viewModel.selectedParticipantIDs.contains(dataSource.id)
         }
-    
+        
         fileprivate init(
-            friend: FriendCellDataSource,
-            participants: Set<UInt64>,
-            index: Int,
-            onToggle: @escaping (_ index: Int) -> Void
+            _ viewModel: CreateMeetingViewModel,
+            friend: FriendCellDataSource
         ) {
+            self.viewModel = viewModel
             self.dataSource = friend
-            self.participants = participants
-            self.index = index
-            self.onToggle = onToggle
         }
         
         var body: some View {
@@ -403,7 +371,7 @@ extension CreateMeetingView.InvitationView {
                 Spacer()
                 
                 Button {
-                    onToggle(index)
+                    viewModel.toggleInvitationState(for: dataSource.id)
                 } label: {
                     inviteButtonLabel()
                         .whereFont(.body14medium)
@@ -433,3 +401,9 @@ extension CreateMeetingView.InvitationView {
         }
     }
 }
+
+//#Preview {
+//    NavigationStack {
+//        CreateMeetingView(resolver: PreviewHelper.shared.resolver)
+//    }
+//}
