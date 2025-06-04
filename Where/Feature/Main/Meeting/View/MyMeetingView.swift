@@ -31,11 +31,14 @@ struct MyMeetingView: View {
             
             Spacer()
             
-            if viewModel.meetings.isEmpty {
-                UnavailableView()
-            } else {
-                MeetingsView(viewModel.meetings, resolver)
+            ZStack {
+                if viewModel.meetings.isEmpty {
+                    UnavailableView()
+                } else {
+                    MeetingsView(viewModel.meetings, resolver)
+                }
             }
+            .animation(.easeInOut(duration: 0.3), value: viewModel.meetings.isEmpty)
             
             Spacer()
         }

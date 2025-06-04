@@ -8,11 +8,20 @@
 import SwiftUI
 import Swinject
 
+fileprivate typealias ProcessingState = SignInViewModel.ProcessingState
+
 struct SignInView: View {
     @Binding var isLoginViewPresented: Bool
     @FocusState private var textFieldFocus: KeyboardFocusState?
-    @ObservedObject private var viewModel: SignInViewModel
+    @State private var isPopupPresented: Bool = false
+    @State private var emailFieldText = String()
+    @State private var passwordFieldText = String()
     
+    private var loginButtonDisabled: Bool {
+        viewModel.state == .processing || emailFieldText.isEmpty || passwordFieldText.isEmpty
+    }
+    
+    private let viewModel: SignInViewModel
     private let navigationTitle: String = "로그인을 해주세요"
     
     init(
@@ -32,7 +41,7 @@ struct SignInView: View {
                 
                 RoundedTextField(
                     "이메일 주소를 입력해주세요",
-                    text: $viewModel.emailFieldText,
+                    text: $emailFieldText,
                     lineColor: Color(hex: 0xE5E7EB)
                 )
                 .focused($textFieldFocus, equals: .emailTextField)
@@ -46,7 +55,7 @@ struct SignInView: View {
                 
                 RoundedTextField(
                     "비밀번호를 입력해주세요",
-                    text: $viewModel.passwordFieldText,
+                    text: $passwordFieldText,
                     lineColor: Color(hex: 0xE5E7EB)
                 )
                 .secured()
@@ -54,13 +63,10 @@ struct SignInView: View {
             }
         }
         .padding(.top, 40)
-        .onChange(of: viewModel.state) { _, newValue in
-            guard newValue == .success else { return }
-            isLoginViewPresented = false
-        }
+        .onChange(of: viewModel.state, onStateChange)
         .whereForm(navigationTitle) {
             Button {
-                viewModel.login()
+                viewModel.login(email: emailFieldText, password: passwordFieldText)
             } label: {
                 if viewModel.state == .processing {
                     ProgressView()
@@ -71,13 +77,13 @@ struct SignInView: View {
                         .frame(width: 350, height: 48)
                 }
             }
-            .buttonStyle(.whereRoundedProminent(disabled: viewModel.loginButtonDisabled))
+            .buttonStyle(.whereRoundedProminent(disabled: loginButtonDisabled))
         }
         .clipShape(.rect)
         .onTapGesture {
             textFieldFocus = .none
         }
-        .popup($viewModel.isPopupPresented) {
+        .popup($isPopupPresented) {
             VStack(spacing: 22) {
                 Text("이메일 또는 비밀번호를\n잘못 입력하셨습니다.")
                     .whereFont(.body14medium)
@@ -85,7 +91,7 @@ struct SignInView: View {
                     .multilineTextAlignment(.center)
                 
                 Button {
-                    viewModel.isPopupPresented = false
+                    isPopupPresented = false
                 } label: {
                     Text("확인")
                         .whereFont(.body16semibold)
@@ -94,6 +100,17 @@ struct SignInView: View {
                 .buttonStyle(.whereRoundedProminent())
             }
             .padding()
+        }
+    }
+}
+
+// MARK: - Methods
+private extension SignInView {
+    func onStateChange(_ : ProcessingState, after: ProcessingState) {
+        switch after {
+        case .fail: isPopupPresented = true
+        case .success: isLoginViewPresented = false
+        default: break
         }
     }
 }

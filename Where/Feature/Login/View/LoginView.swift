@@ -11,7 +11,10 @@ import Swinject
 
 struct LoginView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: LoginViewModel
+    @State private var isRegistrationTermViewPresented: Bool = false
+    @State private var isSignInViewPresented: Bool = false
+    
+    private let viewModel: LoginViewModel
     private let resolver: Resolver
     
     init(
@@ -80,7 +83,7 @@ struct LoginView: View {
                     
                     // Start With E-mail Button
                     NavigationLink {
-                        RegistrationTermView($viewModel.isRegistrationTermViewPresented, resolver: resolver)
+                        RegistrationTermView($isRegistrationTermViewPresented, resolver: resolver)
                     } label: {
                         Text("이메일로 시작하기")
                             .whereFont(.body16semibold)
@@ -94,7 +97,7 @@ struct LoginView: View {
                             .whereFont(.body14medium)
                         
                         NavigationLink {
-                            SignInView($viewModel.isSignInViewPresented, resolver: resolver)
+                            SignInView($isSignInViewPresented, resolver: resolver)
                         } label: {
                             Text("여기에 로그인하세요")
                                 .whereFont(.body14medium)

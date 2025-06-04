@@ -137,18 +137,6 @@ extension CreateMeetingViewModel {
 
 // MARK: Interfaces
 extension CreateMeetingViewModel {
-    func flush() {
-        step = .basicInformation
-        isPopupPresented = false
-        isFloaterPresented = false
-        selectedImage = nil
-        isImageSelected = false
-        titleFieldText.removeAll()
-        descriptionFieldText.removeAll()
-        tempMeetingInfo = nil
-        selectedParticipantIDs.removeAll()
-    }
-    
     func setBasicInfo() {
         tempMeetingInfo = TemporaryMeetingInfo(title: titleFieldText,
                                                description: descriptionFieldText,

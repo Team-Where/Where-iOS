@@ -15,7 +15,7 @@ fileprivate typealias FriendCellDataSource = CreateMeetingViewModel.FriendCellDa
 
 struct CreateMeetingView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: CreateMeetingViewModel
+    @StateObject private var viewModel: CreateMeetingViewModel
     
     @Binding private var sheetType: MainSheetType?
     @Binding private var fullScreenCoverType: MainFullScreenCoverType?
@@ -27,7 +27,7 @@ struct CreateMeetingView: View {
         sheetType: Binding<MainSheetType?>,
         fullScreenCoverType: Binding<MainFullScreenCoverType?>
     ) {
-        self.viewModel = resolver.resolve(CreateMeetingViewModel.self)!
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(CreateMeetingViewModel.self)!)
         self.resolver = resolver
         self._sheetType = sheetType
         self._fullScreenCoverType = fullScreenCoverType

@@ -10,11 +10,9 @@ import AuthenticationServices
 import Combine
 import Swinject
 
-@MainActor
-final class LoginViewModel: ObservableObject {
-    @Published var isRegistrationTermViewPresented: Bool = false
-    @Published var isSignInViewPresented: Bool = false
-    @Published private(set) var isLoginCompleted: Bool = false
+@Observable
+final class LoginViewModel {
+    private(set) var isLoginCompleted: Bool = false
     
     private let authCore: AuthentificationCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -37,10 +35,6 @@ final class LoginViewModel: ObservableObject {
 
 // MARK: Interfaces
 extension LoginViewModel {
-    func onChange() {
-        
-    }
-    
     func handleOpenURL(_ provider: AuthentificationProvider, url: URL) {
         authCore.handleOpenURL(provider, url)
     }

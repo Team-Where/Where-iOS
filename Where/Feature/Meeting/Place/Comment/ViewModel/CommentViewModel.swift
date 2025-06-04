@@ -9,15 +9,32 @@ import Foundation
 import Combine
 import Swinject
 
+protocol CommentCreatable {
+    var isCreationProcessing: Bool { get }
+    
+    func createComment(placeID: UInt64, _ commentContent: String)
+}
+
+protocol CommentEditable {
+    var isUpdatingProcessing: Bool { get }
+    
+    func editComment(_ commentContent: String)
+}
+
+protocol CommentDeletable {
+    var isDeletionProcessing: Bool { get }
+    
+    func deleteComment(_ comment: Comment)
+}
+
 @MainActor
-final class CommentViewModel: ObservableObject {
-    @Published var sheetType: SheetType?
-    @Published var comments = [Comment]()
-    @Published var currentComment: Comment?
-    @Published var commentTextField = String()
-    @Published private(set) var isCreationProcessing: Bool = false
-    @Published private(set) var isDeletionProcessing: Bool = false
-    @Published private(set) var isUpdatingProcessing: Bool = false
+@Observable
+final class CommentViewModel {
+    private(set) var comments = [Comment]()
+    private(set) var currentComment: Comment?
+    private(set) var isCreationProcessing: Bool = false
+    private(set) var isDeletionProcessing: Bool = false
+    private(set) var isUpdatingProcessing: Bool = false
     
     private let placeCore: PlaceCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -45,7 +62,7 @@ extension CommentViewModel {
         /// 코멘트 내용 확인, 삭제
         case read(comment: Comment)
         /// 코멘트 수정
-        case edit
+        case edit(comment: Comment)
         
         var id: String { String(describing: self) }
     }
@@ -53,48 +70,42 @@ extension CommentViewModel {
 
 // MARK: - Interfaces
 extension CommentViewModel {
-    func presentCreationSheet() {
-        sheetType = .create
+    func readComment(_ comment: Comment) {
+        currentComment = comment
     }
-    
-    func dismissSheet() {
-        sheetType = nil
-    }
-    
-    func createComment(placeID: UInt64) {
+}
+
+// MARK: - CommentCreatable Conformation
+extension CommentViewModel: @preconcurrency CommentCreatable {
+    func createComment(placeID: UInt64, _ commentContent: String) {
         isCreationProcessing = true
-        cancellableBag[#function] = placeCore.createComment(placeID: placeID, description: commentTextField)
+        cancellableBag[#function] = placeCore.createComment(placeID: placeID, description: commentContent)
             .sink { [weak self] _ in
                 self?.isCreationProcessing = false
             } receiveValue: { _ in }
     }
-    
-    func presentReadingSheet(comment: Comment) {
-        currentComment = comment
-        sheetType = .read(comment: comment)
+}
+
+// MARK: - CommentEditable Conformation
+extension CommentViewModel: @preconcurrency CommentEditable {
+    func editComment(_ commentContent: String) {
+        guard let currentComment else { return }
+        
+        isUpdatingProcessing = true
+        cancellableBag[#function] = placeCore.updateComment(comment: currentComment, description: commentContent)
+            .sink { [weak self] _ in
+                self?.isUpdatingProcessing = false
+            } receiveValue: { _ in }
     }
-    
+}
+
+// MARK: - CommentDeletable Conformation
+extension CommentViewModel: @preconcurrency CommentDeletable {
     func deleteComment(_ comment: Comment) {
         isDeletionProcessing = true
         cancellableBag[#function] = placeCore.deleteComment(comment: comment)
             .sink { [weak self] _ in
                 self?.isDeletionProcessing = false
-            } receiveValue: { _ in }
-    }
-    
-    func presentEditingSheet() {
-        guard let currentComment else { return }
-        commentTextField = currentComment.description
-        sheetType = .edit
-    }
-    
-    func editComment() {
-        guard let currentComment else { return }
-        
-        isUpdatingProcessing = true
-        cancellableBag[#function] = placeCore.updateComment(comment: currentComment, description: commentTextField)
-            .sink { [weak self] _ in
-                self?.isUpdatingProcessing = false
             } receiveValue: { _ in }
     }
 }

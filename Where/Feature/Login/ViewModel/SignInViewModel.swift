@@ -9,14 +9,9 @@ import Foundation
 import Combine
 import Swinject
 
-final class SignInViewModel: ObservableObject {
-    @Published var emailFieldText: String = String()
-    @Published var passwordFieldText: String = String()
-    @Published private(set) var state: ProcessingState = .beforeLogin
-    @Published var isPopupPresented: Bool = false
-    var loginButtonDisabled: Bool {
-        state == .processing || emailFieldText.isEmpty || passwordFieldText.isEmpty
-    }
+@Observable
+final class SignInViewModel {
+    private(set) var state: ProcessingState = .beforeLogin
     
     private let authCore: AuthentificationCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -36,28 +31,23 @@ extension SignInViewModel {
         case processing
         /// 로그인 성공
         case success
+        /// 로그인 실패
+        case fail
     }
 }
 
 // MARK: Interfaces
 extension SignInViewModel {
-    func onDisappear() {
-        state = .beforeLogin
-        emailFieldText.removeAll()
-        passwordFieldText.removeAll()
-    }
-    
-    func login() {
+    func login(email: String, password: String) {
         state = .processing
-        authCore.login(email: emailFieldText, password: passwordFieldText)
+        authCore.login(email: email, password: password)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:
                     self?.state = .success
                 case .failure:
-                    self?.isPopupPresented = true
-                    self?.state = .beforeLogin
+                    self?.state = .fail
                 }
             } receiveValue: { _ in }
             .store(in: cancellableBag, key: #function)

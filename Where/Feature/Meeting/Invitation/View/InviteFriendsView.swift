@@ -12,15 +12,17 @@ fileprivate typealias FriendCellDataSource = InviteFriendsViewModel.FriendCellDa
 
 struct InviteFriendsView: View {
     @Environment(\.openURL) private var openURL
-    @ObservedObject private var viewModel:InviteFriendsViewModel
+    @StateObject private var viewModel:InviteFriendsViewModel
     @FocusState private var isFocused: Bool
+    
+    private let meetingID: UInt64
     
     init(
         meetingID: UInt64,
         resolver: Resolver
     ) {
-        self.viewModel = resolver.resolve(InviteFriendsViewModel.self)!
-        self.viewModel.setMeeting(id: meetingID)
+        self.meetingID = meetingID
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(InviteFriendsViewModel.self)!)
     }
     
     var body: some View {
@@ -117,6 +119,9 @@ struct InviteFriendsView: View {
             }
         }
         .padding([.top, .horizontal])
+        .onAppear {
+            viewModel.setMeeting(id: meetingID)
+        }
     }
     
     @ViewBuilder private func invitedFriends() -> some View {

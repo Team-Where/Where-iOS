@@ -10,33 +10,28 @@ import Swinject
 
 fileprivate typealias SectionType = FriendsListViewModel.SectionType
 fileprivate typealias SheetType = FriendsListViewModel.SheetType
-fileprivate typealias Route = FriendsListViewModel.Route
 
 struct FriendsListView: View {
-    @ObservedObject private var viewModel: FriendsListViewModel
+    @StateObject private var viewModel: FriendsListViewModel
     @FocusState private var isFocused: Bool
-    
-    private var friends: [FriendRelationship] { viewModel.friends }
-    private var searchedFriends: [FriendRelationship] { viewModel.searchedFriends }
-    private var isEditing: Bool { viewModel.isEditing }
     
     private let resolver: Resolver
     
     init(resolver: Resolver) {
-        self.viewModel = resolver.resolve(FriendsListViewModel.self)!
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(FriendsListViewModel.self)!)
         self.resolver = resolver
     }
     
     var body: some View {
         VStack {
-            Header()
+            Header($viewModel.isEditing)
             
             SearchBar("친구를 검색하세요.", text: $viewModel.searchingText, $isFocused)
             
-            if friends.isEmpty {
-                unavailableView
+            if viewModel.friends.isEmpty {
+                UnavailableView()
             } else {
-                content()
+                FriendsList(viewModel: viewModel)
             }
         }
         .onTapGesture {
@@ -52,78 +47,8 @@ struct FriendsListView: View {
             case .deleteFriend(let friend):
                 DeleteFriendSheet(viewModel: viewModel, friend: friend)
             case .historyWithFriend(let user, let friend):
-                HistoryReminderSheet(viewModel: viewModel, user: user, friend: friend)
+                HistoryReminderSheet(viewModel: viewModel, user: user, friend: friend, resolver: resolver)
             }
-        }
-        .navigationDestination(item: $viewModel.route) { route in
-            switch route {
-            case .historyReminder(let user, let friend):
-                HistoryReminderView(user: user, friend: friend, resolver: resolver)
-            }
-        }
-    }
-    
-    private var unavailableView: some View {
-        VStack {
-            HStack {
-                Text("친구(\(0))")
-                    .whereFont(.body16medium)
-                
-                Spacer()
-            }
-            
-            VStack {
-                Spacer()
-                
-                Image(systemName: "exclamationmark.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 18)
-                    .foregroundStyle(Color(hex: 0x868E96))
-                
-                Text("아직 만난 친구가 없어요!")
-                    .whereFont(.body16medium)
-                    .foregroundStyle(Color(hex: 0x495057))
-                
-                Spacer()
-            }
-        }
-        .padding(.top)
-    }
-    
-    @ViewBuilder private func content() -> some View {
-        ScrollView(.vertical) {
-            if isEditing == false {
-                Section {
-                    LazyVStack {
-                        ForEach(friends) { friend in
-                            Cell(viewModel: viewModel, friend)
-                        }
-                    }
-                } header: {
-                    sectionHeader(type: .favorite, count: friends.count)
-                }
-                .padding(.top)
-            }
-            
-            Section {
-                LazyVStack {
-                    ForEach(friends) { friend in
-                        Cell(viewModel: viewModel, friend)
-                    }
-                }
-            } header: {
-                sectionHeader(type: .common, count: friends.count)
-            }
-            .padding(.top)
-        }
-    }
-    
-    @ViewBuilder private func sectionHeader(type: SectionType, count: Int) -> some View {
-        HStack {
-            Text("\(type.title)(\(count))")
-            
-            Spacer()
         }
     }
 }
@@ -131,7 +56,11 @@ struct FriendsListView: View {
 // MARK: - Subviews
 private extension FriendsListView {
     struct Header: View {
-        @State private var isEditing: Bool = false
+        @Binding var isEditing: Bool
+        
+        init(_ isEditing: Binding<Bool>) {
+            self._isEditing = isEditing
+        }
         
         var body: some View {
             HStack {
@@ -162,6 +91,127 @@ private extension FriendsListView {
         }
     }
     
+    struct UnavailableView: View {
+        var body: some View {
+            VStack {
+                HStack {
+                    Text("친구(\(0))")
+                        .whereFont(.body16medium)
+                    
+                    Spacer()
+                }
+                
+                VStack {
+                    Spacer()
+                    
+                    Image(systemName: "exclamationmark.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 18)
+                        .foregroundStyle(Color(hex: 0x868E96))
+                    
+                    Text("아직 만난 친구가 없어요!")
+                        .whereFont(.body16medium)
+                        .foregroundStyle(Color(hex: 0x495057))
+                    
+                    Spacer()
+                }
+            }
+            .padding(.top)
+        }
+    }
+    
+    struct FriendsList: View {
+        @ObservedObject var viewModel: FriendsListViewModel
+        
+        private var friends: [FriendRelationship] { viewModel.friends }
+        private var searchedFriends: [FriendRelationship] { viewModel.searchedFriends }
+        private var isEditing: Bool { viewModel.isEditing }
+        
+        var body: some View {
+            ScrollView(.vertical) {
+                if viewModel.isEditing == false {
+                    Section {
+                        LazyVStack {
+                            ForEach(viewModel.friends) { friend in
+                                Cell(viewModel: viewModel, friend)
+                            }
+                        }
+                    } header: {
+                        sectionHeader(type: .favorite, count: friends.count)
+                    }
+                    .padding(.top)
+                }
+                
+                Section {
+                    LazyVStack {
+                        ForEach(friends) { friend in
+                            Cell(viewModel: viewModel, friend)
+                        }
+                    }
+                } header: {
+                    sectionHeader(type: .common, count: friends.count)
+                }
+                .padding(.top)
+            }
+        }
+        
+        @ViewBuilder private func sectionHeader(type: SectionType, count: Int) -> some View {
+            HStack {
+                Text("\(type.title)(\(count))")
+                
+                Spacer()
+            }
+        }
+    }
+    
+    struct Cell: View {
+        @ObservedObject private var viewModel: FriendsListViewModel
+
+        private let friend: FriendRelationship
+        
+        fileprivate init(
+            viewModel: FriendsListViewModel,
+            _ friend: FriendRelationship
+        ) {
+            self.viewModel = viewModel
+            self.friend = friend
+        }
+        
+        var body: some View {
+            Button {
+                viewModel.presentHistoryWithFriend(friend: friend)
+            } label: {
+                HStack {
+                    AsyncImage(url: friend.imageURL)
+                        .scaledToFit()
+                        .frame(width: 50, height: 50)
+                        .clipShape(.circle)
+                    
+                    Text(friend.nickname)
+                        .whereFont(.body16medium)
+                    
+                    Spacer()
+                    
+                    performButton
+                }
+            }
+        }
+        
+        private var performButton: some View {
+            Button {
+                viewModel.isEditing ? viewModel.deleteFriend(by: friend.id) : viewModel.toggleFavorite(by: friend.id)
+            } label: {
+                Image(systemName: viewModel.isEditing ? "trash" : friend.isFavorite ? "star.fill" : "star")
+                    .foregroundStyle(viewModel.isEditing ? .where(hex: 0x6B7280) : friend.isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
+            }
+            .transition(.move(edge: .trailing))
+        }
+    }
+}
+
+// MARK: - Sheet
+private extension FriendsListView {
     struct DeleteFriendSheet: View {
         @ObservedObject private var viewModel: FriendsListViewModel
         
@@ -202,15 +252,18 @@ private extension FriendsListView {
         
         let user: User
         let friend: FriendRelationship
+        let resolver: Resolver
         
         init(
             viewModel: FriendsListViewModel,
             user: User,
-            friend: FriendRelationship
+            friend: FriendRelationship,
+            resolver: Resolver
         ) {
             self.viewModel = viewModel
             self.user = user
             self.friend = friend
+            self.resolver = resolver
         }
         
         var body: some View {
@@ -254,8 +307,8 @@ private extension FriendsListView {
                     }
                 }
                 
-                Button {
-                    viewModel.presentHistoryReminder(friend: friend)
+                NavigationLink {
+                    HistoryReminderView(user: user, friend: friend, resolver: resolver)
                 } label: {
                     Text("나와의 모임활동 보기")
                         .whereFont(.body16medium)
@@ -269,46 +322,6 @@ private extension FriendsListView {
             .padding()
             .presentationDetents([.fraction(0.45)])
             .presentationCornerRadius(16)
-        }
-    }
-    
-    struct Cell: View {
-        @ObservedObject private var viewModel: FriendsListViewModel
-
-        private let friend: FriendRelationship
-        
-        fileprivate init(
-            viewModel: FriendsListViewModel,
-            _ friend: FriendRelationship
-        ) {
-            self.viewModel = viewModel
-            self.friend = friend
-        }
-        
-        var body: some View {
-            HStack {
-                AsyncImage(url: friend.imageURL)
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
-                    .clipShape(.circle)
-                
-                Text(friend.nickname)
-                    .whereFont(.body16medium)
-                
-                Spacer()
-                
-                Button {
-                    viewModel.isEditing ? viewModel.deleteFriend(by: friend.id) : viewModel.toggleFavorite(by: friend.id)
-                } label: {
-                    Image(systemName: viewModel.isEditing ? "trash" : friend.isFavorite ? "star.fill" : "star")
-                        .foregroundStyle(viewModel.isEditing ? .where(hex: 0x6B7280) : friend.isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
-                }
-                .transition(.move(edge: .trailing))
-            }
-            .contentShape(.rect)
-            .onTapGesture {
-                viewModel.presentHistoryWithFriend(friend: friend)
-            }
         }
     }
 }
