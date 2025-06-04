@@ -11,6 +11,8 @@ import Combine
 
 struct MeetingInformationView: View {
     @ObservedObject private var viewModel: MeetingInformationViewModel
+    @Environment(\.dismiss) private var dismiss
+    
     private let resolver: Resolver
     
     init(resolver: Resolver, meetingID: UInt64) {
@@ -44,11 +46,15 @@ struct MeetingInformationView: View {
                     }
                 }
             }
+            .onReceive(viewModel.$isExit){ isExit in
+                if isExit {
+                    dismiss()
+                }
+            }
             .sheet(item: $viewModel.sheetType) { type in
                 switch type {
                 case .editMeetingInfo:
                     EditMeetingInfoSheet(viewModel: viewModel)
-
                 }
             }
     }
