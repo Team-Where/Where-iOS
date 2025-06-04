@@ -281,7 +281,7 @@ extension MeetingCore: MeetingCoreProtocol {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
-        let dto = CreateMeetingDTO.Request(title: info.title, creatorID: user.id, description: info.description, participants: info.participants)
+        let dto = CreateMeetingDTO.Request(title: info.title, creatorID: user.id, description: info.description, participants: info.participants.map { $0 })
         let imageData = info.imageData
         guard let encodedMeeting = try? encoder.encode(dto) else {
             return Fail(error: .encodingError(type: CreateMeetingDTO.Request.self)).eraseToAnyPublisher()

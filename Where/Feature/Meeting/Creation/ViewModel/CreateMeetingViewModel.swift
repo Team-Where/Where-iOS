@@ -9,21 +9,32 @@ import Foundation
 import Combine
 import Swinject
 
-final class CreateMeetingViewModel: ObservableObject {
-    @Published private(set) var step: MeetingCreationStep = .basicInformation
-    @Published var isPopupPresented: Bool = false
-    @Published var isFloaterPresented: Bool = false
-    @Published var floaterItem: FloaterItem?
-    @Published var selectedImage: Data?
-    @Published private(set) var isImageSelected: Bool = false
-    @Published var titleFieldText = String()
-    @Published var descriptionFieldText = String()
-    @Published private(set) var tempMeetingInfo: TemporaryMeetingInfo?
-    @Published private(set) var friendsDataSource = [FriendCellDataSource]()
-    @Published private(set) var selectedParticipantIDs = Set<UInt64>()
+protocol BasicInformationPerformable {
+    var isImageSelected: Bool { get }
+    
+    func setBasicInfo(title: String, description: String, imageData: Data?)
+}
+
+protocol InvitationStatePerformable {
+    typealias FriendCellDataSource = CreateMeetingViewModel.FriendCellDataSource
+    
+    var selectedParticipantIDs: Set<UInt64> { get }
+    var friendsDataSource: [FriendCellDataSource] { get }
+    
+    func toggleInvitationState(by index: Int)
+    func createMeeting()
+}
+
+@Observable
+final class CreateMeetingViewModel {
+    private(set) var step: MeetingCreationStep = .basicInformation
+    private(set) var isImageSelected: Bool = false
+    private(set) var tempMeetingInfo = TemporaryMeetingInfo.initialize()
+    private(set) var friendsDataSource = [FriendCellDataSource]()
+    private(set) var selectedParticipantIDs = Set<UInt64>()
+    private(set) var floaterItem: FloaterItem?
     
     let cancellableBag = CancellableBag()
-    var disabled: Bool { titleFieldText.isEmpty }
     var viewRoutingPublisher: AnyPublisher<(sheet: MainSheetType?, cover: MainFullScreenCoverType), Never> { viewRoutingSubject.eraseToAnyPublisher() }
     
     
@@ -135,46 +146,36 @@ extension CreateMeetingViewModel {
     }
 }
 
-// MARK: Interfaces
-extension CreateMeetingViewModel {
-    func setBasicInfo() {
-        tempMeetingInfo = TemporaryMeetingInfo(title: titleFieldText,
-                                               description: descriptionFieldText,
-                                               participants: selectedParticipantIDs.map { $0 },
-                                               imageData: selectedImage)
+// MARK: - BasicInformationPerformable Conformation
+extension CreateMeetingViewModel: BasicInformationPerformable {
+    func setBasicInfo(title: String, description: String, imageData: Data?) {
+        
+        tempMeetingInfo = tempMeetingInfo.setBasicInfo(title: title, description: description, image: imageData)
         step = .inviteFriends
     }
-    
-    func setInvitedFriends() {
-        if !selectedParticipantIDs.isEmpty {
-            tempMeetingInfo = tempMeetingInfo?.setInvitedFriends(selectedParticipantIDs.sorted())
-        }
-    }
-    
-    func toggleInvitationState(for friendID: UInt64) {
-        guard let index = friendsDataSource.firstIndex(where: { $0.id == friendID }) else { return }
-        
-        var updatedDataSource = friendsDataSource
-        var targetItem = updatedDataSource[index]
+}
+
+// MARK: - InvitationStatePerformable Conformation
+extension CreateMeetingViewModel: InvitationStatePerformable {
+    func toggleInvitationState(by index: Int) {
+        var targetItem = friendsDataSource[index]
         targetItem.isInvited.toggle()
-        updatedDataSource[index] = targetItem
+        friendsDataSource[index] = targetItem
         
         if targetItem.isInvited {
-            selectedParticipantIDs.insert(friendID)
+            selectedParticipantIDs.insert(targetItem.friend.id)
             floaterItem = .invite(friend: targetItem.friend)
         } else {
-            selectedParticipantIDs.remove(friendID)
+            selectedParticipantIDs.remove(targetItem.friend.id)
         }
-        
-        friendsDataSource = updatedDataSource
     }
     
     func createMeeting() {
-        guard let tempMeeting = tempMeetingInfo
-        else {
-            return
+        if selectedParticipantIDs.isEmpty == false {
+            tempMeetingInfo = tempMeetingInfo.setInvitedFriends(selectedParticipantIDs)
         }
-        meetingCore.createMeeting(info: tempMeeting)
+        
+        meetingCore.createMeeting(info: tempMeetingInfo)
             .sink { completion in
                 switch completion {
                 case .finished: return
@@ -183,9 +184,12 @@ extension CreateMeetingViewModel {
                     print("\(#function) Error: \(error)")
                     #endif
                 }
-            } receiveValue: { _ in
-
-            }
+            } receiveValue: { _ in }
             .store(in: cancellableBag, key: "\(#function)")
     }
+}
+
+// MARK: Interfaces
+extension CreateMeetingViewModel {
+    
 }
