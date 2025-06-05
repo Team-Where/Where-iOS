@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AdjustPasswordView: View {
-    @ObservedObject private var viewModel = AdjustPasswordViewModel()
+    @StateObject private var viewModel = AdjustPasswordViewModel()
     
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
