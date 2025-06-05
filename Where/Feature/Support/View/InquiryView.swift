@@ -11,8 +11,7 @@ import Swinject
 fileprivate typealias SheetType = InquiryViewModel.SheetType
 
 struct InquiryView: View {
-    @ObservedObject private var viewModel: InquiryViewModel
-    
+    private let viewModel: InquiryViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {
@@ -40,8 +39,8 @@ struct InquiryView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    
+                NavigationLink {
+                    EditInquiryView(inquiry: nil, resolver: resolver)
                 } label: {
                     Image(systemName: "pencil.line")
                         .foregroundStyle(.where(.gray800))
@@ -74,11 +73,15 @@ extension InquiryView {
             }
         }
     }
-    
+}
+
+// MARK: - Subviews
+private extension InquiryView {
     struct InquiryListView: View {
-        @ObservedObject private var viewModel: InquiryViewModel
+        @State private var sheetType: SheetType?
         
-        let inquiries: [Inquiry]
+        private let viewModel: InquiryViewModel
+        private let inquiries: [Inquiry]
         
         init(
             _ viewModel: InquiryViewModel,
@@ -120,7 +123,7 @@ extension InquiryView {
                     }
                 }
             }
-            .sheet(item: $viewModel.sheetType) { type in
+            .sheet(item: $sheetType) { type in
                 switch type {
                 case .deleteInquiry(let inquiry):
                     DeleteInquirySheet(viewModel, inquiry: inquiry)
@@ -147,41 +150,6 @@ extension InquiryView {
                             .foregroundStyle(.where(.gray700))
                             .multilineTextAlignment(.leading)
                     }
-                    /* 1:1 문의 수정, 삭제 기능 없음 (WIP)
-                    HStack(spacing: 10) {
-                        Spacer()
-                        
-                        if inquiry.isAnswered == false {
-                            Button {
-                                viewModel.updateInquiry(inquiry)
-                            } label: {
-                                Text("수정")
-                                    .whereFont(.body14medium)
-                                    .foregroundStyle(.accent)
-                                    .frame(width: 52, height: 32)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .fill(.white)
-                                            .strokeBorder(.accent)
-                                    )
-                            }
-                        }
-                        
-                        Button {
-                            viewModel.presentDeleteInquirySheet(for: inquiry)
-                        } label: {
-                            Text("삭제")
-                                .whereFont(.body14medium)
-                                .foregroundStyle(.accent)
-                                .frame(width: 52, height: 32)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(.white)
-                                        .strokeBorder(.accent)
-                                )
-                        }
-                    }
-                     */
                     
                     if let answerContent = inquiry.answerContent {
                         VStack(alignment: .leading, spacing: 10) {
@@ -224,12 +192,12 @@ extension InquiryView {
 // MARK: Sheet
 extension InquiryView {
     struct DeleteInquirySheet: View {
-        @ObservedObject private var viewModel: InquiryViewModel
+        private let viewModel: InquiryDeletable
         
         let inquiry: Inquiry
         
         init(
-            _ viewModel: InquiryViewModel,
+            _ viewModel: InquiryDeletable,
             inquiry: Inquiry
         ) {
             self.viewModel = viewModel
@@ -238,7 +206,7 @@ extension InquiryView {
         
         var body: some View {
             Button {
-                viewModel.deleteInquiry(inquiry)
+                viewModel.delete(inquiry: inquiry)
             } label: {
                 Text("1:1 문의 삭제")
                     .whereFont(.body16medium)

@@ -9,10 +9,14 @@ import Foundation
 import Combine
 import Swinject
 
-final class InquiryViewModel: ObservableObject {
-    @Published var sheetType: SheetType?
-    @Published private(set) var waitingForReplyInquiries = [Inquiry]()
-    @Published private(set) var answerCompleteInquiries = [Inquiry]()
+protocol InquiryDeletable {
+    func delete(inquiry: Inquiry)
+}
+
+@Observable
+final class InquiryViewModel {
+    private(set) var waitingForReplyInquiries = [Inquiry]()
+    private(set) var answerCompleteInquiries = [Inquiry]()
     
     private let supportCore: SupportCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -44,17 +48,9 @@ extension InquiryViewModel {
     }
 }
 
-// MARK: - Interfaces
-extension InquiryViewModel {
-    func updateInquiry(_ inquiry: Inquiry) {
-        // TODO: 문의 수정 기능 연결 (WIP)
-    }
-    
-    func presentDeleteInquirySheet(for inquiry: Inquiry) {
-        sheetType = .deleteInquiry(inquiry: inquiry)
-    }
-    
-    func deleteInquiry(_ inquiry: Inquiry) {
-        // TODO: 문의 삭제 기능 연결 (WIP)
+// MARK: - InquiryDeletable Conformation
+extension InquiryViewModel: InquiryDeletable {
+    func delete(inquiry: Inquiry) {
+        // TODO: 1:1 문의 삭제 기능 부재
     }
 }
