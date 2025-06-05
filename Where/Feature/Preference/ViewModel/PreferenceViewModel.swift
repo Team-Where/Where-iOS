@@ -10,8 +10,9 @@ import Swinject
 import Combine
 
 @MainActor
-final class PreferenceViewModel: ObservableObject {
-    @Published var versionNotice = String()
+@Observable
+final class PreferenceViewModel {
+    private(set) var versionNotice = String()
     
     private let authCore: AuthentificationCoreProtocol
     private let supportCore: SupportCoreProtocol

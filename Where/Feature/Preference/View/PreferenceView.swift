@@ -10,8 +10,8 @@ import Swinject
 
 struct PreferenceView: View {
     @AppStorage(AppStorageKey.shouldDisplayNotifications) var shouldDisplayNotifications: Bool = true
-    @ObservedObject private var viewModel: PreferenceViewModel
     
+    private let viewModel: PreferenceViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {
