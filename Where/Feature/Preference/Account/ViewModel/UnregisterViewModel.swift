@@ -15,6 +15,8 @@ final class UnregisterViewModel: ObservableObject {
     @Published var isSheetPresented: Bool = false
     @Published private(set) var isProcessing: Bool = false
     
+    private var isLoginNeeded: Bool = false
+    
     private let authCore: AuthentificationCoreProtocol
     private let cancellableBag = CancellableBag()
     
@@ -24,7 +26,18 @@ final class UnregisterViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        
+        authCore.currentUser
+            .sink { [weak self] completion in
+                guard case .failure = completion else { return }
+                self?.isLoginNeeded = true
+            } receiveValue: { [weak self] user in
+                guard let user else {
+                    self?.isLoginNeeded = true
+                    return
+                }
+                self?.isLoginNeeded = false
+            }
+            .store(in: cancellableBag, key: "CurrentUser")
     }
 }
 
@@ -66,6 +79,8 @@ extension UnregisterViewModel {
     }
     
     func unregister() {
+        guard isLoginNeeded == false else { return }
+        
         isProcessing = true
         cancellableBag[#function] = authCore.unregister()
             .receive(on: DispatchQueue.main)

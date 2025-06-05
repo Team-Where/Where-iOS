@@ -13,10 +13,10 @@ fileprivate typealias UnregisterStep = UnregisterViewModel.UnregisterStep
 
 struct UnregisterView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: UnregisterViewModel
+    @StateObject private var viewModel: UnregisterViewModel
     
     init(resolver: Resolver) {
-        self.viewModel = resolver.resolve(UnregisterViewModel.self)!
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(UnregisterViewModel.self)!)
     }
     
     var body: some View {
