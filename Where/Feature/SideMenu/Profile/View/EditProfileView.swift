@@ -10,8 +10,13 @@ import Swinject
 
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: EditProfileViewModel
+    @State private var isPopupPresented: Bool = false
+    @State private var isNicknameValid: Bool = false
+    @State private var isFloaterPresented: Bool = false
+    @State private var profileImageData: Data?
+    @State private var nicknameFieldText: String = String()
     
+    private let viewModel: EditProfileViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {
@@ -22,7 +27,7 @@ struct EditProfileView: View {
     var body: some View {
         VStack {
             ZStack(alignment: .bottomTrailing) {
-                if let data = viewModel.profileImageData,
+                if let data = profileImageData,
                    let uiImage = UIImage(data: data) {
                     Image(uiImage: uiImage)
                         .resizable()
@@ -37,7 +42,7 @@ struct EditProfileView: View {
                 
                 Button {
                     withAnimation {
-                        viewModel.showPopup()
+                        isPopupPresented = true
                     }
                 } label: {
                     Image("CameraButton")
@@ -56,14 +61,15 @@ struct EditProfileView: View {
                     
                     RoundedTextField(
                         "닉네임을 입력해주세요",
-                        text: $viewModel.nicknameFieldText,
+                        text: $nicknameFieldText,
                         lineColor: Color(hex: 0xE5E7EB)
                     )
+                    .onChange(of: nicknameFieldText, onNicknameChange)
                 }
                 
-                Text(viewModel.isNicknameValid ? "사용 가능한 닉네임입니다." : "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다.")
+                Text(isNicknameValid ? "사용 가능한 닉네임입니다." : "2~8자의 영문, 숫자, 한글, 특수문자(-, _)만 사용할 수 있습니다.")
                     .whereFont(.body14regular)
-                    .foregroundColor(viewModel.isNicknameValid ? .green : (viewModel.nicknameFieldText.isEmpty ? .black : .red))
+                    .foregroundColor(isNicknameValid ? .green : (nicknameFieldText.isEmpty ? .black : .red))
             }
             .padding()
             .padding(.top)
@@ -83,7 +89,7 @@ struct EditProfileView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    viewModel.updateProfile()
+                    viewModel.updateProfile(nickname: nicknameFieldText, profileImageData: profileImageData)
                 } label: {
                     if viewModel.step == .processing {
                         ProgressView()
@@ -91,24 +97,32 @@ struct EditProfileView: View {
                         Text("완료")
                     }
                 }
-                .disabled(viewModel.isNicknameValid == false || viewModel.step == .processing)
+                .disabled(isNicknameValid == false || viewModel.step == .processing)
             }
         }
-        .popup($viewModel.isPopupPresented) {
-            ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { data in
-                viewModel.selectProfileImageData(data)
+        .popup($isPopupPresented) {
+            ImageSelectionPopupView(isPopupPresented: $isPopupPresented) { data in
+                profileImageData = data
             }
         }
-        .floater($viewModel.isFloaterPresented, title: "잠시 후 다시 시도해주세요.")
+        .floater($isFloaterPresented, title: "잠시 후 다시 시도해주세요.")
         .onChange(of: viewModel.step) { oldValue, newValue in
             switch newValue {
             case .beforeUpdate, .processing: break
             case .done:
                 dismiss()
             case .errorOccured:
-                viewModel.isFloaterPresented = true
+                isFloaterPresented = true
             }
         }
+        .onAppear {
+            nicknameFieldText = viewModel.currentUser?.nickname ?? String()
+        }
+    }
+    
+    private func onNicknameChange(_ before: String, _ after: String) {
+        guard before != after else { return }
+        isNicknameValid = after.isValidNickname()
     }
 }
 

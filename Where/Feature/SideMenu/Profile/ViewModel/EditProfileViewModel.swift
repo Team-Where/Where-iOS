@@ -9,15 +9,9 @@ import Foundation
 import Combine
 import Swinject
 
-@MainActor
-final class EditProfileViewModel: ObservableObject {
-    @Published var isPopupPresented: Bool = false
-    @Published var profileImageData: Data?
-    @Published var nicknameFieldText: String = String()
-    @Published var isNicknameValid: Bool = false
-    @Published var step: EditProfileStep = .beforeUpdate
-    @Published var isFloaterPresented: Bool = false
-    
+@Observable
+final class EditProfileViewModel {
+    private(set) var step: EditProfileStep = .beforeUpdate
     private(set) var currentUser: User?
     
     private let authCore: AuthentificationCoreProtocol
@@ -32,25 +26,16 @@ final class EditProfileViewModel: ObservableObject {
         authCore.currentUser
             .receive(on: DispatchQueue.main)
             .sink { [weak self] user in
-                guard let nickname = user?.nickname else { return }
-                self?.nicknameFieldText = nickname
+                self?.currentUser = user
             }
             .store(in: cancellableBag, key: "CurrentUser")
-        
-        $nicknameFieldText
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] nickname in
-                self?.isNicknameValid = nickname.isValidNickname()
-            }
-            .store(in: cancellableBag, key: "NicknameFieldText")
     }
 }
 
 // MARK: Nested Types
 extension EditProfileViewModel {
     /// 프로필 수정 단계
-    enum EditProfileStep {
+    enum EditProfileStep: Equatable {
         /// 프로필 수정 요청 전
         case beforeUpdate
         /// 프로필 수정 진행 중
@@ -58,26 +43,22 @@ extension EditProfileViewModel {
         /// 프로필 수정 완료
         case done
         /// 프로필 수정 실패
-        case errorOccured
+        case errorOccured(AuthentificationCoreError)
+        
+        static func == (lhs: EditProfileViewModel.EditProfileStep, rhs: EditProfileViewModel.EditProfileStep) -> Bool {
+            String(describing: lhs) == String(describing: rhs)
+        }
     }
 }
 
 // MARK: Interfaces
 extension EditProfileViewModel {
-    func showPopup() {
-        isPopupPresented = true
-    }
-    
-    func updateProfile() {
+    func updateProfile(nickname: String, profileImageData: Data?) {
         guard step != .processing else { return }
         
-        guard let user = currentUser else { return step = .errorOccured }
+        guard let user = currentUser else { return step = .errorOccured(.userInfoFetchFailed) }
         
         step = .processing
-        
-        guard let user = currentUser else {
-            return step = .errorOccured
-        }
         
         let imageUpdatePublisher: AnyPublisher<Void, AuthentificationCoreError>
         
@@ -105,7 +86,7 @@ extension EditProfileViewModel {
             }
         }
         
-        let nicknameUpdatePublisher = authCore.updateNickname(nicknameFieldText)
+        let nicknameUpdatePublisher = authCore.updateNickname(nickname)
         
         imageUpdatePublisher
             .combineLatest(nicknameUpdatePublisher)
@@ -115,15 +96,11 @@ extension EditProfileViewModel {
                 case .finished:
                     self?.step = .done
                 case .failure(let error):
-                    self?.isFloaterPresented = true
+                    self?.step = .errorOccured(error)
                 }
             } receiveValue: { (_, isDone) in
                 return
             }
             .store(in: cancellableBag, key: #function)
-    }
-    
-    func selectProfileImageData(_ data: Data?) {
-        profileImageData = data
     }
 }
