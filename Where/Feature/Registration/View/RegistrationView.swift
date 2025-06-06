@@ -11,7 +11,7 @@ import Swinject
 fileprivate typealias KeyboardFocusState = RegistrationViewModel.KeyboardFocusState
 
 struct RegistrationView: View {
-    @ObservedObject private var viewModel: RegistrationViewModel
+    @StateObject private var viewModel: RegistrationViewModel
     @Binding var isLoginNeeded: Bool
     @FocusState private var textFieldFocus: KeyboardFocusState?
     
@@ -22,7 +22,7 @@ struct RegistrationView: View {
         resolver: Resolver
     ) {
         self._isLoginNeeded = isLoginNeeded
-        self.viewModel = resolver.resolve(RegistrationViewModel.self)!
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(RegistrationViewModel.self)!)
         self.resolver = resolver
     }
     
