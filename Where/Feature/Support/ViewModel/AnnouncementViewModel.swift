@@ -9,9 +9,9 @@ import Foundation
 import Combine
 import Swinject
 
-final class AnnouncementViewModel: ObservableObject {
-    @Published var navigationType: NavigationType?
-    @Published var announcements = [Announcement]()
+@Observable
+final class AnnouncementViewModel {
+    private(set) var announcements = [Announcement]()
     
     private let supportCore: SupportCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -30,14 +30,5 @@ final class AnnouncementViewModel: ObservableObject {
                     .filter { $0.type == .common }
             }
             .store(in: cancellableBag, key: "Announcements")
-    }
-}
-
-// MARK: - Nested Types
-extension AnnouncementViewModel {
-    /// 공지사항 화면에서 라우팅 가능한 네비게이션패스의 종류
-    enum NavigationType: Hashable {
-        /// FAQ 및 공지사항 작성 화면
-        case editAnnouncement
     }
 }
