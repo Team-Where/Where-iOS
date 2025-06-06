@@ -8,11 +8,10 @@
 import SwiftUI
 import Swinject
 
-fileprivate typealias NavigationType = FAQViewModel.NavigationType
-
 struct FAQView: View {
-    @ObservedObject private var viewModel: FAQViewModel
+    @State private var navigationType: NavigationType?
     
+    private let viewModel: FAQViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {
@@ -32,7 +31,7 @@ struct FAQView: View {
             }
             
             Button {
-                viewModel.presentEditInquiryView()
+                navigationType = .editInquiry
             } label: {
                 Text("1:1 문의하기")
                     .whereFont(.body16medium)
@@ -42,7 +41,7 @@ struct FAQView: View {
             .buttonStyle(.whereRoundedProminent())
             .padding(.horizontal)
         }
-        .navigationDestination(item: $viewModel.navigationType) { type in
+        .navigationDestination(item: $navigationType) { type in
             // TODO: 화면 연결 필요 (WIP)
             switch type {
             case .editAnnouncement:
@@ -64,21 +63,22 @@ struct FAQView: View {
                     .whereFont(.subtitle18semibold)
                     .foregroundStyle(.where(.gray800))
             }
-            
-            // TODO: 관리자 권한인지 판단해서 노출할 수 있도록 수정해야함 (WIP)
-//            ToolbarItem(placement: .topBarTrailing) {
-//                Button {
-//                    navigationType = .editAnnouncement
-//                } label: {
-//                    Image(systemName: "pencil.line")
-//                        .foregroundStyle(.where(.gray800))
-//                }
-//            }
         }
     }
 }
 
 // MARK: Nested Types
+extension FAQView {
+    /// 모임정보 상세 화면에서 라우팅 가능한 네비게이션패스의 종류
+    enum NavigationType: Hashable {
+        /// FAQ 및 공지사항 작성 화면
+        case editAnnouncement
+        /// 1:1 문의 작성 화면
+        case editInquiry
+    }
+}
+
+// MARK: - Subvies
 extension FAQView {
     struct Cell: View {
         @State private var isExpanded: Bool = false

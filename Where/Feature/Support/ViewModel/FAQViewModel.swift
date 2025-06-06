@@ -9,9 +9,9 @@ import Foundation
 import Combine
 import Swinject
 
-final class FAQViewModel: ObservableObject {
-    @Published var navigationType: NavigationType?
-    @Published var faqs = [Announcement]()
+@Observable
+final class FAQViewModel {
+    private(set) var faqs = [Announcement]()
     
     private let supportCore: SupportCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -33,20 +33,7 @@ final class FAQViewModel: ObservableObject {
     }
 }
 
-// MARK: - Nested Types
-extension FAQViewModel {
-    /// 모임정보 상세 화면에서 라우팅 가능한 네비게이션패스의 종류
-    enum NavigationType: Hashable {
-        /// FAQ 및 공지사항 작성 화면
-        case editAnnouncement
-        /// 1:1 문의 작성 화면
-        case editInquiry
-    }
-}
-
 // MARK: - Interfaces
 extension FAQViewModel {
-    func presentEditInquiryView() {
-        navigationType = .editInquiry
-    }
+    
 }
