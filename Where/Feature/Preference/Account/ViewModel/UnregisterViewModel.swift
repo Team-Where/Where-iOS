@@ -31,11 +31,7 @@ final class UnregisterViewModel: ObservableObject {
                 guard case .failure = completion else { return }
                 self?.isLoginNeeded = true
             } receiveValue: { [weak self] user in
-                guard let user else {
-                    self?.isLoginNeeded = true
-                    return
-                }
-                self?.isLoginNeeded = false
+                self?.isLoginNeeded = user == nil
             }
             .store(in: cancellableBag, key: "CurrentUser")
     }
