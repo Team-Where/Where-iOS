@@ -9,7 +9,7 @@ import SwiftUI
 import Swinject
 
 struct NotificationListView: View {
-    @ObservedObject private var viewModel: NotificationListViewModel
+    private let viewModel: NotificationListViewModel
     
     init(resolver: Resolver) {
         self.viewModel = resolver.resolve(NotificationListViewModel.self)!

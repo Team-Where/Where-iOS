@@ -9,8 +9,9 @@ import Foundation
 import Swinject
 import Combine
 
-final class NotificationListViewModel: ObservableObject {
-    @Published var notifications = [Notification]()
+@Observable
+final class NotificationListViewModel {
+    private(set) var notifications = [Notification]()
     
     private let notificationCore: NotificationCoreProtocol
     private var cancellables = Set<AnyCancellable>()
