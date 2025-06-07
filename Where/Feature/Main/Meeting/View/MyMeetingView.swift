@@ -159,6 +159,7 @@ private extension MyMeetingView {
     struct MeetingsView: View {
         let meetings: [Meeting]
         let resolver: Resolver
+        private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 170))]
         
         init(
             _ meetings: [Meeting],
@@ -170,7 +171,7 @@ private extension MyMeetingView {
         
         var body: some View {
             ScrollView(.vertical) {
-                FlowLayout(alignment: .topLeading) {
+                LazyVGrid(columns: columns) {
                     ForEach(meetings) { meeting in
                         MeetingCell(meeting, resolver)
                     }
@@ -202,14 +203,14 @@ private extension MyMeetingView {
                         image
                             .resizable()
                             .scaledToFit()
+                            .aspectRatio(1, contentMode: .fit)
                             .clipShape(.rect(cornerRadius: 10))
-                            .frame(width: 170, height: 170)
                     } placeholder: {
                         Image(.defaultCover)
                             .resizable()
                             .scaledToFit()
+                            .aspectRatio(1, contentMode: .fit)
                             .clipShape(.rect(cornerRadius: 10))
-                            .frame(width: 170, height: 170)
                     }
                     .brightness(meeting.isFinished ? -0.5 : 0)
                     .overlay {
@@ -230,18 +231,22 @@ private extension MyMeetingView {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(meeting.title)
                                 .whereFont(.body16medium)
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
                             
                             DateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
                                 .whereFont(.body14regular)
                                 .foregroundStyle(.where(.gray500))
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .opacity(meeting.isFinished ? 0.5 : 1)
                         
                         Spacer()
                     }
-                    .frame(maxWidth: 170)
                 }
                 .padding(.bottom, 20)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }
