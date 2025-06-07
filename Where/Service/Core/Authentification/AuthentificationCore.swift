@@ -116,7 +116,7 @@ final class AuthentificationCore {
     
     private var fcmToken: String?
     
-    private let authentificationStateSubject = CurrentValueSubject<AuthentificationState, Never>(.loginNeeded)
+    private let authentificationStateSubject = CurrentValueSubject<AuthentificationState?, Never>(nil)
     
     private let apiService: APIServable
     private let encoder: JSONEncoder
@@ -146,6 +146,8 @@ final class AuthentificationCore {
                 case .loginNeeded:
                     self?.resetAuthentifcationState()
                     self?.mediator?.notify(event: .userDidLogout)
+                    
+                case .none: break
                 }
             }
             .store(in: cancellableBag, key: "AuthentificationStateSubject")
@@ -202,7 +204,9 @@ private extension AuthentificationCore {
 // MARK: AuthentificationCoreProtocol Conformation
 extension AuthentificationCore: AuthentificationCoreProtocol {
     var authentificationState: AnyPublisher<AuthentificationState, Never> {
-        authentificationStateSubject.eraseToAnyPublisher()
+        authentificationStateSubject
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
     }
     
     var currentUser: AnyPublisher<User?, Never> {
@@ -450,7 +454,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
             
-        case .loginNeeded:
+        case .loginNeeded, .none:
             return Fail(error: .notSupported).eraseToAnyPublisher()
         }
     }
@@ -473,7 +477,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
             
-        case .loginNeeded:
+        case .loginNeeded, .none:
             return Fail(error: .notSupported).eraseToAnyPublisher()
         }
     }
@@ -496,7 +500,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
             
-        case .loginNeeded:
+        case .loginNeeded, .none:
             return Fail(error: .notSupported).eraseToAnyPublisher()
         }
     }
@@ -521,7 +525,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
                 .mapError { AuthentificationCoreError.networkRequestFailed($0) }
                 .eraseToAnyPublisher()
             
-        case .loginNeeded:
+        case .loginNeeded, .none:
             return Fail(error: .notSupported).eraseToAnyPublisher()
         }
     }
