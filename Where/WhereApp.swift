@@ -33,6 +33,7 @@ struct WhereApp: App {
             NavigationStack {
                 ContentView(resolver: resolver)
             }
+            .preferredColorScheme(.light)
         }
     }
     
