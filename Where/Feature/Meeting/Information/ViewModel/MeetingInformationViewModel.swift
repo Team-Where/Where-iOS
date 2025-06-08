@@ -17,6 +17,7 @@ final class MeetingInformationViewModel: ObservableObject {
     @Published var titleText = String()
     @Published var descriptionText = String()
     @Published var editStep: EditStep = .entry
+    @Published var isExit = false
     
     @Published private(set) var isTitleUpdatingProcessing: Bool = false
     @Published private(set) var isDescriptionUpdatingProcessing: Bool = false
@@ -91,11 +92,23 @@ extension MeetingInformationViewModel {
     
     func exitMeeting() {
         isExitProcessing = true
-        cancellableBag[#function] = meetingCore.exitMeeting(id: meeting.id)
-            .sink { [weak self] completion in
-                self?.isExitProcessing = false
-                self?.editStep = .entry
+        meetingCore.exitMeeting(id: meeting.id)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] result in
+                switch result {
+                case .finished:
+                    self?.isExitProcessing = false
+                    self?.sheetType = nil
+                    self?.editStep = .entry
+                    self?.isExit = true
+                case .failure(let error):
+                    self?.isExitProcessing = false
+                    #if DEBUG
+                    print("ExitMeeting Error: \(error)")
+                    #endif
+                }
             } receiveValue: { _ in }
+            .store(in: cancellableBag, key: #function)
     }
 }
 
