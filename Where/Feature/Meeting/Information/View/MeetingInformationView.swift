@@ -10,15 +10,16 @@ import Swinject
 import Combine
 
 struct MeetingInformationView: View {
-    @ObservedObject private var viewModel: MeetingInformationViewModel
+    @StateObject private var viewModel: MeetingInformationViewModel
     @Environment(\.dismiss) private var dismiss
     
     private let resolver: Resolver
     
     init(resolver: Resolver, meetingID: UInt64) {
         self.resolver = resolver
-        self.viewModel = resolver.resolve(MeetingInformationViewModel.self)!
-        self.viewModel.setMeeting(id: meetingID)
+        let viewModel = resolver.resolve(MeetingInformationViewModel.self)!
+        viewModel.setMeeting(id: meetingID)
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {

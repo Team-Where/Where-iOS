@@ -10,7 +10,7 @@ import Swinject
 import Combine
 
 final class MeetingInformationViewModel: ObservableObject {
-    @Published private var _meeting: Meeting = .temp()
+    @Published private var _meeting: Meeting!
     @Published private var meetingID: UInt64!
     
     @Published var sheetType: SheetType?
