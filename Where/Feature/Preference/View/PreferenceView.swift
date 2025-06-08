@@ -40,7 +40,7 @@ struct PreferenceView: View {
                                 .foregroundStyle(Color(hex: 0xADB58D))
                         }
                     }
-                    .frame(width: 350, height: 50)
+                    .frame(height: 50)
                     
                     Button {
                         viewModel.logout()
@@ -59,7 +59,7 @@ struct PreferenceView: View {
                                 .foregroundStyle(Color(hex: 0xADB58D))
                         }
                     }
-                    .frame(width: 350, height: 50)
+                    .frame(height: 50)
                     
                     NavigationLink {
                         UnregisterView(resolver: resolver)
@@ -78,7 +78,7 @@ struct PreferenceView: View {
                                 .foregroundStyle(Color(hex: 0xADB58D))
                         }
                     }
-                    .frame(width: 350, height: 50)
+                    .frame(height: 50)
                     
                     Toggle(isOn: $shouldDisplayNotifications) {
                         VStack(alignment: .leading, spacing: 6) {
@@ -92,7 +92,7 @@ struct PreferenceView: View {
                         }
                     }
                     .tint(.accent)
-                    .frame(width: 350, height: 50)
+                    .frame(height: 50)
                     
                    
 
@@ -103,7 +103,7 @@ struct PreferenceView: View {
                         
                         Spacer()
                     }
-                    .frame(width: 350, height: 45)
+                    .frame(height: 45)
                     .background(.white)
                 }
                 .padding()
@@ -112,9 +112,7 @@ struct PreferenceView: View {
                     .fill(Color(hex: 0xF3F4F6))
                 
                 Section {
-                    NavigationLink {
-                        // TODO: 개인정보처리방침
-                    } label: {
+                    Link(destination: LinkType.agreeToPersonalInfoCollection.link!) {
                         HStack {
                             Text("개인정보처리방침")
                                 .whereFont(.body16medium)
@@ -129,11 +127,9 @@ struct PreferenceView: View {
                                 .foregroundStyle(Color(hex: 0xADB58D))
                         }
                     }
-                    .frame(width: 350, height: 50)
+                    .frame(height: 50)
                     
-                    NavigationLink {
-                        // TODO: 서비스 이용약관
-                    } label: {
+                    Link(destination: LinkType.agreeToTermsOfService.link!) {
                         HStack {
                             Text("서비스 이용약관")
                                 .whereFont(.body16medium)
@@ -148,7 +144,7 @@ struct PreferenceView: View {
                                 .foregroundStyle(Color(hex: 0xADB58D))
                         }
                     }
-                    .frame(width: 350, height: 50)
+                    .frame(height: 50)
                     
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
@@ -168,7 +164,7 @@ struct PreferenceView: View {
                             .whereFont(.body16regular)
                             .foregroundStyle(Color(hex: 0x495057))
                     }
-                    .frame(width: 350, height: 50)
+                    .frame(height: 50)
                 } header: {
                     HStack {
                         Text("고객지원")
@@ -176,7 +172,7 @@ struct PreferenceView: View {
                         
                         Spacer()
                     }
-                    .frame(width: 350, height: 45)
+                    .frame(height: 45)
                     .background(.white)
                 }
                 .padding()
@@ -194,6 +190,26 @@ struct PreferenceView: View {
                 Text("설정")
                     .whereFont(.subtitle18semibold)
                     .foregroundStyle(Color(hex: 0x1F2937))
+            }
+        }
+    }
+}
+
+// MARK: - Nested Types
+extension PreferenceView {
+    /// 외부 링크의 종류
+    enum LinkType {
+        /// 서비스 이용약관 동의
+        case agreeToTermsOfService
+        /// 개인정보 수집 및 이용 약관 동의
+        case agreeToPersonalInfoCollection
+        
+        var link: URL? {
+            switch self {
+            case .agreeToTermsOfService:
+                URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c801ca18fc73edfdc6036")
+            case .agreeToPersonalInfoCollection:
+                URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c80e79057f5a07578cf05")
             }
         }
     }

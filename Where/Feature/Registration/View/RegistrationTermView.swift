@@ -84,8 +84,7 @@ struct RegistrationTermView: View {
             
             Spacer()
             
-            // TODO: 노션 페이지로 이동
-            Link(destination: URL(string: "www.naver.com")!) {
+            Link(destination: type.link!) {
                 Text("보기")
                     .whereFont(.caption12regular)
                     .foregroundStyle(Color(hex: 0x747474))
@@ -143,8 +142,16 @@ extension RegistrationTermView {
         }
         
         var link: URL? {
-            // TODO: 항목별 노션 페이지 URL 추가
-            nil
+            switch self {
+            case .agreeToTermsOfService:
+                URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c801ca18fc73edfdc6036")
+            case .agreeToPersonalInfoCollection:
+                URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c80e79057f5a07578cf05")
+            case .agreeToReceiveMarketingInfo:
+                URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c80e7b3f7e359e35a3ee6")
+            case .agreeToThirdPartySharing:
+                URL(string: "https://meteor-condor-9e6.notion.site/3-205912bcf29c807fbdc4d69da0a841df")
+            }
         }
     }
     
