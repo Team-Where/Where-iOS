@@ -49,6 +49,10 @@ struct Meeting: Identifiable {
         self.shareLink = shareLink
         self.isFinished = isFinished
     }
+    
+    static func temp() -> Self {
+        return .init(id: 1, title: "", description: "", createdAt: .now, isFinished: false)
+    }
 }
 
 extension Meeting: Hashable {
