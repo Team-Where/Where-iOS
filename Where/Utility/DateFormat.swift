@@ -69,8 +69,12 @@ enum DateFormat: String {
     /// 오전/오후 시:분
     case ahhmm = "a hh:mm"
     
+    /// 오전/오후 시
+    /// - Note: 시 단위가 0으로 시작하지 않음
+    case ah = "a h"
+    
     /// 오전/오후 시:분
-    /// - Note: 숫자가 0으로 시작하지 않음
+    /// - Note: 시 단위가 0으로 시작하지 않음
     case ahmm = "a h:mm"
     
     /// 축약 요일 (월, 화)
