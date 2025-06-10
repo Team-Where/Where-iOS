@@ -198,7 +198,7 @@ struct PreferenceView: View {
 // MARK: - Nested Types
 extension PreferenceView {
     /// 외부 링크의 종류
-    enum LinkType {
+    enum LinkType: CaseIterable {
         /// 서비스 이용약관 동의
         case agreeToTermsOfService
         /// 개인정보 수집 및 이용 약관 동의
@@ -210,6 +210,15 @@ extension PreferenceView {
                 URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c801ca18fc73edfdc6036")
             case .agreeToPersonalInfoCollection:
                 URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c80e79057f5a07578cf05")
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .agreeToTermsOfService:
+                "서비스 이용약관"
+            case .agreeToPersonalInfoCollection:
+                "개인정보처리방침"
             }
         }
     }
