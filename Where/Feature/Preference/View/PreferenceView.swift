@@ -112,39 +112,35 @@ struct PreferenceView: View {
                     .fill(Color(hex: 0xF3F4F6))
                 
                 Section {
-                    Link(destination: LinkType.agreeToPersonalInfoCollection.link!) {
-                        HStack {
-                            Text("개인정보처리방침")
-                                .whereFont(.body16medium)
-                                .foregroundStyle(.black)
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 12)
-                                .foregroundStyle(Color(hex: 0xADB58D))
-                        }
-                    }
-                    .frame(height: 50)
                     
-                    Link(destination: LinkType.agreeToTermsOfService.link!) {
-                        HStack {
-                            Text("서비스 이용약관")
-                                .whereFont(.body16medium)
-                                .foregroundStyle(.black)
+                    ForEach(LinkType.allCases, id: \.self) { type in
+                        NavigationLink {
+                            WebView(url: type.link!)
+                                .navigationBarBackButtonHidden()
+                                .navigationTitle(type.title)
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbar {
+                                    ToolbarItem(placement: .topBarLeading) {
+                                        BackButton()
+                                    }
+                                }
                             
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 12)
-                                .foregroundStyle(Color(hex: 0xADB58D))
+                        } label: {
+                            HStack {
+                                Text(type.title)
+                                    .whereFont(.body16medium)
+                                    .foregroundStyle(.black)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 12)
+                                    .foregroundStyle(Color(hex: 0xADB58D))
+                            }
                         }
                     }
-                    .frame(height: 50)
                     
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
