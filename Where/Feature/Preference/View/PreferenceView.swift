@@ -10,6 +10,7 @@ import Swinject
 
 struct PreferenceView: View {
     @AppStorage(AppStorageKey.shouldDisplayNotifications) var shouldDisplayNotifications: Bool = true
+    @State private var isPopupPresented: Bool = false
     
     private let viewModel: PreferenceViewModel
     private let resolver: Resolver
@@ -43,7 +44,7 @@ struct PreferenceView: View {
                     .frame(height: 50)
                     
                     Button {
-                        viewModel.logout()
+                        withAnimation { isPopupPresented = true }
                     } label: {
                         HStack {
                             Text("로그아웃")
@@ -191,6 +192,45 @@ struct PreferenceView: View {
                     .whereFont(.subtitle18semibold)
                     .foregroundStyle(Color(hex: 0x1F2937))
             }
+        }
+        .popup($isPopupPresented) {
+            VStack(spacing: 24) {
+                Text("정말 로그아웃 하겠습니까?")
+                    .whereFont(.body14medium)
+                    .foregroundStyle(Color(hex: 0x343A40))
+                    .multilineTextAlignment(.center)
+                
+                HStack(spacing: 8) {
+                    Button {
+                        withAnimation { isPopupPresented = false }
+                    } label: {
+                        Text("취소")
+                            .whereFont(.body16semibold)
+                            .foregroundStyle(.where(hex: 0x4B5563))
+                            .padding(10)
+                    }
+                    .buttonStyle(.whereRoundedProminent(background: .where(.gray100)))
+                    
+                    Button {
+                        viewModel.logout()
+                    } label: {
+                        if viewModel.state == .processing {
+                            ProgressView()
+                        } else {
+                            Text("로그아웃")
+                                .whereFont(.body16semibold)
+                                .padding(10)
+                        }
+                    }
+                    .buttonStyle(.whereRoundedProminent(disabled: viewModel.logoutButtonDisabled))
+                }
+            }
+            .padding()
+        }
+        .onChange(of: viewModel.state) { before, after in
+            guard before != after else { return }
+            guard case .finished = after else { return }
+            isPopupPresented = false
         }
     }
 }
