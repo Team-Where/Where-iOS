@@ -24,7 +24,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 일정 등록
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError>
+    func createSchedule(id: UInt64, date: String, time: String) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 일정 조회
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -32,7 +32,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 일정 수정
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
-    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError>
+    func updateSchedule(id: UInt64, date: String, time: String) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 일정 삭제
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -176,7 +176,7 @@ extension MeetingCore: MeetingCoreProtocol {
     
     // MARK: - Schedule Related
     
-    func createSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError> {
+    func createSchedule(id: UInt64, date: String, time: String) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -184,7 +184,7 @@ extension MeetingCore: MeetingCoreProtocol {
             return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
         }
         
-        let dto = CreateScheduleDTO.Request(meetingID: id, date: date.toString(by: .yyyyMMddHyphen), time: time.toString(by: .HHmm), userID: user.id)
+        let dto = CreateScheduleDTO.Request(meetingID: id, date: date, time: time, userID: user.id)
         
         return apiService.requestPublisher(Endpoint.createSchedule(dto: dto), CreateScheduleDTO.Response.self)
             .mapError { MeetingCoreError.networkingError($0) }
@@ -212,7 +212,7 @@ extension MeetingCore: MeetingCoreProtocol {
         
     }
     
-    func updateSchedule(id: UInt64, date: Date, time: Date) -> AnyPublisher<Void, MeetingCoreError> {
+    func updateSchedule(id: UInt64, date: String, time: String) -> AnyPublisher<Void, MeetingCoreError> {
         guard let user = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -220,7 +220,7 @@ extension MeetingCore: MeetingCoreProtocol {
             return Fail(error: .noSuchMeeting).eraseToAnyPublisher()
         }
         
-        let dto = UpdateScheduleDTO.Request(meetingID: id, date: date.toString(by: .yyyyMMddHyphen), time: time.toString(by: .HHmm), userID: user.id)
+        let dto = UpdateScheduleDTO.Request(meetingID: id, date: date, time: time, userID: user.id)
         return apiService.requestPublisher(Endpoint.updateSchedule(dto: dto), UpdateScheduleDTO.Response.self)
             .mapError { MeetingCoreError.networkingError($0) }
             .map { [weak self] response in

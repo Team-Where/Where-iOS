@@ -9,7 +9,7 @@ import SwiftUI
 import Swinject
 
 struct MeetingInformationDetailView: View {
-    @ObservedObject private var viewModel: MeetingInformationDetailViewModel
+    @StateObject private var viewModel: MeetingInformationDetailViewModel
     @State private var sheetType: SheetType?
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
@@ -20,8 +20,9 @@ struct MeetingInformationDetailView: View {
         resolver: Resolver
     ) {
         self.resolver = resolver
-        self.viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
-        self.viewModel.setMeeitng(meeting)
+        let viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
+        viewModel.setMeeitng(meeting)
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -92,10 +93,7 @@ struct MeetingInformationDetailView: View {
         .fullScreenCover(item: $fullScreenCoverType) { type in
             switch type {
             case .editMeetingDate:
-                EditMeetingDateFullScreenCover(
-                    fullScreenCoverType: $fullScreenCoverType,
-                    selectedDate: $viewModel.selectedDate
-                )
+                EditMeetingDateFullScreenCover(viewModel, fullScreenCoverType: $fullScreenCoverType)
             }
         }
         .navigationDestination(item: $navigationType) { type in
@@ -142,7 +140,7 @@ struct MeetingInformationDetailView: View {
     
     private var summaryArea: some View {
         VStack(spacing: 8) {
-            summaryCell(.date(date: viewModel.selectedDate)) {
+            summaryCell(.date(date: viewModel.meeting.combinedSchedule)) {
                 fullScreenCoverType = .editMeetingDate
             }
             
@@ -459,12 +457,21 @@ extension MeetingInformationDetailView {
     }
     
     struct EditMeetingDateFullScreenCover: View {
-        @State private var sheetType: EditMeetingDateSheetType?
+        @ObservedObject private var viewModel: MeetingInformationDetailViewModel
         @Binding var fullScreenCoverType: FullScreenCoverType?
-        @State private var temporalSelectedDate: Date?
-        @State private var temporalSelectedTime: Hour?
-        @State private var temporalSelectedMeridiem: Meridiem?
-        @Binding var selectedDate: Date?
+        @State private var sheetType: EditMeetingDateSheetType?
+        @State private var selectedDate: Date?
+        @State private var selectedTime: Date?
+        
+        private var isLoading: Bool { viewModel.processingState == .processing }
+        
+        init(
+            _ viewModel: MeetingInformationDetailViewModel,
+            fullScreenCoverType: Binding<FullScreenCoverType?>
+        ) {
+            self.viewModel = viewModel
+            self._fullScreenCoverType = fullScreenCoverType
+        }
         
         var body: some View {
             VStack(spacing: 24) {
@@ -500,9 +507,9 @@ extension MeetingInformationDetailView {
                         sheetType = .date
                     } label: {
                         HStack(spacing: 8) {
-                            DateView(date: $temporalSelectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
+                            DateView(date: $selectedDate, format: .yyyyMMddKorean, prompt: "날짜를 선택해주세요")
                                 .whereFont(.body14regular)
-                                .foregroundStyle(temporalSelectedDate == nil ? Color(hex: 0x6B7280) : Color(hex: 0x1F2937))
+                                .foregroundStyle(selectedDate == nil ? Color(hex: 0x6B7280) : Color(hex: 0x1F2937))
                             
                             Image(.polygonDown)
                         }
@@ -523,13 +530,8 @@ extension MeetingInformationDetailView {
                         sheetType = .time
                     } label: {
                         HStack(spacing: 8) {
-                            if let time = temporalSelectedTime,
-                               let meridiem = temporalSelectedMeridiem {
-                                Text("\(meridiem.description) \(time.description)")
-                                    .foregroundStyle(Color(hex: 0x1F2937))
-                            } else {
-                                Text("시간을 선택해주세요")
-                            }
+                            DateView(date: $selectedTime, format: .ah, prompt: "시간을 선택해주세요")
+                                .foregroundStyle(selectedTime == nil ? Color(hex: 0x6B7280) : Color(hex: 0x1F2937))
                             
                             Image(.polygonDown)
                         }
@@ -542,20 +544,23 @@ extension MeetingInformationDetailView {
                 Spacer()
                 
                 Button {
-                    let date = temporalSelectedDate?.combine(hour: temporalSelectedTime, meridiem: temporalSelectedMeridiem)
-                    selectedDate = date
-                    fullScreenCoverType = .none
+                    viewModel.editSchedule(selectedDate, selectedTime)
                 } label: {
-                    Text("확인")
-                        .whereFont(.body16medium)
-                        .padding()
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(.accent)
-                        )
+                    if isLoading {
+                        ProgressView()
+                    } else {
+                        Text("확인")
+                            .whereFont(.body16medium)
+                            .padding()
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(.accent)
+                            )
+                    }
                 }
+                .disabled(isLoading)
             }
             .padding()
             .onAppear {
@@ -566,52 +571,30 @@ extension MeetingInformationDetailView {
                 case .date:
                     EditMeetingDateSheet(
                         sheetType: $sheetType,
-                        selectedDate: $temporalSelectedDate
+                        selectedDate: $selectedDate
                     )
                 case .time:
                     EditMeetingTimeSheet(
                         sheetType: $sheetType,
-                        selectedTime: $temporalSelectedTime,
-                        selectedMeridiem: $temporalSelectedMeridiem
+                        selectedTime: $selectedTime
                     )
                 }
             }
-        }
-        
-        private func convert24HourTo12(hour24: Int) -> Int {
-            if hour24 == 0 { // 자정(0시)는 12시로 표현
-                return 12
-            } else if hour24 > 12 { // 오후 시간 (13시 ~ 23시)
-                return hour24 - 12
-            } else if hour24 == 12 { // 정오(12시)는 12시로 표현
-                return 12
-            } else { // 오전 시간 (1시 ~ 11시)
-                return hour24
+            .onChange(of: viewModel.processingState) { before, after in
+                guard case .completed = after else { return }
+                fullScreenCoverType = .none
             }
         }
         
         private func initializePicker() {
-            guard let selectedDate = selectedDate else {
-                temporalSelectedDate = nil
-                temporalSelectedTime = nil
-                temporalSelectedMeridiem = nil
-                return
-            }
-            
-            temporalSelectedDate = selectedDate
-            let hour24 = selectedDate.dateComponents().hour ?? .zero
-            let meridiem: Meridiem = hour24 < 12 ? .am : .pm
-            temporalSelectedMeridiem = meridiem
-            
-            let hour12 = convert24HourTo12(hour24: hour24)
-            temporalSelectedTime = Hour(rawValue: hour12)
+            selectedDate = viewModel.meeting.scheduleDate
+            selectedTime = viewModel.meeting.scheduleTime
         }
     }
     
     struct EditMeetingDateSheet: View {
         @Binding var sheetType: EditMeetingDateSheetType?
         @Binding var selectedDate: Date?
-        @State private var temporalSelectedDate: Date?
         
         var body: some View {
             VStack(spacing: 10) {
@@ -635,16 +618,15 @@ extension MeetingInformationDetailView {
                 
                 Divider()
                 
-                CalendarView(selectedDate: $temporalSelectedDate)
+                CalendarView(selectedDate: $selectedDate)
                 
                 Button {
-                    selectedDate = temporalSelectedDate
                     sheetType = .none
                 } label: {
                     HStack {
-                        DateView(date: $temporalSelectedDate, format: .MMddEEKorean, prompt: "날짜를 선택해주세요")
+                        DateView(date: $selectedDate, format: .MMddEEKorean, prompt: "날짜를 선택해주세요")
                         
-                        if let _ = temporalSelectedDate {
+                        if let _ = selectedDate {
                             Rectangle()
                                 .frame(width: 1, height: 16)
                             
@@ -657,23 +639,19 @@ extension MeetingInformationDetailView {
                     .foregroundStyle(.white)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(temporalSelectedDate == nil ? Color(hex: 0xD1D5DB) : .accent)
+                            .fill(selectedDate == nil ? Color(hex: 0xD1D5DB) : .accent)
                     )
                 }
                 .padding(.horizontal)
-                .disabled(temporalSelectedDate == nil)
+                .disabled(selectedDate == nil)
             }
             .presentationDetents([.fraction(0.7)])
-            .onAppear {
-                temporalSelectedDate = selectedDate
-            }
         }
     }
     
     struct EditMeetingTimeSheet: View {
         @Binding var sheetType: EditMeetingDateSheetType?
-        @Binding var selectedTime: Hour?
-        @Binding var selectedMeridiem: Meridiem?
+        @Binding var selectedTime: Date?
         @State private var temporalSelectedMeridiem: Meridiem = .am
         @State private var temporalSelectedTime: Hour = .one
         
@@ -728,8 +706,7 @@ extension MeetingInformationDetailView {
                     )
                     
                     Button {
-                        selectedTime = temporalSelectedTime
-                        selectedMeridiem = temporalSelectedMeridiem
+                        selectedTime = Date().combine(hour: temporalSelectedTime, meridiem: temporalSelectedMeridiem)
                         sheetType = .none
                     } label: {
                         Text("확인")
@@ -746,10 +723,7 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
             }
             .presentationDetents([.fraction(0.54)])
-            .onAppear {
-                temporalSelectedTime = selectedTime ?? .one
-                temporalSelectedMeridiem = selectedMeridiem ?? .am
-            }
+            .onAppear(perform: onAppear)
         }
         
         @ViewBuilder private func pickerCell<Value: CustomStringConvertible & Hashable>(
@@ -781,6 +755,26 @@ extension MeetingInformationDetailView {
                     .whereFont(.body16semibold)
                     .foregroundStyle(Color(hex: 0x212529))
                 }
+            }
+        }
+        
+        private func onAppear() {
+            let hour24 = selectedTime?.dateComponents().hour ?? .zero
+            let hour12 = convert24HourTo12(hour24: hour24)
+            let meridiem: Meridiem = hour24 < 12 ? .am : .pm
+            temporalSelectedTime = Hour(rawValue: hour12) ?? .one
+            temporalSelectedMeridiem = meridiem
+        }
+        
+        private func convert24HourTo12(hour24: Int) -> Int {
+            if hour24 == 0 { // 자정(0시)는 12시로 표현
+                return 12
+            } else if hour24 > 12 { // 오후 시간 (13시 ~ 23시)
+                return hour24 - 12
+            } else if hour24 == 12 { // 정오(12시)는 12시로 표현
+                return 12
+            } else { // 오전 시간 (1시 ~ 11시)
+                return hour24
             }
         }
     }
