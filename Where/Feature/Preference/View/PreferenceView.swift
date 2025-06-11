@@ -207,9 +207,9 @@ extension PreferenceView {
         var link: URL? {
             switch self {
             case .agreeToTermsOfService:
-                URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c801ca18fc73edfdc6036")
+                URL(string: "https://meteor-condor-9e6.notion.site/20f912bcf29c80e69e6ed03cc42776b5")
             case .agreeToPersonalInfoCollection:
-                URL(string: "https://meteor-condor-9e6.notion.site/205912bcf29c80e79057f5a07578cf05")
+                URL(string: "https://meteor-condor-9e6.notion.site/20f912bcf29c8020a3b6e3c468c30462")
             }
         }
     }
