@@ -234,7 +234,7 @@ private extension MyMeetingView {
                                 .lineLimit(2)
                                 .fixedSize(horizontal: false, vertical: true)
                             
-                            DateView(date: .constant(nil), format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
+                            DateView(date: meeting.combinedSchedule, format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
                                 .whereFont(.body14regular)
                                 .foregroundStyle(.where(.gray500))
                                 .lineLimit(2)
