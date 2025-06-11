@@ -199,6 +199,8 @@ private extension MyMeetingView {
                 MeetingInformationView(resolver: resolver, meetingID: meeting.id)
             } label: {
                 VStack(spacing: 12) {
+                    Spacer()
+                    
                     AsyncImage(url: meeting.imageURL) { image in
                         image
                             .resizable()
@@ -227,6 +229,8 @@ private extension MyMeetingView {
                         }
                     }
                     
+                    Spacer()
+                    
                     HStack {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(meeting.title)
@@ -246,7 +250,6 @@ private extension MyMeetingView {
                     }
                 }
                 .padding(.bottom, 20)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }
