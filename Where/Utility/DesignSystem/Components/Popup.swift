@@ -50,6 +50,7 @@ struct Popup<Based: View, Popup: View>: View {
             
             Color.black.opacity(isPopupPresented ? 0.4 : 0)
                 .ignoresSafeArea(edges: .all)
+                .onTapGesture { isPopupPresented = false }
             
             if isPopupPresented {
                 popupContent
