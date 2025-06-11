@@ -1129,8 +1129,8 @@
 		04D546F32DDB66A9003EEC85 /* Implementation */ = {
 			isa = PBXGroup;
 			children = (
-				04D546EF2DDB66A9003EEC85 /* AppleLoginStrategy.swift */,
 				04D546F02DDB66A9003EEC85 /* AuthentificationStrategyContext.swift */,
+				04D546EF2DDB66A9003EEC85 /* AppleLoginStrategy.swift */,
 				04D546F12DDB66A9003EEC85 /* KakaoLoginStrategy.swift */,
 				04D546F22DDB66A9003EEC85 /* NaverLoginStrategy.swift */,
 			);
