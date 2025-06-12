@@ -35,7 +35,12 @@ final class PreferenceViewModel {
 
 // MARK: - Interfaces
 extension PreferenceViewModel {
-    func logout() {
+    func logout(onSuccess: @escaping () -> Void) {
         authCore.logout()
+            .sink { completion in
+                guard case .finished = completion else { return }
+                onSuccess()
+            } receiveValue: { _ in }
+            .store(in: cancellableBag, key: #function)
     }
 }

@@ -11,6 +11,7 @@ import AuthenticationServices
 
 protocol AuthentificationStrategyProtocol: AnyObject {
     func login(provider: AuthentificationProvider) -> AnyPublisher<UserCredential, AuthentificationCoreError>
+    func logout() -> AnyPublisher<Void, AuthentificationCoreError>
 }
 
 protocol URLHandlerStrategyProtocol {

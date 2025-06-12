@@ -39,6 +39,12 @@ extension NaverLoginStrategy: AuthentificationStrategyProtocol, URLHandlerStrate
         
     }
     
+    func logout() -> AnyPublisher<Void, AuthentificationCoreError> {
+        return Just(NidOAuth.shared.logout())
+            .setFailureType(to: AuthentificationCoreError.self)
+            .eraseToAnyPublisher()
+    }
+    
     func handleOpenURL(_ url: URL) {
         _ = naverAPI.handleURL(url)
     }

@@ -33,4 +33,7 @@ extension AppleLoginStrategy: AuthentificationStrategyProtocol {
         }
     }
     
+    func logout() -> AnyPublisher<Void, AuthentificationCoreError> {
+        Empty(outputType: Void.self, failureType: AuthentificationCoreError.self).eraseToAnyPublisher()
+    }
 }

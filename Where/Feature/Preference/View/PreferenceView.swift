@@ -9,6 +9,7 @@ import SwiftUI
 import Swinject
 
 struct PreferenceView: View {
+    @Environment(\.dismiss) private var dismiss
     @AppStorage(AppStorageKey.shouldDisplayNotifications) var shouldDisplayNotifications: Bool = true
     @State private var isPopupPresented: Bool = false
     
@@ -212,25 +213,16 @@ struct PreferenceView: View {
                     .buttonStyle(.whereRoundedProminent(background: .where(.gray100)))
                     
                     Button {
-                        viewModel.logout()
+                        viewModel.logout { dismiss() }
                     } label: {
-                        if viewModel.state == .processing {
-                            ProgressView()
-                        } else {
-                            Text("로그아웃")
-                                .whereFont(.body16semibold)
-                                .padding(10)
-                        }
+                        Text("로그아웃")
+                            .whereFont(.body16semibold)
+                            .padding(10)
                     }
-                    .buttonStyle(.whereRoundedProminent(disabled: viewModel.logoutButtonDisabled))
+                    .buttonStyle(.whereRoundedProminent())
                 }
             }
             .padding()
-        }
-        .onChange(of: viewModel.state) { before, after in
-            guard before != after else { return }
-            guard case .finished = after else { return }
-            isPopupPresented = false
         }
     }
 }

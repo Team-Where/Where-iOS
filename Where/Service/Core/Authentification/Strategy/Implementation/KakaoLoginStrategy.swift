@@ -46,6 +46,14 @@ extension KakaoLoginStrategy: AuthentificationStrategyProtocol, @preconcurrency 
             .eraseToAnyPublisher()
     }
     
+    func logout() -> AnyPublisher<Void, AuthentificationCoreError> {
+        return kakaoAPI.logoutPublisher()
+            .mapError { _ in
+                AuthentificationCoreError.logoutFailed
+            }
+            .eraseToAnyPublisher()
+    }
+    
     @MainActor func handleOpenURL(_ url: URL) {
         if AuthApi.isKakaoTalkLoginUrl(url) {
             _ = AuthController.handleOpenUrl(url: url)
@@ -57,6 +65,7 @@ extension KakaoLoginStrategy: AuthentificationStrategyProtocol, @preconcurrency 
 
 protocol KakaoLoginPublishable {
     func loginPublisher(nonce: String) -> AnyPublisher<OAuthToken?, Error>
+    func logoutPublisher() -> AnyPublisher<Void, Error>
 }
 
 extension UserApi: KakaoLoginPublishable {
@@ -77,6 +86,16 @@ extension UserApi: KakaoLoginPublishable {
                     }
                     return promise(.success(token))
                 }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func logoutPublisher() -> AnyPublisher<Void, any Error> {
+        return Future<Void, Error> { promise in
+            UserApi.shared.logout { error in
+                guard let error else { return promise(.success(())) }
+                promise(.failure(error))
             }
         }
         .eraseToAnyPublisher()

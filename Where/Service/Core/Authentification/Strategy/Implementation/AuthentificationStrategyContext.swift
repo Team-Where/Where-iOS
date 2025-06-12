@@ -33,6 +33,16 @@ final class AuthentificationStrategyContext {
         return strategy.login(provider: provider)
     }
     
+    func logout() -> AnyPublisher<Void, AuthentificationCoreError> {
+        guard let provider = currentProvider,
+              let strategy = strategies[provider]
+        else {
+            return Empty(outputType: Void.self, failureType: AuthentificationCoreError.self).eraseToAnyPublisher()
+        }
+        
+        return strategy.logout()
+    }
+    
     func handleOpenURL(_ url: URL) {
         guard let provider = currentProvider,
               let strategy = strategies[provider] as? URLHandlerStrategyProtocol

@@ -33,7 +33,7 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     func login(email: String, password: String) -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 로그아웃
-    func logout()
+    func logout() -> AnyPublisher<Void, AuthentificationCoreError>
     
     /// 이메일 중복 확인
     func checkEmailDuplicate(email: String) -> AnyPublisher<Void, AuthentificationCoreError>
@@ -329,8 +329,13 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func logout() {
-        // TODO: 서버로 로그아웃 요청
+    func logout() -> AnyPublisher<Void, AuthentificationCoreError> {
+        return strategyContext.logout()
+            .handleEvents(receiveCompletion: { [weak self] completion in
+                guard case .finished = completion else { return }
+                self?.authentificationStateSubject.send(.loginNeeded)
+            })
+            .eraseToAnyPublisher()
     }
     
     func checkEmailDuplicate(email: String) -> AnyPublisher<Void, AuthentificationCoreError> {
