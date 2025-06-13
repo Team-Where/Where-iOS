@@ -42,16 +42,20 @@ extension KakaoShareService: KakaoShareServiceProtocol {
         
         return Future<URL, MeetingCoreError> { promise in
             guard ShareApi.isKakaoTalkSharingAvailable() else {
-                guard let url = ShareApi.shared.makeCustomUrl(templateId: self.templateID) else {
+                guard let url = ShareApi.shared.makeCustomUrl(templateId: self.templateID, templateArgs: args) else {
                     return promise(.failure(.notSupported))
                 }
                 return promise(.success(url))
             }
             
             ShareApi.shared.shareCustom(templateId: self.templateID, templateArgs: args) { result, error in
-                if let error = error { promise(.failure(.networkingError(error))) }
+                if let error = error {
+                    print(error)
+                    return promise(.failure(.networkingError(error)))
+                }
+                
                 if let result = result {
-                    promise(.success(result.url))
+                    return promise(.success(result.url))
                 }
             }
         }

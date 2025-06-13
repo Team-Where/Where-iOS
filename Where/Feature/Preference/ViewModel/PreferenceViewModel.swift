@@ -13,6 +13,7 @@ import Combine
 @Observable
 final class PreferenceViewModel {
     private(set) var versionNotice = String()
+    private(set) var isLoginNeeded: Bool = false
     
     private let authCore: AuthentificationCoreProtocol
     private let supportCore: SupportCoreProtocol
@@ -25,6 +26,12 @@ final class PreferenceViewModel {
     }
     
     private func subscribe() {
+        authCore.currentUser
+            .sink { [weak self] user in
+                self?.isLoginNeeded = user == nil
+            }
+            .store(in: cancellableBag, key: "CurrentUser")
+        
         supportCore.latestVersion
             .sink { [weak self] notice in
                 self?.versionNotice = notice

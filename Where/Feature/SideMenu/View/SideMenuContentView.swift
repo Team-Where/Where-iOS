@@ -133,11 +133,9 @@ struct SideMenuContentView: View {
             
             // 메뉴 리스트
             LazyVStack(alignment: .leading, spacing: 32) {
-                SideMenuCell(type: .notifications, resolver: resolver)
-                SideMenuCell(type: .FAQs, resolver: resolver)
-                SideMenuCell(type: .inquiries, resolver: resolver)
-                SideMenuCell(type: .announcements, resolver: resolver)
-                SideMenuCell(type: .settings(user), resolver: resolver)
+                ForEach(SideMenuType.allCases) { type in
+                    SideMenuCell(type: type, resolver: resolver)
+                }
             }
             .padding(.horizontal)
 
@@ -159,7 +157,7 @@ private extension SideMenuContentView {
                 case .FAQs: FAQView(resolver: resolver)
                 case .inquiries: InquiryView(resolver: resolver)
                 case .announcements: AnnouncementView(resolver: resolver)
-                case .settings(let user): PreferenceView(user: user, resolver: resolver)
+                case .settings: PreferenceView(resolver: resolver)
                 }
             } label: {
                 HStack(spacing: 12) {
@@ -189,7 +187,7 @@ private extension SideMenuContentView {
 // MARK: - Nested Types
 extension SideMenuContentView {
     /// SideMenuContentView 화면에서 라우팅할 수 있는 NavigationPath의 종류
-    enum SideMenuType: Identifiable {
+    enum SideMenuType: Identifiable, CaseIterable {
         /// 알림 목록
         case notifications
         /// FAQ
@@ -199,7 +197,7 @@ extension SideMenuContentView {
         /// 공지사항
         case announcements
         /// 설정
-        case settings(User?)
+        case settings
         
         var id: String { String(describing: self) }
         

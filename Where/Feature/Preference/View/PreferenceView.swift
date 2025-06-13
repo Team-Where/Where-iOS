@@ -13,17 +13,10 @@ struct PreferenceView: View {
     @AppStorage(AppStorageKey.shouldDisplayNotifications) var shouldDisplayNotifications: Bool = true
     @State private var isPopupPresented: Bool = false
     
-    private let user: User?
     private let viewModel: PreferenceViewModel
     private let resolver: Resolver
     
-    private var isLoginNeeded: Bool { user == nil }
-    
-    init(
-        user: User?,
-        resolver: Resolver
-    ) {
-        self.user = user
+    init(resolver: Resolver) {
         self.viewModel = resolver.resolve(PreferenceViewModel.self)!
         self.resolver = resolver
     }
@@ -50,7 +43,7 @@ struct PreferenceView: View {
                         }
                     }
                     .frame(height: 50)
-                    .disabled(isLoginNeeded)
+                    .disabled(viewModel.isLoginNeeded)
                     
                     Button {
                         withAnimation { isPopupPresented = true }
@@ -70,7 +63,7 @@ struct PreferenceView: View {
                         }
                     }
                     .frame(height: 50)
-                    .disabled(isLoginNeeded)
+                    .disabled(viewModel.isLoginNeeded)
                     
                     NavigationLink {
                         UnregisterView(resolver: resolver)
@@ -89,7 +82,7 @@ struct PreferenceView: View {
                                 .foregroundStyle(Color(hex: 0xADB58D))
                         }
                     }
-                    .disabled(isLoginNeeded)
+                    .disabled(viewModel.isLoginNeeded)
                     
                     Toggle(isOn: $shouldDisplayNotifications) {
                         VStack(alignment: .leading, spacing: 6) {
@@ -104,9 +97,6 @@ struct PreferenceView: View {
                     }
                     .tint(.accent)
                     .frame(height: 50)
-                    
-                   
-
                 } header: {
                     HStack {
                         Text("계정 설정")

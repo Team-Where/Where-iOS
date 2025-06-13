@@ -53,8 +53,10 @@ final class ContentViewModel {
             .sink { [weak self] state in
                 switch state {
                 case .loginNeeded:
+                    self?._user = nil
                     self?.isLoginNeeded = true
-                case .registrationNeeded:
+                case .registrationNeeded(let user):
+                    self?._user = user
                     self?.isRegistrationNeeded = true
                 case .loginCompleted(let user):
                     self?._user = user
