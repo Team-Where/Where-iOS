@@ -27,10 +27,6 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             return EditProfileViewModel(resolver: resolver)
         }
         
-        container.register(SideMenuContentViewModel.self) { resolver in
-            return SideMenuContentViewModel(resolver: resolver)
-        }
-        
         container.register(MyMeetingViewModel.self) { resolver in
             return MyMeetingViewModel(resolver: resolver)
         }

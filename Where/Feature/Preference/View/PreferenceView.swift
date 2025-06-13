@@ -13,10 +13,17 @@ struct PreferenceView: View {
     @AppStorage(AppStorageKey.shouldDisplayNotifications) var shouldDisplayNotifications: Bool = true
     @State private var isPopupPresented: Bool = false
     
+    private let user: User?
     private let viewModel: PreferenceViewModel
     private let resolver: Resolver
     
-    init(resolver: Resolver) {
+    private var isLoginNeeded: Bool { user == nil }
+    
+    init(
+        user: User?,
+        resolver: Resolver
+    ) {
+        self.user = user
         self.viewModel = resolver.resolve(PreferenceViewModel.self)!
         self.resolver = resolver
     }
@@ -43,6 +50,7 @@ struct PreferenceView: View {
                         }
                     }
                     .frame(height: 50)
+                    .disabled(isLoginNeeded)
                     
                     Button {
                         withAnimation { isPopupPresented = true }
@@ -62,6 +70,7 @@ struct PreferenceView: View {
                         }
                     }
                     .frame(height: 50)
+                    .disabled(isLoginNeeded)
                     
                     NavigationLink {
                         UnregisterView(resolver: resolver)
@@ -80,7 +89,7 @@ struct PreferenceView: View {
                                 .foregroundStyle(Color(hex: 0xADB58D))
                         }
                     }
-                    .frame(height: 50)
+                    .disabled(isLoginNeeded)
                     
                     Toggle(isOn: $shouldDisplayNotifications) {
                         VStack(alignment: .leading, spacing: 6) {
@@ -244,11 +253,5 @@ extension PreferenceView {
                 URL(string: "https://meteor-condor-9e6.notion.site/20f912bcf29c8020a3b6e3c468c30462")
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        PreferenceView(resolver: PreviewHelper.shared.resolver)
     }
 }
