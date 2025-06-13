@@ -45,7 +45,13 @@ struct MyMeetingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .allowsHitTesting(isSideMenuPresented == false)
         .sideMenu(isPresented: $isSideMenuPresented) {
-            SideMenuContentView($isSideMenuPresented, resolver: resolver, onLoginButtonTapped: onLoginButtonTapped)
+            SideMenuContentView(
+                $isSideMenuPresented,
+                user: viewModel.user,
+                meetingsCount: viewModel.meetings.count,
+                resolver: resolver,
+                onLoginButtonTapped: onLoginButtonTapped
+            )
         }
         .overlay(alignment: .bottom) {
             Divider()

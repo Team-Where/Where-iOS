@@ -11,17 +11,23 @@ import Swinject
 struct SideMenuContentView: View {
     @Binding var isSideMenuPresented: Bool // 사이드 메뉴 상태
     
-    private let viewModel: SideMenuContentViewModel
+    private let user: User?
+    private let meetingsCount: Int
     private let resolver: Resolver
     private let onLoginButtonTapped: () -> Void
     
+    private var isLoginNeeded: Bool { user == nil }
+    
     init(
         _ isSideMenuPresented: Binding<Bool>,
+        user: User?,
+        meetingsCount: Int,
         resolver: Resolver,
         onLoginButtonTapped: @escaping () -> Void
     ) {
         self._isSideMenuPresented = isSideMenuPresented
-        self.viewModel = resolver.resolve(SideMenuContentViewModel.self)!
+        self.user = user
+        self.meetingsCount = meetingsCount
         self.resolver = resolver
         self.onLoginButtonTapped = onLoginButtonTapped
     }
@@ -40,21 +46,90 @@ struct SideMenuContentView: View {
             }
             .padding(.bottom)
             
-            ProfileSection(viewModel.user?.nickname, isLoginNeeded: viewModel.isLoginNeeded, resolver: resolver, onLoginButtonTapped)
-            
-            if viewModel.user != nil {
-                meetingSummarySection()
+            VStack {
+                HStack {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text(user?.nickname ?? "로그인 해주세요")
+                            .whereFont(.title24semibold)
+                        
+                        Group {
+                            if isLoginNeeded {
+                                Button {
+                                    onLoginButtonTapped()
+                                } label: {
+                                    Text("로그인")
+                                }
+                            } else {
+                                NavigationLink {
+                                    EditProfileView(resolver: resolver)
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "pencil.line")
+                                        
+                                        Text("프로필 수정")
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .whereFont(.body14medium)
+                        .foregroundStyle(Color(hex: 0x4F46E5))
+                        .background(
+                            RoundedRectangle(cornerRadius: 50)
+                                .fill(.white)
+                                .strokeBorder(.where(hex: 0xDEE2E6))
+                        )
+                    }
+                    
+                    Spacer()
+                    
+                    Image("DefaultProfile")
+                        .resizable()
+                        .frame(width: 80, height: 80)
+                }
+                .padding(.top, 40)
+                .padding(.horizontal)
+                
+                Group {
+                    if isLoginNeeded {
+                        EmptyView()
+                    } else {
+                        HStack {
+                            HStack(spacing: 10) {
+                                Image(systemName: "calendar")
+                                
+                                Text("총 모임 횟수")
+                            }
+                            .whereFont(.body16medium)
+                            .foregroundStyle(.where(.gray800))
+                            
+                            Spacer()
+                            
+                            Text("\(meetingsCount)")
+                                .whereFont(.body16semibold)
+                                .foregroundStyle(.accent)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(.where(hex: 0xEEF2FF))
+                        )
+                        .padding(.top, 40)
+                        .padding(.horizontal)
+                        .transition(.move(edge: .trailing))
+                    }
+                }
             }
+            .animation(.easeInOut, value: isSideMenuPresented)
             
             // 구분선
-            VStack {
-                Rectangle()
-                    .foregroundStyle(Color(hex: 0xF1F3F5))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 8)
-                    .padding(.top, 31)
-                    .padding(.bottom, 40)
-            }
+            Rectangle()
+                .foregroundStyle(Color(hex: 0xF1F3F5))
+                .frame(maxWidth: .infinity)
+                .frame(height: 8)
+                .padding(.top, 31)
+                .padding(.bottom, 40)
             
             // 메뉴 리스트
             LazyVStack(alignment: .leading, spacing: 32) {
@@ -66,104 +141,11 @@ struct SideMenuContentView: View {
 
             Spacer()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-    
-    @ViewBuilder private func meetingSummarySection() -> some View {
-        HStack {
-            HStack(spacing: 10) {
-                Image(systemName: "calendar")
-                
-                Text("총 모임 횟수")
-            }
-            .whereFont(.body16medium)
-            .foregroundStyle(.where(.gray800))
-            
-            Spacer()
-            
-            Text("\(viewModel.totalMeetingsCount)")
-                .whereFont(.body16semibold)
-                .foregroundStyle(.accent)
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.where(hex: 0xEEF2FF))
-        )
-        .padding(.top, 40)
-        .padding(.horizontal)
     }
 }
 
 // MARK: - Subviews
 private extension SideMenuContentView {
-    struct ProfileSection: View {
-        let nickname: String?
-        let isLoginNeeded: Bool
-        let resolver: Resolver
-        let onLoginButtonTapped: () -> Void
-        
-        init(
-            _ nickname: String?,
-            isLoginNeeded: Bool,
-            resolver: Resolver,
-            _ onLoginButtonTapped: @escaping () -> Void
-        ) {
-            self.nickname = nickname
-            self.isLoginNeeded = isLoginNeeded
-            self.resolver = resolver
-            self.onLoginButtonTapped = onLoginButtonTapped
-        }
-        
-        var body: some View {
-            HStack {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(nickname ?? "로그인 해주세요")
-                        .whereFont(.title24semibold)
-                    
-                    button
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
-                        .whereFont(.body14medium)
-                        .foregroundStyle(Color(hex: 0x4F46E5))
-                        .background(
-                            RoundedRectangle(cornerRadius: 50)
-                                .fill(.white)
-                                .strokeBorder(.where(hex: 0xDEE2E6))
-                        )
-                }
-                
-                Spacer()
-                
-                Image("DefaultProfile")
-                    .resizable()
-                    .frame(width: 80, height: 80)
-            }
-            .padding(.top, 40)
-            .padding(.horizontal)
-        }
-        
-        @ViewBuilder private var button: some View {
-            if isLoginNeeded {
-                Button {
-                    onLoginButtonTapped()
-                } label: {
-                    Text("로그인")
-                }
-            } else {
-                NavigationLink {
-                    EditProfileView(resolver: resolver)
-                } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "pencil.line")
-                        
-                        Text("프로필 수정")
-                    }
-                }
-            }
-        }
-    }
-    
     struct SideMenuCell: View {
         let type: SideMenuType
         let resolver: Resolver

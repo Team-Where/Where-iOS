@@ -30,6 +30,7 @@ final class TabViewSelection: ObservableObject {
 final class ContentViewModel {
     private(set) var isLoginNeeded: Bool = true
     private(set) var isRegistrationNeeded: Bool = false
+    private var _user: User?
     private var _meetings: [Meeting] = []
     private var _sortType: MeetingSortType = .created
     
@@ -55,7 +56,8 @@ final class ContentViewModel {
                     self?.isLoginNeeded = true
                 case .registrationNeeded:
                     self?.isRegistrationNeeded = true
-                case .loginCompleted:
+                case .loginCompleted(let user):
+                    self?._user = user
                     self?.isLoginNeeded = false
                 }
             }
@@ -83,6 +85,8 @@ final class ContentViewModel {
 
 // MARK: - Interfaces
 extension ContentViewModel: MyMeetingViewModelType {
+    var user: User? { _user }
+    
     var meetings: [Meeting] {
         _meetings
     }
@@ -99,6 +103,7 @@ extension ContentViewModel: MyMeetingViewModelType {
 
 
 protocol MyMeetingViewModelType {
+    var user: User? { get }
     var meetings: [Meeting] { get }
     var sortType: MeetingSortType { get }
     func selectSortType(for type: MeetingSortType)
