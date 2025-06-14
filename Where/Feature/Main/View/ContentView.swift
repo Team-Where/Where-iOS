@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var fullScreenCoverType: MainFullScreenCoverType?
     @State private var sheetType: MainSheetType?
     @State private var isLoginNeededPopupPresented: Bool = false
+    @State private var isAcceptInvitationViewPresented: Bool = false
     @State private var isRegistrationNeeded: Bool = false
     @State private var isLoginNeeded: Bool = false
     
@@ -55,6 +56,7 @@ struct ContentView: View {
         .onChange(of: tabViewSelection.selectedTab, onTabSelectionChange)
         .onChange(of: viewModel.isLoginNeeded, onLoginStateChange)
         .onChange(of: viewModel.isRegistrationNeeded, onRegistrationStateChange)
+        .onChange(of: viewModel.invitedMeeting, onInvitedMeetingChange)
         .onChange(of: isLoginNeeded) { _, isNeeded in
             guard isNeeded else { return }
             fullScreenCoverType = .login
@@ -78,6 +80,9 @@ struct ContentView: View {
         }
         .navigationDestination(isPresented: $isOnboardingNeeded) {
             OnboardingView()
+        }
+        .navigationDestination(isPresented: $isAcceptInvitationViewPresented) {
+            AcceptInvitationView(resolver: resolver)
         }
         .popup($isLoginNeededPopupPresented) {
             VStack(spacing: 22) {
@@ -168,6 +173,11 @@ private extension ContentView {
     
     func onMeetingCreated(_ meeting: Meeting) {
         fullScreenCoverType = .completeCreation(meeting)
+    }
+    
+    func onInvitedMeetingChange(_ : Meeting?, invitedMeeting: Meeting?) {
+        guard invitedMeeting != nil else { return }
+        isAcceptInvitationViewPresented = true
     }
 }
 

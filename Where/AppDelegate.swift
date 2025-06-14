@@ -11,6 +11,7 @@ import UserNotifications
 import Firebase
 
 final class AppDelegate: NSObject {
+    private var meetingCore: MeetingCoreProtocol!
     private var notificationCore: NotificationCoreProtocol!
     
     override init() {
@@ -18,6 +19,7 @@ final class AppDelegate: NSObject {
     }
     
     func configure(resolver: Resolver) {
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         self.notificationCore = resolver.resolve(NotificationCoreProtocol.self)!
     }
 }
@@ -61,6 +63,30 @@ extension AppDelegate: UIApplicationDelegate {
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) async -> UIBackgroundFetchResult {
         notificationCore.handleReceivedNotificationPayload(userInfo)
         return .newData
+    }
+    
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([any UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let url = userActivity.webpageURL
+        else {
+            print("일단 유니버셜링크 실패함ㅋㅋ")
+            return false
+        }
+        
+        let path = url.path()
+        print("수신된 유니버셜링크: \(url)")
+        
+        if path.hasPrefix("/invite/") {
+            let inviteCode = path.replacingOccurrences(of: "/invite/", with: "")
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            let name = components?.queryItems?.first(where: { $0.name == "name"} )?.value
+            print("초대코드: \(inviteCode)")
+            print("초대자닉네임: \(name ?? "\n\n@@@@ 초대자닉네임 없으면 에러상황 @@@@\n\n")")
+            
+            meetingCore.readMeetingDetailForInvitationLink(inviterName: name ?? "", inviteCode: inviteCode)
+        }
+        
+        return true
     }
 }
 

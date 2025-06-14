@@ -79,8 +79,9 @@ protocol MeetingCoreProtocol: CoreProtocol {
     func acceptInvitationByLink(_ link: String)
     /// 초대장 링크로 모임 정보 조회
     /// - Parameters
+    ///     - inviterName: 초대한 사용자의 닉네임
     ///     - invitedCode: 초대 고유 코드
-    func readMeetingDetailForInvitationLink(inviteCode: String)
+    func readMeetingDetailForInvitationLink(inviterName: String, inviteCode: String)
 }
 
 protocol MeetingMediationProtocol {
@@ -487,7 +488,7 @@ extension MeetingCore: MeetingCoreProtocol {
             }
     }
     
-    func readMeetingDetailForInvitationLink(inviteCode: String) {
+    func readMeetingDetailForInvitationLink(inviterName: String, inviteCode: String) {
         guard let _ = currentUser else { return }
         
         cancellableBag[#function] = apiService.requestPublisher(Endpoint.readMeetingDetailForInvitationLink(inviteCode: inviteCode), MeetingDetailFromLinkDTO.Response.self)

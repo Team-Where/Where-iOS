@@ -30,10 +30,10 @@ final class TabViewSelection: ObservableObject {
 final class ContentViewModel {
     private(set) var isLoginNeeded: Bool = true
     private(set) var isRegistrationNeeded: Bool = false
+    private(set) var invitedMeeting: Meeting?
     private var _user: User?
     private var _meetings: [Meeting] = []
     private var _sortType: MeetingSortType = .created
-    
     
     private let authCore: AuthentificationCoreProtocol
     private let meetingCore: MeetingCoreProtocol
@@ -73,6 +73,12 @@ final class ContentViewModel {
             }
             .store(in: cancellableBag, key: "Meetings")
         
+        meetingCore.invitedMeeting
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] meeting in
+                self?.invitedMeeting = meeting
+            }
+            .store(in: cancellableBag, key: "InvitedMeeting")
     }
     
     private func sortMeetings(by type: MeetingSortType) {
