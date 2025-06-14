@@ -75,8 +75,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     func acceptInvitation(id: UInt64) -> AnyPublisher<Void, MeetingCoreError>
     /// 모임 초대 수락 링크
     /// - Parameters:
-    ///     - link: 초대 링크
-    func acceptInvitationByLink(_ link: String)
+    func acceptInvitationByLinkCode() -> AnyPublisher<Void, MeetingCoreError>
     /// 초대장 링크로 모임 정보 조회
     /// - Parameters
     ///     - inviterName: 초대한 사용자의 닉네임
@@ -112,6 +111,7 @@ final class MeetingCore {
     private var _summaries = [UInt64: MeetingSummary]()
     private var _meetingPariticipantIDs = [UInt64: Set<UInt64>]()
     private var currentUser: User?
+    private var currentInviteCode: String?
     
     /// 모임 관련 Subject
     /// - Key: meeting.id
@@ -469,23 +469,25 @@ extension MeetingCore: MeetingCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func acceptInvitationByLink(_ link: String) {
-        guard let user = currentUser else { return }
+    func acceptInvitationByLinkCode() -> AnyPublisher<Void, MeetingCoreError> {
+        guard let user = currentUser,
+              let code = currentInviteCode
+        else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
+        }
                 
-        let dto = AcceptMeetingInvitationByLinkDTO.Request(userID: user.id, invitationLink: link)
-        cancellableBag[#function] = apiService.requestPublisher(Endpoint.acceptMeetingInvitationByLink(dto: dto), AcceptMeetingInvitationByLinkDTO.Response.self)
-            .map { $0.toEntity() }
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error): print(error)
-                }
-            } receiveValue: { [weak self] meeting in
+        let dto = AcceptMeetingInvitationByLinkDTO.Request(userID: user.id, invitationLink: code)
+        return apiService.requestPublisher(Endpoint.acceptMeetingInvitationByLink(dto: dto), AcceptMeetingInvitationByLinkDTO.Response.self)
+            .handleEvents(receiveOutput: { [weak self] response in
                 guard let self else { return }
+                let newMeeting = response.toEntity()
                 var meetings = meetingsSubject.value
-                meetings[meeting.id] = meeting
+                meetings[newMeeting.id] = newMeeting
                 meetingsSubject.send(meetings)
-            }
+            })
+            .mapError { MeetingCoreError.networkingError($0) }
+            .map { _ in () }
+            .eraseToAnyPublisher()
     }
     
     func readMeetingDetailForInvitationLink(inviterName: String, inviteCode: String) {
@@ -499,6 +501,7 @@ extension MeetingCore: MeetingCoreProtocol {
                 case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] in
+                self?.currentInviteCode = inviteCode
                 self?.invitedMeetingSubject.send((inviterName, $0))
             }
     }
