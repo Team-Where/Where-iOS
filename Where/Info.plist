@@ -16,12 +16,22 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>where.naver.login</string>
-			</array>
-		</dict>
-	</array>
-	<key>KAKAO_NATIVE_APP_KEY</key>
+            <array>
+                <string>where.naver.login</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.audiwhere.app</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>audiwhere</string>
+            </array>
+        </dict>
+    </array>
+    <key>KAKAO_NATIVE_APP_KEY</key>
 	<string>$(KAKAO_NATIVE_APP_KEY)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
