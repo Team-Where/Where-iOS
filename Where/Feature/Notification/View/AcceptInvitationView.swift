@@ -9,10 +9,15 @@ import SwiftUI
 import Swinject
 
 struct AcceptInvitationView: View {
+    @State private var isLoginViewPresented: Bool = false
+    @State private var isFloaterPresented: Bool = false
+    @State private var navigationType: NavigationType?
+    
     private let inviterName: String?
     private let meeting: Meeting?
     
     private let viewModel: AcceptInvitationViewModel
+    private let resolver: Resolver
     
     init(
         inviterName: String?,
@@ -21,7 +26,8 @@ struct AcceptInvitationView: View {
     ) {
         self.inviterName = inviterName
         self.meeting = meeting
-        viewModel = resolver.resolve(AcceptInvitationViewModel.self)!
+        self.viewModel = resolver.resolve(AcceptInvitationViewModel.self)!
+        self.resolver = resolver
     }
     
     var body: some View {
@@ -45,6 +51,17 @@ struct AcceptInvitationView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
+        .padding()
+        .fullScreenCover(isPresented: $isLoginViewPresented) {
+            LoginView(resolver: resolver)
+        }
+        .floater($isFloaterPresented, title: "잠시 후 다시 시도해주세요.")
+        .navigationDestination(item: $navigationType) { type in
+            switch type {
+            case .meetingInfo(let meeting):
+                MeetingInformationView(resolver: resolver, meetingID: meeting.id)
+            }
+        }
     }
     
     private var particleArea: some View {
@@ -64,14 +81,19 @@ struct AcceptInvitationView: View {
                 invitationInfoArea
                 
                 Button {
-                    viewModel.acceptInvitation()
+                    accept()
                 } label: {
-                    Text("수락하기")
-                        .whereFont(.body16semibold)
-                        .padding(.vertical, 12)
-                        .padding(.horizontal, 24)
+                    if viewModel.processingState == .processing {
+                        ProgressView()
+                    } else {
+                        Text("수락하기")
+                            .whereFont(.body16semibold)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 24)
+                    }
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(viewModel.processingState == .processing)
             }
         }
         .frame(width: 350, height: 386)
@@ -84,7 +106,6 @@ struct AcceptInvitationView: View {
     
     private var invitationInfoArea: some View {
         VStack(spacing: 16) {
-            // TODO: 실제 데이터 주입
             AsyncImage(url: meeting?.imageURL) { image in
                 image
                     .frame(width: 120, height: 120)
@@ -117,5 +138,24 @@ struct AcceptInvitationView: View {
                 .foregroundStyle(.where(.gray700))
             }
         }
+    }
+    
+    private func accept() {
+        guard let meeting else { return }
+        guard viewModel.isLoginNeeded == false else {
+            return isLoginViewPresented = true
+        }
+        
+        viewModel.acceptInvitation(meetingID: meeting.id) { isSuccess in
+            guard isSuccess else { return isFloaterPresented = true }
+            navigationType = .meetingInfo(meeting)
+        }
+    }
+}
+
+// MARK: - Nested Types
+extension AcceptInvitationView {
+    enum NavigationType: Hashable {
+        case meetingInfo(Meeting)
     }
 }
