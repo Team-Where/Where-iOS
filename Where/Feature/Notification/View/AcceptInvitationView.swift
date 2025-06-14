@@ -9,9 +9,18 @@ import SwiftUI
 import Swinject
 
 struct AcceptInvitationView: View {
+    private let inviterName: String?
+    private let meeting: Meeting?
+    
     private let viewModel: AcceptInvitationViewModel
     
-    init(resolver: Resolver) {
+    init(
+        inviterName: String?,
+        meeting: Meeting?,
+        resolver: Resolver
+    ) {
+        self.inviterName = inviterName
+        self.meeting = meeting
         viewModel = resolver.resolve(AcceptInvitationViewModel.self)!
     }
     
@@ -42,7 +51,7 @@ struct AcceptInvitationView: View {
         ZStack(alignment: .bottom) {
             Image(.particle)
             
-            Text("\(viewModel.inviterName ?? "-")님이 초대합니다")
+            Text("\(inviterName ?? "-")님이 초대합니다")
                 .whereFont(.body16regular)
                 .foregroundStyle(.where(.gray800))
         }
@@ -76,7 +85,7 @@ struct AcceptInvitationView: View {
     private var invitationInfoArea: some View {
         VStack(spacing: 16) {
             // TODO: 실제 데이터 주입
-            AsyncImage(url: viewModel.meeting?.imageURL) { image in
+            AsyncImage(url: meeting?.imageURL) { image in
                 image
                     .frame(width: 120, height: 120)
                     .clipShape(.buttonBorder)
@@ -93,26 +102,20 @@ struct AcceptInvitationView: View {
             }
             
             VStack(spacing: 12) {
-                Text(viewModel.meeting?.title ?? "-")
+                Text(meeting?.title ?? "-")
                     .whereFont(.title24semibold)
                     .foregroundStyle(.where(.gray900))
                 
                 HStack(spacing: 4) {
                     Image(.calendarIcon)
                     
-                    Text(viewModel.meeting?.scheduleDate?.toString(by: .yyyyMMdd) ?? "")
+                    Text(meeting?.scheduleDate?.toString(by: .yyyyMMdd) ?? "아직 정해진 일정이 없어요")
                     
-                    Text(viewModel.meeting?.scheduleTime?.toString(by: .ahmm) ?? "")
+                    Text(meeting?.scheduleTime?.toString(by: .ahmm) ?? "")
                 }
                 .whereFont(.body14regular)
                 .foregroundStyle(.where(.gray700))
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        AcceptInvitationView(resolver: PreviewHelper.shared.resolver)
     }
 }

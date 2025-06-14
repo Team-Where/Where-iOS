@@ -82,7 +82,7 @@ struct ContentView: View {
             OnboardingView()
         }
         .navigationDestination(isPresented: $isAcceptInvitationViewPresented) {
-            AcceptInvitationView(resolver: resolver)
+            AcceptInvitationView(inviterName: viewModel.inviterName, meeting: viewModel.invitedMeeting, resolver: resolver)
         }
         .popup($isLoginNeededPopupPresented) {
             VStack(spacing: 22) {

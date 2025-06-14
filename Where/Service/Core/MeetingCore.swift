@@ -18,7 +18,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 특정 모임의 초대 현황
     var invitationStatus: AnyPublisher<[UInt64: [MeetingInvitationState]], Never> { get }
     /// 초대 받은 모임 정보
-    var invitedMeeting: AnyPublisher<Meeting, Never> { get }
+    var invitedMeeting: AnyPublisher<(name: String, meeting: Meeting), Never> { get }
     /// 새로 생성된 모임 정보
     var createdMeeting: AnyPublisher<Meeting, Never> { get }
     /// 모임 일정 등록
@@ -121,7 +121,7 @@ final class MeetingCore {
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
     private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], Never>([:])
     private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationState]], Never>([:])
-    private let invitedMeetingSubject = PassthroughSubject<Meeting, Never>()
+    private let invitedMeetingSubject = PassthroughSubject<(name: String, meeting: Meeting), Never>()
     private let createdMeetingSubject = PassthroughSubject<Meeting, Never>()
     
     private let apiService: APIServable
@@ -167,7 +167,7 @@ extension MeetingCore: MeetingCoreProtocol {
         invitationStatusSubject.eraseToAnyPublisher()
     }
     
-    var invitedMeeting: AnyPublisher<Meeting, Never> {
+    var invitedMeeting: AnyPublisher<(name: String, meeting: Meeting), Never> {
         invitedMeetingSubject.eraseToAnyPublisher()
     }
     
@@ -489,8 +489,6 @@ extension MeetingCore: MeetingCoreProtocol {
     }
     
     func readMeetingDetailForInvitationLink(inviterName: String, inviteCode: String) {
-        guard let _ = currentUser else { return }
-        
         cancellableBag[#function] = apiService.requestPublisher(Endpoint.readMeetingDetailForInvitationLink(inviteCode: inviteCode), MeetingDetailFromLinkDTO.Response.self)
             .map {
                 $0.toEntity()
@@ -501,7 +499,7 @@ extension MeetingCore: MeetingCoreProtocol {
                 case .failure(let error): print(error)
                 }
             } receiveValue: { [weak self] in
-                self?.invitedMeetingSubject.send($0)
+                self?.invitedMeetingSubject.send((inviterName, $0))
             }
     }
 }

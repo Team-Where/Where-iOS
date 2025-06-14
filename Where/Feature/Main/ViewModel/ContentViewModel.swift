@@ -30,6 +30,7 @@ final class TabViewSelection: ObservableObject {
 final class ContentViewModel {
     private(set) var isLoginNeeded: Bool = true
     private(set) var isRegistrationNeeded: Bool = false
+    private(set) var inviterName: String?
     private(set) var invitedMeeting: Meeting?
     private var _user: User?
     private var _meetings: [Meeting] = []
@@ -75,8 +76,9 @@ final class ContentViewModel {
         
         meetingCore.invitedMeeting
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] meeting in
-                self?.invitedMeeting = meeting
+            .sink { [weak self] in
+                self?.inviterName = $0.name
+                self?.invitedMeeting = $0.meeting
             }
             .store(in: cancellableBag, key: "InvitedMeeting")
     }
