@@ -24,6 +24,14 @@ extension ReadFriendsDTO {
         let isBookmarked: Bool
         let relatedMeetingDetails: [MeetingDetail]?
         
+        enum CodingKeys: String, CodingKey {
+            case id = "friendId"
+            case name = "friendName"
+            case imageURLString = "friendImage"
+            case isBookmarked = "friendBookmark"
+            case relatedMeetingDetails = "meetingDetail"
+        }
+        
         func asEntity() -> FriendRelationship {
             return .init(
                 id: id,
