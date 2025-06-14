@@ -11,8 +11,6 @@ import Swinject
 
 @Observable
 final class AcceptInvitationViewModel {
-    private(set) var inviterName: String?
-    private(set) var meeting: Meeting?
     private let meetingCore: MeetingCoreProtocol
     private let cancellableBag = CancellableBag()
     
@@ -22,12 +20,7 @@ final class AcceptInvitationViewModel {
     }
     
     private func subscribe() {
-        meetingCore.invitedMeeting
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.meeting = $0
-            }
-            .store(in: cancellableBag, key: "InvitedMeeting")
+        
     }
 }
 
