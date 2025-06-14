@@ -216,6 +216,7 @@
 		04DEC6AB2DDB73DD0091DEF9 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */; };
 		7F6D266D2DE4A00E001F47B9 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */; };
 		7FB0B6002DDCBC4600ED14A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */; };
+		7FD0D8652DF88C5200A9F243 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0D8642DF88C5200A9F243 /* WebView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -445,6 +446,7 @@
 		04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7FD0D8642DF88C5200A9F243 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -575,6 +577,7 @@
 			isa = PBXGroup;
 			children = (
 				04D5466F2DDB66A9003EEC85 /* ImageSelectionPopupView.swift */,
+				7FD0D8642DF88C5200A9F243 /* WebView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1552,6 +1555,7 @@
 				04D5477A2DDB66A9003EEC85 /* DateView.swift in Sources */,
 				04D5477B2DDB66A9003EEC85 /* Pretendard.swift in Sources */,
 				04D5477C2DDB66A9003EEC85 /* DeletePlaceDTO.swift in Sources */,
+				7FD0D8652DF88C5200A9F243 /* WebView.swift in Sources */,
 				04D5477D2DDB66A9003EEC85 /* Font.swift in Sources */,
 				04D5477E2DDB66A9003EEC85 /* SignInViewModel.swift in Sources */,
 				04D5477F2DDB66A9003EEC85 /* WhereFont.swift in Sources */,

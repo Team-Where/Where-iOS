@@ -113,39 +113,35 @@ struct PreferenceView: View {
                     .fill(Color(hex: 0xF3F4F6))
                 
                 Section {
-                    Link(destination: LinkType.agreeToPersonalInfoCollection.link!) {
-                        HStack {
-                            Text("개인정보처리방침")
-                                .whereFont(.body16medium)
-                                .foregroundStyle(.black)
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 12)
-                                .foregroundStyle(Color(hex: 0xADB58D))
-                        }
-                    }
-                    .frame(height: 50)
                     
-                    Link(destination: LinkType.agreeToTermsOfService.link!) {
-                        HStack {
-                            Text("서비스 이용약관")
-                                .whereFont(.body16medium)
-                                .foregroundStyle(.black)
+                    ForEach(LinkType.allCases, id: \.self) { type in
+                        NavigationLink {
+                            WebView(url: type.link!)
+                                .navigationBarBackButtonHidden()
+                                .navigationTitle(type.title)
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbar {
+                                    ToolbarItem(placement: .topBarLeading) {
+                                        BackButton()
+                                    }
+                                }
                             
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 12)
-                                .foregroundStyle(Color(hex: 0xADB58D))
+                        } label: {
+                            HStack {
+                                Text(type.title)
+                                    .whereFont(.body16medium)
+                                    .foregroundStyle(.black)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 12)
+                                    .foregroundStyle(Color(hex: 0xADB58D))
+                            }
                         }
                     }
-                    .frame(height: 50)
                     
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
@@ -229,7 +225,7 @@ struct PreferenceView: View {
 // MARK: - Nested Types
 extension PreferenceView {
     /// 외부 링크의 종류
-    enum LinkType {
+    enum LinkType: CaseIterable {
         /// 서비스 이용약관 동의
         case agreeToTermsOfService
         /// 개인정보 수집 및 이용 약관 동의
@@ -241,6 +237,15 @@ extension PreferenceView {
                 URL(string: "https://meteor-condor-9e6.notion.site/20f912bcf29c80e69e6ed03cc42776b5")
             case .agreeToPersonalInfoCollection:
                 URL(string: "https://meteor-condor-9e6.notion.site/20f912bcf29c8020a3b6e3c468c30462")
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .agreeToTermsOfService:
+                "서비스 이용약관"
+            case .agreeToPersonalInfoCollection:
+                "개인정보처리방침"
             }
         }
     }

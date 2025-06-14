@@ -84,7 +84,16 @@ struct RegistrationTermView: View {
             
             Spacer()
             
-            Link(destination: type.link!) {
+            NavigationLink {
+                WebView(url: type.link!)
+                    .navigationBarBackButtonHidden()
+                    .navigationTitle(type.title)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            BackButton()
+                        }
+                    }
+            } label: {
                 Text("보기")
                     .whereFont(.caption12regular)
                     .foregroundStyle(Color(hex: 0x747474))
