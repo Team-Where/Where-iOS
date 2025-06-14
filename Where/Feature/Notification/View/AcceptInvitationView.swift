@@ -9,7 +9,7 @@ import SwiftUI
 import Swinject
 
 struct AcceptInvitationView: View {
-    @ObservedObject private var viewModel: AcceptInvitationViewModel
+    private let viewModel: AcceptInvitationViewModel
     
     init(resolver: Resolver) {
         viewModel = resolver.resolve(AcceptInvitationViewModel.self)!
@@ -41,8 +41,8 @@ struct AcceptInvitationView: View {
     private var particleArea: some View {
         ZStack(alignment: .bottom) {
             Image(.particle)
-            // TODO: 하드코딩 정리하기
-            Text("김현영님이 초대합니다")
+            
+            Text("\(viewModel.inviterName ?? "-")님이 초대합니다")
                 .whereFont(.body16regular)
                 .foregroundStyle(.where(.gray800))
         }
@@ -55,7 +55,7 @@ struct AcceptInvitationView: View {
                 invitationInfoArea
                 
                 Button {
-                    // TODO: 수락하기 기능 연결
+                    viewModel.acceptInvitation()
                 } label: {
                     Text("수락하기")
                         .whereFont(.body16semibold)
@@ -76,7 +76,7 @@ struct AcceptInvitationView: View {
     private var invitationInfoArea: some View {
         VStack(spacing: 16) {
             // TODO: 실제 데이터 주입
-            AsyncImage(url: viewModel.meeting.imageURL) { image in
+            AsyncImage(url: viewModel.meeting?.imageURL) { image in
                 image
                     .frame(width: 120, height: 120)
                     .clipShape(.buttonBorder)
@@ -93,16 +93,16 @@ struct AcceptInvitationView: View {
             }
             
             VStack(spacing: 12) {
-                Text(viewModel.meeting.title)
+                Text(viewModel.meeting?.title ?? "-")
                     .whereFont(.title24semibold)
                     .foregroundStyle(.where(.gray900))
                 
                 HStack(spacing: 4) {
                     Image(.calendarIcon)
                     
-                    Text(viewModel.meeting.scheduleDate?.toString(by: .yyyyMMdd) ?? "")
+                    Text(viewModel.meeting?.scheduleDate?.toString(by: .yyyyMMdd) ?? "")
                     
-                    Text(viewModel.meeting.scheduleTime?.toString(by: .ahmm) ?? "")
+                    Text(viewModel.meeting?.scheduleTime?.toString(by: .ahmm) ?? "")
                 }
                 .whereFont(.body14regular)
                 .foregroundStyle(.where(.gray700))

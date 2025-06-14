@@ -9,8 +9,10 @@ import Foundation
 import Combine
 import Swinject
 
-final class AcceptInvitationViewModel: ObservableObject {
-    @Published var meeting: Meeting!
+@Observable
+final class AcceptInvitationViewModel {
+    private(set) var inviterName: String?
+    private(set) var meeting: Meeting?
     private let meetingCore: MeetingCoreProtocol
     private let cancellableBag = CancellableBag()
     
@@ -29,10 +31,9 @@ final class AcceptInvitationViewModel: ObservableObject {
     }
 }
 
+// MARK: - Interfaces
 extension AcceptInvitationViewModel {
-    // TODO: 화면 띄워지는 시점에서 초대 받은 모임 정보 불러오기 호출
-    func onAppear(_ invitedCode: String) {
-        meetingCore.readMeetingDetailForInvitationLink(inviteCode: invitedCode)
+    func acceptInvitation() {
+        // TODO: 초대수락 기능 연결
     }
-    // TODO: 유니버셜링크 연동 후, 초대 수락 구현
 }
