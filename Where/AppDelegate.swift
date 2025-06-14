@@ -22,6 +22,29 @@ final class AppDelegate: NSObject {
         self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         self.notificationCore = resolver.resolve(NotificationCoreProtocol.self)!
     }
+    
+    func parseURL(_ url: URL) {
+        print("Received URL: \(url)")
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            print("Failed to parse URL components")
+            return
+        }
+        
+        let pathComponents = url.pathComponents
+        print("pathComponents: \(pathComponents)")
+        
+        let inviteCode = pathComponents.first(where: { $0 != "/" && $0 != "invite" })
+        let name = components.queryItems?.first(where: { $0.name == "name" })?.value
+        
+        guard let code = inviteCode, let name = name else {
+            print("Missing inviteCode or name: inviteCode=\(inviteCode ?? "nil"), name=\(name ?? "nil")")
+            return
+        }
+        
+        print("초대코드: \(code)")
+        print("초대자닉네임: \(name)")
+        meetingCore.readMeetingDetailForInvitationLink(inviterName: name, inviteCode: code)
+    }
 }
 
 // MARK: - UIApplicationDelegate Conformation
@@ -63,30 +86,6 @@ extension AppDelegate: UIApplicationDelegate {
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) async -> UIBackgroundFetchResult {
         notificationCore.handleReceivedNotificationPayload(userInfo)
         return .newData
-    }
-    
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([any UIUserActivityRestoring]?) -> Void) -> Bool {
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-              let url = userActivity.webpageURL
-        else {
-            print("일단 유니버셜링크 실패함ㅋㅋ")
-            return false
-        }
-        
-        let path = url.path()
-        print("수신된 유니버셜링크: \(url)")
-        
-        if path.hasPrefix("/invite/") {
-            let inviteCode = path.replacingOccurrences(of: "/invite/", with: "")
-            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-            let name = components?.queryItems?.first(where: { $0.name == "name"} )?.value
-            print("초대코드: \(inviteCode)")
-            print("초대자닉네임: \(name ?? "\n\n@@@@ 초대자닉네임 없으면 에러상황 @@@@\n\n")")
-            
-            meetingCore.readMeetingDetailForInvitationLink(inviterName: name ?? "", inviteCode: inviteCode)
-        }
-        
-        return true
     }
 }
 
