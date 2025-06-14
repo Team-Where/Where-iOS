@@ -45,7 +45,7 @@ extension AcceptInvitationViewModel {
 extension AcceptInvitationViewModel {
     func acceptInvitation(meetingID: UInt64, _ handler: @escaping (Bool) -> Void) {
         processingState = .processing
-        meetingCore.acceptInvitation(id: meetingID)
+        meetingCore.acceptInvitationByLinkCode()
             .sink { [weak self] completion in
                 self?.processingState = .waiting
                 
