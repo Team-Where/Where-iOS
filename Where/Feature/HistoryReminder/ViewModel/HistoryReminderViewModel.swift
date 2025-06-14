@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Swinject
 
 @Observable
 final class HistoryReminderViewModel {
@@ -15,8 +16,8 @@ final class HistoryReminderViewModel {
     private let meetingCore: MeetingCoreProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(meetingCore: MeetingCoreProtocol) {
-        self.meetingCore = meetingCore
+    init(resolver: Resolver) {
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         subscribe()
     }
     
