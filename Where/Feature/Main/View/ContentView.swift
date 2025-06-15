@@ -15,9 +15,8 @@ struct ContentView: View {
     @StateObject private var tabViewSelection = TabViewSelection()
     @State private var fullScreenCoverType: MainFullScreenCoverType?
     @State private var sheetType: MainSheetType?
+    @State private var navigationType: MainNavigationType?
     @State private var isLoginNeededPopupPresented: Bool = false
-    @State private var isAcceptInvitationViewPresented: Bool = false
-    @State private var isRegistrationNeeded: Bool = false
     @State private var isLoginNeeded: Bool = false
     
     private let viewModel: ContentViewModel
@@ -46,7 +45,7 @@ struct ContentView: View {
                 .tag(TabItem.createMeeting)
             
             // 친구목록 뷰
-            FriendsListView(resolver: resolver)
+            FriendsListView($navigationType, resolver: resolver)
                 .tabItem {
                     Label("친구목록", systemImage: "list.bullet")
                 }
@@ -75,14 +74,15 @@ struct ContentView: View {
                 LoginView(resolver: resolver)
             }
         }
-        .navigationDestination(isPresented: $isRegistrationNeeded) {
-            ProfileCreationView($isRegistrationNeeded, resolver: resolver)
+        .navigationDestination(item: $navigationType) { type in
+            switch type {
+            case .profileCreationView: ProfileCreationView($navigationType, resolver: resolver)
+            case .acceptInvigationView(let name, let meeting): AcceptInvitationView(inviterName: name, meeting: meeting, resolver: resolver)
+            case .historyReminderView(let user, let friend): HistoryReminderView(user: user, friend: friend, resolver: resolver)
+            }
         }
         .navigationDestination(isPresented: $isOnboardingNeeded) {
             OnboardingView()
-        }
-        .navigationDestination(isPresented: $isAcceptInvitationViewPresented) {
-            AcceptInvitationView(inviterName: viewModel.inviterName, meeting: viewModel.invitedMeeting, resolver: resolver)
         }
         .popup($isLoginNeededPopupPresented) {
             VStack(spacing: 22) {
@@ -123,25 +123,38 @@ struct ContentView: View {
 }
 
 // MARK: - Nested Types
-//extension ContentView {
-    /// 메인(루트) 화면에서 라우팅 가능한 풀스크린커버의 종류
-    enum MainFullScreenCoverType: Identifiable {
-        /// 모임 생성 완료 화면
-        case completeCreation(Meeting)
-        /// 로그인 화면
-        case login
-        
-        var id: String { String(describing: self) }
+/// 메인(루트) 화면에서 라우팅 가능한 풀스크린커버의 종류
+enum MainFullScreenCoverType: Identifiable {
+    /// 모임 생성 완료 화면
+    case completeCreation(Meeting)
+    /// 로그인 화면
+    case login
+    
+    var id: String { String(describing: self) }
+}
+
+/// 메인(루트) 화면에서 라우팅 가능한 시트의 종류
+enum MainSheetType: Identifiable {
+    /// 모임 생성 화면
+    case createMeeting
+    
+    var id: String { String(describing: self) }
+}
+
+/// 메인(루트) 화면에서 라우팅 가능한 네비게이션패스의 종류
+enum MainNavigationType: Hashable {
+    case profileCreationView
+    case acceptInvigationView(inviterName: String?, meeting: Meeting?)
+    case historyReminderView(user: User, friend: FriendRelationship)
+    
+    static func == (lhs: MainNavigationType, rhs: MainNavigationType) -> Bool {
+        String(describing: lhs) == String(describing: rhs)
     }
     
-    /// 메인(루트) 화면에서 라우팅 가능한 시트의 종류
-    enum MainSheetType: Identifiable {
-        /// 모임 생성 화면
-        case createMeeting
-        
-        var id: String { String(describing: self) }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(String(describing: self))
     }
-//}
+}
 
 // MARK: - Methods
 private extension ContentView {
@@ -167,7 +180,7 @@ private extension ContentView {
     
     func onRegistrationStateChange(_ : Bool, isRegistrationNeeded: Bool) {
         guard isRegistrationNeeded else { return }
-        let work = DispatchWorkItem { self.isRegistrationNeeded = isRegistrationNeeded }
+        let work = DispatchWorkItem { navigationType = .profileCreationView }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
     
@@ -177,7 +190,7 @@ private extension ContentView {
     
     func onInvitedMeetingChange(_ : Meeting?, invitedMeeting: Meeting?) {
         guard invitedMeeting != nil else { return }
-        isAcceptInvitationViewPresented = true
+        navigationType = .acceptInvigationView(inviterName: viewModel.inviterName, meeting: invitedMeeting)
     }
 }
 
