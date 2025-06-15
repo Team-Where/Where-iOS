@@ -14,10 +14,15 @@ fileprivate typealias SheetType = FriendsListViewModel.SheetType
 struct FriendsListView: View {
     @StateObject private var viewModel: FriendsListViewModel
     @FocusState private var isFocused: Bool
+    @Binding private var navigationType: MainNavigationType?
     
     private let resolver: Resolver
     
-    init(resolver: Resolver) {
+    init(
+        _ navigationType: Binding<MainNavigationType?>,
+        resolver: Resolver
+    ) {
+        self._navigationType = navigationType
         self._viewModel = StateObject(wrappedValue: resolver.resolve(FriendsListViewModel.self)!)
         self.resolver = resolver
     }
@@ -47,7 +52,7 @@ struct FriendsListView: View {
             case .deleteFriend(let friend):
                 DeleteFriendSheet(viewModel: viewModel, friend: friend)
             case .historyWithFriend(let user, let friend):
-                HistoryReminderSheet(viewModel: viewModel, user: user, friend: friend, resolver: resolver)
+                HistoryReminderSheet(viewModel: viewModel, $viewModel.sheetType, $navigationType, user: user, friend: friend, resolver: resolver)
             }
         }
     }
@@ -249,6 +254,8 @@ private extension FriendsListView {
     
     struct HistoryReminderSheet: View {
         @ObservedObject private var viewModel: FriendsListViewModel
+        @Binding var sheetType: SheetType?
+        @Binding var navigationType: MainNavigationType?
         
         let user: User
         let friend: FriendRelationship
@@ -256,11 +263,15 @@ private extension FriendsListView {
         
         init(
             viewModel: FriendsListViewModel,
+            _ sheetType: Binding<SheetType?>,
+            _ navigationType: Binding<MainNavigationType?>,
             user: User,
             friend: FriendRelationship,
             resolver: Resolver
         ) {
             self.viewModel = viewModel
+            self._sheetType = sheetType
+            self._navigationType = navigationType
             self.user = user
             self.friend = friend
             self.resolver = resolver
@@ -307,8 +318,9 @@ private extension FriendsListView {
                     }
                 }
                 
-                NavigationLink {
-                    HistoryReminderView(user: user, friend: friend, resolver: resolver)
+                Button {
+                    sheetType = nil
+                    navigationType = .historyReminderView(user: user, friend: friend)
                 } label: {
                     Text("나와의 모임활동 보기")
                         .whereFont(.body16medium)

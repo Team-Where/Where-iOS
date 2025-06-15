@@ -9,7 +9,7 @@ import SwiftUI
 import Swinject
 
 struct ProfileCreationView: View {
-    @Binding var isRegistrationNeeded: Bool
+    @Binding var navigationType: MainNavigationType?
     @FocusState private var isFocused: Bool
     @State private var nicknameFieldText = String()
     @State private var isPopupPresented: Bool = false
@@ -46,10 +46,10 @@ struct ProfileCreationView: View {
     private let viewModel: ProfileCreationViewModel
     
     init(
-        _ isRegistrationNeeded: Binding<Bool>,
+        _ navigationType: Binding<MainNavigationType?>,
         resolver: Resolver
     ) {
-        self._isRegistrationNeeded = isRegistrationNeeded
+        self._navigationType = navigationType
         self.viewModel = resolver.resolve(ProfileCreationViewModel.self)!
     }
     
@@ -184,7 +184,7 @@ private extension ProfileCreationView {
         case .profile:
             viewModel.setUpProfile(nicknameFieldText)
         case .completed:
-            isRegistrationNeeded = false
+            navigationType = nil
         }
     }
     
@@ -211,11 +211,5 @@ private extension ProfileCreationView {
         case .beforeValidate: .where(.gray700)
         case .invalid, .duplicated: .red
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        ProfileCreationView(.constant(true), resolver: PreviewHelper.shared.resolver)
     }
 }
