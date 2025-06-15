@@ -114,9 +114,25 @@ extension HistoryReminderView {
         }
         
         var body: some View {
-            LazyVStack {
-                ForEach(yearGroups) { yearGroup in
-                    section(yearGroup)
+            Group {
+                if yearGroups.isEmpty {
+                    VStack(spacing: 10) {
+                        Image(systemName: "exclamationmark.circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 18)
+                            .foregroundStyle(Color(hex: 0x868E96))
+                        
+                        Text("아직 함께하는 모임이 없어요!")
+                            .whereFont(.body16medium)
+                            .foregroundStyle(Color(hex: 0x495057))
+                    }
+                } else {
+                    LazyVStack {
+                        ForEach(yearGroups) { yearGroup in
+                            section(yearGroup)
+                        }
+                    }
                 }
             }
         }
