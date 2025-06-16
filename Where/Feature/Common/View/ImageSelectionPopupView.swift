@@ -18,7 +18,7 @@ struct ImageSelectionPopupView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
             Button("기본 이미지로 설정") {
-                onSelected(nil)
+                onSelected(UIImage(named: "DefaultCover")?.jpegData(compressionQuality: 0.8))
                 isPopupPresented = false
             }
             
