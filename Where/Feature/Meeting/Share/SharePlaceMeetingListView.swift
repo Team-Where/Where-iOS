@@ -9,9 +9,14 @@ import SwiftUI
 
 struct SharePlaceMeetingListView: View {
     
-    @State var seletedMeeting: Meeting?
+    @State private var selectedMeeting: Meeting?
+    
+    private var disabled: Bool {
+        selectedMeeting == nil
+    }
     
     private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 175))]
+    
     var body: some View {
         VStack(alignment:.leading) {
             
@@ -32,14 +37,22 @@ struct SharePlaceMeetingListView: View {
                                      createdAt: .now,
                                               isFinished: false)
                     ]) { meeting in
-                        MeetingCell(selectedMeeting: $seletedMeeting, meeting: meeting)
+                        MeetingCell(selectedMeeting: $selectedMeeting, meeting: meeting)
                             .onTapGesture {
-                                seletedMeeting = meeting
+                                selectedMeeting = meeting
                             }
-                           
+   
                     }
                 }
             }
+            
+            Button {
+                //TODO: View이동
+            } label: {
+                Text("완료")
+                    .frame(width: 350, height: 48)
+            }
+            .buttonStyle(.whereRoundedProminent(disabled: disabled))
         }
         .padding(.horizontal, 20)
     }
