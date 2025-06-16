@@ -57,6 +57,12 @@ extension Meeting: Hashable {
     }
 }
 
+extension Meeting: Equatable {
+    static func == (lhs: Meeting, rhs: Meeting) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 // 알림에 사용될 시각
 extension Meeting {
     /// 알림(UserNotification)에 사용될 시각 (년 월 일 시 분 초)
