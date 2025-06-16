@@ -19,8 +19,6 @@ struct Meeting: Identifiable {
     let imageURL: URL?
     /// 생성일시
     let createdAt: Date
-    /// 종료일시
-    let finishedAt: Date?
     /// 모임 일정 날짜
     let scheduleDate: Date?
     /// 모임 일정 시간
@@ -36,7 +34,6 @@ struct Meeting: Identifiable {
         description: String,
         imageURL: URL? = nil,
         createdAt: Date,
-        finishedAt: Date? = nil,
         scheduleDate: Date? = nil,
         scheduleTime: Date? = nil,
         shareLink: URL? = nil,
@@ -47,7 +44,6 @@ struct Meeting: Identifiable {
         self.description = description
         self.imageURL = imageURL
         self.createdAt = createdAt
-        self.finishedAt = finishedAt
         self.scheduleDate = scheduleDate
         self.scheduleTime = scheduleTime
         self.shareLink = shareLink

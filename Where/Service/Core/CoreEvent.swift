@@ -11,7 +11,7 @@ enum CoreEvent {
     case userDidLogout
     
     // MARK: - Community Related
-    case friendsListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: Meeting])
+    case friendsListUpdated(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary])
     case historyWithFriendWillUpdate(friendID: UInt64)
     
     // MARK: - Meeting Related

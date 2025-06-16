@@ -13,19 +13,19 @@ struct MeetingInformationView: View {
     @StateObject private var viewModel: MeetingInformationViewModel
     @Environment(\.dismiss) private var dismiss
     
-    private let meeting: Meeting
     private let resolver: Resolver
     
-    init(meeting: Meeting, resolver: Resolver) {
-        self.meeting = meeting
+    init(resolver: Resolver, meetingID: UInt64) {
         self.resolver = resolver
-        self._viewModel = StateObject(wrappedValue: resolver.resolve(MeetingInformationViewModel.self)!)
+        let viewModel = resolver.resolve(MeetingInformationViewModel.self)!
+        viewModel.setMeeting(id: meetingID)
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         SelectionTab<TabViewItem>(selection: [
-            .meetingInfo(resolver: resolver, meeting: meeting),
-            .placeInfo(resolver: resolver, isFinished: meeting.isFinished)
+            .meetingInfo(resolver: resolver, meeting: viewModel.meeting),
+            .placeInfo(resolver: resolver, isFinished: viewModel.meeting.isFinished)
         ])
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
@@ -35,7 +35,7 @@ struct MeetingInformationView: View {
                 }
                 
                 ToolbarItem(placement: .principal) {
-                    Text(meeting.title)
+                    Text(viewModel.meeting.title)
                         .whereFont(.subtitle18semibold)
                         .foregroundStyle(Color(hex: 0x1F2937))
                 }
@@ -58,7 +58,7 @@ struct MeetingInformationView: View {
             .sheet(item: $viewModel.sheetType) { type in
                 switch type {
                 case .editMeetingInfo:
-                    EditMeetingInfoSheet(meeting: meeting, viewModel: viewModel)
+                    EditMeetingInfoSheet(viewModel: viewModel)
                 }
             }
     }
@@ -115,10 +115,7 @@ extension MeetingInformationView {
 
         @FocusState private var textFieldFocused: EditMeetingFocusState?
         
-        let meeting: Meeting
-        
-        init(meeting: Meeting, viewModel: MeetingInformationViewModel) {
-            self.meeting = meeting
+        init(viewModel: MeetingInformationViewModel) {
             self.viewModel = viewModel
         }
         
@@ -155,7 +152,7 @@ extension MeetingInformationView {
                 }
                 
                 HStack {
-                    Text(meeting.title)
+                    Text(viewModel.meeting.title)
                         .whereFont(.title20semibold)
                         .foregroundStyle(Color(hex: 0x111827))
                     
@@ -171,7 +168,7 @@ extension MeetingInformationView {
                 }
                 
                 HStack {
-                    Text(meeting.description)
+                    Text(viewModel.meeting.description)
                         .whereFont(.body14regular)
                         .foregroundStyle(Color(hex: 0x6B7280))
                     Button {
@@ -189,7 +186,7 @@ extension MeetingInformationView {
                 
                 Button {
                     // 모임 삭제(또는 나가기)
-                    viewModel.exitMeeting(by: meeting.id)
+                    viewModel.exitMeeting()
                 } label: {
                     if viewModel.isExitProcessing {
                         ProgressView()
@@ -252,7 +249,7 @@ extension MeetingInformationView {
                     
                     Button {
                         // 모임명 업데이트 기능
-                        viewModel.updateMeetingTitle(by: meeting.id)
+                        viewModel.updateMeetingTitle()
                         textFieldFocused = .none
                     } label: {
                         if viewModel.isTitleUpdatingProcessing {
@@ -320,7 +317,7 @@ extension MeetingInformationView {
                     
                     Button {
                         // 메모 업데이트 기능
-                        viewModel.updateMeetingDescription(by: meeting.id)
+                        viewModel.updateMeetingDescription()
                         textFieldFocused = .none
                     } label: {
                         if viewModel.isDescriptionUpdatingProcessing {

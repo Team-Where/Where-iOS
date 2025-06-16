@@ -130,7 +130,7 @@ extension CommunityCore: CommunityMediationProtocol {
                     print(error)
                 }
             } receiveValue: { [weak self] response in
-                let friends: [(friend: FriendRelationship, meetingSummaries: [Meeting])] = response
+                let friends: [(friend: FriendRelationship, meetingSummaries: [MeetingSummary])] = response
                     .map { dto in
                         let meetingSummaries = dto.relatedMeetingDetails?.map { $0.asEntity() } ?? []
                         let friend = dto.asEntity()

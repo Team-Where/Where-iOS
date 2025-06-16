@@ -10,6 +10,9 @@ import Swinject
 import Combine
 
 final class MeetingInformationViewModel: ObservableObject {
+    @Published private var _meeting: Meeting!
+    @Published private var meetingID: UInt64!
+    
     @Published var sheetType: SheetType?
     @Published var titleText = String()
     @Published var descriptionText = String()
@@ -24,6 +27,10 @@ final class MeetingInformationViewModel: ObservableObject {
     var descriptionUpdateButtonDisabled: Bool { isDescriptionUpdatingProcessing }
     var exitButtonDisabled: Bool { isExitProcessing }
     
+    var meeting: Meeting {
+        _meeting
+    }
+    
     private let meetingCore: MeetingCoreProtocol
     private let cancellableBag = CancellableBag()
     
@@ -33,20 +40,31 @@ final class MeetingInformationViewModel: ObservableObject {
     }
     
     private func subscribe() {
-        
+        meetingCore.meetings
+            .combineLatest($meetingID)
+            .compactMap{ (dict, id) -> Meeting? in
+                guard let id else { return nil }
+                return dict[id]
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] meeting in
+                self?._meeting = meeting
+                self?.titleText = meeting.title
+                self?.descriptionText = meeting.description
+            }
+            .store(in: cancellableBag, key: "Meetings")
     }
 }
 
 extension MeetingInformationViewModel {
-    func setMeeting(_ meeting: Meeting) {
-        titleText = meeting.title
-        descriptionText = meeting.description
+    func setMeeting(id: UInt64) {
+        self.meetingID = id
     }
     
-    func updateMeetingTitle(by id: UInt64) {
+    func updateMeetingTitle() {
         isTitleUpdatingProcessing = true
         meetingCore.updateMeeting(
-            id: id,
+            id: meeting.id,
             title: titleText,
             description: nil,
             imageData: nil
@@ -58,10 +76,10 @@ extension MeetingInformationViewModel {
             .store(in: cancellableBag, key: #function)
     }
     
-    func updateMeetingDescription(by id: UInt64) {
+    func updateMeetingDescription() {
         isDescriptionUpdatingProcessing = true
         cancellableBag[#function] = meetingCore.updateMeeting(
-            id: id,
+            id: meeting.id,
             title: nil,
             description: descriptionText,
             imageData: nil
@@ -72,9 +90,9 @@ extension MeetingInformationViewModel {
         } receiveValue: { _ in }
     }
     
-    func exitMeeting(by id: UInt64) {
+    func exitMeeting() {
         isExitProcessing = true
-        meetingCore.exitMeeting(id: id)
+        meetingCore.exitMeeting(id: meeting.id)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] result in
                 switch result {

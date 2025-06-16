@@ -57,7 +57,7 @@ final class CreateMeetingViewModel: ObservableObject {
                     let isInvited = self.selectedParticipantIDs.contains(friendID)
                     let isRecent = sharedMeetingIDs.contains {
                         guard let summary = summaries[$0] else { return false }
-                        return summary.finishedAt?.isRecent(compareTo: now) ?? false
+                        return summary.finishedAt.isRecent(compareTo: now)
                     }
                     let item = FriendCellDataSource(
                         id: friendID,
