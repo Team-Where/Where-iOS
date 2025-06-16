@@ -15,7 +15,6 @@ final class CreateMeetingViewModel: ObservableObject {
     @Published var isFloaterPresented: Bool = false
     @Published var floaterItem: FloaterItem?
     @Published var selectedImage: Data?
-    @Published private(set) var isImageSelected: Bool = false
     @Published var titleFieldText = String()
     @Published var descriptionFieldText = String()
     @Published private(set) var tempMeetingInfo: TemporaryMeetingInfo?
@@ -25,7 +24,6 @@ final class CreateMeetingViewModel: ObservableObject {
     let cancellableBag = CancellableBag()
     var disabled: Bool { titleFieldText.isEmpty }
     var viewRoutingPublisher: AnyPublisher<(sheet: MainSheetType?, cover: MainFullScreenCoverType), Never> { viewRoutingSubject.eraseToAnyPublisher() }
-    
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
