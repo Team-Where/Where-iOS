@@ -13,21 +13,21 @@ struct MeetingInformationDetailView: View {
     @State private var sheetType: SheetType?
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
+    private let meeting: Meeting
     private let resolver: Resolver
     
     init(
         meeting: Meeting,
         resolver: Resolver
     ) {
+        self.meeting = meeting
         self.resolver = resolver
-        let viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
-        viewModel.setMeeitng(meeting)
-        self._viewModel = StateObject(wrappedValue: viewModel)
+        self._viewModel = StateObject(wrappedValue: resolver.resolve(MeetingInformationDetailViewModel.self)!)
     }
     
     var body: some View {
         VStack {
-            if viewModel.meeting.isFinished {
+            if meeting.isFinished {
                 HStack(spacing: 6) {
                     Text("✋")
                         .rotationEffect(.degrees(-45))
@@ -55,13 +55,13 @@ struct MeetingInformationDetailView: View {
                     .padding(.bottom)
                     .padding(.horizontal)
             }
-            .opacity(viewModel.meeting.isFinished == false ? 1 : 0.5)
-            .disabled(viewModel.meeting.isFinished)
+            .opacity(meeting.isFinished == false ? 1 : 0.5)
+            .disabled(meeting.isFinished)
             
-            if viewModel.meeting.isFinished == false {
+            if meeting.isFinished == false {
                 Button {
                     withAnimation {
-                        viewModel.endMeeting()
+                        viewModel.endMeeting(by: meeting.id)
                     }
                 } label: {
                     Text("모임 끝내기")
@@ -78,7 +78,7 @@ struct MeetingInformationDetailView: View {
             }
         }
         .onAppear {
-            viewModel.onAppear()
+            viewModel.onAppear(meeting)
         }
         .sheet(item: $sheetType) { type in
             switch type {
@@ -93,20 +93,20 @@ struct MeetingInformationDetailView: View {
         .fullScreenCover(item: $fullScreenCoverType) { type in
             switch type {
             case .editMeetingDate:
-                EditMeetingDateFullScreenCover(viewModel, fullScreenCoverType: $fullScreenCoverType)
+                EditMeetingDateFullScreenCover(meeting: meeting, viewModel, fullScreenCoverType: $fullScreenCoverType)
             }
         }
         .navigationDestination(item: $navigationType) { type in
             switch type {
             case .inviteFriends:
-                InviteFriendsView(meetingID: viewModel.meeting.id, resolver: resolver)
+                InviteFriendsView(meetingID: meeting.id, resolver: resolver)
             }
         }
     }
     
     private var header: some View {
         HStack {
-            AsyncImage(url: viewModel.meeting.imageURL) { image in
+            AsyncImage(url: meeting.imageURL) { image in
                 image
                     .resizable()
                     .scaledToFit()
@@ -125,11 +125,11 @@ struct MeetingInformationDetailView: View {
 
             
             VStack(alignment: .leading, spacing: 6) {
-                Text(viewModel.meeting.title)
+                Text(meeting.title)
                     .whereFont(.title20semibold)
                     .foregroundStyle(Color(hex: 0x111827))
                 
-                Text(viewModel.meeting.description)
+                Text(meeting.description)
                     .whereFont(.body14regular)
             }
             .foregroundStyle(Color(hex: 0x6B7280))
@@ -140,7 +140,7 @@ struct MeetingInformationDetailView: View {
     
     private var summaryArea: some View {
         VStack(spacing: 8) {
-            summaryCell(.date(date: viewModel.meeting.combinedSchedule)) {
+            summaryCell(.date(date: meeting.combinedSchedule)) {
                 fullScreenCoverType = .editMeetingDate
             }
             
@@ -466,9 +466,12 @@ extension MeetingInformationDetailView {
         private var isLoading: Bool { viewModel.processingState == .processing }
         
         init(
+            meeting: Meeting,
             _ viewModel: MeetingInformationDetailViewModel,
             fullScreenCoverType: Binding<FullScreenCoverType?>
         ) {
+            self._selectedDate = .init(initialValue: meeting.scheduleDate)
+            self._selectedTime = .init(initialValue: meeting.scheduleTime)
             self.viewModel = viewModel
             self._fullScreenCoverType = fullScreenCoverType
         }
@@ -563,9 +566,6 @@ extension MeetingInformationDetailView {
                 .disabled(isLoading)
             }
             .padding()
-            .onAppear {
-                initializePicker()
-            }
             .sheet(item: $sheetType) { type in
                 switch type {
                 case .date:
@@ -584,11 +584,6 @@ extension MeetingInformationDetailView {
                 guard case .completed = after else { return }
                 fullScreenCoverType = .none
             }
-        }
-        
-        private func initializePicker() {
-            selectedDate = viewModel.meeting.scheduleDate
-            selectedTime = viewModel.meeting.scheduleTime
         }
     }
     

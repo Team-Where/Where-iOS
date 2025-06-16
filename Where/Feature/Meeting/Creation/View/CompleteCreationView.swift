@@ -86,7 +86,7 @@ struct CompleteCreationView: View {
                 }
                 
                 NavigationLink {
-                    MeetingInformationView(resolver: resolver, meetingID: meeting.id)
+                    MeetingInformationView(meeting: meeting, resolver: resolver)
                 } label: {
                     Text("모임방으로 이동")
                         .whereFont(.body16semibold)

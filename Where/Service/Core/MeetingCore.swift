@@ -12,7 +12,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 나와 연관된 모임 목록
     var meetings: AnyPublisher<[UInt64: Meeting], Never> { get }
     /// 친구와 함께한 모임 목록
-    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], Never> { get }
+    var meetingSummaries: AnyPublisher<[UInt64: Meeting], Never> { get }
     /// 친구와 연관된 모임 식별자
     var relatedMeetingIDs: AnyPublisher<[UInt64: [UInt64]], Never> { get }
     /// 특정 모임의 초대 현황
@@ -85,7 +85,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
 
 protocol MeetingMediationProtocol {
     /// 친구와 함께한 모임 목록 갱신을 지시, 중재자에 의해 호출됨
-    func updateRelatedMeetings(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: MeetingSummary])
+    func updateRelatedMeetings(meetingIDs: [UInt64: [UInt64]], summaries: [UInt64: Meeting])
     /// 특정 친구와 함께한 모임 목록 로드를 지시, 중재자에 의해 호출됨
     func loadCurrentMeetingsWithFriend(friendID: UInt64)
     /// 현재 사용자를 설정, 중재자에 의해 호출됨
@@ -108,7 +108,7 @@ final class MeetingCore {
     weak var mediator: Notifiable?
     
     private var _meetings = [UInt64: Meeting]()
-    private var _summaries = [UInt64: MeetingSummary]()
+    private var _summaries = [UInt64: Meeting]()
     private var _meetingPariticipantIDs = [UInt64: Set<UInt64>]()
     private var currentUser: User?
     private var currentInviteCode: String?
@@ -119,7 +119,7 @@ final class MeetingCore {
     private let meetingsSubject = CurrentValueSubject<[UInt64: Meeting], Never>([:])
     
     private let relatedMeetingIDsSubject = CurrentValueSubject<[UInt64: [UInt64]], Never>([:])
-    private let meetingSummariesSubject = CurrentValueSubject<[UInt64: MeetingSummary], Never>([:])
+    private let meetingSummariesSubject = CurrentValueSubject<[UInt64: Meeting], Never>([:])
     private let invitationStatusSubject = CurrentValueSubject<[UInt64: [MeetingInvitationState]], Never>([:])
     private let invitedMeetingSubject = PassthroughSubject<(name: String, meeting: Meeting), Never>()
     private let createdMeetingSubject = PassthroughSubject<Meeting, Never>()
@@ -155,7 +155,7 @@ extension MeetingCore: MeetingCoreProtocol {
         meetingsSubject.eraseToAnyPublisher()
     }
     
-    var meetingSummaries: AnyPublisher<[UInt64: MeetingSummary], Never> {
+    var meetingSummaries: AnyPublisher<[UInt64: Meeting], Never> {
         meetingSummariesSubject.eraseToAnyPublisher()
     }
     
@@ -530,7 +530,7 @@ extension MeetingCore: MeetingMediationProtocol {
             }
     }
     
-    func updateRelatedMeetings(meetingIDs: [UInt64 : [UInt64]], summaries: [UInt64 : MeetingSummary]) {
+    func updateRelatedMeetings(meetingIDs: [UInt64 : [UInt64]], summaries: [UInt64 : Meeting]) {
         relatedMeetingIDsSubject.send(meetingIDs)
         _summaries = summaries
     }

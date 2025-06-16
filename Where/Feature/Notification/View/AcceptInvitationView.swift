@@ -59,7 +59,7 @@ struct AcceptInvitationView: View {
         .navigationDestination(item: $navigationType) { type in
             switch type {
             case .meetingInfo(let meeting):
-                MeetingInformationView(resolver: resolver, meetingID: meeting.id)
+                MeetingInformationView(meeting: meeting, resolver: resolver)
             }
         }
     }

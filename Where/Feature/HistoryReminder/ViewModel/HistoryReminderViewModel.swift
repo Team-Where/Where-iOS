@@ -28,10 +28,10 @@ final class HistoryReminderViewModel {
                 
             } receiveValue: { [weak self] dict in
                 let calendar = Calendar.current
-                var grouped = [Int: [Int: [MeetingSummary]]]()
+                var grouped = [Int: [Int: [Meeting]]]()
                 dict.values.forEach {
-                    let year = calendar.component(.year, from: $0.finishedAt)
-                    let month = calendar.component(.month, from: $0.finishedAt)
+                    let year = calendar.component(.year, from: $0.finishedAt ?? .now)
+                    let month = calendar.component(.month, from: $0.finishedAt ?? .now)
                     grouped[year, default: [:]][month, default: []].append($0)
                 }
                 let sortedGroups = grouped
@@ -40,7 +40,7 @@ final class HistoryReminderViewModel {
                         let monthGroups = monthsDict
                             .sorted(by: { $0.key > $1.key })
                             .map { (month, meetings) in
-                                let sortedMeetings = meetings.sorted(by: { $0.finishedAt > $1.finishedAt })
+                                let sortedMeetings = meetings.sorted(by: { $0.finishedAt ?? .now > $1.finishedAt ?? .now })
                                 return MonthGroup(year: year, month: month, meetings: sortedMeetings)
                             }
                         return YearGroup(year: year, months: monthGroups)
@@ -57,9 +57,9 @@ extension HistoryReminderViewModel {
     struct MonthGroup: Identifiable {
         let id: String
         let month: Int
-        let meetings: [MeetingSummary]
+        let meetings: [Meeting]
         
-        init(year: Int, month: Int, meetings: [MeetingSummary]) {
+        init(year: Int, month: Int, meetings: [Meeting]) {
             self.id = "\(year)-\(month)"
             self.month = month
             self.meetings = meetings

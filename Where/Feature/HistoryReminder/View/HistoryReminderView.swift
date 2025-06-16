@@ -194,7 +194,7 @@ extension HistoryReminderView {
             }
         }
         
-        @ViewBuilder private func meetingRow(_ meeting: MeetingSummary) -> some View {
+        @ViewBuilder private func meetingRow(_ meeting: Meeting) -> some View {
             VStack {
                 HStack {
                     AsyncImage(url: meeting.imageURL)
@@ -203,7 +203,7 @@ extension HistoryReminderView {
                         .padding(.trailing, 10)
                     
                     VStack(alignment: .leading) {
-                        Text(meeting.finishedAt.toString(by: .yyyyMMdd))
+                        Text(meeting.finishedAt?.toString(by: .yyyyMMdd) ?? "")
                         
                         Text(meeting.title)
                             .whereFont(.body16semibold)
@@ -219,7 +219,7 @@ extension HistoryReminderView {
                 .padding(.bottom, 10)
                 
                 NavigationLink {
-                    MeetingInformationView(resolver: resolver, meetingID: meeting.id)
+                    MeetingInformationView(meeting: meeting, resolver: resolver)
                 } label: {
                     Text("자세히 보기")
                         .whereFont(.body14medium)

@@ -202,7 +202,7 @@ private extension MyMeetingView {
         
         var body: some View {
             NavigationLink {
-                MeetingInformationView(resolver: resolver, meetingID: meeting.id)
+                MeetingInformationView(meeting: meeting, resolver: resolver)
             } label: {
                 VStack(spacing: 12) {
                     Spacer()

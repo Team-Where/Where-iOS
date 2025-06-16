@@ -58,13 +58,14 @@ extension ReadFriendsDTO.Friend {
             case title = "meetingName"
         }
         
-        func asEntity() -> MeetingSummary {
+        func asEntity() -> Meeting {
             .init(
                 id: id,
                 title: title,
                 description: description,
-                imageURL: URL(string: imageURLString ?? ""),
-                finishedAt: date.toDate(by: .yyyyMMddHyphen) ?? .now
+                createdAt: .now,
+                finishedAt: date.toDate(by: .yyyyMMddHyphen) ?? .now,
+                isFinished: true
             )
         }
     }

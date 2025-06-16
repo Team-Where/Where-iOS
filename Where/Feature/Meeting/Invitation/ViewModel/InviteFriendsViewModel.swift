@@ -66,7 +66,7 @@ final class InviteFriendsViewModel: ObservableObject {
                     let isInvited = self.invitationStatesDict[friendID]?.isInvited ?? false
                     let isRecent = sharedMeetingIDs.contains {
                         guard let summary = summaries[$0] else { return false }
-                        return summary.finishedAt.isRecent(compareTo: now)
+                        return summary.finishedAt?.isRecent(compareTo: now) ?? false
                     }
                     let item = FriendCellDataSource(
                         id: friendID,
