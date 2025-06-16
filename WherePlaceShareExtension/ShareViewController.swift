@@ -7,24 +7,57 @@
 
 import UIKit
 import Social
+import UniformTypeIdentifiers
 
-class ShareViewController: SLComposeServiceViewController {
-
+final class ShareViewController: SLComposeServiceViewController {
     override func isContentValid() -> Bool {
         // Do validation of contentText and/or NSExtensionContext attachments here
         return true
     }
 
     override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-    
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+        guard let extensionItems = extensionContext?.inputItems as? [NSExtensionItem],
+              let item = extensionItems.first,
+              let provider = item.attachments?.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.text.identifier) })
+        else { return completeRequest() }
+        
+        provider.loadItem(forTypeIdentifier: UTType.text.identifier) { [weak self] data, error in
+            guard error == nil, let text = data as? String else {
+                self?.completeRequest()
+                return
+            }
+            
+            print("지도앱에서 꺼내온 문자열: \(text)")
+            
+            if let url = self?.deeplink(name: "파싱한 이름", address: "파싱한 주소") {
+                self?.openURL(url)
+            }
+            
+            self?.completeRequest()
+        }
     }
 
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
         return []
     }
-
+    
+    private func deeplink(name: String, address: String) -> URL? {
+        var component = URLComponents()
+        component.scheme = "audiwhere"
+        component.host = "share"
+        component.queryItems = [
+            URLQueryItem(name: "name", value: name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)),
+            URLQueryItem(name: "address", value: address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))
+        ]
+        return component.url
+    }
+    
+    private func openURL(_ url: URL) {
+        extensionContext?.open(url)
+    }
+    
+    private func completeRequest() {
+        extensionContext?.completeRequest(returningItems: [])
+    }
 }
