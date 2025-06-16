@@ -154,7 +154,13 @@ extension CreateMeetingView {
                     viewModel.isPopupPresented = true
                 }
             } label: {
-                if viewModel.isImageSelected == false {
+                if let imageData = viewModel.selectedImage,
+                   let image = UIImage(data: imageData) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .rounded(contentMode: .fill, width: 120, height: 120, cornerRadius: 16)
+                    
+                } else {
                     VStack {
                         Image(systemName: "camera.fill")
                             .resizable()
@@ -171,17 +177,6 @@ extension CreateMeetingView {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(.where(.gray100))
                     )
-                } else {
-                    if let data = viewModel.selectedImage,
-                       let image = UIImage(data: data) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .rounded(contentMode: .fill, width: 120, height: 120, cornerRadius: 16)
-                    } else {
-                        Image(.person)
-                            .resizable()
-                            .rounded(contentMode: .fill, width: 120, height: 120, cornerRadius: 16)
-                    }
                 }
             }
         }
