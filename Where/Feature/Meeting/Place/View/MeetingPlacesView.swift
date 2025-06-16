@@ -17,10 +17,15 @@ struct MeetingPlacesView: View {
     @State private var isShareTipPresented: Bool = false
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing)
+    private let isFinished: Bool
     private let viewModel: MeetingPlacesViewModel
     private let resolver: Resolver
     
-    init(resolver: Resolver) {
+    init(
+        resolver: Resolver,
+        isFinished: Bool
+    ) {
+        self.isFinished = isFinished
         self.viewModel = resolver.resolve(MeetingPlacesViewModel.self)!
         self.resolver = resolver
     }
@@ -128,24 +133,26 @@ struct MeetingPlacesView: View {
             
             Spacer()
             
-            Button {
-                sheetType = .sharePlace
-            } label: {
-                Label {
-                    Text("장소 공유")
-                        .whereFont(.body14medium)
-                } icon: {
-                    Image(systemName: "plus.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 15, height: 15)
-                        .whereTip($isShareTipPresented, configuration: tipConfiguration) {
-                            Text("가장 먼저 장소를 공유해보세요!")
-                                .whereFont(.caption12regular)
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 8)
-                        }
+            if isFinished == false {
+                Button {
+                    sheetType = .sharePlace
+                } label: {
+                    Label {
+                        Text("장소 공유")
+                            .whereFont(.body14medium)
+                    } icon: {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .whereTip($isShareTipPresented, configuration: tipConfiguration) {
+                                Text("가장 먼저 장소를 공유해보세요!")
+                                    .whereFont(.caption12regular)
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 8)
+                            }
+                    }
                 }
             }
         }
@@ -446,8 +453,4 @@ extension MeetingPlacesView {
             .presentationCornerRadius(16)
         }
     }
-}
-
-#Preview {
-    MeetingPlacesView(resolver: PreviewHelper.shared.resolver)
 }
