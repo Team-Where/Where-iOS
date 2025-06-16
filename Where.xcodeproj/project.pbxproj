@@ -214,6 +214,7 @@
 		04D548612DDB6A7E003EEC85 /* WherePlaceShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 04D548572DDB6A7E003EEC85 /* WherePlaceShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		04D5486C2DDB6AB2003EEC85 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5486A2DDB6AB2003EEC85 /* ShareViewController.swift */; };
 		04DEC6AB2DDB73DD0091DEF9 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */; };
+		7F2A11302E005E82004BA657 /* SharePlaceMeetingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */; };
 		7F6D266D2DE4A00E001F47B9 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */; };
 		7FB0B6002DDCBC4600ED14A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */; };
 		7FD0D8652DF88C5200A9F243 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0D8642DF88C5200A9F243 /* WebView.swift */; };
@@ -444,6 +445,7 @@
 		04D548672DDB6AB2003EEC85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04D5486A2DDB6AB2003EEC85 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlaceMeetingListView.swift; sourceTree = "<group>"; };
 		7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7FD0D8642DF88C5200A9F243 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -880,6 +882,7 @@
 		04D546B12DDB66A9003EEC85 /* Meeting */ = {
 			isa = PBXGroup;
 			children = (
+				7F2A112E2E005E41004BA657 /* Share */,
 				04D546942DDB66A9003EEC85 /* Creation */,
 				04D5469B2DDB66A9003EEC85 /* Information */,
 				04D546A02DDB66A9003EEC85 /* Invitation */,
@@ -1407,6 +1410,14 @@
 			path = WherePlaceShareExtension;
 			sourceTree = "<group>";
 		};
+		7F2A112E2E005E41004BA657 /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */,
+			);
+			path = Share;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1720,6 +1731,7 @@
 				04D548212DDB66A9003EEC85 /* Meridiem.swift in Sources */,
 				04D548222DDB66A9003EEC85 /* ReadAnnouncementsDTO.swift in Sources */,
 				04D548232DDB66A9003EEC85 /* AuthentificationProvider.swift in Sources */,
+				7F2A11302E005E82004BA657 /* SharePlaceMeetingListView.swift in Sources */,
 				04D548242DDB66A9003EEC85 /* EditProfileView.swift in Sources */,
 				04D548252DDB66A9003EEC85 /* DeleteAnnouncementDTO.swift in Sources */,
 				04D548262DDB66A9003EEC85 /* ImageSelectionPopupView.swift in Sources */,
