@@ -13,6 +13,11 @@ final class ShareViewController: SLComposeServiceViewController {
     private var placeName: String?
     private var placeURLString: String?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadItems()
+    }
+    
     override func isContentValid() -> Bool {
         guard let name = placeName, name.isEmpty == false,
               let urlString = placeURLString, urlString.isEmpty == false,
@@ -22,54 +27,42 @@ final class ShareViewController: SLComposeServiceViewController {
     }
 
     override func didSelectPost() {
-        guard let extensionItems = extensionContext?.inputItems as? [NSExtensionItem],
-              let item = extensionItems.first,
-              let attachments = item.attachments, attachments.isEmpty == false
-        else { return completeRequest() }
-        
-        guard let textProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.text.identifier) }) else {
-            return completeRequest()
-        }
-        
-        textProvider.loadItem(forTypeIdentifier: UTType.text.identifier) { [weak self] data, error in
-            guard error == nil, let text = data as? String else {
-                self?.completeRequest()
-                return
-            }
-            
-            if text.contains("[네이버 지도]") {
-                let lines = text.components(separatedBy: .newlines)
-                guard lines.count >= 3 else {
-                    self?.completeRequest()
-                    return
-                }
-                self?.placeName = lines[1].trimmingCharacters(in: .whitespaces)
-                self?.placeURLString = lines[2].trimmingCharacters(in: .whitespaces)
-                self?.completeRequest()
-            } else if text.contains("[카카오맵]") {
-                self?.placeName = text.replacingOccurrences(of: "[카카오맵] ", with: "").trimmingCharacters(in: .whitespaces)
-                guard let urlProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.url.identifier) }) else {
-                    self?.completeRequest()
-                    return
-                }
-                
-                urlProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { [weak self] data, error in
-                    guard error == nil, let url = data as? URL else {
-                        self?.completeRequest()
-                        return
-                    }
-                    self?.placeURLString = url.absoluteString
-                    self?.completeRequest()
-                }
-            } else {
-                self?.completeRequest()
-            }
-        }
+        completeRequest()
     }
 
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
         return []
+    }
+    
+    private func loadItems() {
+        guard let extensionItems = extensionContext?.inputItems as? [NSExtensionItem],
+              let item = extensionItems.first,
+              let attachments = item.attachments, attachments.isEmpty == false
+        else { return }
+        
+        guard let textProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.text.identifier) }) else { return }
+        
+        textProvider.loadItem(forTypeIdentifier: UTType.text.identifier) { [weak self] data, error in
+            guard error == nil, let text = data as? String else { return }
+            
+            if text.contains("[네이버 지도]") {
+                let lines = text.components(separatedBy: .newlines)
+                guard lines.count >= 3 else { return }
+                self?.placeName = lines[1].trimmingCharacters(in: .whitespaces)
+                self?.placeURLString = lines[3].trimmingCharacters(in: .whitespaces)
+                self?.validateContent()
+            } else if text.contains("[카카오맵]") {
+                self?.placeName = text.replacingOccurrences(of: "[카카오맵] ", with: "").trimmingCharacters(in: .whitespaces)
+                guard let urlProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.url.identifier) }) else { return }
+                
+                urlProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { [weak self] data, error in
+                    guard error == nil, let url = data as? URL else { return }
+                    self?.placeURLString = url.absoluteString
+                    self?.validateContent()
+                }
+            }
+        }
     }
     
     private func deeplink(name: String, stringLink: String) -> URL? {
@@ -95,6 +88,8 @@ final class ShareViewController: SLComposeServiceViewController {
               let link = placeURLString,
               let deeplinkURL = deeplink(name: name, stringLink: link)
         else { return }
+        print("파싱한 장소명: \(name)")
+        print("파싱한 링크: \(link)")
         openURL(deeplinkURL)
     }
 }
