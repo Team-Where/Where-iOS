@@ -45,22 +45,23 @@ final class ShareViewController: SLComposeServiceViewController {
                 }
                 self?.placeName = lines[1].trimmingCharacters(in: .whitespaces)
                 self?.placeURLString = lines[2].trimmingCharacters(in: .whitespaces)
+                self?.completeRequest()
             } else if text.contains("[카카오맵]") {
                 self?.placeName = text.replacingOccurrences(of: "[카카오맵] ", with: "").trimmingCharacters(in: .whitespaces)
-            }
-            
-            guard let urlProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.url.identifier) }) else {
-                self?.completeRequest()
-                return
-            }
-            
-            urlProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { [weak self] data, error in
-                guard error == nil, let url = data as? URL else {
+                guard let urlProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.url.identifier) }) else {
                     self?.completeRequest()
                     return
                 }
                 
-                self?.placeURLString = url.absoluteString
+                urlProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { [weak self] data, error in
+                    guard error == nil, let url = data as? URL else {
+                        self?.completeRequest()
+                        return
+                    }
+                    self?.placeURLString = url.absoluteString
+                    self?.completeRequest()
+                }
+            } else {
                 self?.completeRequest()
             }
         }
