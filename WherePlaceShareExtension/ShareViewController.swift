@@ -70,14 +70,21 @@ final class ShareViewController: SLComposeServiceViewController {
         component.scheme = "audiwhere"
         component.host = "share"
         component.queryItems = [
-            URLQueryItem(name: "name", value: name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)),
-            URLQueryItem(name: "link", value: stringLink.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))
+            URLQueryItem(name: "name", value: name),
+            URLQueryItem(name: "link", value: stringLink)
         ]
         return component.url
     }
     
     private func openURL(_ url: URL) {
-        extensionContext?.open(url)
+        var responder: UIResponder? = self
+        while responder != nil {
+            if let application = responder as? UIApplication {
+                application.open(url)
+                break
+            }
+            responder = responder?.next
+        }
     }
     
     private func completeRequest() {
@@ -90,6 +97,7 @@ final class ShareViewController: SLComposeServiceViewController {
         else { return }
         print("파싱한 장소명: \(name)")
         print("파싱한 링크: \(link)")
+        print("딥링크: \(deeplinkURL)")
         openURL(deeplinkURL)
     }
 }
