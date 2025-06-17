@@ -106,5 +106,9 @@ struct ViewModelAssembly: @preconcurrency Assembly {
         container.register(HistoryReminderViewModel.self) { resolver in
             return HistoryReminderViewModel(resolver: resolver)
         }
+        
+        container.register(SharePlaceMeetingListViewModel.self) { resolver in
+            return SharePlaceMeetingListViewModel(resolver: resolver)
+        }
     }
 }
