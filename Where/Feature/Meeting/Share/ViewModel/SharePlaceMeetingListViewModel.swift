@@ -15,8 +15,8 @@ final class SharePlaceMeetingListViewModel {
     private let meetingCore: MeetingCoreProtocol
     private let cancellableBag = CancellableBag()
     
-    init(ressover: Resolver) {
-        self.meetingCore = ressover.resolve(MeetingCoreProtocol.self)!
+    init(resolver: Resolver) {
+        self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         subscribe()
     }
     
