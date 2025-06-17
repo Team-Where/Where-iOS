@@ -55,6 +55,12 @@ struct SharePlaceMeetingListView: View {
             .buttonStyle(.whereRoundedProminent(disabled: disabled))
         }
         .padding(.horizontal, 20)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                BackButton()
+            }
+        }
     }
 }
 
@@ -100,5 +106,7 @@ extension SharePlaceMeetingListView {
 }
 
 #Preview {
-    SharePlaceMeetingListView()
+    NavigationStack {
+        SharePlaceMeetingListView()
+    }
 }
