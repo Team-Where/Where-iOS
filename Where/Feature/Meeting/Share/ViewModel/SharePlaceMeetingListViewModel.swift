@@ -11,6 +11,7 @@ import Swinject
 @Observable
 final class SharePlaceMeetingListViewModel {
     private(set) var meetings = [Meeting]()
+    private(set) var selectedMeeting: Meeting?
     
     private let meetingCore: MeetingCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -31,3 +32,12 @@ final class SharePlaceMeetingListViewModel {
             .store(in: cancellableBag, key: #function)
     }
 }
+
+// MARK: - Interface
+
+extension SharePlaceMeetingListViewModel {
+    func select(meeting: Meeting) {
+        selectedMeeting = meeting
+    }
+}
+

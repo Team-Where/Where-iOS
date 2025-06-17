@@ -6,16 +6,16 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct SharePlaceMeetingListView: View {
-    
-    @State private var selectedMeeting: Meeting?
-    
-    private var disabled: Bool {
-        selectedMeeting == nil
-    }
-    
+    private let viewModel: SharePlaceMeetingListViewModel
+
     private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 175))]
+    
+    init(resolver: Resolver) {
+        viewModel = resolver.resolve(SharePlaceMeetingListViewModel.self)!
+    }
     
     var body: some View {
         VStack(alignment:.leading) {
@@ -37,9 +37,9 @@ struct SharePlaceMeetingListView: View {
                                      createdAt: .now,
                                               isFinished: false)
                     ]) { meeting in
-                        MeetingCell(selectedMeeting: $selectedMeeting, meeting: meeting)
+                        MeetingCell(viewModel: viewModel, meeting: meeting)
                             .onTapGesture {
-                                selectedMeeting = meeting
+                                viewModel.select(meeting: meeting)
                             }
    
                     }
@@ -52,7 +52,7 @@ struct SharePlaceMeetingListView: View {
                 Text("완료")
                     .frame(width: 350, height: 48)
             }
-            .buttonStyle(.whereRoundedProminent(disabled: disabled))
+            .buttonStyle(.whereRoundedProminent(disabled: viewModel.selectedMeeting == nil))
         }
         .padding(.horizontal, 20)
         .navigationBarBackButtonHidden()
@@ -66,8 +66,16 @@ struct SharePlaceMeetingListView: View {
 
 extension SharePlaceMeetingListView {
     struct MeetingCell: View {
-        @Binding var selectedMeeting: Meeting?
-        let meeting: Meeting
+        private let viewModel: SharePlaceMeetingListViewModel
+        private let meeting: Meeting
+        
+        init(
+            viewModel: SharePlaceMeetingListViewModel,
+            meeting: Meeting
+        ) {
+            self.viewModel = viewModel
+            self.meeting = meeting
+        }
         
         var body: some View {
             VStack(alignment: .leading) {
@@ -85,7 +93,7 @@ extension SharePlaceMeetingListView {
                         .clipShape(.rect(cornerRadius: 10))
                 }
                 .overlay {
-                    if selectedMeeting == meeting {
+                    if viewModel.selectedMeeting == meeting {
                         RoundedRectangle(cornerRadius: 10)
                             .opacity(0.6)
                         Image(.whereCheckmark)
@@ -105,8 +113,8 @@ extension SharePlaceMeetingListView {
     }
 }
 
-#Preview {
-    NavigationStack {
-        SharePlaceMeetingListView()
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        SharePlaceMeetingListView()
+//    }
+//}
