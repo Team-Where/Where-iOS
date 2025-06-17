@@ -217,6 +217,7 @@
 		7F2A11302E005E82004BA657 /* SharePlaceMeetingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */; };
 		7F6D266D2DE4A00E001F47B9 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */; };
 		7FB0B6002DDCBC4600ED14A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */; };
+		7FC363E12E01A4AB00549529 /* SharePlaceMeetingListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC363E02E01A4AA00549529 /* SharePlaceMeetingListViewModel.swift */; };
 		7FD0D8652DF88C5200A9F243 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0D8642DF88C5200A9F243 /* WebView.swift */; };
 /* End PBXBuildFile section */
 
@@ -448,6 +449,7 @@
 		7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlaceMeetingListView.swift; sourceTree = "<group>"; };
 		7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7FC363E02E01A4AA00549529 /* SharePlaceMeetingListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlaceMeetingListViewModel.swift; sourceTree = "<group>"; };
 		7FD0D8642DF88C5200A9F243 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1413,9 +1415,26 @@
 		7F2A112E2E005E41004BA657 /* Share */ = {
 			isa = PBXGroup;
 			children = (
-				7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */,
+				7FC363DF2E01A49100549529 /* ViewModel */,
+				7FC363DE2E01A48A00549529 /* View */,
 			);
 			path = Share;
+			sourceTree = "<group>";
+		};
+		7FC363DE2E01A48A00549529 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		7FC363DF2E01A49100549529 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				7FC363E02E01A4AA00549529 /* SharePlaceMeetingListViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1725,6 +1744,7 @@
 				04D5481B2DDB66A9003EEC85 /* View+Pretendard.swift in Sources */,
 				04D5481C2DDB66A9003EEC85 /* WhereDisclosureGroupStyle.swift in Sources */,
 				04D5481D2DDB66A9003EEC85 /* CreateCommentDTO.swift in Sources */,
+				7FC363E12E01A4AB00549529 /* SharePlaceMeetingListViewModel.swift in Sources */,
 				04D5481E2DDB66A9003EEC85 /* AcceptMeetingInvitationByLinkDTO.swift in Sources */,
 				04D5481F2DDB66A9003EEC85 /* AppleLoginStrategy.swift in Sources */,
 				04D548202DDB66A9003EEC85 /* BookmarkFriendDTO.swift in Sources */,
