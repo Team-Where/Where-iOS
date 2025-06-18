@@ -160,10 +160,12 @@ struct CoreAssembly: Assembly {
         }
         
         container.register(NotificationCore.self) { resolver in
-            guard let service = resolver.resolve(LocalNotificationService.self) else {
+            guard let apiService = resolver.resolve(APIServable.self),
+                  let notiService = resolver.resolve(LocalNotificationService.self)
+            else {
                 fatalError("LocalNotificationService not resolvable")
             }
-            return NotificationCore(service)
+            return NotificationCore(apiService: apiService, notiService)
         }
         .inObjectScope(.container)
         .initCompleted { resolver, core in

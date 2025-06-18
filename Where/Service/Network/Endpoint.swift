@@ -135,7 +135,10 @@ enum Endpoint {
     case deleteFAQ(dto: DeleteFAQDTO.Request)
     
     // MARK: - Common Related
+    /// 최신버전 확인
     case checkLatestVersion(version: String)
+    /// FCM Token 등록
+    case registerFCMToken(userID: UInt64, dto: FCMRegisterDTO.Request)
     
     var isTokenRequired: Bool {
         switch self {
@@ -262,13 +265,15 @@ extension Endpoint: TargetType {
             // MARK: - Common Related
         case .checkLatestVersion:
             return "/version"
+        case .registerFCMToken(let userID, _):
+            return "\(basePath)/\(userID)/fcm-token"
         }
     }
     
     var method: Moya.Method {
         switch self {
         case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink, .requestAuthCode, .checkLatestVersion: .get
-        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao, .loginWithNaver, .loginWithApple, .verifyAuthCode: .post
+        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao, .loginWithNaver, .loginWithApple, .verifyAuthCode, .registerFCMToken: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend, .updateProfile, .updateNickname: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister, .deleteProfile: .delete
         }
@@ -405,6 +410,8 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .checkLatestVersion(let version):
             return .requestParameters(parameters: ["type": "apple", "version": "\(version)"], encoding: URLEncoding.queryString)
+        case .registerFCMToken(_, let dto):
+            return .requestJSONEncodable(dto)
         }
     }
     
@@ -425,7 +432,7 @@ extension Endpoint: TargetType {
 private extension Endpoint {
     var basePath: String {
         switch self {
-        case .register, .unregister, .login, .checkEmailDuplication,.readUserInfo, .uploadProfile, .updateProfile, .deleteProfile, .updateNickname, .loginWithKakao, .loginWithNaver, .loginWithApple:
+        case .register, .unregister, .login, .checkEmailDuplication,.readUserInfo, .uploadProfile, .updateProfile, .deleteProfile, .updateNickname, .loginWithKakao, .loginWithNaver, .loginWithApple, .registerFCMToken:
             return "/user"
         case .readFriends, .deleteFriend, .bookmarkFriend:
             return "/friend"

@@ -138,10 +138,6 @@ extension AppDelegate: MessagingDelegate {
         guard let fcmToken = fcmToken else { return }
         // TODO: NotificationCore 통해서 fcmToken을 업데이트, 서버로 전달
         print("fcmToken: ------------------------\n\(fcmToken)\n -------------------------")
-//        NotificationCenter.default.post(
-//            name:,
-//            object: nil,
-//            userInfo: dataDict
-//        )
+        notificationCore.setFCMToken(fcmToken)
     }
 }
