@@ -79,6 +79,8 @@ struct ContentView: View {
             case .profileCreationView: ProfileCreationView($navigationType, resolver: resolver)
             case .acceptInvigationView(let name, let meeting): AcceptInvitationView(inviterName: name, meeting: meeting, resolver: resolver)
             case .historyReminderView(let user, let friend): HistoryReminderView(user: user, friend: friend, resolver: resolver)
+            case .sharePlaceMeetingListView(let placeName, let placeURL): SharePlaceMeetingListView(placeName: placeName, placeURL: placeURL, resolver: resolver)
+
             }
         }
         .navigationDestination(isPresented: $isOnboardingNeeded) {
@@ -119,6 +121,7 @@ struct ContentView: View {
             }
             .padding()
         }
+        .onOpenURL(perform: parseURL)
     }
 }
 
@@ -146,6 +149,7 @@ enum MainNavigationType: Hashable {
     case profileCreationView
     case acceptInvigationView(inviterName: String?, meeting: Meeting?)
     case historyReminderView(user: User, friend: FriendRelationship)
+    case sharePlaceMeetingListView(placeName: String, placeURL: String)
     
     static func == (lhs: MainNavigationType, rhs: MainNavigationType) -> Bool {
         String(describing: lhs) == String(describing: rhs)
@@ -191,6 +195,50 @@ private extension ContentView {
     func onInvitedMeetingChange(_ : Meeting?, invitedMeeting: Meeting?) {
         guard invitedMeeting != nil else { return }
         navigationType = .acceptInvigationView(inviterName: viewModel.inviterName, meeting: invitedMeeting)
+    }
+    
+    func parseURL(_ url: URL) {
+        print("Received URL: \(url)")
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            print("Failed to parse URL components")
+            return
+        }
+        
+        let pathComponents = url.pathComponents
+        print("pathComponents: \(pathComponents)")
+        
+        switch components.host {
+        case "invite":
+            let inviteCode = pathComponents.first(where: { $0 != "/" && $0 != "invite" })
+            let name = components.queryItems?.first(where: { $0.name == "name" })?.value
+            
+            guard let code = inviteCode, let name = name else {
+                print("Missing inviteCode or name: inviteCode=\(inviteCode ?? "nil"), name=\(name ?? "nil")")
+                return
+            }
+            
+            print("초대코드: \(code)")
+            print("초대자닉네임: \(name)")
+            viewModel.didRecieveInvitation(name, code)
+            
+        case "share":
+            let name = components.queryItems?.first(where: { $0.name == "name" })?.value
+            let link = components.queryItems?.first(where: { $0.name == "link" })?.value
+            
+            guard let placeName = name,
+                  let placeLink = link
+            else {
+                print("Missing or invalid placeName or placeLink: \'name=\(name ?? "nil"), link=\(link ?? "nil")\'")
+                return
+            }
+            
+            print("장소명: \(placeName)")
+            print("지도URL: \(placeLink)")
+            navigationType = .sharePlaceMeetingListView(placeName: placeName, placeURL: placeLink)
+            
+        default:
+            print("Unknown host: \(components.host ?? "nil")")
+        }
     }
 }
 

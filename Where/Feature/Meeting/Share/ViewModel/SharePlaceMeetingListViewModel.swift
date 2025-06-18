@@ -39,5 +39,9 @@ extension SharePlaceMeetingListViewModel {
     func select(meeting: Meeting) {
         selectedMeeting = meeting
     }
+    
+    func addPlace(_ placeName: String, _ placeURL: String) {
+        // TODO: 장소 추가 기능 연결
+    }
 }
 

@@ -109,6 +109,10 @@ extension ContentViewModel: MyMeetingViewModelType {
         _sortType = type
         sortMeetings(by: type)
     }
+    
+    func didRecieveInvitation(_ inviterName: String, _ inviteCode: String) {
+        meetingCore.readMeetingDetailForInvitationLink(inviterName: inviterName, inviteCode: inviteCode)
+    }
 }
 
 

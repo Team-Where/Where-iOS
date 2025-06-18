@@ -22,50 +22,6 @@ final class AppDelegate: NSObject {
         self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         self.notificationCore = resolver.resolve(NotificationCoreProtocol.self)!
     }
-    
-    func parseURL(_ url: URL) {
-        print("Received URL: \(url)")
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
-            print("Failed to parse URL components")
-            return
-        }
-        
-        let pathComponents = url.pathComponents
-        print("pathComponents: \(pathComponents)")
-        
-        switch components.host {
-        case "invite":
-            let inviteCode = pathComponents.first(where: { $0 != "/" && $0 != "invite" })
-            let name = components.queryItems?.first(where: { $0.name == "name" })?.value
-            
-            guard let code = inviteCode, let name = name else {
-                print("Missing inviteCode or name: inviteCode=\(inviteCode ?? "nil"), name=\(name ?? "nil")")
-                return
-            }
-            
-            print("초대코드: \(code)")
-            print("초대자닉네임: \(name)")
-            meetingCore.readMeetingDetailForInvitationLink(inviterName: name, inviteCode: code)
-            
-        case "share":
-            let name = components.queryItems?.first(where: { $0.name == "name" })?.value
-            let link = components.queryItems?.first(where: { $0.name == "link" })?.value
-            
-            guard let placeName = name,
-                  let placeLink = link,
-                  let url = URL(string: placeLink)
-            else {
-                print("Missing or invalid placeName or placeLink: \'name=\(name ?? "nil"), link=\(link ?? "nil")\'")
-                return
-            }
-            
-            print("장소명: \(placeName)")
-            print("지도URL: \(url)")
-            
-        default:
-            print("Unknown host: \(components.host ?? "nil")")
-        }
-    }
 }
 
 // MARK: - UIApplicationDelegate Conformation

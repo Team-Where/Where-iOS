@@ -19,7 +19,7 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - meetingID: 모임 식별자
     ///     - name: 장소명
     ///     - address: 장소 주소
-    func createPlace(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Place, PlaceCoreError>
+    func createPlace(meetingID: UInt64, name: String, url: String) -> AnyPublisher<Place, PlaceCoreError>
     /// 특정 장소의 상세 정보 조회
     func readSpecificPlace(id: UInt64)
     /// 장소 삭제
@@ -86,12 +86,12 @@ extension PlaceCore: PlaceCoreProtocol {
         commentsSubject.eraseToAnyPublisher()
     }
     
-    func createPlace(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Place, PlaceCoreError> {
+    func createPlace(meetingID: UInt64, name: String, url: String) -> AnyPublisher<Place, PlaceCoreError> {
         guard let userID = currentUserID else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
-        let dto = CreatePlaceDTO.Request(meetingID: meetingID, userID: userID, name: name, address: address)
+        let dto = CreatePlaceDTO.Request(meetingID: meetingID, userID: userID, name: name, url: url)
         return apiService.requestPublisher(Endpoint.createPlace(dto: dto), CreatePlaceDTO.Response.self)
             .mapError { PlaceCoreError.networkingError($0) }
             .map { [weak self] in

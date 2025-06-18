@@ -61,6 +61,25 @@ struct MeetingInformationView: View {
                     EditMeetingInfoSheet(viewModel: viewModel)
                 }
             }
+            .lazyLoading()
+    }
+}
+
+struct LazyLoadingView<Content: View>: View {
+    private var content: () -> Content
+
+    init(content: @escaping () -> Content) {
+        self.content = content
+    }
+
+    var body: Content {
+        content()
+    }
+}
+
+extension View {
+    func lazyLoading() -> some View {
+        LazyLoadingView { self }
     }
 }
 

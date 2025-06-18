@@ -34,7 +34,6 @@ struct WhereApp: App {
                 ContentView(resolver: resolver)
             }
             .preferredColorScheme(.light)
-            .onOpenURL(perform: appDelegate.parseURL)
         }
     }
     
