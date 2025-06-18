@@ -10,7 +10,7 @@ import Swinject
 import Combine
 
 final class MeetingInformationViewModel: ObservableObject {
-    @Published private var _meeting: Meeting!
+    @Published var meeting: Meeting = Meeting(id: 0, title: "", description: "", createdAt: .now, isFinished: false)
     @Published private var meetingID: UInt64!
     
     @Published var sheetType: SheetType?
@@ -26,10 +26,6 @@ final class MeetingInformationViewModel: ObservableObject {
     var titleUpdateButtonDisabled: Bool { isTitleUpdatingProcessing || titleText.isEmpty }
     var descriptionUpdateButtonDisabled: Bool { isDescriptionUpdatingProcessing }
     var exitButtonDisabled: Bool { isExitProcessing }
-    
-    var meeting: Meeting {
-        _meeting
-    }
     
     private let meetingCore: MeetingCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -48,7 +44,7 @@ final class MeetingInformationViewModel: ObservableObject {
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] meeting in
-                self?._meeting = meeting
+                self?.meeting = meeting
                 self?.titleText = meeting.title
                 self?.descriptionText = meeting.description
             }

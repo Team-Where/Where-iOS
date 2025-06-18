@@ -13,12 +13,8 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     @Published var invitedFriends = [MeetingInvitationState]()
     @Published var watingFriends = [MeetingInvitationState]()
     @Published var places = [Place]()
-    @Published private var _meeting: Meeting!
+    @Published var meeting: Meeting = Meeting(id: 0, title: "", description: "", createdAt: .now, isFinished: false)
     @Published private(set) var processingState: ProcessingState = .waiting
-    
-    var meeting: Meeting {
-        _meeting
-    }
     
     private let communityCore: CommunityCoreProtocol
     private let meetingCore: MeetingCoreProtocol
@@ -34,10 +30,9 @@ final class MeetingInformationDetailViewModel: ObservableObject {
     
     private func subscribe() {
         meetingCore.invitationStatus
-            .combineLatest($_meeting)
+            .combineLatest($meeting)
             .map { (dict, meeting) -> [MeetingInvitationState] in
-                guard let id = meeting?.id,
-                      let states = dict[id]
+                guard let states = dict[meeting.id]
                 else { return [] }
                 return states
             }
@@ -51,13 +46,12 @@ final class MeetingInformationDetailViewModel: ObservableObject {
             .store(in: cancellableBag, key: "InvitationStatus")
         
         meetingCore.meetings
-            .combineLatest($_meeting)
+            .combineLatest($meeting)
             .compactMap{ (dict, meeting) -> Meeting? in
-                guard let meeting else { return nil }
                 return dict[meeting.id]
             }
             .sink { [weak self] in
-                self?._meeting = $0
+                self?.meeting = $0
             }
             .store(in: cancellableBag, key: "Meetings")
         
@@ -87,15 +81,15 @@ extension MeetingInformationDetailViewModel {
 // MARK: Interfaces
 extension MeetingInformationDetailViewModel {
     func setMeeitng(_ meeting: Meeting) {
-        self._meeting = meeting
+        self.meeting = meeting
     }
     
     func onAppear() {
-        meetingCore.readInvitaionStatus(id: _meeting.id)
+        meetingCore.readInvitaionStatus(id: meeting.id)
     }
     
     func endMeeting() {
-        cancellableBag[#function] = meetingCore.endMeeting(id: _meeting.id)
+        cancellableBag[#function] = meetingCore.endMeeting(id: meeting.id)
             .sink { completion in
                 
             } receiveValue: { _ in

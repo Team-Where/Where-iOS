@@ -7,24 +7,97 @@
 
 import UIKit
 import Social
+import UniformTypeIdentifiers
 
-class ShareViewController: SLComposeServiceViewController {
-
+final class ShareViewController: SLComposeServiceViewController {
+    private var placeName: String?
+    private var placeURLString: String?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadItems()
+    }
+    
     override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
+        guard let name = placeName, name.isEmpty == false,
+              let urlString = placeURLString, urlString.isEmpty == false,
+              URL(string: urlString) != nil
+        else { return false }
         return true
     }
 
     override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-    
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+        completeRequest()
     }
 
     override func configurationItems() -> [Any]! {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
         return []
     }
-
+    
+    private func loadItems() {
+        guard let extensionItems = extensionContext?.inputItems as? [NSExtensionItem],
+              let item = extensionItems.first,
+              let attachments = item.attachments, attachments.isEmpty == false
+        else { return }
+        
+        guard let textProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.text.identifier) }) else { return }
+        
+        textProvider.loadItem(forTypeIdentifier: UTType.text.identifier) { [weak self] data, error in
+            guard error == nil, let text = data as? String else { return }
+            
+            if text.contains("[네이버 지도]") {
+                let lines = text.components(separatedBy: .newlines)
+                guard lines.count >= 3 else { return }
+                self?.placeName = lines[1].trimmingCharacters(in: .whitespaces)
+                self?.placeURLString = lines[3].trimmingCharacters(in: .whitespaces)
+                self?.validateContent()
+            } else if text.contains("[카카오맵]") {
+                self?.placeName = text.replacingOccurrences(of: "[카카오맵] ", with: "").trimmingCharacters(in: .whitespaces)
+                guard let urlProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.url.identifier) }) else { return }
+                
+                urlProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { [weak self] data, error in
+                    guard error == nil, let url = data as? URL else { return }
+                    self?.placeURLString = url.absoluteString
+                    self?.validateContent()
+                }
+            }
+        }
+    }
+    
+    private func deeplink(name: String, stringLink: String) -> URL? {
+        var component = URLComponents()
+        component.scheme = "audiwhere"
+        component.host = "share"
+        component.queryItems = [
+            URLQueryItem(name: "name", value: name),
+            URLQueryItem(name: "link", value: stringLink)
+        ]
+        return component.url
+    }
+    
+    private func openURL(_ url: URL) {
+        var responder: UIResponder? = self
+        while responder != nil {
+            if let application = responder as? UIApplication {
+                application.open(url)
+                break
+            }
+            responder = responder?.next
+        }
+    }
+    
+    private func completeRequest() {
+        defer { extensionContext?.completeRequest(returningItems: []) }
+        
+        guard isContentValid(),
+              let name = placeName,
+              let link = placeURLString,
+              let deeplinkURL = deeplink(name: name, stringLink: link)
+        else { return }
+        print("파싱한 장소명: \(name)")
+        print("파싱한 링크: \(link)")
+        print("딥링크: \(deeplinkURL)")
+        openURL(deeplinkURL)
+    }
 }

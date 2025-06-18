@@ -36,11 +36,25 @@ struct HistoryReminderView: View {
                 .fill(Color(hex: 0xF3F4F6))
                 .frame(height: 8)
             
-            ScrollView(.vertical) {
+            Spacer()
+            
+            if viewModel.yearGroups.isEmpty {
+                VStack(spacing: 10) {
+                    Image(systemName: "exclamationmark.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 18)
+                        .foregroundStyle(Color(hex: 0x868E96))
+                    
+                    Text("아직 함께하는 모임이 없어요!")
+                        .whereFont(.body16medium)
+                        .foregroundStyle(Color(hex: 0x495057))
+                }
+            } else {
                 HistoryArea(viewModel.yearGroups, resolver)
             }
-            .padding(.horizontal)
-            .scrollIndicators(.hidden)
+            
+            Spacer()
         }
         .navigationBarBackButtonHidden()
         .toolbar {
@@ -114,27 +128,15 @@ extension HistoryReminderView {
         }
         
         var body: some View {
-            Group {
-                if yearGroups.isEmpty {
-                    VStack(spacing: 10) {
-                        Image(systemName: "exclamationmark.circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 18)
-                            .foregroundStyle(Color(hex: 0x868E96))
-                        
-                        Text("아직 함께하는 모임이 없어요!")
-                            .whereFont(.body16medium)
-                            .foregroundStyle(Color(hex: 0x495057))
-                    }
-                } else {
-                    LazyVStack {
-                        ForEach(yearGroups) { yearGroup in
-                            section(yearGroup)
-                        }
+            ScrollView(.vertical) {
+                LazyVStack {
+                    ForEach(yearGroups) { yearGroup in
+                        section(yearGroup)
                     }
                 }
             }
+            .padding(.horizontal)
+            .scrollIndicators(.hidden)
         }
         
         @ViewBuilder private func section(_ yearGroup: YearGroup) -> some View {
@@ -146,7 +148,7 @@ extension HistoryReminderView {
                 }
             } header: {
                 HStack {
-                    Text("\(yearGroup.year)")
+                    Text(String(yearGroup.year))
                         .whereFont(.title24semibold)
                     
                     Spacer()
