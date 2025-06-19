@@ -67,8 +67,13 @@ extension SharePlaceMeetingListViewModel {
                 }
             }
             .sink { [weak self] completion in
-                // TODO: 에러 처리
-                // 대충 실패하면 플로터 띄워서 알려주기..이런거?
+                switch completion {
+                case .failure:
+                    self?.floaterSubject.send(true)
+                case .finished:
+                    self?.viewRoutingSubject.send(.detail(meeting: meeting))
+                }
+                
             } receiveValue: { _ in }
             .store(in: cancellableBag, key: #function)
     }
