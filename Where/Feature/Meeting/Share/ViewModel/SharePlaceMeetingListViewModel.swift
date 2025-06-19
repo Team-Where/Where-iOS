@@ -18,6 +18,9 @@ final class SharePlaceMeetingListViewModel {
     private let placeCore: PlaceCoreProtocol
     private let cancellableBag = CancellableBag()
     
+    private let floaterSubject = PassthroughSubject<Bool, Never>()
+    private let viewRoutingSubject = PassthroughSubject<NavigationType, Never>()
+    
     init(resolver: Resolver) {
         self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
         self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
@@ -68,6 +71,22 @@ extension SharePlaceMeetingListViewModel {
                 // 대충 실패하면 플로터 띄워서 알려주기..이런거?
             } receiveValue: { _ in }
             .store(in: cancellableBag, key: #function)
+    }
+}
+
+// MARK: - ViewRouter
+
+extension SharePlaceMeetingListViewModel {
+    enum NavigationType: Hashable {
+        case detail(meeting: Meeting)
+    }
+
+    var floaterPublisher: AnyPublisher<Bool, Never> {
+        floaterSubject.eraseToAnyPublisher()
+    }
+    
+    var viewRouterPublisher: AnyPublisher<NavigationType, Never> {
+        viewRoutingSubject.eraseToAnyPublisher()
     }
 }
 
