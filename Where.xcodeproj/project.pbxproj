@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		04A9CC702E02E4AE005ADC8B /* FCMRegisterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A9CC6F2E02E4AE005ADC8B /* FCMRegisterDTO.swift */; };
+		04A9CC722E043D25005ADC8B /* SharedPlaceDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A9CC712E043D25005ADC8B /* SharedPlaceDataSource.swift */; };
 		04D5476C2DDB66A9003EEC85 /* InviteFriendsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5470B2DDB66A9003EEC85 /* InviteFriendsDTO.swift */; };
 		04D5476D2DDB66A9003EEC85 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5468C2DDB66A9003EEC85 /* ContentViewModel.swift */; };
 		04D5476E2DDB66A9003EEC85 /* ReadUserInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D547312DDB66A9003EEC85 /* ReadUserInfoDTO.swift */; };
@@ -248,6 +249,7 @@
 
 /* Begin PBXFileReference section */
 		04A9CC6F2E02E4AE005ADC8B /* FCMRegisterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMRegisterDTO.swift; sourceTree = "<group>"; };
+		04A9CC712E043D25005ADC8B /* SharedPlaceDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPlaceDataSource.swift; sourceTree = "<group>"; };
 		04D546352DDB6659003EEC85 /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04D546492DDB66A9003EEC85 /* CoreAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAssembly.swift; sourceTree = "<group>"; };
 		04D5464A2DDB66A9003EEC85 /* ServiceAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAssembly.swift; sourceTree = "<group>"; };
@@ -532,6 +534,7 @@
 				04D5465B2DDB66A9003EEC85 /* TemporaryMeetingInfo.swift */,
 				04D5465C2DDB66A9003EEC85 /* User.swift */,
 				04D5465D2DDB66A9003EEC85 /* UserCredential.swift */,
+				04A9CC712E043D25005ADC8B /* SharedPlaceDataSource.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1600,6 +1603,7 @@
 				04D547852DDB66A9003EEC85 /* Announcement.swift in Sources */,
 				04D547862DDB66A9003EEC85 /* WhereAuthenticator.swift in Sources */,
 				04D547872DDB66A9003EEC85 /* PickPlaceDTO.swift in Sources */,
+				04A9CC722E043D25005ADC8B /* SharedPlaceDataSource.swift in Sources */,
 				04D547882DDB66A9003EEC85 /* CommentView.swift in Sources */,
 				04D547892DDB66A9003EEC85 /* CancellableBag.swift in Sources */,
 				04D5478A2DDB66A9003EEC85 /* UnregisterViewModel.swift in Sources */,

@@ -10,8 +10,14 @@ import Social
 import UniformTypeIdentifiers
 
 final class ShareViewController: SLComposeServiceViewController {
+    enum SourceAppType {
+        case kakaomap, navermap
+    }
+    
     private var placeName: String?
+    private var placeAddress: String?
     private var placeURLString: String?
+    private var sourceAppType: SourceAppType?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,11 +25,18 @@ final class ShareViewController: SLComposeServiceViewController {
     }
     
     override func isContentValid() -> Bool {
-        guard let name = placeName, name.isEmpty == false,
-              let urlString = placeURLString, urlString.isEmpty == false,
-              URL(string: urlString) != nil
-        else { return false }
-        return true
+        guard let name = placeName, name.isEmpty == false else { return false }
+        
+        switch sourceAppType {
+        case .kakaomap:
+            guard let urlString = placeURLString, URL(string: urlString) != nil else { return false }
+            return true
+        case .navermap:
+            guard let address = placeAddress, address.isEmpty == false else { return false }
+            return true
+        case .none:
+            return false
+        }
     }
 
     override func didSelectPost() {
@@ -47,12 +60,14 @@ final class ShareViewController: SLComposeServiceViewController {
             guard error == nil, let text = data as? String else { return }
             
             if text.contains("[네이버 지도]") {
+                self?.sourceAppType = .navermap
                 let lines = text.components(separatedBy: .newlines)
                 guard lines.count >= 3 else { return }
                 self?.placeName = lines[1].trimmingCharacters(in: .whitespaces)
-                self?.placeURLString = lines[3].trimmingCharacters(in: .whitespaces)
+                self?.placeAddress = lines[2].trimmingCharacters(in: .whitespaces)
                 self?.validateContent()
             } else if text.contains("[카카오맵]") {
+                self?.sourceAppType = .kakaomap
                 self?.placeName = text.replacingOccurrences(of: "[카카오맵] ", with: "").trimmingCharacters(in: .whitespaces)
                 guard let urlProvider = attachments.first(where: { $0.hasItemConformingToTypeIdentifier(UTType.url.identifier) }) else { return }
                 
@@ -65,14 +80,22 @@ final class ShareViewController: SLComposeServiceViewController {
         }
     }
     
-    private func deeplink(name: String, stringLink: String) -> URL? {
+    private func deeplink(sourceApp: SourceAppType, name: String, address: String? = nil, link: String? = nil) -> URL? {
         var component = URLComponents()
         component.scheme = "audiwhere"
         component.host = "share"
         component.queryItems = [
             URLQueryItem(name: "name", value: name),
-            URLQueryItem(name: "link", value: stringLink)
         ]
+        
+        switch sourceApp {
+        case .kakaomap:
+            guard let link else { return nil }
+            component.queryItems?.append(.init(name: "link", value: link))
+        case .navermap:
+            guard let address else { return nil }
+            component.queryItems?.append(.init(name: "address", value: address))
+        }
         return component.url
     }
     
@@ -92,11 +115,11 @@ final class ShareViewController: SLComposeServiceViewController {
         
         guard isContentValid(),
               let name = placeName,
-              let link = placeURLString,
-              let deeplinkURL = deeplink(name: name, stringLink: link)
+              let source = sourceAppType,
+              let deeplinkURL = deeplink(sourceApp: source, name: name, address: placeAddress, link: placeURLString)
         else { return }
         print("파싱한 장소명: \(name)")
-        print("파싱한 링크: \(link)")
+        print("공유받은 앱: \(source)")
         print("딥링크: \(deeplinkURL)")
         openURL(deeplinkURL)
     }

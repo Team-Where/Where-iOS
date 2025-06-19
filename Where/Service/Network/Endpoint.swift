@@ -89,8 +89,10 @@ enum Endpoint {
     case deleteSchedule(dto: DeleteScheduleDTO.Request)
     
     // MARK: Place Related
-    /// 장소 생성
-    case createPlace(dto: CreatePlaceDTO.Request)
+    /// 카카오맵을 사용해 장소 생성
+    case createPlaceByKakaomap(dto: CreatePlaceDTO.RequestForKakaomap)
+    /// 네이버지도를 사용해 장소 생성
+    case createPlaceByNavermap(dto: CreatePlaceDTO.RequestForNavermap)
     /// 장소 조회
     case readPlaceDetail(userID: UInt64, meetingID: UInt64)
     /// 장소 삭제
@@ -230,8 +232,10 @@ extension Endpoint: TargetType {
             return "\(basePath)/\(userID)"
             
             // MARK: - Place Related
-        case .createPlace, .deletePlace, .readPlaceDetail:
+        case .createPlaceByNavermap, .deletePlace, .readPlaceDetail:
             return "\(basePath)"
+        case .createPlaceByKakaomap:
+            return "\(basePath)/apple"
         case .pickPlace:
             return "\(basePath)/pick"
         case .togglePlaceLike:
@@ -273,7 +277,7 @@ extension Endpoint: TargetType {
     var method: Moya.Method {
         switch self {
         case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink, .requestAuthCode, .checkLatestVersion: .get
-        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlace, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao, .loginWithNaver, .loginWithApple, .verifyAuthCode, .registerFCMToken: .post
+        case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlaceByKakaomap, .createPlaceByNavermap, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao, .loginWithNaver, .loginWithApple, .verifyAuthCode, .registerFCMToken: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend, .updateProfile, .updateNickname: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister, .deleteProfile: .delete
         }
@@ -355,7 +359,9 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .deleteSchedule(let dto):
             return .requestJSONEncodable(dto)
-        case .createPlace(let dto):
+        case .createPlaceByKakaomap(let dto):
+            return .requestJSONEncodable(dto)
+        case .createPlaceByNavermap(let dto):
             return .requestJSONEncodable(dto)
         case .readPlaceDetail(let userID, let meetingID):
             let parameters = ["meetingId": meetingID, "userId": userID]
@@ -440,7 +446,7 @@ private extension Endpoint {
             return "/meeting"
         case .createSchedule, .readSchedule, .updateSchedule, .deleteSchedule:
             return "/schedule"
-        case .createPlace, .readPlaceDetail, .deletePlace, .pickPlace, .togglePlaceLike, .createComment, .updateComment, .deleteComment, .readComments:
+        case .createPlaceByNavermap, .createPlaceByKakaomap, .readPlaceDetail, .deletePlace, .pickPlace, .togglePlaceLike, .createComment, .updateComment, .deleteComment, .readComments:
             return "/place"
         case .readUserInquiries, .createUserInquiry:
             return "/inquiry"

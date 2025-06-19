@@ -9,22 +9,18 @@ import SwiftUI
 import Swinject
 
 struct SharePlaceMeetingListView: View {
-    @State private var isPresented: Bool = false
-
+    @State private var isMeetingInfoPresented: Bool = false
     
-    private let placeName: String
-    private let placeURL: String
+    private let sharedPlaceData: SharedPlaceDataSource
     private let viewModel: SharePlaceMeetingListViewModel
 
     private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 175))]
     
     init(
-        placeName: String,
-        placeURL: String,
+        dataSource: SharedPlaceDataSource,
         resolver: Resolver
     ) {
-        self.placeName = placeName
-        self.placeURL = placeURL
+        sharedPlaceData = dataSource
         viewModel = resolver.resolve(SharePlaceMeetingListViewModel.self)!
     }
     
@@ -42,7 +38,7 @@ struct SharePlaceMeetingListView: View {
             }
             
             Button {
-                //TODO: View이동
+                viewModel.addPlace(sharedPlaceData)
             } label: {
                 Text("완료")
                     .frame(width: 350, height: 48)

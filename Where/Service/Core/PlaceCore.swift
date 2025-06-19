@@ -14,12 +14,18 @@ protocol PlaceCoreProtocol: CoreProtocol {
     /// 특정 장소에 대한 코멘트 목록
     var comments: AnyPublisher<[UInt64: Comment], Never> { get }
     
-    /// 장소 생성
+    /// 카카오맵을 통해 장소 생성
+    /// - Parameters:
+    ///     - meetingID: 모임 식별자
+    ///     - name: 장소명
+    ///     - url: 카카오맵에서 제공받은 유니버셜링크
+    func createPlaceByKakaomap(meetingID: UInt64, name: String, url: String) -> AnyPublisher<Void, PlaceCoreError>
+    /// 네이버지도를 통해 장소 생성
     /// - Parameters:
     ///     - meetingID: 모임 식별자
     ///     - name: 장소명
     ///     - address: 장소 주소
-    func createPlace(meetingID: UInt64, name: String, url: String) -> AnyPublisher<Place, PlaceCoreError>
+    func createPlaceByNavermap(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Void, PlaceCoreError>
     /// 특정 장소의 상세 정보 조회
     func readSpecificPlace(id: UInt64)
     /// 장소 삭제
@@ -86,21 +92,39 @@ extension PlaceCore: PlaceCoreProtocol {
         commentsSubject.eraseToAnyPublisher()
     }
     
-    func createPlace(meetingID: UInt64, name: String, url: String) -> AnyPublisher<Place, PlaceCoreError> {
+    func createPlaceByKakaomap(meetingID: UInt64, name: String, url: String) -> AnyPublisher<Void, PlaceCoreError> {
         guard let userID = currentUserID else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
-        let dto = CreatePlaceDTO.Request(meetingID: meetingID, userID: userID, name: name, url: url)
-        return apiService.requestPublisher(Endpoint.createPlace(dto: dto), CreatePlaceDTO.Response.self)
-            .mapError { PlaceCoreError.networkingError($0) }
-            .map { [weak self] in
+        let dto = CreatePlaceDTO.RequestForKakaomap(meetingID: meetingID, userID: userID, name: name, url: url)
+        return apiService.requestPublisher(Endpoint.createPlaceByKakaomap(dto: dto), CreatePlaceDTO.Response.self)
+            .handleEvents(receiveOutput: { [weak self] in
                 let newPlace = $0.toEntity()
-                guard var places = self?.placesSubject.value else { return newPlace }
+                guard var places = self?.placesSubject.value else { return }
                 places[newPlace.id] = newPlace
                 self?.placesSubject.send(places)
-                return newPlace
-            }
+            })
+            .map { _ in () }
+            .mapError { PlaceCoreError.networkingError($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func createPlaceByNavermap(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Void, PlaceCoreError> {
+        guard let userID = currentUserID else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
+        }
+        
+        let dto = CreatePlaceDTO.RequestForNavermap(meetingID: meetingID, userID: userID, name: name, address: address)
+        return apiService.requestPublisher(Endpoint.createPlaceByNavermap(dto: dto), CreatePlaceDTO.Response.self)
+            .mapError { PlaceCoreError.networkingError($0) }
+            .handleEvents(receiveOutput: { [weak self] in
+                let newPlace = $0.toEntity()
+                guard var places = self?.placesSubject.value else { return }
+                places[newPlace.id] = newPlace
+                self?.placesSubject.send(places)
+            })
+            .map { _ in () }
             .eraseToAnyPublisher()
     }
     

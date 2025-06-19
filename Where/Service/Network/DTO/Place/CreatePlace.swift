@@ -9,7 +9,8 @@ import Foundation
 
 /// 장소 생성
 enum CreatePlaceDTO {
-    struct Request: Encodable {
+    /// 카카오맵으로부터 장소정보를 공유받아서 추가할 때 사용합니다.
+    struct RequestForKakaomap: Encodable {
         let meetingID: UInt64
         let userID: UInt64
         let name: String
@@ -17,6 +18,20 @@ enum CreatePlaceDTO {
         
         enum CodingKeys: String, CodingKey {
             case name, url
+            case meetingID = "meetingId"
+            case userID = "userId"
+        }
+    }
+    
+    /// 네이버지도로부터 장소정보를 공유받아서 추가할 때 사용합니다.
+    struct RequestForNavermap: Encodable {
+        let meetingID: UInt64
+        let userID: UInt64
+        let name: String
+        let address: String
+        
+        enum CodingKeys: String, CodingKey {
+            case name, address
             case meetingID = "meetingId"
             case userID = "userId"
         }

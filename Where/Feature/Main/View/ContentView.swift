@@ -76,11 +76,14 @@ struct ContentView: View {
         }
         .navigationDestination(item: $navigationType) { type in
             switch type {
-            case .profileCreationView: ProfileCreationView($navigationType, resolver: resolver)
-            case .acceptInvigationView(let name, let meeting): AcceptInvitationView(inviterName: name, meeting: meeting, resolver: resolver)
-            case .historyReminderView(let user, let friend): HistoryReminderView(user: user, friend: friend, resolver: resolver)
-            case .sharePlaceMeetingListView(let placeName, let placeURL): SharePlaceMeetingListView(placeName: placeName, placeURL: placeURL, resolver: resolver)
-
+            case .profileCreationView:
+                ProfileCreationView($navigationType, resolver: resolver)
+            case .acceptInvigationView(let name, let meeting):
+                AcceptInvitationView(inviterName: name, meeting: meeting, resolver: resolver)
+            case .historyReminderView(let user, let friend):
+                HistoryReminderView(user: user, friend: friend, resolver: resolver)
+            case .sharePlaceMeetingListView(let dataSource):
+                SharePlaceMeetingListView(dataSource: dataSource, resolver: resolver)
             }
         }
         .navigationDestination(isPresented: $isOnboardingNeeded) {
@@ -149,7 +152,7 @@ enum MainNavigationType: Hashable {
     case profileCreationView
     case acceptInvigationView(inviterName: String?, meeting: Meeting?)
     case historyReminderView(user: User, friend: FriendRelationship)
-    case sharePlaceMeetingListView(placeName: String, placeURL: String)
+    case sharePlaceMeetingListView(SharedPlaceDataSource)
     
     static func == (lhs: MainNavigationType, rhs: MainNavigationType) -> Bool {
         String(describing: lhs) == String(describing: rhs)
@@ -223,18 +226,14 @@ private extension ContentView {
             
         case "share":
             let name = components.queryItems?.first(where: { $0.name == "name" })?.value
+            let address = components.queryItems?.first(where: { $0.name == "address" })?.value
             let link = components.queryItems?.first(where: { $0.name == "link" })?.value
             
-            guard let placeName = name,
-                  let placeLink = link
-            else {
-                print("Missing or invalid placeName or placeLink: \'name=\(name ?? "nil"), link=\(link ?? "nil")\'")
-                return
+            guard let placeName = name else {
+                return print("Missing or invalid placeName or placeLink: \'name=\(name ?? "nil")\'")
             }
-            
-            print("장소명: \(placeName)")
-            print("지도URL: \(placeLink)")
-            navigationType = .sharePlaceMeetingListView(placeName: placeName, placeURL: placeLink)
+            let sharedData = SharedPlaceDataSource(name: placeName, address: address, urlString: link)
+            navigationType = .sharePlaceMeetingListView(sharedData)
             
         default:
             print("Unknown host: \(components.host ?? "nil")")
