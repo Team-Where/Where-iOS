@@ -13,7 +13,7 @@ enum InviteFriendsDTO {
         let guestID: UInt64
         
         enum CodingKeys: String, CodingKey {
-            case meetingID = "id"
+            case meetingID = "meetingId"
             case hostID = "fromId"
             case guestID = "toId"
         }
