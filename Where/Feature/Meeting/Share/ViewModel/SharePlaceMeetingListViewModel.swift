@@ -44,7 +44,7 @@ extension SharePlaceMeetingListViewModel {
     
     func addPlace(_ sharedPlace: SharedPlaceDataSource) {
         // TODO: 장소 추가 기능 연결
-        guard let meetingID = selectedMeeting?.id else { return }
+        guard let meeting = selectedMeeting else { return }
         
         Just(sharedPlace)
             .flatMap { [placeCore] sharedPlace -> AnyPublisher<Void, PlaceCoreError> in
@@ -55,12 +55,12 @@ extension SharePlaceMeetingListViewModel {
                     guard let url = sharedPlace.urlString else {
                         return Fail(outputType: Void.self, failure: PlaceCoreError.userIDNotSet).eraseToAnyPublisher()
                     }
-                    return placeCore.createPlaceByKakaomap(meetingID: meetingID, name: name, url: url)
+                    return placeCore.createPlaceByKakaomap(meetingID: meeting.id, name: name, url: url)
                 case .navermap:
                     guard let address = sharedPlace.address else {
                         return Fail(outputType: Void.self, failure: PlaceCoreError.userIDNotSet).eraseToAnyPublisher()
                     }
-                    return placeCore.createPlaceByNavermap(meetingID: meetingID, name: name, address: address)
+                    return placeCore.createPlaceByNavermap(meetingID: meeting.id, name: name, address: address)
                 }
             }
             .sink { [weak self] completion in
