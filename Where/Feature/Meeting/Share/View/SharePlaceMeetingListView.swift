@@ -53,11 +53,18 @@ struct SharePlaceMeetingListView: View {
             }
             .buttonStyle(.whereRoundedProminent(disabled: viewModel.selectedMeeting == nil))
         }
+        .floater($isFloaterPresented, title: "잠시 후 다시 시도 해주세요.")
         .padding(.horizontal, 20)
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()
+            }
+        }
+        .navigationDestination(item: $isDetailPresneted) { type in
+            switch type {
+            case .detail(let meeting):
+                MeetingInformationView(resolver: resolver, meetingID: meeting.id)
             }
         }
     }
