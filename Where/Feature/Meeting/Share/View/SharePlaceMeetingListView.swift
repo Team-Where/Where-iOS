@@ -8,12 +8,18 @@
 import SwiftUI
 import Swinject
 
+private typealias NavigationType = SharePlaceMeetingListViewModel.NavigationType
+
 struct SharePlaceMeetingListView: View {
-    @State private var isMeetingInfoPresented: Bool = false
+    @State private var isFloaterPresented: Bool = false
+    @State private var isDetailPresneted: NavigationType?
     
     private let sharedPlaceData: SharedPlaceDataSource
+    private let resolver: Resolver
     private let viewModel: SharePlaceMeetingListViewModel
-
+    private let cancellabelBag = CancellableBag()
+    
+    
     private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 175))]
     
     init(
@@ -21,7 +27,9 @@ struct SharePlaceMeetingListView: View {
         resolver: Resolver
     ) {
         sharedPlaceData = dataSource
+        self.resolver = resolver
         viewModel = resolver.resolve(SharePlaceMeetingListViewModel.self)!
+        subscribe()
     }
     
     var body: some View {
@@ -104,5 +112,20 @@ extension SharePlaceMeetingListView {
                 viewModel.select(meeting: meeting)
             }
         }
+    }
+}
+
+extension SharePlaceMeetingListView {
+    func subscribe() {
+        viewModel.floaterPublisher
+            .sink {
+                isFloaterPresented = $0
+            }
+            .store(in: cancellabelBag, key: "floater")
+        viewModel.viewRouterPublisher
+            .sink {
+                isDetailPresneted = $0
+            }
+            .store(in: cancellabelBag, key: "detail")
     }
 }
