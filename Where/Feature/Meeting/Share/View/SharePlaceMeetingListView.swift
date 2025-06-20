@@ -8,8 +8,6 @@
 import SwiftUI
 import Swinject
 
-private typealias NavigationType = SharePlaceMeetingListViewModel.NavigationType
-
 struct SharePlaceMeetingListView: View {
     @State private var isFloaterPresented: Bool = false
     @State private var isDetailPresneted: NavigationType?
@@ -17,8 +15,6 @@ struct SharePlaceMeetingListView: View {
     private let sharedPlaceData: SharedPlaceDataSource
     private let resolver: Resolver
     private let viewModel: SharePlaceMeetingListViewModel
-    private let cancellabelBag = CancellableBag()
-    
     
     private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 175))]
     
@@ -29,7 +25,6 @@ struct SharePlaceMeetingListView: View {
         sharedPlaceData = dataSource
         self.resolver = resolver
         viewModel = resolver.resolve(SharePlaceMeetingListViewModel.self)!
-        subscribe()
     }
     
     var body: some View {
@@ -67,6 +62,21 @@ struct SharePlaceMeetingListView: View {
                 MeetingInformationView(resolver: resolver, meetingID: meeting.id)
             }
         }
+        .onReceive(viewModel.publisher) { result in
+            switch result {
+            case .success(let meeting):
+                isDetailPresneted = .detail(meeting: meeting)
+            case .failure:
+                isFloaterPresented.toggle()
+            }
+        }
+    }
+}
+
+// MARK: - Nested Types
+extension SharePlaceMeetingListView {
+    enum NavigationType: Hashable {
+        case detail(meeting: Meeting)
     }
 }
 
@@ -119,20 +129,5 @@ extension SharePlaceMeetingListView {
                 viewModel.select(meeting: meeting)
             }
         }
-    }
-}
-
-extension SharePlaceMeetingListView {
-    func subscribe() {
-        viewModel.floaterPublisher
-            .sink {
-                isFloaterPresented = $0
-            }
-            .store(in: cancellabelBag, key: "floater")
-        viewModel.viewRouterPublisher
-            .sink {
-                isDetailPresneted = $0
-            }
-            .store(in: cancellabelBag, key: "detail")
     }
 }

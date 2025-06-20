@@ -18,8 +18,7 @@ final class SharePlaceMeetingListViewModel {
     private let placeCore: PlaceCoreProtocol
     private let cancellableBag = CancellableBag()
     
-    private let floaterSubject = PassthroughSubject<Bool, Never>()
-    private let viewRoutingSubject = PassthroughSubject<NavigationType, Never>()
+    private let subject = PassthroughSubject<Result<Meeting, Error>, Never>()
     
     init(resolver: Resolver) {
         self.meetingCore = resolver.resolve(MeetingCoreProtocol.self)!
@@ -68,10 +67,10 @@ extension SharePlaceMeetingListViewModel {
             }
             .sink { [weak self] completion in
                 switch completion {
-                case .failure:
-                    self?.floaterSubject.send(true)
+                case .failure(let error):
+                    self?.subject.send(.failure(error))
                 case .finished:
-                    self?.viewRoutingSubject.send(.detail(meeting: meeting))
+                    self?.subject.send(.success(meeting))
                 }
                 
             } receiveValue: { _ in }
@@ -80,18 +79,9 @@ extension SharePlaceMeetingListViewModel {
 }
 
 // MARK: - ViewRouter
-
 extension SharePlaceMeetingListViewModel {
-    enum NavigationType: Hashable {
-        case detail(meeting: Meeting)
-    }
-
-    var floaterPublisher: AnyPublisher<Bool, Never> {
-        floaterSubject.eraseToAnyPublisher()
-    }
-    
-    var viewRouterPublisher: AnyPublisher<NavigationType, Never> {
-        viewRoutingSubject.eraseToAnyPublisher()
+    var publisher: AnyPublisher<Result<Meeting, Error>, Never> {
+        subject.eraseToAnyPublisher()
     }
 }
 
