@@ -68,6 +68,9 @@ extension CoreMediator: Notifiable {
             // MARK: - MeetingCore Related
             meetingCore.setCurrentUser(user)
             meetingCore.loadAllMeetings()
+            
+            // MARK: - PlaceCore Related
+            placeCore.setCurrentUserID(user.id)
 
             // MARK: - SupportCore Related
             supportCore.setCurrentUserID(user.id)
