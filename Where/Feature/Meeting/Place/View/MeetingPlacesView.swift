@@ -183,12 +183,11 @@ struct MeetingPlacesView: View {
                     case .byLikesDescending:
                         LazyVStack {
                             ForEach(1...3, id: \.self) { index in
-                                sectionByLikes(index: index, [])
+                                sectionByLikes(index: index, places)
                             }
                         }
                     }
                 }
-                .padding(.horizontal)
             }
         }
     }
@@ -300,6 +299,7 @@ struct MeetingPlacesView: View {
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(.white)
+                    .strokeBorder(.where(.gray100))
                     .shadow(color: .where(.gray200), radius: 4, y: 4)
             )
         }
@@ -390,8 +390,10 @@ extension MeetingPlacesView {
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(.white)
+                    .strokeBorder(.where(.gray100))
                     .shadow(color: .where(.gray200), radius: 4, y: 4)
             )
+            .padding(.horizontal)
         }
     }
     
@@ -453,11 +455,5 @@ extension MeetingPlacesView {
             .presentationDetents([.fraction(0.27)])
             .presentationCornerRadius(16)
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        MeetingInformationView(resolver: PreviewHelper.shared.resolver, meetingID: 13)
     }
 }
