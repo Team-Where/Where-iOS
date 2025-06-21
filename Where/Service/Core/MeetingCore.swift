@@ -517,6 +517,7 @@ extension MeetingCore: MeetingMediationProtocol {
                 meetings.reduce(into: [:]) { [weak self] in
                     let meeting = $1.toEntity()
                     self?.mediator?.notify(event: .updateMeetingSchedule(meeting: meeting))
+                    self?.mediator?.notify(event: .currentMeetingWillUpdate(meetingID: meeting.id))
                     $0[$1.meetingID] = meeting
                 }
             }

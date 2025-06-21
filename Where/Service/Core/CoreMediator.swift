@@ -85,10 +85,13 @@ extension CoreMediator: Notifiable {
             
         case .friendsListUpdated(let meetingIDs, let summaries):
             meetingCore.updateRelatedMeetings(meetingIDs: meetingIDs, summaries: summaries)
+        
         case .historyWithFriendWillUpdate(let friendID):
             meetingCore.loadCurrentMeetingsWithFriend(friendID: friendID)
+        
         case .updateMeetingSchedule(let meeting):
             notificationCore.updateNotifications(for: meeting)
+        
         case .removeNotification(let id):
             notificationCore.removeNotifications(for: id)
             
