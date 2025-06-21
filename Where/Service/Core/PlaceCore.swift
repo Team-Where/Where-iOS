@@ -46,8 +46,8 @@ protocol PlaceCoreProtocol: CoreProtocol {
 }
 
 protocol PlaceMediationProtocol {
-    /// 특정 모임의 장소 목록 로드를 지시, 중재자에 의해 호출됨
-    func loadPlaces(meetingID: UInt64)
+    /// 모임별 장소 목록 로드를 지시, 중재자에 의해 호출됨
+    func loadPlaces(meetings: [UInt64: Meeting])
     /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
     func setCurrentUserID(_ id: UInt64?)
     /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
@@ -289,21 +289,34 @@ extension PlaceCore: PlaceCoreProtocol {
 
 // MARK: - PlaceMediationProtocol Conformation
 extension PlaceCore: PlaceMediationProtocol {
-    func loadPlaces(meetingID: UInt64) {
+    func loadPlaces(meetings: [UInt64: Meeting]) {
         guard let userID = currentUserID else { return }
         
-        cancellableBag[#function] = apiService.requestPublisher(Endpoint.readPlaceDetail(userID: userID, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
+        let publishers = meetings.keys.map { meetingID in
+            apiService.requestPublisher(Endpoint.readPlaceDetail(userID: userID, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
+                .map { response in
+                    response.map { $0.toEntity() }
+                }
+                .catch { error in
+                    Just([])
+                }
+        }
+        
+        Publishers.MergeMany(publishers)
+            .collect()
             .sink { completion in
                 switch completion {
                 case .finished: break
                 case .failure(let error):
                     print(error)
                 }
-            } receiveValue: { [weak self] response in
-                let places = response.map { $0.toEntity() }
-                let placesDict = places.reduce(into: [:]) { $0[$1.id] = $1 }
-                self?.placesSubject.send(placesDict)
+            } receiveValue: { [weak self] responses in
+                guard var places = self?.placesSubject.value else { return }
+                let newPlaces = responses.flatMap { $0 }
+                newPlaces.forEach { places[$0.id] = $0 }
+                self?.placesSubject.send(places)
             }
+            .store(in: cancellableBag, key: #function)
     }
     
     func setCurrentUserID(_ id: UInt64?) {
