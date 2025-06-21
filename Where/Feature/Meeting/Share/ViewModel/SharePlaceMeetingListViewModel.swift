@@ -29,7 +29,9 @@ final class SharePlaceMeetingListViewModel {
     private func subscribe() {
         meetingCore.meetings
             .map {
-                $0.values.sorted { $0.createdAt > $1.createdAt }
+                $0.values
+                    .filter { $0.isFinished == false }
+                    .sorted { $0.createdAt > $1.createdAt }
             }
             .sink { [weak self] in
                 self?.meetings = $0
