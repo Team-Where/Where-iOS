@@ -122,22 +122,16 @@ extension PlaceCore: PlaceCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func readSpecificPlace(id: UInt64) {
-        cancellableBag[#function] = apiService
+    func readSpecificPlace(id: UInt64) -> AnyPublisher<[UInt64: Comment], PlaceCoreError> {
+        return apiService
             .requestPublisher(Endpoint.readComments(placeID: id), ReadCommentsDTO.Response.self)
-            .map { response -> [UInt64: Comment] in
-                response
+            .mapError { PlaceCoreError.networkingError($0)}
+            .map { response in
+                return response
                     .map { $0.toEntity() }
                     .reduce(into: [:]) { $0[$1.id] = $1 }
             }
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error): print(error)
-                }
-            } receiveValue: { [weak self] comments in
-                self?.commentsSubject.send(comments)
-            }
+            .eraseToAnyPublisher()
     }
     
     func deletePlace(id: UInt64) -> AnyPublisher<Void, PlaceCoreError> {
@@ -228,17 +222,13 @@ extension PlaceCore: PlaceCoreProtocol {
         let dto = CreateCommentDTO.Request(placeID: placeID, userID: userID, description: description)
         return apiService.requestPublisher(Endpoint.createComment(dto: dto), CreateCommentDTO.Response.self)
             .mapError { PlaceCoreError.networkingError($0) }
-            .map { [weak self] response in
-                let newComment = response.toEntity(placeID)
-                guard var comments = self?.commentsSubject.value else { return newComment }
-                comments[newComment.id] = newComment
-                self?.commentsSubject.send(comments)
-                return newComment
+            .map { response in
+                return response.toEntity(placeID)
             }
             .eraseToAnyPublisher()
     }
     
-    func updateComment(comment: Comment, description: String) -> AnyPublisher<Void, PlaceCoreError> {
+    func updateComment(comment: Comment, description: String) -> AnyPublisher<Comment, PlaceCoreError> {
         guard let userID = currentUserID else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -246,25 +236,19 @@ extension PlaceCore: PlaceCoreProtocol {
         let dto = UpdateCommentDTO.Request(id: comment.id, userID: userID, description: description)
         return apiService.requestPublisher(Endpoint.updateComment(dto: dto), UpdateCommentDTO.Response.self)
             .mapError { PlaceCoreError.networkingError($0) }
-            .map { [weak self] response in
-                guard var comments = self?.commentsSubject.value,
-                      let oldComment = comments[response.commentID]
-                else { return }
-                
-                let newComment = Comment(
-                    id: oldComment.id,
-                    placeId: oldComment.placeId,
+            .map { response in
+                return Comment(
+                    id: comment.id,
+                    placeId: comment.placeId,
                     description: response.description,
-                    isMyComment: true,
-                    createdAt: oldComment.createdAt
+                    isMyComment: comment.isMyComment,
+                    createdAt: comment.createdAt
                 )
-                comments[response.commentID] = newComment
-                self?.commentsSubject.send(comments)
             }
             .eraseToAnyPublisher()
     }
     
-    func deleteComment(comment: Comment) -> AnyPublisher<Void, PlaceCoreError> {
+    func deleteComment(comment: Comment) -> AnyPublisher<UInt64, PlaceCoreError> {
         guard let userID = currentUserID else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
@@ -272,10 +256,8 @@ extension PlaceCore: PlaceCoreProtocol {
         let dto = DeletePlaceDTO.Request(id: comment.id, userID: userID)
         return apiService.requestVoidPublisher(Endpoint.deleteComment(dto: dto))
             .mapError { PlaceCoreError.networkingError($0) }
-            .map { [weak self] _ in
-                guard var comments = self?.commentsSubject.value else { return }
-                comments[comment.id] = nil
-                self?.commentsSubject.send(comments)
+            .map {
+                return comment.id
             }
             .eraseToAnyPublisher()
     }
