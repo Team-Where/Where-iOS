@@ -36,6 +36,9 @@ final class MeetingPlacesViewModel {
                     #endif
                 }
             } receiveValue: { [weak self] places in
+                self?.pickedPlaces = places.values
+                    .filter { $0.pickedState == .picked }
+                    .sorted { $0.likesCount > $1.likesCount }
                 self?.placesDict = places
                 
                 guard let sortOption = self?.sortOption else { return }
