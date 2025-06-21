@@ -14,10 +14,10 @@ enum CreatePlaceDTO {
         let meetingID: UInt64
         let userID: UInt64
         let name: String
-        let url: String
+        let link: String
         
         enum CodingKeys: String, CodingKey {
-            case name, url
+            case name, link
             case meetingID = "meetingId"
             case userID = "userId"
         }

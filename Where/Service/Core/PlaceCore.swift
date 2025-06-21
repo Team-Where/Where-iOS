@@ -97,7 +97,7 @@ extension PlaceCore: PlaceCoreProtocol {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
-        let dto = CreatePlaceDTO.RequestForKakaomap(meetingID: meetingID, userID: userID, name: name, url: url)
+        let dto = CreatePlaceDTO.RequestForKakaomap(meetingID: meetingID, userID: userID, name: name, link: url)
         return apiService.requestPublisher(Endpoint.createPlaceByKakaomap(dto: dto), CreatePlaceDTO.Response.self)
             .handleEvents(receiveOutput: { [weak self] in
                 let newPlace = $0.toEntity()
