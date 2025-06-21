@@ -188,6 +188,7 @@ struct MeetingPlacesView: View {
                         }
                     }
                 }
+                .padding(.horizontal)
             }
         }
     }
@@ -452,5 +453,11 @@ extension MeetingPlacesView {
             .presentationDetents([.fraction(0.27)])
             .presentationCornerRadius(16)
         }
+    }
+}
+
+#Preview {
+    NavigationStack {
+        MeetingInformationView(resolver: PreviewHelper.shared.resolver, meetingID: 13)
     }
 }
