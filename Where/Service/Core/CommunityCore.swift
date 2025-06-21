@@ -127,7 +127,7 @@ extension CommunityCore: CommunityMediationProtocol {
                 switch completion {
                 case .finished: break
                 case .failure(let error):
-                    print(error)
+                    print("Error occured while loading friends: \(error)")
                 }
             } receiveValue: { [weak self] response in
                 let friends: [(friend: FriendRelationship, meetingSummaries: [MeetingSummary])] = response

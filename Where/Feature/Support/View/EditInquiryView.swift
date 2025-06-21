@@ -258,7 +258,7 @@ extension EditInquiryView {
                         
                     case .failure(let error):
                         #if DEBUG
-                        print(error)
+                        print("Error occured while importing image for edit inquiry: \(error)")
                         #endif
                     }
                 }

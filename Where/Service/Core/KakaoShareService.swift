@@ -50,7 +50,7 @@ extension KakaoShareService: KakaoShareServiceProtocol {
             
             ShareApi.shared.shareCustom(templateId: self.templateID, templateArgs: args) { result, error in
                 if let error = error {
-                    print(error)
+                    print("Error occured in prepare sharing template: \(error)")
                     return promise(.failure(.networkingError(error)))
                 }
                 

@@ -73,7 +73,7 @@ struct LoginView: View {
                     } onCompletion: { result in
                         switch result {
                         case .failure(let error):
-                            print(error)
+                            print("Error ccured from SignInWithAppleButton: \(error)")
                         case .success(let auth):
                             viewModel.loginWithApple(auth: auth)
                         }

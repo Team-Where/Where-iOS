@@ -88,7 +88,7 @@ final class InviteFriendsViewModel: ObservableObject {
             .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error): print(error)
+                case .failure(let error): print("Error occured in perform friends data source: \(error)")
                 }
             } receiveValue: { [weak self] dataSource in
                 self?.friendsDataSource = dataSource
@@ -104,7 +104,7 @@ final class InviteFriendsViewModel: ObservableObject {
             .sink { completion in
                 switch completion {
                 case .finished: break
-                case .failure(let error): print(error)
+                case .failure(let error): print("Error occured in perform invitation status: \(error)")
                 }
             } receiveValue: { [weak self] status in
                 self?.invitationStatesDict = status.reduce(into: [:]) { $0[$1.guestID] = $1 }

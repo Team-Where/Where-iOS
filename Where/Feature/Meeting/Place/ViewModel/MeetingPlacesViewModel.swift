@@ -32,7 +32,7 @@ final class MeetingPlacesViewModel {
                 case .finished: break
                 case .failure(let error):
                     #if DEBUG
-                    print(error)
+                    print("Error occured while fetching places: \(error)")
                     #endif
                 }
             } receiveValue: { [weak self] places in
