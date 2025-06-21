@@ -15,7 +15,6 @@ enum ReadPlaceDetailDTO {
 extension ReadPlaceDetailDTO {
     struct PlaceDetail: Decodable {
         let id: UInt64
-        let meetingID: UInt64
         let naverLinkString: String
         let kakaoLinkString: String
         let name: String
@@ -25,11 +24,10 @@ extension ReadPlaceDetailDTO {
         let isLikedByMe: Bool
         let pickedState: String
         let isSimulaneouslyShared: Bool
-        let pickedUserImageURLStrings: [String]?
+        let pickedUserImageURLStrings: [String?]
         
         enum CodingKeys: String, CodingKey {
             case id, name, address
-            case meetingID = "meetingId"
             case naverLinkString = "naverLink"
             case kakaoLinkString = "kakaoLink"
             case likesCount = "likes"
@@ -40,7 +38,7 @@ extension ReadPlaceDetailDTO {
             case pickedUserImageURLStrings = "users"
         }
         
-        func toEntity() -> Place {
+        func toEntity(meetingID: UInt64) -> Place {
             .init(
                 id: id,
                 meetingId: meetingID,
@@ -49,7 +47,7 @@ extension ReadPlaceDetailDTO {
                 likesCount: likesCount,
                 commentsCount: commentsCount,
                 isLikedByMe: isLikedByMe,
-                sharedUserImageURLs: (pickedUserImageURLStrings ?? []).compactMap { URL(string: $0) },
+                sharedUserImageURLs: pickedUserImageURLStrings.compactMap { URL(string: $0 ?? "") },
                 pickedState: PickedState(pickedState),
                 links: .init(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
                 isSimulaneouslyShared: isSimulaneouslyShared
