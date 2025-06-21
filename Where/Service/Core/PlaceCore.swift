@@ -295,7 +295,7 @@ extension PlaceCore: PlaceMediationProtocol {
         let publishers = meetings.keys.map { meetingID in
             apiService.requestPublisher(Endpoint.readPlaceDetail(userID: userID, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
                 .map { response in
-                    response.map { $0.toEntity() }
+                    response.map { $0.toEntity(meetingID: meetingID) }
                 }
                 .catch { error in
                     Just([])
