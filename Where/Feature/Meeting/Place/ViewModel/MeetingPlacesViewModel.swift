@@ -45,6 +45,7 @@ final class MeetingPlacesViewModel {
     }
     
     private func sortByAll() {
+        sortOption = .all
         places = placesDict.values.sorted {
             if $0.isSimulaneouslyShared != $1.isSimulaneouslyShared {
                 return $0.isSimulaneouslyShared
@@ -58,6 +59,7 @@ final class MeetingPlacesViewModel {
     }
     
     private func sortByLikesDescending() {
+        sortOption = .byLikesDescending
         let sortedByLikes = placesDict.values.sorted { $0.likesCount > $1.likesCount }
         
         guard sortedByLikes.count > 3 else {
