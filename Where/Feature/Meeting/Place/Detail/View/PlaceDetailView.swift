@@ -62,6 +62,7 @@ struct PlaceDetailView: View {
                 self.isTipPresented = false
             }
         }
+        .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()
