@@ -11,8 +11,6 @@ import Combine
 protocol PlaceCoreProtocol: CoreProtocol {
     /// 장소 목록
     var places: AnyPublisher<[UInt64: Place], Never> { get }
-    /// 특정 장소에 대한 코멘트 목록
-    var comments: AnyPublisher<[UInt64: Comment], Never> { get }
     
     /// 카카오맵을 통해 장소 생성
     /// - Parameters:
@@ -27,7 +25,8 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - address: 장소 주소
     func createPlaceByNavermap(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Void, PlaceCoreError>
     /// 특정 장소의 상세 정보 조회
-    func readSpecificPlace(id: UInt64)
+    /// 현재는 코멘트 불러오는 용도
+    func readSpecificPlace(id: UInt64) -> AnyPublisher<[UInt64: Comment], PlaceCoreError>
     /// 장소 삭제
     func deletePlace(id: UInt64) -> AnyPublisher<Void, PlaceCoreError>
     /// 장소 선택
@@ -40,9 +39,9 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - description: 코멘트 내용
     func createComment(placeID: UInt64, description: String) -> AnyPublisher<Comment, PlaceCoreError>
     /// 장소에 대한 코멘트 수정
-    func updateComment(comment: Comment, description: String) -> AnyPublisher<Void, PlaceCoreError>
+    func updateComment(comment: Comment, description: String) -> AnyPublisher<Comment, PlaceCoreError>
     /// 장소에 대한 코멘트 삭제
-    func deleteComment(comment: Comment) -> AnyPublisher<Void, PlaceCoreError>
+    func deleteComment(comment: Comment) -> AnyPublisher<UInt64, PlaceCoreError>
 }
 
 protocol PlaceMediationProtocol {
@@ -65,7 +64,6 @@ final class PlaceCore {
     private var currentUserID: UInt64?
     
     private let placesSubject = CurrentValueSubject<[UInt64: Place], Never>([:])
-    private let commentsSubject = CurrentValueSubject<[UInt64: Comment], Never>([:])
     
     private let apiService: APIServable
     private let cancellableBag = CancellableBag()
@@ -86,10 +84,6 @@ final class PlaceCore {
 extension PlaceCore: PlaceCoreProtocol {
     var places: AnyPublisher<[UInt64 : Place], Never> {
         placesSubject.eraseToAnyPublisher()
-    }
-    
-    var comments: AnyPublisher<[UInt64 : Comment], Never> {
-        commentsSubject.eraseToAnyPublisher()
     }
     
     func createPlaceByKakaomap(meetingID: UInt64, name: String, url: String) -> AnyPublisher<Void, PlaceCoreError> {
