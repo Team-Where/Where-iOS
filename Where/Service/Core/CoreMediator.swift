@@ -95,8 +95,8 @@ extension CoreMediator: Notifiable {
         case .removeNotification(let id):
             notificationCore.removeNotifications(for: id)
             
-        case .currentMeetingWillUpdate(let meetingID):
-            placeCore.loadPlaces(meetingID: meetingID)
+        case .meetingsLoaded(let meetings):
+            placeCore.loadPlaces(meetings: meetings)
             
         case .applicationDidLaunch:
             authentificationCore.loadCurrentUser()
