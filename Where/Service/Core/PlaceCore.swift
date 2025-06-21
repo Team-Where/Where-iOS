@@ -100,7 +100,7 @@ extension PlaceCore: PlaceCoreProtocol {
         let dto = CreatePlaceDTO.RequestForKakaomap(meetingID: meetingID, userID: userID, name: name, link: url)
         return apiService.requestPublisher(Endpoint.createPlaceByKakaomap(dto: dto), CreatePlaceDTO.Response.self)
             .handleEvents(receiveOutput: { [weak self] in
-                let newPlace = $0.toEntity()
+                let newPlace = $0.toEntity(meetingID: meetingID)
                 guard var places = self?.placesSubject.value else { return }
                 places[newPlace.id] = newPlace
                 self?.placesSubject.send(places)
@@ -119,7 +119,7 @@ extension PlaceCore: PlaceCoreProtocol {
         return apiService.requestPublisher(Endpoint.createPlaceByNavermap(dto: dto), CreatePlaceDTO.Response.self)
             .mapError { PlaceCoreError.networkingError($0) }
             .handleEvents(receiveOutput: { [weak self] in
-                let newPlace = $0.toEntity()
+                let newPlace = $0.toEntity(meetingID: meetingID)
                 guard var places = self?.placesSubject.value else { return }
                 places[newPlace.id] = newPlace
                 self?.placesSubject.send(places)

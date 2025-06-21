@@ -39,7 +39,6 @@ enum CreatePlaceDTO {
     
     struct Response: Decodable {
         let placeID: UInt64
-        let meetingID: UInt64
         let naverLinkString: String
         let kakaoLinkString: String
         let name: String
@@ -52,7 +51,6 @@ enum CreatePlaceDTO {
         enum CodingKeys: String, CodingKey {
             case name, address
             case placeID = "id"
-            case meetingID = "meetingId"
             case naverLinkString = "naverLink"
             case kakaoLinkString = "kakaoLink"
             case likesCount = "likes"
@@ -61,7 +59,7 @@ enum CreatePlaceDTO {
             case isSimulaneouslyShared = "together"
         }
         
-        func toEntity() -> Place {
+        func toEntity(meetingID: UInt64) -> Place {
             .init(
                 id: placeID,
                 meetingId: meetingID,
