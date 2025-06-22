@@ -47,7 +47,6 @@ struct EditInquiryView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.whereRoundedProminent(disabled: disabled))
-            .padding()
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
