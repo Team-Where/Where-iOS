@@ -88,6 +88,9 @@ struct PlaceDetailView: View {
                 CommentSheet(text: text, editStep: $commentEditStep, sheetType: $sheetType, viewModel: viewModel)
             }
         }
+        .onReceive(viewModel.sheetPublisher) {
+            sheetType = $0
+        }
     }
     
     enum SheetType: Identifiable {

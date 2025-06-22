@@ -9,6 +9,8 @@ import Foundation
 import Combine
 import Swinject
 
+typealias CommentSheetType = PlaceDetailView.SheetType
+
 @Observable
 final class PlaceDetailViewModel {
     private(set) var isDeletionProcessing: Bool = false
@@ -20,7 +22,7 @@ final class PlaceDetailViewModel {
     private var _comments = [UInt64: Comment]()
     private var placeID: UInt64?
     private var selectedComment: Comment?
-    
+    private var sheetTypeSubject = PassthroughSubject<CommentSheetType?, Never>()
     
     var comments: [Comment] {
         _comments.values.sorted { $0.createdAt < $1.createdAt }
@@ -55,11 +57,24 @@ extension PlaceDetailViewModel {
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 //TODO: error handling
+                switch completion {
+                case .finished:
+                    return
+                case .failure(let error):
+                #if DEBUG
+                    print("\(#file)-----\(#function)")
+                    print("\(error.localizedDescription)")
+                #endif
+                }
             } receiveValue: { [weak self] in
                 self?._comments = $0
             }
             .store(in: cancellableBag, key: "Comments")
 
+    }
+    
+    var sheetPublisher: AnyPublisher<CommentSheetType?, Never> {
+        sheetTypeSubject.eraseToAnyPublisher()
     }
 }
 
@@ -79,8 +94,13 @@ extension PlaceDetailViewModel: CommentViewModelType {
         guard let placeID else { return }
         placeCore.createComment(placeID: placeID, description: description)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                //TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.sheetTypeSubject.send(.none)
+                case .failure(let error): return
+                }
+                
             } receiveValue: { [weak self] in
                 self?._comments[$0.id] = $0
             }
@@ -91,8 +111,12 @@ extension PlaceDetailViewModel: CommentViewModelType {
         guard let comment = selectedComment else { return }
         placeCore.updateComment(comment: comment, description: descrition)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                //TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.sheetTypeSubject.send(.none)
+                case .failure(let error):return
+                }
             } receiveValue: { [weak self] newComment in
                 self?._comments[comment.id] = newComment
             }
@@ -104,8 +128,12 @@ extension PlaceDetailViewModel: CommentViewModelType {
         guard let comment = selectedComment else { return }
         placeCore.deleteComment(comment: comment)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                //TODO: Error handling
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.sheetTypeSubject.send(.none)
+                case .failure(let error): return
+                }
             } receiveValue: { [weak self] in
                 self?._comments.removeValue(forKey: $0)
             }
