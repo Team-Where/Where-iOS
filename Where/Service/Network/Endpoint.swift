@@ -114,7 +114,7 @@ enum Endpoint {
     /// 1:1문의 조회 - 일반 사용자
     case readUserInquiries(userID: UInt64)
     /// 1:1문의 작성 - 일반 사용자
-    case createUserInquiry(inquiryData: Data, imageDatas: [Data]?)
+    case createUserInquiry(inquiryData: Data, imageDatas: [Data?])
     /// 1:1문의 조회 - 관리자
     case readAdminInquiries(criteria: Int)
     /// 1:1문의 답변 등록 - 관리자
@@ -386,13 +386,8 @@ extension Endpoint: TargetType {
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(inquiryData), name: "data", mimeType: "application/json"))
             
-            guard let imageDatas = imageDatas
-            else {
-                formData.append(.init(provider: .data(Data()), name: "image"))
-                return .uploadMultipart(formData)
-            }
-            
-            imageDatas.enumerated().forEach { formData.append(.init(provider: .data($0.element), name: "image\($0.offset)")) }
+            guard imageDatas.isEmpty == false else { return .uploadMultipart(formData) }
+            imageDatas.compactMap { $0 }.enumerated().forEach { formData.append(.init(provider: .data($0.element), name: "image\($0.offset)")) }
             return .uploadMultipart(formData)
         case .readAdminInquiries:
             return .requestPlain

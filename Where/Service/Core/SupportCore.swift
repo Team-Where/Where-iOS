@@ -17,7 +17,7 @@ protocol SupportCoreProtocol: CoreProtocol {
     var latestVersion: AnyPublisher<String, Never> { get }
     
     /// 1:1문의 작성 - 사용자
-    func createInquiry(title: String, content: String, images: [Data]?) -> AnyPublisher<Void, SupportCoreError>
+    func createInquiry(title: String, content: String, images: [Data?]) -> AnyPublisher<Void, SupportCoreError>
     /// 1:1문의 답변 작성 - 관리자
     /// - Parameters:
     ///     - id: 문의 식별자
@@ -124,7 +124,7 @@ extension SupportCore: SupportCoreProtocol {
         latestVersionSubject.eraseToAnyPublisher()
     }
     
-    func createInquiry(title: String, content: String, images: [Data]?) -> AnyPublisher<Void, SupportCoreError> {
+    func createInquiry(title: String, content: String, images: [Data?]) -> AnyPublisher<Void, SupportCoreError> {
         guard let userID = currentUserID else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
