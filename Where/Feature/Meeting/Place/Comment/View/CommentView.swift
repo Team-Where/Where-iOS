@@ -8,20 +8,25 @@
 import SwiftUI
 import Swinject
 
-fileprivate typealias SheetType = CommentViewModel.SheetType
+
+extension CommentView {
+    typealias SheetType = PlaceDetailView.SheetType
+}
 
 struct CommentView: View {
-    @State private var sheetType: SheetType?
-    
-    private let viewModel: CommentViewModel
+    @Binding private var sheetType: SheetType?
+    @Binding private var commentEditStep: EditStep?
+    private let viewModel: CommentViewModelType
     private let place: Place
     
-    init(
-        place: Place,
-        resolver: Resolver
-    ) {
+    init(sheetType: Binding<SheetType?>,
+         commentEditStep: Binding<EditStep?>,
+         viewModel: CommentViewModelType,
+         place: Place) {
+        self._sheetType = sheetType
+        self._commentEditStep = commentEditStep
+        self.viewModel = viewModel
         self.place = place
-        self.viewModel = resolver.resolve(CommentViewModel.self)!
     }
     
     var body: some View {
@@ -37,18 +42,6 @@ struct CommentView: View {
             .whereFont(.body16medium)
         }
         .padding(.horizontal, 20)
-        .sheet(item: $sheetType) { type in
-            switch type {
-            case .create:
-                CommentCreationSheet($sheetType, viewModel, placeID: place.id)
-                
-            case .read(let comment):
-                CommentReadingSheet($sheetType, viewModel, comment)
-                
-            case .edit(let comment):
-                CommentEditingSheet($sheetType, viewModel, comment)
-            }
-        }
     }
     
     @ViewBuilder private func sectionContentArea() -> some View {
@@ -61,7 +54,8 @@ struct CommentView: View {
     
     private var createCommentButton: some View {
         Button {
-            sheetType = .create
+            sheetType = .comment(text: nil)
+            commentEditStep = .create
         } label: {
             Text("코멘트 남기기")
                 .whereFont(.body16medium)
@@ -100,327 +94,146 @@ struct CommentView: View {
             )
             .onTapGesture {
                 guard comment.isMyComment else { return }
-                viewModel.readComment(comment)
-                sheetType = .read(comment: comment)
+                viewModel.setComment(comment)
+                sheetType = .comment(text: comment.description)
+                commentEditStep = .myComment
             }
     }
 }
 
-// MARK: - Nested Types
-extension CommentView {
-    struct CommentCreationSheet: View {
-        @Binding fileprivate var sheetType: SheetType?
-        @FocusState private var commentFieldFocused: Bool
-        @State private var commentTextField = String()
-        private let headerTitle = "코멘트 남기기"
-        private let presentationCornerRadius: CGFloat = 8
-        private let placeID: UInt64
-        
-        private let viewModel: CommentViewModel
-        
-        private var creationButtonDisabled: Bool {
-            commentTextField.isEmpty || viewModel.isCreationProcessing
+enum EditStep {
+    case myComment
+    case create
+    case modify
+    
+    var title: String {
+        switch self {
+        case .myComment: "코멘트"
+        case .create: "코멘트 남기기"
+        case .modify: "코멘트 수정"
         }
+    }
+}
+
+extension PlaceDetailView {
+    struct CommentSheet: View {
+        @State private var text: String
+        @State private var detent: PresentationDetent = .fraction(0.2)
+        @Binding private var editStep: EditStep?
+        @Binding private var sheetType: SheetType?
+        @FocusState private var textFieldFocuseState: EditStep?
         
-        fileprivate init(
-            _ sheetType: Binding<SheetType?>,
-            _ viewModel: CommentViewModel,
-            placeID: UInt64
+        private let viewModel: CommentViewModelType
+        
+        init(
+            text: String?,
+            editStep: Binding<EditStep?>,
+            sheetType: Binding<SheetType?>,
+            viewModel: CommentViewModelType
         ) {
+            self._editStep = editStep
+            self._text = .init(wrappedValue: text ?? "")
             self._sheetType = sheetType
             self.viewModel = viewModel
-            self.placeID = placeID
         }
         
         var body: some View {
-            VStack(spacing: 20) {
+            VStack {
                 HStack {
-                    Text(headerTitle)
+                    Text(editStep?.title ?? "")
                         .whereFont(.subtitle18semibold)
-                        .foregroundStyle(.where(.gray800))
-                    
                     Spacer()
-                    
-                    Button {
-                        onDismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .foregroundStyle(.where(.gray800))
-                    }
                 }
-                .padding(.top)
-                
-                TextField(text: $commentTextField) {
-                    Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
-                        .whereFont(.body16regular)
+                .padding(.vertical)
+                switch editStep {
+                case .myComment:
+                    myComment
+                default:
+                    inputComment
                 }
-                .focused($commentFieldFocused)
+            }
+            .padding(.horizontal)
+        }
+
+        var myComment: some View {
+            VStack(alignment: .leading) {
+                Text(text)
+                    .padding(.bottom)
+                    .whereFont(.body16regular)
                 
-                Spacer()
-                
-                HStack(spacing: 12) {
+                HStack(alignment: .center) {
                     Button {
-                        onDismiss()
+                        //TODO: 뷰모델 연결(코멘트 삭제)
+                        
                     } label: {
-                        Text("취소")
+                        Text("삭제")
+                            .whereFont(.body16regular)
+                            .foregroundStyle(.where(.red500))
+                            .frame(width: 169, height: 59)
                     }
-                    .whereFont(.body16medium)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color(hex: 0x4B5563))
                     .background(
                         RoundedRectangle(cornerRadius: 16)
                             .fill(Color(hex: 0xF3F4F6))
                     )
                     
                     Button {
-                        viewModel.createComment(placeID: placeID, commentTextField)
-                    } label: {
-                        if viewModel.isCreationProcessing {
-                            ProgressView()
-                        } else {
-                            Text("확인")
-                        }
-                    }
-                    .whereFont(.body16medium)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(.white)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(.accent)
-                    )
-                    .disabled(creationButtonDisabled)
-                }
-            }
-            .onAppear {
-                commentFieldFocused = true
-            }
-            .onChange(of: viewModel.isCreationProcessing, onCommentCreated)
-            .padding()
-            .presentationCornerRadius(presentationCornerRadius)
-            .presentationDragIndicator(.hidden)
-            .interactiveDismissDisabled()
-            .presentationDetents(commentFieldFocused ? [.fraction(0.2)] : [.medium])
-        }
-        
-        private func onCommentCreated(_ : Bool, _ isDone: Bool) {
-            guard isDone else { return }
-            onDismiss()
-        }
-        
-        private func onDismiss() {
-            commentFieldFocused = false
-            sheetType = nil
-            commentTextField.removeAll()
-        }
-    }
-    
-    struct CommentReadingSheet: View {
-        @Binding fileprivate var sheetType: SheetType?
-        
-        private let comment: Comment
-        private let headerTitle = "코멘트"
-        private let presentationCornerRadius: CGFloat = 8
-        
-        private let viewModel: CommentViewModel
-        
-        private var deletionButtonDisabled: Bool {
-            viewModel.isDeletionProcessing
-        }
-        
-        fileprivate init(
-            _ sheetType: Binding<SheetType?>,
-            _ viewModel: CommentViewModel,
-            _ comment: Comment
-        ) {
-            self._sheetType = sheetType
-            self.viewModel = viewModel
-            self.comment = comment
-        }
-        
-        var body: some View {
-            VStack(spacing: 20) {
-                HStack {
-                    Text(headerTitle)
-                        .whereFont(.subtitle18semibold)
-                        .foregroundStyle(.where(.gray800))
-                    
-                    Spacer()
-                    
-                    Button {
-                        onDismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .foregroundStyle(.where(.gray800))
-                    }
-                }
-                .padding(.top)
-                
-                Text(comment.description)
-                    .whereFont(.body16regular)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Spacer()
-                
-                HStack(spacing: 12) {
-                    Button {
-                        viewModel.deleteComment(comment)
-                    } label: {
-                        if viewModel.isDeletionProcessing {
-                            ProgressView()
-                        } else {
-                            Text("삭제")
-                        }
-                    }
-                    .whereFont(.body16medium)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(.where(.red500))
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(.where(.gray100))
-                    )
-                    .disabled(deletionButtonDisabled)
-                    
-                    Button {
-                        sheetType = .edit(comment: comment)
+                        editStep = .modify
                     } label: {
                         Text("수정")
+                            .whereFont(.body16regular)
+                            .frame(width: 169, height: 59)
                     }
-                    .whereFont(.body16medium)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(.accent)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(.where(.gray100))
-                    )
-                }
-            }
-            .onChange(of: viewModel.isDeletionProcessing, onCommentDeleted)
-            .padding()
-            .presentationCornerRadius(presentationCornerRadius)
-            .presentationDragIndicator(.hidden)
-            .interactiveDismissDisabled()
-            .presentationDetents([.fraction(0.3)])
-        }
-        
-        private func onCommentDeleted(_ : Bool, _ isDone: Bool) {
-            guard isDone else { return }
-            onDismiss()
-        }
-        
-        private func onDismiss() {
-            sheetType = nil
-        }
-    }
-    
-    struct CommentEditingSheet: View {
-        @Binding fileprivate var sheetType: SheetType?
-        @FocusState private var commentFieldFocused: Bool
-        @State private var commentTextField = String()
-        private let comment: Comment
-        private let headerTitle = "코멘트 수정"
-        private let presentationCornerRadius: CGFloat = 8
-        
-        private let viewModel: CommentEditable
-        
-        private var updatingButtonDisabled: Bool {
-            commentTextField.isEmpty || viewModel.isUpdatingProcessing
-        }
-        
-        fileprivate init(
-            _ sheetType: Binding<SheetType?>,
-            _ viewModel: CommentEditable,
-            _ comment: Comment
-        ) {
-            self._sheetType = sheetType
-            self.viewModel = viewModel
-            self.comment = comment
-        }
-        
-        var body: some View {
-            VStack(spacing: 20) {
-                HStack {
-                    Text(headerTitle)
-                        .whereFont(.subtitle18semibold)
-                        .foregroundStyle(.where(.gray800))
-                    
-                    Spacer()
-                    
-                    Button {
-                        onDismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .foregroundStyle(.where(.gray800))
-                    }
-                }
-                .padding(.top)
-                
-                TextField(text: $commentTextField) {
-                    Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
-                        .whereFont(.body16regular)
-                }
-                
-                Spacer()
-                
-                HStack(spacing: 12) {
-                    Button {
-                        onDismiss()
-                    } label: {
-                        Text("취소")
-                    }
-                    .whereFont(.body16medium)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color(hex: 0x4B5563))
                     .background(
                         RoundedRectangle(cornerRadius: 16)
                             .fill(Color(hex: 0xF3F4F6))
                     )
-                    
+                }
+                
+            }
+            .presentationDetents([.fraction(0.2)])
+        }
+        
+        var inputComment: some View {
+            VStack(alignment: .leading) {
+                TextField(text: $text) {
+                    Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
+                        .whereFont(.body16regular)
+                }
+                .focused($textFieldFocuseState, equals: editStep)
+                
+                Spacer()
+                HStack(alignment: .center) {
                     Button {
-                        viewModel.editComment(commentTextField)
+                        sheetType = .none
                     } label: {
-                        if viewModel.isUpdatingProcessing {
-                           ProgressView()
-                        } else {
-                            Text("확인")
-                        }
+                        Text("취소")
+                            .whereFont(.body16regular)
+                            .foregroundStyle(.where(hex: 0x4B5563))
+                            .frame(width: 169, height: 59)
                     }
-                    .whereFont(.body16medium)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(.white)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(hex: 0xF3F4F6))
+                    )
+                    Spacer()
+                    Button {
+                        //TODO: 뷰모델 연결(코멘트 수정)
+                    } label: {
+                        Text("수정")
+                            .whereFont(.body16regular)
+                            .foregroundStyle(.where(hex: 0xFFFFFF))
+                            .frame(width: 169, height: 59)
+                    }
                     .background(
                         RoundedRectangle(cornerRadius: 16)
                             .fill(.accent)
                     )
-                    .disabled(updatingButtonDisabled)
                 }
             }
-            .padding()
             .onAppear {
-                commentTextField = comment.description
-                commentFieldFocused = true
+                textFieldFocuseState = editStep
             }
-            .onChange(of: viewModel.isUpdatingProcessing, onCommentUpdated)
-            .presentationCornerRadius(presentationCornerRadius)
-            .presentationDragIndicator(.hidden)
-            .interactiveDismissDisabled()
-            .presentationDetents(commentFieldFocused ? [.fraction(0.2)] : [.medium])
-        }
-        
-        private func onCommentUpdated(_ : Bool, _ isDone: Bool) {
-            guard isDone else { return }
-            onDismiss()
-        }
-        
-        private func onDismiss() {
-            commentFieldFocused = false
-            sheetType = nil
-            commentTextField.removeAll()
+            .presentationDetents(textFieldFocuseState == nil ? [.medium] : [.fraction(0.2)], selection: $detent)
         }
     }
 }
