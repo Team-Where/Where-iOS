@@ -123,8 +123,11 @@ extension PlaceCore: PlaceCoreProtocol {
     }
     
     func readSpecificPlace(id: UInt64) -> AnyPublisher<[UInt64: Comment], PlaceCoreError> {
+        guard let userID = currentUserID else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
+        }
         return apiService
-            .requestPublisher(Endpoint.readComments(placeID: id), ReadCommentsDTO.Response.self)
+            .requestPublisher(Endpoint.readComments(placeID: id, userID: userID), ReadCommentsDTO.Response.self)
             .mapError { PlaceCoreError.networkingError($0)}
             .map { response in
                 return response
