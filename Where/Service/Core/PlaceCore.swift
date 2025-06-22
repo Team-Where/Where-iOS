@@ -302,6 +302,5 @@ extension PlaceCore: PlaceMediationProtocol {
     func userDidLogout() {
         currentUserID = nil
         placesSubject.send([:])
-        commentsSubject.send([:])
     }
 }
