@@ -17,8 +17,14 @@ final class EditInquiryViewModel {
     
     var currentImageData: Data? { imageDatas[selectedIndex] }
     
+    var editInquiryCompletionPublisher: AnyPublisher<Bool, Never> { editInquiryCompletionSubject.eraseToAnyPublisher() }
+    
+    private(set) var isProcessing: Bool = false
+    
+    private let editInquiryCompletionSubject = PassthroughSubject<Bool, Never>()
+    
     private let supportCore: SupportCoreProtocol
-    private let cancellbleBag = CancellableBag()
+    private let cancellableBag = CancellableBag()
     
     init(resolver: Resolver) {
         self.supportCore = resolver.resolve(SupportCoreProtocol.self)!
@@ -37,5 +43,22 @@ extension EditInquiryViewModel {
 //    
     func clearImageData() {
         imageDatas[selectedIndex] = nil
+    }
+    
+    func createInquiry(title: String, content: String) {
+        isProcessing = true
+        supportCore.createInquiry(title: title, content: content, images: imageDatas)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                self?.isProcessing = false
+                
+                switch completion {
+                case .finished:
+                    self?.editInquiryCompletionSubject.send(true)
+                case .failure:
+                    self?.editInquiryCompletionSubject.send(false)
+                }
+            } receiveValue: { _ in }
+            .store(in: cancellableBag, key: #function)
     }
 }

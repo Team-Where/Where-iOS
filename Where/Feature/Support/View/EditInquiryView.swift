@@ -11,13 +11,15 @@ import PhotosUI
 import UniformTypeIdentifiers
 
 struct EditInquiryView: View {
+    @Environment(\.dismiss) private var dismiss
     @FocusState private var isContentFieldFocused
+    @State private var isFloaterPresented: Bool = false
     @State private var isPopupPresented: Bool = false
     @State private var titleFieldText = String()
     @State private var contentFieldText = String()
     
     private var disabled: Bool {
-        titleFieldText.isEmpty || contentFieldText.isEmpty
+        titleFieldText.isEmpty || contentFieldText.isEmpty || viewModel.isProcessing
     }
     
     private let viewModel: EditInquiryViewModel
@@ -37,7 +39,7 @@ struct EditInquiryView: View {
             Spacer()
             
             Button {
-                // TODO: 문의 작성/수정 기능 연결 (WIP)
+                viewModel.createInquiry(title: titleFieldText, content: contentFieldText)
             } label: {
                 Text("등록")
                     .whereFont(.body16medium)
@@ -60,6 +62,8 @@ struct EditInquiryView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
+        .floater($isFloaterPresented, title: "잠시 후에 다시 시도해주세요.")
+        .padding()
         .onTapGesture {
             isContentFieldFocused = false
         }
@@ -69,6 +73,12 @@ struct EditInquiryView: View {
         .onAppear {
             titleFieldText = inquiry?.title ?? String()
             contentFieldText = inquiry?.title ?? String()
+        }
+        .onReceive(viewModel.editInquiryCompletionPublisher) { isSuccess in
+            guard isSuccess else {
+                return isFloaterPresented = true
+            }
+            dismiss()
         }
     }
     
@@ -97,7 +107,6 @@ struct EditInquiryView: View {
                     .padding(.trailing, 30)
             }
         }
-        .padding()
         .padding(.top, 40)
     }
 }
@@ -171,7 +180,6 @@ extension EditInquiryView {
                         .foregroundStyle(.where(.gray600))
                 }
             }
-            .padding()
         }
         
         @ViewBuilder private func cell(_ index: Int) -> some View {
@@ -290,7 +298,6 @@ extension EditInquiryView {
                         isPopupPresented = false
                     }
             }
-            .padding()
         }
     }
 }
