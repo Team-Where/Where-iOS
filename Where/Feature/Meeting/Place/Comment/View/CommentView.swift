@@ -118,7 +118,7 @@ enum EditStep {
 extension PlaceDetailView {
     struct CommentSheet: View {
         @State private var text: String
-        @State private var detent: PresentationDetent = .fraction(0.2)
+        @State private var detent: PresentationDetent = .fraction(0)
         @Binding private var editStep: EditStep?
         @Binding private var sheetType: SheetType?
         @FocusState private var textFieldFocuseState: EditStep?
@@ -163,8 +163,7 @@ extension PlaceDetailView {
                 
                 HStack(alignment: .center) {
                     Button {
-                        //TODO: 뷰모델 연결(코멘트 삭제)
-                        
+                        viewModel.deleteComment()
                     } label: {
                         Text("삭제")
                             .whereFont(.body16regular)
@@ -217,9 +216,15 @@ extension PlaceDetailView {
                     )
                     Spacer()
                     Button {
-                        //TODO: 뷰모델 연결(코멘트 수정)
+                        switch editStep {
+                        case .create:
+                            viewModel.createComment(text)
+                        case .modify:
+                            viewModel.updateComment(text)
+                        default: return
+                        }
                     } label: {
-                        Text("수정")
+                        Text("확인")
                             .whereFont(.body16regular)
                             .foregroundStyle(.where(hex: 0xFFFFFF))
                             .frame(width: 169, height: 59)
