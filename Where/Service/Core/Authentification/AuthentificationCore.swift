@@ -142,7 +142,6 @@ final class AuthentificationCore {
                 switch state {
                 case .loginCompleted(let user):
                     UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
-                    UserDefaults.standard.setValue(self?._isSocialUser, forKey: AppStorageKey.isSocialUser)
                     self?.mediator?.notify(event: .userDidLogin(user: user))
                     
                 case .registrationNeeded:
@@ -156,6 +155,12 @@ final class AuthentificationCore {
                 }
             }
             .store(in: cancellableBag, key: "AuthentificationStateSubject")
+        
+        isSocialUserSubject
+            .sink { isSocialUser in
+                UserDefaults.standard.setValue(isSocialUser, forKey: AppStorageKey.isSocialUser)
+            }
+            .store(in: cancellableBag, key: "IsSocialUserSubject")
     }
 }
 
@@ -347,7 +352,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .handleEvents(receiveCompletion: { [weak self] completion in
                 guard case .finished = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
-                self?.isSocialUserSubject.send(true)
+                self?.isSocialUserSubject.send(false)
             })
             .eraseToAnyPublisher()
     }
