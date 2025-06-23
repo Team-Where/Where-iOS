@@ -17,6 +17,9 @@ protocol AuthentificationCoreProtocol: CoreProtocol {
     /// 사용자 정보
     var currentUser: AnyPublisher<User?, Never> { get }
     
+    /// 소셜회원 여부
+    var isSocialUser: AnyPublisher<Bool, Never> { get }
+    
     /// Redirection URL Handling
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL)
     
@@ -116,6 +119,7 @@ final class AuthentificationCore {
     
     private var fcmToken: String?
     
+    private let isSocialUserSubject = CurrentValueSubject<Bool, Never>(UserDefaults.standard.bool(forKey: AppStorageKey.isSocialUser))
     private let authentificationStateSubject = CurrentValueSubject<AuthentificationState?, Never>(nil)
     
     private let apiService: APIServable
@@ -138,6 +142,7 @@ final class AuthentificationCore {
                 switch state {
                 case .loginCompleted(let user):
                     UserDefaults.standard.setValue(String(user.id), forKey: AppStorageKey.currentUserID)
+                    UserDefaults.standard.setValue(self?._isSocialUser, forKey: AppStorageKey.isSocialUser)
                     self?.mediator?.notify(event: .userDidLogin(user: user))
                     
                 case .registrationNeeded:
@@ -218,6 +223,10 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .eraseToAnyPublisher()
     }
     
+    var isSocialUser: AnyPublisher<Bool, Never> {
+        isSocialUserSubject.eraseToAnyPublisher()
+    }
+    
     func handleOpenURL(_ provider: AuthentificationProvider, _ url: URL) {
         strategyContext.handleOpenURL(url)
     }
@@ -238,6 +247,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .sink { [weak self] completion in
                 guard case .failure = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
+                self?.isSocialUserSubject.send(true)
             } receiveValue: { [weak self] response in
                 if response.isRegistrationNeeded {
                     // 프로필 설정 필요
@@ -267,7 +277,8 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             }
             .sink { [weak self] completion in
                 switch completion {
-                case .finished: break
+                case .finished:
+                    self?.isSocialUserSubject.send(true)
                 case .failure:
                     self?.authentificationStateSubject.send(.loginNeeded)
                 }
@@ -299,7 +310,8 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             }
             .sink { [weak self] completion in
                 switch completion {
-                case .finished: break
+                case .finished:
+                    self?.isSocialUserSubject.send(true)
                 case .failure:
                     self?.authentificationStateSubject.send(.loginNeeded)
                 }
@@ -323,6 +335,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             }, receiveCompletion: { [weak self] completion in
                 guard case .failure = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
+                self?.isSocialUserSubject.send(true)
             })
             .map { _ in }
             .mapError { AuthentificationCoreError.networkRequestFailed($0) }
@@ -334,6 +347,7 @@ extension AuthentificationCore: AuthentificationCoreProtocol {
             .handleEvents(receiveCompletion: { [weak self] completion in
                 guard case .finished = completion else { return }
                 self?.authentificationStateSubject.send(.loginNeeded)
+                self?.isSocialUserSubject.send(true)
             })
             .eraseToAnyPublisher()
     }

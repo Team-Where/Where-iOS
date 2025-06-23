@@ -14,6 +14,7 @@ import Combine
 final class PreferenceViewModel {
     private(set) var versionNotice = String()
     private(set) var isLoginNeeded: Bool = false
+    private(set) var isSocialUser: Bool = false
     
     private let authCore: AuthentificationCoreProtocol
     private let supportCore: SupportCoreProtocol
@@ -31,6 +32,12 @@ final class PreferenceViewModel {
                 self?.isLoginNeeded = user == nil
             }
             .store(in: cancellableBag, key: "CurrentUser")
+        
+        authCore.isSocialUser
+            .sink { [weak self] in
+                self?.isSocialUser = $0
+            }
+            .store(in: cancellableBag, key: "IsSocialUser")
         
         supportCore.latestVersion
             .sink { [weak self] notice in

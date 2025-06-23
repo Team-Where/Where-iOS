@@ -12,5 +12,6 @@ struct AppStorageKey {
     static let isOnboardingNeeded = "isOnboardingNeeded"
     static let shouldDisplayNotifications = "shouldDisplayNotifications"
     static let currentUserID = "currentUserID"
+    static let isSocialUser = "isSocialUser"
     static let latestVersion = "latestVersion"
 }

@@ -25,25 +25,27 @@ struct PreferenceView: View {
         ScrollView(.vertical) {
             LazyVStack {
                 Section {
-                    NavigationLink {
-                        AdjustPasswordView()
-                    } label: {
-                        HStack {
-                            Text("비밀번호 변경")
-                                .whereFont(.body16medium)
-                                .foregroundStyle(.black)
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 12)
-                                .foregroundStyle(Color(hex: 0xADB58D))
+                    if viewModel.isSocialUser == false {
+                        NavigationLink {
+                            AdjustPasswordView()
+                        } label: {
+                            HStack {
+                                Text("비밀번호 변경")
+                                    .whereFont(.body16medium)
+                                    .foregroundStyle(.black)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 12)
+                                    .foregroundStyle(Color(hex: 0xADB58D))
+                            }
                         }
+                        .frame(height: 50)
+                        .disabled(viewModel.isLoginNeeded)
                     }
-                    .frame(height: 50)
-                    .disabled(viewModel.isLoginNeeded)
                     
                     Button {
                         withAnimation { isPopupPresented = true }
