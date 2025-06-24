@@ -200,9 +200,15 @@ extension PlaceDetailView {
         
         var inputComment: some View {
             VStack(alignment: .leading) {
-                TextField(text: $text) {
+                TextField(text: $text, axis: .vertical) {
                     Text("친구들이 볼 수 있도록 코멘트를 달아보세요. (최대 50자)")
                         .whereFont(.body16regular)
+                }
+                .lineLimit(2)
+                .onChange(of: text) { _, newValue in
+                    if newValue.count > 50 {
+                        text = String(newValue.prefix(50))
+                    }
                 }
                 .focused($textFieldFocuseState, equals: editStep)
                 
