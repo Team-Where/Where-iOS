@@ -73,6 +73,25 @@ extension PlaceDetailViewModel {
 
     }
     
+    func tapPlaceLike(id: UInt64) {
+        placeCore.togglePlaceLike(id: id)
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    return
+                case .failure(let error):
+                    #if DEBUG
+                    print("\(#file)-----\(#function)")
+                    print("\(error.localizedDescription)")
+                    #endif
+                }
+            } receiveValue: { _ in
+                            
+            }
+            .store(in: cancellableBag, key: #function)
+
+    }
     var sheetPublisher: AnyPublisher<CommentSheetType?, Never> {
         sheetTypeSubject.eraseToAnyPublisher()
     }
