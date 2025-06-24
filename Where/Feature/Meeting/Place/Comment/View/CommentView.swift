@@ -143,6 +143,12 @@ extension PlaceDetailView {
                     Text(editStep?.title ?? "")
                         .whereFont(.subtitle18semibold)
                     Spacer()
+                    
+                    Button {
+                        sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
                 }
                 .padding(.vertical)
                 switch editStep {
@@ -203,7 +209,7 @@ extension PlaceDetailView {
                 Spacer()
                 HStack(alignment: .center) {
                     Button {
-                        sheetType = .none
+                        editStep = .myComment
                     } label: {
                         Text("취소")
                             .whereFont(.body16regular)
@@ -236,6 +242,7 @@ extension PlaceDetailView {
                 }
             }
             .presentationDetents(textFieldFocuseState == nil ? [.medium] : [.fraction(0.2)])
+            .interactiveDismissDisabled()
         }
     }
 }
