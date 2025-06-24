@@ -235,10 +235,7 @@ extension PlaceDetailView {
                     )
                 }
             }
-            .onAppear {
-                textFieldFocuseState = editStep
-            }
-            .presentationDetents(textFieldFocuseState == nil ? [.medium] : [.fraction(0.2)], selection: $detent)
+            .presentationDetents(textFieldFocuseState == nil ? [.medium] : [.fraction(0.2)])
         }
     }
 }
