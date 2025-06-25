@@ -23,7 +23,7 @@ extension ReadCommentsDTO {
         enum CodingKeys: String, CodingKey {
             case id, description, createdAt
             case placeID = "placeId"
-            case isMyComment = "isMine"
+            case isMyComment = "mine"
         }
         
         func toEntity() -> Comment {

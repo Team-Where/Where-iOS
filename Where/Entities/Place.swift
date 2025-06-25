@@ -9,7 +9,7 @@ import Foundation
 
 /// 모임 장소
 struct Place: Identifiable {
-    /// 모임 고유 식별자
+    /// 장소 고유 식별자
     let id: UInt64
     /// 참여 중인 모임 식별자
     let meetingId: UInt64
