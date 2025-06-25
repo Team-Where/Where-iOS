@@ -128,7 +128,7 @@ extension NotificationCore: NotificationCoreProtocol {
         guard let payload = payload as? [String: String] else {
             return print("알림 캐스팅 실패")
         }
-        print(payload)
+        print("알림 수신됨! / payload\n: \(payload)")
     }
     
     func setFCMToken(_ fcmToken: String) {
