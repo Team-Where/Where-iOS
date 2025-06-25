@@ -22,7 +22,7 @@ final class CreateMeetingViewModel: ObservableObject {
     @Published private(set) var selectedParticipantIDs = Set<UInt64>()
     
     let cancellableBag = CancellableBag()
-    var disabled: Bool { titleFieldText.isEmpty }
+    var disabled: Bool { titleFieldText.isEmpty || descriptionFieldText.isEmpty }
     var viewRoutingPublisher: AnyPublisher<(sheet: MainSheetType?, cover: MainFullScreenCoverType), Never> { viewRoutingSubject.eraseToAnyPublisher() }
     
     private let communityCore: CommunityCoreProtocol
