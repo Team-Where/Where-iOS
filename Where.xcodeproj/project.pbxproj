@@ -40,7 +40,6 @@
 		04D547882DDB66A9003EEC85 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546A12DDB66A9003EEC85 /* CommentView.swift */; };
 		04D547892DDB66A9003EEC85 /* CancellableBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546602DDB66A9003EEC85 /* CancellableBag.swift */; };
 		04D5478A2DDB66A9003EEC85 /* UnregisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546C02DDB66A9003EEC85 /* UnregisterViewModel.swift */; };
-		04D5478B2DDB66A9003EEC85 /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546A32DDB66A9003EEC85 /* CommentViewModel.swift */; };
 		04D5478C2DDB66A9003EEC85 /* HistoryReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546732DDB66A9003EEC85 /* HistoryReminderView.swift */; };
 		04D5478D2DDB66A9003EEC85 /* EditProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546D22DDB66A9003EEC85 /* EditProfileViewModel.swift */; };
 		04D5478E2DDB66A9003EEC85 /* InquiryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D546DE2DDB66A9003EEC85 /* InquiryView.swift */; };
@@ -308,7 +307,6 @@
 		04D5469C2DDB66A9003EEC85 /* InviteFriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsView.swift; sourceTree = "<group>"; };
 		04D5469E2DDB66A9003EEC85 /* InviteFriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewModel.swift; sourceTree = "<group>"; };
 		04D546A12DDB66A9003EEC85 /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
-		04D546A32DDB66A9003EEC85 /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		04D546A62DDB66A9003EEC85 /* PlaceDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDelete.swift; sourceTree = "<group>"; };
 		04D546A72DDB66A9003EEC85 /* PlaceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailView.swift; sourceTree = "<group>"; };
 		04D546A92DDB66A9003EEC85 /* PlaceDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDetailViewModel.swift; sourceTree = "<group>"; };
@@ -816,19 +814,10 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		04D546A42DDB66A9003EEC85 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				04D546A32DDB66A9003EEC85 /* CommentViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
 		04D546A52DDB66A9003EEC85 /* Comment */ = {
 			isa = PBXGroup;
 			children = (
 				04D546A22DDB66A9003EEC85 /* View */,
-				04D546A42DDB66A9003EEC85 /* ViewModel */,
 			);
 			path = Comment;
 			sourceTree = "<group>";
@@ -1607,7 +1596,6 @@
 				04D547882DDB66A9003EEC85 /* CommentView.swift in Sources */,
 				04D547892DDB66A9003EEC85 /* CancellableBag.swift in Sources */,
 				04D5478A2DDB66A9003EEC85 /* UnregisterViewModel.swift in Sources */,
-				04D5478B2DDB66A9003EEC85 /* CommentViewModel.swift in Sources */,
 				04D5478C2DDB66A9003EEC85 /* HistoryReminderView.swift in Sources */,
 				04D5478D2DDB66A9003EEC85 /* EditProfileViewModel.swift in Sources */,
 				04D5478E2DDB66A9003EEC85 /* InquiryView.swift in Sources */,

@@ -108,7 +108,7 @@ enum Endpoint {
     /// 장소 코멘트 삭제
     case deleteComment(dto: DeletePlaceDTO.Request)
     /// 장소 코멘트 조회
-    case readComments(placeID: UInt64)
+    case readComments(placeID: UInt64, userID: UInt64)
     
     // MARK: Document Related
     /// 1:1문의 조회 - 일반 사용자
@@ -144,7 +144,7 @@ enum Endpoint {
     
     var isTokenRequired: Bool {
         switch self {
-        case .readAnnouncements, .readFAQs, .checkEmailDuplication, .requestAuthCode, .verifyAuthCode, .checkLatestVersion, .register, .login:
+        case .readAnnouncements, .readFAQs, .checkEmailDuplication, .requestAuthCode, .verifyAuthCode, .checkLatestVersion, .register, .login, .readComments, .createComment:
             return false
         default:
             return true
@@ -242,10 +242,8 @@ extension Endpoint: TargetType {
             return "\(basePath)/like"
             
             // MARK: - Place Comment
-        case .createComment, .updateComment, .deleteComment:
+        case .createComment, .updateComment, .deleteComment, .readComments:
             return "\(basePath)/comment"
-        case .readComments(let placeID):
-            return "\(basePath)/\(placeID)"
             
             // MARK: -  Document Related
         case .readUserInquiries(let userID):
@@ -378,8 +376,9 @@ extension Endpoint: TargetType {
             return .requestJSONEncodable(dto)
         case .deleteComment(let dto):
             return .requestJSONEncodable(dto)
-        case .readComments:
-            return .requestPlain
+        case .readComments(let placeID, let userID):
+            let params = ["placeId": placeID, "userId": userID]
+            return .requestParameters(parameters: params, encoding: URLEncoding.default)
         case .readUserInquiries:
             return .requestPlain
         case .createUserInquiry(let inquiryData, let imageDatas):

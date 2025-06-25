@@ -10,8 +10,9 @@ import Swinject
 
 struct PlaceDetailView: View {
     @Environment(\.openURL) private var openURL
-    @State private var isDeletionSheetPresented = false
+    @State private var sheetType: SheetType?
     @State private var isTipPresented = false
+    @State private var commentEditStep: EditStep?
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing, backgroundColor: .accent, cornerRadius: 4)
     private let place: Place
@@ -51,10 +52,11 @@ struct PlaceDetailView: View {
                     .padding(.vertical, 32)
             }
             
-            CommentView(place: place, resolver: resolver)
+            CommentView(sheetType: $sheetType, commentEditStep: $commentEditStep, viewModel: viewModel,place: place)
         }
         .scrollIndicators(.never)
         .onAppear {
+            viewModel.onApear(place.id)
             isTipPresented = place.pickedState == .unpicked
             
             guard isTipPresented == true else { return }
@@ -62,22 +64,45 @@ struct PlaceDetailView: View {
                 self.isTipPresented = false
             }
         }
+        .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 BackButton()
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    isDeletionSheetPresented = true
+                    sheetType = .placeDelete
                 } label: {
                     Text("삭제")
                         .whereFont(.body16medium)
                 }
             }
         }
-        .sheet(isPresented: $isDeletionSheetPresented) {
-            PlaceDelete(isProcessing: viewModel.isDeletionProcessing) { viewModel.deletePlace(id: place.id) }
+        .sheet(item: $sheetType) { type in
+            switch type {
+            case .placeDelete:
+                PlaceDelete(isProcessing: viewModel.isDeletionProcessing) {
+                    viewModel.deletePlace(id: place.id)
+                }
+            case .comment(let text):
+                CommentSheet(text: text, editStep: $commentEditStep, sheetType: $sheetType, viewModel: viewModel)
+            }
         }
+        .onReceive(viewModel.sheetPublisher) {
+            sheetType = $0
+        }
+    }
+    
+    enum SheetType: Identifiable {
+        var id: Int {
+            switch self {
+            case .placeDelete: 0
+            case .comment: 1
+            }
+        }
+        
+        case placeDelete
+        case comment(text: String?)
     }
     
     @ViewBuilder private func placeInfoArea(_ place: Place) -> some View {
@@ -120,7 +145,7 @@ struct PlaceDetailView: View {
                 HStack(spacing: 4) {
                     Image(.bubbleIcon)
                     
-                    Text(viewModel.commentCount > 0 ? "코멘트 \(viewModel.commentCount)" : "코멘트")
+                    Text(viewModel.comments.count > 0 ? "코멘트 \(viewModel.comments.count)" : "코멘트")
                 }
                 .foregroundStyle(.where(hex: 0x868E96))
                 
@@ -130,6 +155,13 @@ struct PlaceDetailView: View {
                     Text(place.likesCount > 0 ? "좋아요 \(place.likesCount)" : "좋아요")
                 }
                 .foregroundStyle(place.isLikedByMe ? .accent : .where(hex: 0x868E96))
+                .onTapGesture {
+                    guard !place.isLikedByMe else {
+                        //TODO: 누른 상황일 때 좋아요 취소
+                        return
+                    }
+                    viewModel.tapPlaceLike(id: place.id)
+                }
             }
             .whereFont(.body14medium)
         }

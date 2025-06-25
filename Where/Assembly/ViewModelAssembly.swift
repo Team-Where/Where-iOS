@@ -59,10 +59,6 @@ struct ViewModelAssembly: @preconcurrency Assembly {
             return PlaceDetailViewModel(resolver: resolver)
         }
         
-        container.register(CommentViewModel.self) { resolver in
-            return CommentViewModel(resolver: resolver)
-        }
-        
         container.register(UnregisterViewModel.self) { resolver in
             return UnregisterViewModel(resolver: resolver)
         }
