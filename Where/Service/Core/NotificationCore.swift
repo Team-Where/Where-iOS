@@ -20,11 +20,6 @@ protocol NotificationCoreProtocol: CoreProtocol {
     
     /// 앱 실행 시 FCM 토큰 설정
     func setFCMToken(_ fcmToken: String?)
-    
-    /// FCM 토큰 등록
-    ///
-    /// - Note: 로그아웃 등으로 인해 서버에 저장된 FCM Token을 지우고 알림 수신되지 않도록 하려면 `nil`을 등록해야 합니다.
-    func registerFCMToken(_ fcmToken: String?)
 }
 
 protocol NotificationMediationProtocol {
@@ -74,6 +69,25 @@ final class NotificationCore {
             }
             .store(in: cancellableBag, key: "NotificationsSubject")
     }
+    
+    /// FCM 토큰 등록
+    ///
+    /// - Note: 로그아웃 등으로 인해 서버에 저장된 FCM Token을 지우고 알림 수신되지 않도록 하려면 `nil`을 등록해야 합니다.
+    private func registerFCMToken(_ fcmToken: String?) {
+        self.fcmToken = fcmToken
+        print("FCM 토큰 등록 요청!!!!!!")
+        guard let userID = currentUserID else { return }
+        
+        let dto = FCMRegisterDTO.Request(fcmToken: fcmToken)
+        apiService.requestVoidPublisher(Endpoint.registerFCMToken(userID: userID, dto: dto))
+            .sink { completion in
+                switch completion {
+                case .finished: print("FCM Token 등록 완료: \(fcmToken ?? "null")")
+                case .failure(let error): print("FCM Token 등록 중 에러: \(error)")
+                }
+            } receiveValue: { _ in }
+            .store(in: cancellableBag, key: #function)
+    }
 }
 
 // MARK: - NotificationCoreProtocol Conformation
@@ -97,25 +111,17 @@ extension NotificationCore: NotificationCoreProtocol {
     }
     
     func handleReceivedNotificationPayload(_ payload: [AnyHashable: Any]) {
+        guard let payload = payload as? [String: String] else {
+            return print("알림 캐스팅 실패")
+        }
         print(payload)
     }
     
     func setFCMToken(_ fcmToken: String?) {
         self.fcmToken = fcmToken
-    }
-    
-    func registerFCMToken(_ fcmToken: String?) {
-        guard let userID = currentUserID else { return }
         
-        let dto = FCMRegisterDTO.Request(fcmToken: fcmToken)
-        apiService.requestVoidPublisher(Endpoint.registerFCMToken(userID: userID, dto: dto))
-            .sink { completion in
-                switch completion {
-                case .finished: print("FCM Token 등록 완료: \(fcmToken ?? "")")
-                case .failure(let error): print("FCM Token 등록 중 에러: \(error)")
-                }
-            } receiveValue: { _ in }
-            .store(in: cancellableBag, key: #function)
+        guard currentUserID != nil else { return }
+        registerFCMToken(fcmToken)
     }
 }
 
