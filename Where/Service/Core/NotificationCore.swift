@@ -19,7 +19,7 @@ protocol NotificationCoreProtocol: CoreProtocol {
     func handleReceivedNotificationPayload(_ payload: [AnyHashable: Any])
     
     /// 앱 실행 시 FCM 토큰 설정
-    func setFCMToken(_ fcmToken: String?)
+    func setFCMToken(_ fcmToken: String)
 }
 
 protocol NotificationMediationProtocol {
@@ -71,9 +71,7 @@ final class NotificationCore {
     }
     
     /// FCM 토큰 등록
-    ///
-    /// - Note: 로그아웃 등으로 인해 서버에 저장된 FCM Token을 지우고 알림 수신되지 않도록 하려면 `nil`을 등록해야 합니다.
-    private func registerFCMToken(_ fcmToken: String?) {
+    private func registerFCMToken(_ fcmToken: String) {
         self.fcmToken = fcmToken
         print("FCM 토큰 등록 요청!!!!!!")
         guard let userID = currentUserID else { return }
@@ -82,8 +80,24 @@ final class NotificationCore {
         apiService.requestVoidPublisher(Endpoint.registerFCMToken(userID: userID, dto: dto))
             .sink { completion in
                 switch completion {
-                case .finished: print("FCM Token 등록 완료: \(fcmToken ?? "null")")
+                case .finished: print("FCM Token 등록 완료: \(fcmToken)")
                 case .failure(let error): print("FCM Token 등록 중 에러: \(error)")
+                }
+            } receiveValue: { _ in }
+            .store(in: cancellableBag, key: #function)
+    }
+    
+    /// FCM 토큰 삭제
+    private func unregisterFCMToken() {
+        print("FCM 토큰 삭제 요청!!!!!!")
+        guard let userID = currentUserID else { return }
+        // Note: FCMRegisterDTO를 이용해 nil을 담아 요청하면 FCM 토큰 삭제하도록 동작함
+        let dto = FCMRegisterDTO.Request(fcmToken: nil)
+        apiService.requestVoidPublisher(Endpoint.registerFCMToken(userID: userID, dto: dto))
+            .sink { completion in
+                switch completion {
+                case .finished: print("FCM Token 삭제 완료")
+                case .failure(let error): print("FCM Token 삭제 중 에러: \(error)")
                 }
             } receiveValue: { _ in }
             .store(in: cancellableBag, key: #function)
@@ -117,7 +131,7 @@ extension NotificationCore: NotificationCoreProtocol {
         print(payload)
     }
     
-    func setFCMToken(_ fcmToken: String?) {
+    func setFCMToken(_ fcmToken: String) {
         self.fcmToken = fcmToken
         
         guard currentUserID != nil else { return }
@@ -129,12 +143,14 @@ extension NotificationCore: NotificationCoreProtocol {
 extension NotificationCore: NotificationMediationProtocol {
     func setCurrentUserID(_ id: UInt64?) {
         currentUserID = id
+        
+        guard let fcmToken = fcmToken else { return }
         registerFCMToken(fcmToken)
     }
     
     func userDidLogout() {
+        unregisterFCMToken()
         currentUserID = nil
-        registerFCMToken(nil)
         notificationsSubject.send([:])
     }
     
