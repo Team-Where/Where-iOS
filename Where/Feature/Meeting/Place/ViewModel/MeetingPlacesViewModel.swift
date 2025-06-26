@@ -13,6 +13,7 @@ import Swinject
 final class MeetingPlacesViewModel {
     private(set) var pickedPlaces = [Place]()
     private(set) var places = [Place]()
+    private(set) var placesSortedByLikes = [[Place]]()
     private(set) var sortOption: PlaceSortOption = .all
     private var placesDict = [UInt64: Place]()
     
@@ -39,17 +40,15 @@ final class MeetingPlacesViewModel {
                 self?.pickedPlaces = places.values
                     .filter { $0.pickedState == .picked }
                     .sorted { $0.likesCount > $1.likesCount }
-                self?.placesDict = places
                 
-                guard let sortOption = self?.sortOption else { return }
-                self?.changeSortOption(option: sortOption)
+                self?.places = self?.sortByAll(places) ?? []
+                self?.placesSortedByLikes = self?.sortByLikesDescending(places) ?? []
             }
             .store(in: cancellableBag, key: "Places")
     }
     
-    private func sortByAll() {
-        sortOption = .all
-        places = placesDict.values.sorted {
+    private func sortByAll(_ places: [UInt64: Place]) -> [Place] {
+        places.values.sorted {
             if $0.isSimulaneouslyShared != $1.isSimulaneouslyShared {
                 return $0.isSimulaneouslyShared
             }
@@ -61,31 +60,42 @@ final class MeetingPlacesViewModel {
         }
     }
     
-    private func sortByLikesDescending() {
-        sortOption = .byLikesDescending
-        let sortedByLikes = placesDict.values.sorted { $0.likesCount > $1.likesCount }
+    private func sortByLikesDescending(_ places: [UInt64: Place]) -> [[Place]] {
+        guard places.isEmpty == false else { return [] }
         
-        guard sortedByLikes.count > 3 else {
-            return places = sortedByLikes
+        let sortedPlaces = places.values.sorted {
+            guard $0.likesCount == $1.likesCount else {
+                return $0.likesCount > $1.likesCount
+            }
+            
+            guard $0.isSimulaneouslyShared == $1.isSimulaneouslyShared else {
+                return $0.isSimulaneouslyShared
+            }
+            
+            return $0.name < $1.name
         }
         
-        var uniqueLikesCounts = [Int]()
-        uniqueLikesCounts.reserveCapacity(3)
+        var result: [[Place]] = []
+        var currentGroup: [Place] = [sortedPlaces[0]]
+        var previousLikes = sortedPlaces[0].likesCount
         
-        for place in sortedByLikes {
-            if place.likesCount != uniqueLikesCounts.last {
-                uniqueLikesCounts.append(place.likesCount)
-                
-                if uniqueLikesCounts.count == 3 { break }
+        for place in sortedPlaces.dropFirst() {
+            guard result.count < 3 else { break }
+            
+            if place.likesCount == previousLikes {
+                currentGroup.append(place)
+            } else {
+                result.append(currentGroup)
+                currentGroup = [place]
+                previousLikes = place.likesCount
             }
         }
         
-        let top3UniqueLikesSet = Set(uniqueLikesCounts)
-        let top3Places = sortedByLikes.filter {
-            top3UniqueLikesSet.contains($0.likesCount)
+        if currentGroup.isEmpty == false && result.count < 3 {
+            result.append(currentGroup)
         }
         
-        places = top3Places
+        return result
     }
 }
 
@@ -117,9 +127,6 @@ extension MeetingPlacesViewModel {
 // MARK: - Interfaces
 extension MeetingPlacesViewModel {
     func changeSortOption(option: PlaceSortOption) {
-        switch option {
-        case .all: sortByAll()
-        case .byLikesDescending: sortByLikesDescending()
-        }
+        sortOption = option
     }
 }

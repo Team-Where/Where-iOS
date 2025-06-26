@@ -40,7 +40,36 @@ struct MeetingPlacesView: View {
             
             sortOptions
             
-            candidatePlacesList(viewModel.sortOption, places: viewModel.places)
+            Group {
+                if viewModel.places.isEmpty {
+                    VStack {
+                        Spacer()
+                        
+                        Text("아직 공유된 장소가 없어요.")
+                            .whereFont(.body14regular)
+                            .foregroundStyle(.where(.gray700))
+                        
+                        Spacer()
+                    }
+                } else {
+                    ScrollView(.vertical) {
+                        switch viewModel.sortOption {
+                        case .all:
+                            LazyVStack {
+                                ForEach(viewModel.places) { place in
+                                    placeListCell(place)
+                                }
+                            }
+                        case .byLikesDescending:
+                            LazyVStack {
+                                ForEach(viewModel.placesSortedByLikes.indices, id: \.self) { index in
+                                    sectionByLikes(index: index, viewModel.placesSortedByLikes[index])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -159,39 +188,6 @@ struct MeetingPlacesView: View {
         .padding()
     }
     
-    @ViewBuilder private func candidatePlacesList(_ sortOption: PlaceSortOption, places: [Place]) -> some View {
-        Group {
-            if places.isEmpty {
-                VStack {
-                    Spacer()
-                    
-                    Text("아직 공유된 장소가 없어요.")
-                        .whereFont(.body14regular)
-                        .foregroundStyle(.where(.gray700))
-                    
-                    Spacer()
-                }
-            } else {
-                ScrollView(.vertical) {
-                    switch sortOption {
-                    case .all:
-                        LazyVStack {
-                            ForEach(places) { place in
-                                placeListCell(place)
-                            }
-                        }
-                    case .byLikesDescending:
-                        LazyVStack {
-                            ForEach(1...3, id: \.self) { index in
-                                sectionByLikes(index: index, places)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
     @ViewBuilder private func sectionByLikes(index: Int, _ places: [Place]) -> some View {
         Section {
             ForEach(places, id: \.id) { place in
@@ -199,7 +195,7 @@ struct MeetingPlacesView: View {
             }
         } header: {
             VStack {
-                Text("Best \(index)")
+                Text("Best \(index + 1)")
                     .whereFont(.subtitle18semibold)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 6)
