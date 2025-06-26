@@ -159,6 +159,7 @@ private extension FriendsListView {
                 }
                 .padding(.top)
             }
+            .scrollIndicators(.never)
         }
         
         @ViewBuilder private func sectionHeader(type: SectionType, count: Int) -> some View {
