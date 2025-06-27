@@ -31,7 +31,7 @@ struct CommentView: View {
     
     var body: some View {
         Section {
-            sectionContentArea()
+            commentList(viewModel.comments)
         } header: {
             HStack(spacing: 4) {
                 Text("코멘트")
@@ -42,14 +42,6 @@ struct CommentView: View {
             .whereFont(.body16medium)
         }
         .padding(.horizontal, 20)
-    }
-    
-    @ViewBuilder private func sectionContentArea() -> some View {
-        if viewModel.comments.count == 0 {
-            createCommentButton
-        } else {
-            commentList(viewModel.comments)
-        }
     }
     
     private var createCommentButton: some View {
@@ -76,6 +68,10 @@ struct CommentView: View {
         LazyVStack(alignment: .leading, spacing: 12) {
             ForEach(comments, id: \.self) { comment in
                 commentCell(comment)
+            }
+            
+            if viewModel.comments.contains(where: { $0.isMyComment }) == false {
+                createCommentButton
             }
         }
         .padding(.vertical, 20)
