@@ -52,7 +52,7 @@ struct PlaceDetailView: View {
                     .padding(.vertical, 32)
             }
             
-            CommentView(sheetType: $sheetType, commentEditStep: $commentEditStep, viewModel: viewModel,place: place)
+            CommentView(sheetType: $sheetType, commentEditStep: $commentEditStep, viewModel: viewModel)
         }
         .scrollIndicators(.never)
         .onAppear {

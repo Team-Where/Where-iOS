@@ -17,16 +17,13 @@ struct CommentView: View {
     @Binding private var sheetType: SheetType?
     @Binding private var commentEditStep: EditStep?
     private let viewModel: CommentViewModelType
-    private let place: Place
     
     init(sheetType: Binding<SheetType?>,
          commentEditStep: Binding<EditStep?>,
-         viewModel: CommentViewModelType,
-         place: Place) {
+         viewModel: CommentViewModelType) {
         self._sheetType = sheetType
         self._commentEditStep = commentEditStep
         self.viewModel = viewModel
-        self.place = place
     }
     
     var body: some View {
