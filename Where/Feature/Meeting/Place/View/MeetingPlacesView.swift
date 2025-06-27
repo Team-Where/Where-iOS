@@ -205,7 +205,7 @@ struct MeetingPlacesView: View {
             }
             .foregroundStyle(.accent)
         }
-        .padding([.horizontal, .top])
+        .padding(.top)
     }
     
     @ViewBuilder private func placeListCell(_ place: Place) -> some View {
@@ -298,6 +298,7 @@ struct MeetingPlacesView: View {
                     .strokeBorder(.where(.gray100))
                     .shadow(color: .where(.gray200), radius: 4, y: 4)
             )
+            .padding(.horizontal)
         }
     }
 }
