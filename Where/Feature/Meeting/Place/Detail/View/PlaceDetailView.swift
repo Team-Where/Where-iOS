@@ -150,16 +150,15 @@ struct PlaceDetailView: View {
                 .foregroundStyle(.where(hex: 0x868E96))
                 
                 HStack(spacing: 4) {
-                    Image(systemName: "heart.fill")
-                    
-                    Text(place.likesCount > 0 ? "좋아요 \(place.likesCount)" : "좋아요")
+                    if viewModel.isLikeTogglingProcessing {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "heart.fill")
+                        Text(place.likesCount > 0 ? "좋아요 \(place.likesCount)" : "좋아요")
+                    }
                 }
                 .foregroundStyle(place.isLikedByMe ? .accent : .where(hex: 0x868E96))
                 .onTapGesture {
-                    guard !place.isLikedByMe else {
-                        //TODO: 누른 상황일 때 좋아요 취소
-                        return
-                    }
                     viewModel.tapPlaceLike(id: place.id)
                 }
             }

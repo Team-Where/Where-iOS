@@ -13,6 +13,7 @@ typealias CommentSheetType = PlaceDetailView.SheetType
 
 @Observable
 final class PlaceDetailViewModel {
+    private(set) var isLikeTogglingProcessing: Bool = false
     private(set) var isDeletionProcessing: Bool = false
     private(set) var isTogglingProcessing: Bool = false
     
@@ -56,42 +57,34 @@ extension PlaceDetailViewModel {
         placeCore.readSpecificPlace(id: placeID)
             .receive(on: DispatchQueue.main)
             .sink { completion in
-                //TODO: error handling
-                switch completion {
-                case .finished:
-                    return
-                case .failure(let error):
+                guard case .failure(let error) = completion else { return }
                 #if DEBUG
-                    print("\(#file)-----\(#function)")
-                    print("\(error.localizedDescription)")
+                print("\(#file)-----\(#function)")
+                print("\(error.localizedDescription)")
                 #endif
-                }
             } receiveValue: { [weak self] in
                 self?._comments = $0
             }
             .store(in: cancellableBag, key: "Comments")
-
     }
     
     func tapPlaceLike(id: UInt64) {
+        isLikeTogglingProcessing = true
         placeCore.togglePlaceLike(id: id)
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    return
-                case .failure(let error):
-                    #if DEBUG
-                    print("\(#file)-----\(#function)")
-                    print("\(error.localizedDescription)")
-                    #endif
-                }
-            } receiveValue: { _ in
-                            
-            }
+            .sink { [weak self] completion in
+                self?.isLikeTogglingProcessing = false
+                
+                guard case .failure(let error) = completion else { return }
+                #if DEBUG
+                print("\(#file)-----\(#function)")
+                print("\(error.localizedDescription)")
+                #endif
+            } receiveValue: { _ in }
             .store(in: cancellableBag, key: #function)
-
     }
+    
     var sheetPublisher: AnyPublisher<CommentSheetType?, Never> {
         sheetTypeSubject.eraseToAnyPublisher()
     }
