@@ -13,12 +13,14 @@ struct MeetingInformationDetailView: View {
     @State private var sheetType: SheetType?
     @State private var fullScreenCoverType: FullScreenCoverType?
     @State private var navigationType: NavigationType?
+    private let meeting: Meeting
     private let resolver: Resolver
     
     init(
         meeting: Meeting,
         resolver: Resolver
     ) {
+        self.meeting = meeting
         self.resolver = resolver
         let viewModel = resolver.resolve(MeetingInformationDetailViewModel.self)!
         viewModel.setMeeitng(meeting)
@@ -78,7 +80,7 @@ struct MeetingInformationDetailView: View {
             }
         }
         .onAppear {
-            viewModel.onAppear()
+            viewModel.onAppear(meetingID: meeting.id)
         }
         .sheet(item: $sheetType) { type in
             switch type {

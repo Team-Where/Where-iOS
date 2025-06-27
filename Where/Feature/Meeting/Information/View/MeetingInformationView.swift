@@ -25,7 +25,7 @@ struct MeetingInformationView: View {
     var body: some View {
         SelectionTab<TabViewItem>(selection: [
             .meetingInfo(resolver: resolver, meeting: viewModel.meeting),
-            .placeInfo(resolver: resolver, isFinished: viewModel.meeting.isFinished)
+            .placeInfo(resolver: resolver, meeting: viewModel.meeting)
         ])
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
@@ -87,7 +87,7 @@ extension View {
 extension MeetingInformationView {
     enum TabViewItem: SelectionTabItem {
         case meetingInfo(resolver: Resolver, meeting: Meeting)
-        case placeInfo(resolver: Resolver, isFinished: Bool)
+        case placeInfo(resolver: Resolver, meeting: Meeting)
         
         var id: Int {
             switch self {
@@ -107,8 +107,8 @@ extension MeetingInformationView {
             switch self {
             case .meetingInfo(let resolver, let meeting):
                 MeetingInformationDetailView(meeting: meeting, resolver: resolver)
-            case .placeInfo(let resolver, let isFinished):
-                MeetingPlacesView(resolver: resolver, isFinished: isFinished)
+            case .placeInfo(let resolver, let meeting):
+                MeetingPlacesView(resolver: resolver, meeting: meeting)
             }
         }
         

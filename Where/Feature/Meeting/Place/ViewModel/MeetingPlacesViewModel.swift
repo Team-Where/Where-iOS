@@ -26,25 +26,7 @@ final class MeetingPlacesViewModel {
     }
     
     private func subscribe() {
-        placeCore.places
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    #if DEBUG
-                    print("Error occured while fetching places: \(error)")
-                    #endif
-                }
-            } receiveValue: { [weak self] places in
-                self?.pickedPlaces = places.values
-                    .filter { $0.pickedState == .picked }
-                    .sorted { $0.likesCount > $1.likesCount }
-                
-                self?.places = self?.sortByAll(places) ?? []
-                self?.placesSortedByLikes = self?.sortByLikesDescending(places) ?? []
-            }
-            .store(in: cancellableBag, key: "Places")
+        
     }
     
     private func sortByAll(_ places: [UInt64: Place]) -> [Place] {
@@ -126,6 +108,29 @@ extension MeetingPlacesViewModel {
 
 // MARK: - Interfaces
 extension MeetingPlacesViewModel {
+    func onAppear(meetingID: UInt64) {
+        placeCore.places
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished: break
+                case .failure(let error):
+                    #if DEBUG
+                    print("Error occured while fetching places: \(error)")
+                    #endif
+                }
+            } receiveValue: { [weak self] places in
+                let filteredPlaces = places.filter { $0.value.meetingId == meetingID }
+                self?.pickedPlaces = filteredPlaces.values
+                    .filter { $0.pickedState == .picked }
+                    .sorted { $0.likesCount > $1.likesCount }
+                
+                self?.places = self?.sortByAll(filteredPlaces) ?? []
+                self?.placesSortedByLikes = self?.sortByLikesDescending(filteredPlaces) ?? []
+            }
+            .store(in: cancellableBag, key: "Places")
+    }
+    
     func changeSortOption(option: PlaceSortOption) {
         sortOption = option
     }

@@ -54,12 +54,6 @@ final class MeetingInformationDetailViewModel: ObservableObject {
                 self?.meeting = $0
             }
             .store(in: cancellableBag, key: "Meetings")
-        
-        placeCore.places
-            .sink { [weak self] dict in
-                self?.places = dict.values.map { $0 }
-            }
-            .store(in: cancellableBag, key: "Places")
     }
 }
 
@@ -84,8 +78,14 @@ extension MeetingInformationDetailViewModel {
         self.meeting = meeting
     }
     
-    func onAppear() {
+    func onAppear(meetingID: UInt64) {
         meetingCore.readInvitaionStatus(id: meeting.id)
+        
+        placeCore.places
+            .sink { [weak self] dict in
+                self?.places = dict.values.filter { $0.meetingId == meetingID }
+            }
+            .store(in: cancellableBag, key: "Places")
     }
     
     func endMeeting() {
