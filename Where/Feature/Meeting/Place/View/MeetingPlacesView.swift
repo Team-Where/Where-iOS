@@ -17,15 +17,18 @@ struct MeetingPlacesView: View {
     @State private var isShareTipPresented: Bool = false
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing)
-    private let meeting: Meeting
+    private let meetingID: UInt64
+    private let isMeetingFinished: Bool
     private let viewModel: MeetingPlacesViewModel
     private let resolver: Resolver
     
     init(
         resolver: Resolver,
-        meeting: Meeting
+        meetingID: UInt64,
+        isFinished: Bool
     ) {
-        self.meeting = meeting
+        self.meetingID = meetingID
+        self.isMeetingFinished = isFinished
         self.viewModel = resolver.resolve(MeetingPlacesViewModel.self)!
         self.resolver = resolver
     }
@@ -86,7 +89,7 @@ struct MeetingPlacesView: View {
             }
         }
         .onAppear {
-            viewModel.onAppear(meetingID: meeting.id)
+            viewModel.onAppear(meetingID: meetingID)
         }
     }
     
@@ -165,7 +168,7 @@ struct MeetingPlacesView: View {
             
             Spacer()
             
-            if meeting.isFinished == false {
+            if isMeetingFinished == false {
                 Button {
                     sheetType = .sharePlace
                 } label: {

@@ -108,7 +108,7 @@ extension MeetingInformationView {
             case .meetingInfo(let resolver, let meeting):
                 MeetingInformationDetailView(meeting: meeting, resolver: resolver)
             case .placeInfo(let resolver, let meeting):
-                MeetingPlacesView(resolver: resolver, meeting: meeting)
+                MeetingPlacesView(resolver: resolver, meetingID: meeting.id, isFinished: meeting.isFinished)
             }
         }
         

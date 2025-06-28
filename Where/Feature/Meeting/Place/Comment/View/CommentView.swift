@@ -67,7 +67,7 @@ struct CommentView: View {
                 commentCell(comment)
             }
             
-            if viewModel.comments.contains(where: { $0.isMyComment }) == false {
+            if comments.contains(where: { $0.isMyComment }) == false {
                 createCommentButton
             }
         }

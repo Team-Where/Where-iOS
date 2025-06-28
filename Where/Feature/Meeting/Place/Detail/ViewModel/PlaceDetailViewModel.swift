@@ -16,18 +16,15 @@ final class PlaceDetailViewModel {
     private(set) var isLikeTogglingProcessing: Bool = false
     private(set) var isDeletionProcessing: Bool = false
     private(set) var isTogglingProcessing: Bool = false
+    private(set) var comments: [Comment] = []
     
     private let placeCore: PlaceCoreProtocol
     private let cancellableBag = CancellableBag()
     
-    private var _comments = [UInt64: Comment]()
+    private var commentsDict = [UInt64: Comment]()
     private var placeID: UInt64?
     private var selectedComment: Comment?
     private var sheetTypeSubject = PassthroughSubject<CommentSheetType?, Never>()
-    
-    var comments: [Comment] {
-        _comments.values.sorted { $0.createdAt < $1.createdAt }
-    }
     
     init(resolver: Resolver) {
         self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
@@ -63,7 +60,11 @@ extension PlaceDetailViewModel {
                 print("\(error.localizedDescription)")
                 #endif
             } receiveValue: { [weak self] in
-                self?._comments = $0
+                self?.commentsDict = $0
+                self?.comments = $0.values.sorted {
+                    if $0.isMyComment != $1.isMyComment { return $0.isMyComment }
+                    return $0.createdAt > $1.createdAt
+                }
             }
             .store(in: cancellableBag, key: "Comments")
     }
@@ -114,7 +115,7 @@ extension PlaceDetailViewModel: CommentViewModelType {
                 }
                 
             } receiveValue: { [weak self] in
-                self?._comments[$0.id] = $0
+                self?.commentsDict[$0.id] = $0
             }
             .store(in: cancellableBag, key: #function)
     }
@@ -130,7 +131,7 @@ extension PlaceDetailViewModel: CommentViewModelType {
                 case .failure(let error):return
                 }
             } receiveValue: { [weak self] newComment in
-                self?._comments[comment.id] = newComment
+                self?.commentsDict[comment.id] = newComment
             }
             .store(in: cancellableBag, key: #function)
         
@@ -147,7 +148,7 @@ extension PlaceDetailViewModel: CommentViewModelType {
                 case .failure(let error): return
                 }
             } receiveValue: { [weak self] in
-                self?._comments.removeValue(forKey: $0)
+                self?.commentsDict.removeValue(forKey: $0)
             }
             .store(in: cancellableBag, key: #function)
     }
