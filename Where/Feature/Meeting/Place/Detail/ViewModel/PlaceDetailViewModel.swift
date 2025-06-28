@@ -16,7 +16,16 @@ final class PlaceDetailViewModel {
     private(set) var isLikeTogglingProcessing: Bool = false
     private(set) var isDeletionProcessing: Bool = false
     private(set) var isTogglingProcessing: Bool = false
-    private(set) var comments: [Comment] = []
+    private(set) var isProcessing: Bool = false
+    
+    var comments: [Comment] {
+        commentsDict.values.sorted {
+            guard $0.isMyComment == $0.isMyComment else {
+                return $0.createdAt > $1.createdAt
+            }
+            return $0.isMyComment
+        }
+    }
     
     private let placeCore: PlaceCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -61,10 +70,6 @@ extension PlaceDetailViewModel {
                 #endif
             } receiveValue: { [weak self] in
                 self?.commentsDict = $0
-                self?.comments = $0.values.sorted {
-                    if $0.isMyComment != $1.isMyComment { return $0.isMyComment }
-                    return $0.createdAt > $1.createdAt
-                }
             }
             .store(in: cancellableBag, key: "Comments")
     }
@@ -96,6 +101,9 @@ extension PlaceDetailViewModel {
 
 protocol CommentViewModelType {
     var comments: [Comment] { get }
+    var isProcessing: Bool { get }
+    var isDeletionProcessing: Bool { get }
+    
     func createComment(_ description: String)
     func updateComment(_ descrition: String)
     func deleteComment()
@@ -105,9 +113,11 @@ protocol CommentViewModelType {
 extension PlaceDetailViewModel: CommentViewModelType {
     func createComment(_ description: String) {
         guard let placeID else { return }
+        isProcessing = true
         placeCore.createComment(placeID: placeID, description: description)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
+                self?.isProcessing = false
                 switch completion {
                 case .finished:
                     self?.sheetTypeSubject.send(.none)
@@ -122,9 +132,11 @@ extension PlaceDetailViewModel: CommentViewModelType {
     
     func updateComment(_ descrition: String) {
         guard let comment = selectedComment else { return }
+        isProcessing = true
         placeCore.updateComment(comment: comment, description: descrition)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
+                self?.isProcessing = false
                 switch completion {
                 case .finished:
                     self?.sheetTypeSubject.send(.none)
@@ -139,9 +151,11 @@ extension PlaceDetailViewModel: CommentViewModelType {
     
     func deleteComment() {
         guard let comment = selectedComment else { return }
+        isDeletionProcessing = true
         placeCore.deleteComment(comment: comment)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
+                self?.isDeletionProcessing = false
                 switch completion {
                 case .finished:
                     self?.sheetTypeSubject.send(.none)
@@ -157,5 +171,3 @@ extension PlaceDetailViewModel: CommentViewModelType {
         self.selectedComment = comment
     }
 }
-
-
