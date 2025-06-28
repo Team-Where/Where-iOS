@@ -301,7 +301,7 @@ struct MeetingPlacesView: View {
                     .strokeBorder(.where(.gray100))
                     .shadow(color: .where(.gray200), radius: 4, y: 4)
             )
-            .padding(.horizontal)
+            .padding()
         }
     }
 }
@@ -393,7 +393,6 @@ extension MeetingPlacesView {
                     .strokeBorder(.where(.gray100))
                     .shadow(color: .where(.gray200), radius: 4, y: 4)
             )
-            .padding(.horizontal)
         }
     }
     
