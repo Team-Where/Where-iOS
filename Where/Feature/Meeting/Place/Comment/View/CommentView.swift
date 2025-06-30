@@ -214,7 +214,12 @@ extension PlaceDetailView {
                 Spacer()
                 HStack(alignment: .center) {
                     Button {
-                        editStep = .myComment
+                        switch editStep {
+                        case .modify:
+                            editStep = .myComment
+                        default:
+                            sheetType = .none
+                        }
                     } label: {
                         Text("취소")
                             .whereFont(.body16regular)
