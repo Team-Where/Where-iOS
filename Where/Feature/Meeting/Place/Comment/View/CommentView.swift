@@ -164,14 +164,16 @@ extension PlaceDetailView {
                     Button {
                         viewModel.deleteComment()
                     } label: {
-                        if viewModel.isDeletionProcessing {
-                            ProgressView()
-                        } else {
-                            Text("삭제")
-                                .whereFont(.body16regular)
-                                .foregroundStyle(.where(.red500))
-                                .frame(width: 169, height: 59)
+                        Group {
+                            if viewModel.isDeletionProcessing {
+                                ProgressView()
+                            } else {
+                                Text("삭제")
+                            }
                         }
+                        .whereFont(.body16regular)
+                        .foregroundStyle(.where(.red500))
+                        .frame(width: 169, height: 59)
                     }
                     .background(
                         RoundedRectangle(cornerRadius: 16)
@@ -233,14 +235,16 @@ extension PlaceDetailView {
                         default: return
                         }
                     } label: {
-                        if viewModel.isProcessing {
-                            ProgressView()
-                        } else {
-                            Text("확인")
-                                .whereFont(.body16regular)
-                                .foregroundStyle(.where(hex: 0xFFFFFF))
-                                .frame(width: 169, height: 59)
+                        Group {
+                            if viewModel.isProcessing {
+                                ProgressView()
+                            } else {
+                                Text("확인")
+                            }
                         }
+                        .whereFont(.body16regular)
+                        .foregroundStyle(.where(hex: 0xFFFFFF))
+                        .frame(width: 169, height: 59)
                     }
                     .background(
                         RoundedRectangle(cornerRadius: 16)
