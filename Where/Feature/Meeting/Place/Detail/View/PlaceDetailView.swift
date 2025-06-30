@@ -26,7 +26,9 @@ struct PlaceDetailView: View {
         resolver: Resolver
     ) {
         self.place = place
-        self.viewModel = resolver.resolve(PlaceDetailViewModel.self)!
+        let viewModel = resolver.resolve(PlaceDetailViewModel.self)!
+        viewModel.readComments(place.id)
+        self.viewModel = viewModel
         self.resolver = resolver
     }
     
@@ -56,7 +58,6 @@ struct PlaceDetailView: View {
         }
         .scrollIndicators(.never)
         .onAppear {
-            viewModel.onApear(place.id)
             isTipPresented = place.pickedState == .unpicked
             
             guard isTipPresented == true else { return }

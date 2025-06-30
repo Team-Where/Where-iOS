@@ -58,7 +58,7 @@ extension PlaceDetailViewModel {
             } receiveValue: { _ in }
     }
     
-    func onApear(_ placeID: UInt64) {
+    func readComments(_ placeID: UInt64) {
         self.placeID = placeID
         placeCore.readSpecificPlace(id: placeID)
             .receive(on: DispatchQueue.main)
