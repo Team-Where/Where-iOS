@@ -9,6 +9,7 @@ import SwiftUI
 import Swinject
 
 struct PlaceDetailView: View {
+    @StateObject private var viewModel: PlaceDetailViewModel
     @Environment(\.openURL) private var openURL
     @State private var sheetType: SheetType?
     @State private var isTipPresented = false
@@ -16,7 +17,6 @@ struct PlaceDetailView: View {
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing, backgroundColor: .accent, cornerRadius: 4)
     private let place: Place
-    private let viewModel: PlaceDetailViewModel
     private let resolver: Resolver
     
     private var isPicked: Bool { place.pickedState == .picked }
@@ -27,8 +27,7 @@ struct PlaceDetailView: View {
     ) {
         self.place = place
         let viewModel = resolver.resolve(PlaceDetailViewModel.self)!
-        viewModel.readComments(place.id)
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel)
         self.resolver = resolver
     }
     
@@ -58,6 +57,7 @@ struct PlaceDetailView: View {
         }
         .scrollIndicators(.never)
         .onAppear {
+            viewModel.readComments(place.id)
             isTipPresented = place.pickedState == .unpicked
             
             guard isTipPresented == true else { return }
