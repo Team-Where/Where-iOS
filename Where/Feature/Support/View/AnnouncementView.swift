@@ -10,8 +10,7 @@ import Swinject
 
 struct AnnouncementView: View {
     @State private var navigationType: NavigationType?
-    
-    private let viewModel: AnnouncementViewModel
+    @State private var viewModel: AnnouncementViewModel
     
     init(resolver: Resolver) {
         self.viewModel = resolver.resolve(AnnouncementViewModel.self)!

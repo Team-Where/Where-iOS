@@ -15,11 +15,11 @@ struct MeetingPlacesView: View {
     @State private var sheetType: SheetType?
     @State private var isPickTipPresented: Bool = false
     @State private var isShareTipPresented: Bool = false
+    @State private var viewModel: MeetingPlacesViewModel
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing)
     private let meetingID: UInt64
     private let isMeetingFinished: Bool
-    private let viewModel: MeetingPlacesViewModel
     private let resolver: Resolver
     
     init(

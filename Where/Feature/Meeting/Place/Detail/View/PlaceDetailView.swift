@@ -26,8 +26,7 @@ struct PlaceDetailView: View {
         resolver: Resolver
     ) {
         self.place = place
-        let viewModel = resolver.resolve(PlaceDetailViewModel.self)!
-        self._viewModel = State(wrappedValue: viewModel)
+        self.viewModel = resolver.resolve(PlaceDetailViewModel.self)!
         self.resolver = resolver
     }
     

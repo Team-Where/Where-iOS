@@ -10,8 +10,8 @@ import Swinject
 
 struct MyMeetingView: View {
     @State private var isSideMenuPresented: Bool = false
+    @State private var viewModel: MyMeetingViewModelType
     
-    private let viewModel: MyMeetingViewModelType
     private let resolver: Resolver
     private let onLoginButtonTapped: () -> Void
     

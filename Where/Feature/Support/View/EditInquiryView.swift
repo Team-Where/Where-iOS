@@ -17,12 +17,12 @@ struct EditInquiryView: View {
     @State private var isPopupPresented: Bool = false
     @State private var titleFieldText = String()
     @State private var contentFieldText = String()
+    @State private var viewModel: EditInquiryViewModel
     
     private var disabled: Bool {
         titleFieldText.isEmpty || contentFieldText.isEmpty || viewModel.isProcessing
     }
     
-    private let viewModel: EditInquiryViewModel
     private let inquiry: Inquiry?
     
     init(inquiry: Inquiry?, resolver: Resolver) {

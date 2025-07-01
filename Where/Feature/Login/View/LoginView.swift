@@ -10,11 +10,11 @@ import AuthenticationServices
 import Swinject
 
 struct LoginView: View {
+    @State private var viewModel: LoginViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var isRegistrationTermViewPresented: Bool = false
     @State private var isSignInViewPresented: Bool = false
     
-    private let viewModel: LoginViewModel
     private let resolver: Resolver
     
     init(

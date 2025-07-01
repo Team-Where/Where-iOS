@@ -12,11 +12,11 @@ struct AcceptInvitationView: View {
     @State private var isLoginViewPresented: Bool = false
     @State private var isFloaterPresented: Bool = false
     @State private var navigationType: NavigationType?
+    @State private var viewModel: AcceptInvitationViewModel
     
     private let inviterName: String?
     private let meeting: Meeting?
     
-    private let viewModel: AcceptInvitationViewModel
     private let resolver: Resolver
     
     init(

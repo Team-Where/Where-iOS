@@ -12,8 +12,8 @@ struct PreferenceView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(AppStorageKey.shouldDisplayNotifications) var shouldDisplayNotifications: Bool = true
     @State private var isPopupPresented: Bool = false
+    @State private var viewModel: PreferenceViewModel
     
-    private let viewModel: PreferenceViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {

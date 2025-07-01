@@ -11,10 +11,10 @@ import Swinject
 struct SharePlaceMeetingListView: View {
     @State private var isFloaterPresented: Bool = false
     @State private var isDetailPresneted: NavigationType?
+    @State private var viewModel: SharePlaceMeetingListViewModel
     
     private let sharedPlaceData: SharedPlaceDataSource
     private let resolver: Resolver
-    private let viewModel: SharePlaceMeetingListViewModel
     
     private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 175))]
     

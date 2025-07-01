@@ -11,6 +11,7 @@ import Swinject
 fileprivate typealias ProcessingState = SignInViewModel.ProcessingState
 
 struct SignInView: View {
+    @State private var viewModel: SignInViewModel
     @Binding var isLoginViewPresented: Bool
     @FocusState private var textFieldFocus: KeyboardFocusState?
     @State private var isPopupPresented: Bool = false
@@ -21,7 +22,6 @@ struct SignInView: View {
         viewModel.state == .processing || emailFieldText.isEmpty || passwordFieldText.isEmpty
     }
     
-    private let viewModel: SignInViewModel
     private let navigationTitle: String = "로그인을 해주세요"
     
     init(

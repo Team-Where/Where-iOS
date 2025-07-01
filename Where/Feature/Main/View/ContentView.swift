@@ -18,8 +18,8 @@ struct ContentView: View {
     @State private var navigationType: MainNavigationType?
     @State private var isLoginNeededPopupPresented: Bool = false
     @State private var isLoginNeeded: Bool = false
+    @State private var viewModel: ContentViewModel
     
-    private let viewModel: ContentViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {

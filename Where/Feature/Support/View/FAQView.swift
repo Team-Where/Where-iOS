@@ -10,8 +10,8 @@ import Swinject
 
 struct FAQView: View {
     @State private var navigationType: NavigationType?
+    @State private var viewModel: FAQViewModel
     
-    private let viewModel: FAQViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {

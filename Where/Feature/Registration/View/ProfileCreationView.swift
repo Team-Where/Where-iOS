@@ -14,6 +14,7 @@ struct ProfileCreationView: View {
     @State private var nicknameFieldText = String()
     @State private var isPopupPresented: Bool = false
     @State private var isFloaterPresented: Bool = false
+    @State private var viewModel: ProfileCreationViewModel
     
     private var navigationTitle: String {
         switch viewModel.profileCreationStep {
@@ -42,8 +43,6 @@ struct ProfileCreationView: View {
         case .duplicated: "이미 사용 중인 닉네임입니다."
         }
     }
-    
-    private let viewModel: ProfileCreationViewModel
     
     init(
         _ navigationType: Binding<MainNavigationType?>,

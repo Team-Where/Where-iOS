@@ -12,9 +12,9 @@ fileprivate typealias MonthGroup = HistoryReminderViewModel.MonthGroup
 fileprivate typealias YearGroup = HistoryReminderViewModel.YearGroup
 
 struct HistoryReminderView: View {
+    @State private var viewModel: HistoryReminderViewModel
     private let user: User
     private let friend: FriendRelationship
-    private let viewModel: HistoryReminderViewModel
     private let resolver: Resolver
     
     init(

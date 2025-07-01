@@ -15,8 +15,8 @@ struct EditProfileView: View {
     @State private var isFloaterPresented: Bool = false
     @State private var profileImageData: Data?
     @State private var nicknameFieldText: String = String()
+    @State private var viewModel: EditProfileViewModel
     
-    private let viewModel: EditProfileViewModel
     private let resolver: Resolver
     
     init(resolver: Resolver) {
