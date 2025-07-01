@@ -9,7 +9,7 @@ import SwiftUI
 import Swinject
 
 struct PlaceDetailView: View {
-    @StateObject private var viewModel: PlaceDetailViewModel
+    @State private var viewModel: PlaceDetailViewModel
     @Environment(\.openURL) private var openURL
     @State private var sheetType: SheetType?
     @State private var isTipPresented = false
@@ -27,7 +27,7 @@ struct PlaceDetailView: View {
     ) {
         self.place = place
         let viewModel = resolver.resolve(PlaceDetailViewModel.self)!
-        self._viewModel = StateObject(wrappedValue: viewModel)
+        self._viewModel = State(wrappedValue: viewModel)
         self.resolver = resolver
     }
     

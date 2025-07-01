@@ -11,7 +11,8 @@ import Swinject
 
 typealias CommentSheetType = PlaceDetailView.SheetType
 
-final class PlaceDetailViewModel: ObservableObject {
+@Observable
+final class PlaceDetailViewModel {
     private(set) var isLikeTogglingProcessing: Bool = false
     private(set) var isDeletionProcessing: Bool = false
     private(set) var isTogglingProcessing: Bool = false
