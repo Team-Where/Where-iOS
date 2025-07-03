@@ -88,7 +88,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         guard let fcmToken = fcmToken else { return }
-        // TODO: NotificationCore 통해서 fcmToken을 업데이트, 서버로 전달
         print("fcmToken: ------------------------\n\(fcmToken)\n -------------------------")
         notificationCore.setFCMToken(fcmToken)
     }
