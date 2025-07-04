@@ -56,6 +56,7 @@ struct Floater<Based: View, Icon: View>: View {
             
             if isFloaterPresented {
                 FloaterView(isFloaterPresented: $isFloaterPresented, title: title, icon: icon?())
+                    .padding(.horizontal)
             }
         }
     }

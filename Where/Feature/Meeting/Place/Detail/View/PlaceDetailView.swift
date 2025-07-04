@@ -13,6 +13,7 @@ struct PlaceDetailView: View {
     @Environment(\.openURL) private var openURL
     @State private var sheetType: SheetType?
     @State private var isTipPresented = false
+    @State private var isFloaterPresented = false
     @State private var commentEditStep: EditStep?
     
     private let tipConfiguration = ToolTipConfiguration(arrowPosition: .topTrailing, backgroundColor: .accent, cornerRadius: 4)
@@ -91,6 +92,11 @@ struct PlaceDetailView: View {
         .onReceive(viewModel.sheetPublisher) {
             sheetType = $0
         }
+        .onReceive(viewModel.commentCreationPublisher) { isDone in
+            guard isDone == false else { return }
+            isFloaterPresented = true
+        }
+        .floater($isFloaterPresented, title: "자신이 공유한 장소가 아니면 코멘트를 남길 수 없어요.")
     }
     
     enum SheetType: Identifiable {

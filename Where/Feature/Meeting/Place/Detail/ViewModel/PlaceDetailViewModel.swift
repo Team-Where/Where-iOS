@@ -33,7 +33,8 @@ final class PlaceDetailViewModel {
     private var commentsDict = [UInt64: Comment]()
     private var placeID: UInt64?
     private var selectedComment: Comment?
-    private var sheetTypeSubject = PassthroughSubject<CommentSheetType?, Never>()
+    private let sheetTypeSubject = PassthroughSubject<CommentSheetType?, Never>()
+    private let commentCreationSubject = PassthroughSubject<Bool, Never>()
     
     init(resolver: Resolver) {
         self.placeCore = resolver.resolve(PlaceCoreProtocol.self)!
@@ -94,6 +95,10 @@ extension PlaceDetailViewModel {
     var sheetPublisher: AnyPublisher<CommentSheetType?, Never> {
         sheetTypeSubject.eraseToAnyPublisher()
     }
+    
+    var commentCreationPublisher: AnyPublisher<Bool, Never> {
+        commentCreationSubject.eraseToAnyPublisher()
+    }
 }
 
 
@@ -118,12 +123,10 @@ extension PlaceDetailViewModel: CommentViewModelType {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 self?.isProcessing = false
-                switch completion {
-                case .finished:
-                    self?.sheetTypeSubject.send(.none)
-                case .failure(let error): return
-                }
+                self?.sheetTypeSubject.send(.none)
                 
+                guard case .failure = completion else { return }
+                self?.commentCreationSubject.send(false)
             } receiveValue: { [weak self] in
                 self?.commentsDict[$0.id] = $0
             }
