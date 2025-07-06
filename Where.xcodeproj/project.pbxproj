@@ -225,6 +225,11 @@
 		7F867AD92E1AB8DD006FC6FF /* ScheduleAddedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AD82E1AB8DD006FC6FF /* ScheduleAddedPayload.swift */; };
 		7F867ADB2E1AB937006FC6FF /* ScheduleUpdatedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867ADA2E1AB937006FC6FF /* ScheduleUpdatedPayload.swift */; };
 		7F867ADD2E1AB983006FC6FF /* ScheduleDeletedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867ADC2E1AB983006FC6FF /* ScheduleDeletedPayload.swift */; };
+		7F867ADF2E1AB9FB006FC6FF /* CommentAddedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867ADE2E1AB9FB006FC6FF /* CommentAddedPayload.swift */; };
+		7F867AE12E1ABA52006FC6FF /* CommentUpdatedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE02E1ABA52006FC6FF /* CommentUpdatedPayload.swift */; };
+		7F867AE32E1ABADD006FC6FF /* CommentDeletedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE22E1ABADD006FC6FF /* CommentDeletedPayload.swift */; };
+		7F867AE52E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE42E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift */; };
+		7F867AE72E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE62E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift */; };
 		7FB0B6002DDCBC4600ED14A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */; };
 		7FC363E12E01A4AB00549529 /* SharePlaceMeetingListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC363E02E01A4AA00549529 /* SharePlaceMeetingListViewModel.swift */; };
 		7FD0D8652DF88C5200A9F243 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0D8642DF88C5200A9F243 /* WebView.swift */; };
@@ -466,6 +471,11 @@
 		7F867AD82E1AB8DD006FC6FF /* ScheduleAddedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleAddedPayload.swift; sourceTree = "<group>"; };
 		7F867ADA2E1AB937006FC6FF /* ScheduleUpdatedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleUpdatedPayload.swift; sourceTree = "<group>"; };
 		7F867ADC2E1AB983006FC6FF /* ScheduleDeletedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDeletedPayload.swift; sourceTree = "<group>"; };
+		7F867ADE2E1AB9FB006FC6FF /* CommentAddedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAddedPayload.swift; sourceTree = "<group>"; };
+		7F867AE02E1ABA52006FC6FF /* CommentUpdatedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentUpdatedPayload.swift; sourceTree = "<group>"; };
+		7F867AE22E1ABADD006FC6FF /* CommentDeletedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDeletedPayload.swift; sourceTree = "<group>"; };
+		7F867AE42E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationAcceptedPayload.swift; sourceTree = "<group>"; };
+		7F867AE62E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteMeetingInAppPayload.swift; sourceTree = "<group>"; };
 		7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7FC363E02E01A4AA00549529 /* SharePlaceMeetingListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlaceMeetingListViewModel.swift; sourceTree = "<group>"; };
 		7FD0D8642DF88C5200A9F243 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -1444,6 +1454,11 @@
 				7F867AD82E1AB8DD006FC6FF /* ScheduleAddedPayload.swift */,
 				7F867ADA2E1AB937006FC6FF /* ScheduleUpdatedPayload.swift */,
 				7F867ADC2E1AB983006FC6FF /* ScheduleDeletedPayload.swift */,
+				7F867ADE2E1AB9FB006FC6FF /* CommentAddedPayload.swift */,
+				7F867AE02E1ABA52006FC6FF /* CommentUpdatedPayload.swift */,
+				7F867AE22E1ABADD006FC6FF /* CommentDeletedPayload.swift */,
+				7F867AE42E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift */,
+				7F867AE62E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift */,
 			);
 			path = DTO;
 			sourceTree = "<group>";
@@ -1611,6 +1626,7 @@
 				04D547782DDB66A9003EEC85 /* CreateMeetingView.swift in Sources */,
 				04D547792DDB66A9003EEC85 /* CharacterLimitModifier.swift in Sources */,
 				04D5477A2DDB66A9003EEC85 /* DateView.swift in Sources */,
+				7F867AE52E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift in Sources */,
 				04D5477B2DDB66A9003EEC85 /* Pretendard.swift in Sources */,
 				04D5477C2DDB66A9003EEC85 /* DeletePlaceDTO.swift in Sources */,
 				7FD0D8652DF88C5200A9F243 /* WebView.swift in Sources */,
@@ -1620,6 +1636,7 @@
 				04D547802DDB66A9003EEC85 /* AdjustPasswordViewModel.swift in Sources */,
 				04D547812DDB66A9003EEC85 /* CheckEmailDuplicationDTO.swift in Sources */,
 				04D547822DDB66A9003EEC85 /* MeetingInformationView.swift in Sources */,
+				7F867AE72E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift in Sources */,
 				04D547832DDB66A9003EEC85 /* AppDelegate.swift in Sources */,
 				04D547842DDB66A9003EEC85 /* LoginView.swift in Sources */,
 				04D547852DDB66A9003EEC85 /* Announcement.swift in Sources */,
@@ -1684,6 +1701,7 @@
 				04D547BD2DDB66A9003EEC85 /* AcceptInvitationView.swift in Sources */,
 				04D547BE2DDB66A9003EEC85 /* FriendsListView.swift in Sources */,
 				04D547BF2DDB66A9003EEC85 /* AppStorageKey.swift in Sources */,
+				7F867AE32E1ABADD006FC6FF /* CommentDeletedPayload.swift in Sources */,
 				04D547C02DDB66A9003EEC85 /* RegistrationTerminationStep.swift in Sources */,
 				04D547C12DDB66A9003EEC85 /* PlaceCore.swift in Sources */,
 				04D547C22DDB66A9003EEC85 /* DeleteFAQDTO.swift in Sources */,
@@ -1741,6 +1759,7 @@
 				04D547F32DDB66A9003EEC85 /* UpdateProfileDTO.swift in Sources */,
 				04D547F52DDB66A9003EEC85 /* User.swift in Sources */,
 				04D547F62DDB66A9003EEC85 /* ServiceAssembly.swift in Sources */,
+				7F867AE12E1ABA52006FC6FF /* CommentUpdatedPayload.swift in Sources */,
 				04D547F72DDB66A9003EEC85 /* Image.swift in Sources */,
 				04D547F92DDB66A9003EEC85 /* SocialLoginDTO.swift in Sources */,
 				04D547FA2DDB66A9003EEC85 /* CreateAdminInquiryReplyDTO.swift in Sources */,
@@ -1786,6 +1805,7 @@
 				7F867ACF2E1AB3F4006FC6FF /* PlaceAddedPayload.swift in Sources */,
 				04D548212DDB66A9003EEC85 /* Meridiem.swift in Sources */,
 				04D548222DDB66A9003EEC85 /* ReadAnnouncementsDTO.swift in Sources */,
+				7F867ADF2E1AB9FB006FC6FF /* CommentAddedPayload.swift in Sources */,
 				04D548232DDB66A9003EEC85 /* AuthentificationProvider.swift in Sources */,
 				7F2A11302E005E82004BA657 /* SharePlaceMeetingListView.swift in Sources */,
 				04D548242DDB66A9003EEC85 /* EditProfileView.swift in Sources */,
