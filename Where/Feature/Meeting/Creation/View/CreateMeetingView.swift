@@ -122,7 +122,7 @@ extension CreateMeetingView {
         var body: some View {
             VStack {
                 ScrollView(.vertical) {
-                    LazyVStack(spacing: 40) {
+                    VStack(spacing: 40) {
                         profileImageSection
                         textFieldSection
                     }
