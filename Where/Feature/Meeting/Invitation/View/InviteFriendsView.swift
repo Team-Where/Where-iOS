@@ -182,18 +182,22 @@ struct InviteFriendsView: View {
     }
     
     @ViewBuilder private func friendsList(_ friends: [FriendCellDataSource]) -> some View {
-        LazyVStack(spacing: 20) {
+        VStack {
             Section {
-                ForEach(friends, id: \.id) { friend in
-                    friendsListCell(friend)
+                LazyVStack(spacing: 20) {
+                    ForEach(friends, id: \.id) { friend in
+                        friendsListCell(friend)
+                    }
                 }
             } header: {
                 sectionHeader("최근 만난 친구", count: 3)
             }
             
             Section {
-                ForEach(friends, id: \.id) { friend in
-                    friendsListCell(friend)
+                LazyVStack(spacing: 20) {
+                    ForEach(friends, id: \.id) { friend in
+                        friendsListCell(friend)
+                    }
                 }
             } header: {
                 sectionHeader("모든친구", count: 23)
