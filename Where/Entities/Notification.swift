@@ -24,29 +24,31 @@ struct Notification: Identifiable {
 }
 
 /// 알림 종류
-enum NotificationType {
+enum NotificationType: Int {
     /// 장소 추가
-    case placeAdded
+    case placeAdded = 101
     /// 장소 삭제
-    case placeDeleted
+    case placeDeleted = 103
     /// 장소 Pick
-    case placePicked
+    case placePicked = 104
     /// 장소 좋아요수 변경
-    case placeLikesUpdated
+    case placeLikesUpdated = 105
     /// 같이 찾은 장소
-    case placeSimulaneouslyPicked
+    case placeSimulaneouslyPicked = 106
     /// 일정 추가
-    case scheduleAdded
+    case scheduleAdded = 201
     /// 일정 변경
-    case scheduleUpdated
+    case scheduleUpdated = 202
     /// 일정 삭제
-    case scheduleDeleted
+    case scheduleDeleted = 203
     /// 코멘트 추가
-    case commentAdded
+    case commentAdded = 301
     /// 코멘트 수정
-    case commentUpdated
+    case commentUpdated = 302
     /// 코멘트 삭제
-    case commentDeleted
+    case commentDeleted = 303
     /// 모임 참가신청 수락
-    case meetingInvitationAccepted
+    case meetingInvitationAccepted = 404
+    /// 앱내 모임 초대
+    case inviteMeetingInApp = 405
 }
