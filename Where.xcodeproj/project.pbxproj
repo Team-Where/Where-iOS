@@ -230,6 +230,7 @@
 		7F867AE32E1ABADD006FC6FF /* CommentDeletedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE22E1ABADD006FC6FF /* CommentDeletedPayload.swift */; };
 		7F867AE52E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE42E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift */; };
 		7F867AE72E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE62E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift */; };
+		7F867AE92E1ABE50006FC6FF /* PayloadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AE82E1ABE50006FC6FF /* PayloadType.swift */; };
 		7FB0B6002DDCBC4600ED14A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */; };
 		7FC363E12E01A4AB00549529 /* SharePlaceMeetingListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC363E02E01A4AA00549529 /* SharePlaceMeetingListViewModel.swift */; };
 		7FD0D8652DF88C5200A9F243 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD0D8642DF88C5200A9F243 /* WebView.swift */; };
@@ -476,6 +477,7 @@
 		7F867AE22E1ABADD006FC6FF /* CommentDeletedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentDeletedPayload.swift; sourceTree = "<group>"; };
 		7F867AE42E1ABB25006FC6FF /* MeetingInvitationAcceptedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingInvitationAcceptedPayload.swift; sourceTree = "<group>"; };
 		7F867AE62E1ABB7F006FC6FF /* InviteMeetingInAppPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteMeetingInAppPayload.swift; sourceTree = "<group>"; };
+		7F867AE82E1ABE50006FC6FF /* PayloadType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadType.swift; sourceTree = "<group>"; };
 		7FB0B5FF2DDCBC4600ED14A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7FC363E02E01A4AA00549529 /* SharePlaceMeetingListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlaceMeetingListViewModel.swift; sourceTree = "<group>"; };
 		7FD0D8642DF88C5200A9F243 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -1446,6 +1448,7 @@
 		7F867ACD2E1AB3D0006FC6FF /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				7F867AE82E1ABE50006FC6FF /* PayloadType.swift */,
 				7F867ACE2E1AB3F4006FC6FF /* PlaceAddedPayload.swift */,
 				7F867AD02E1AB60E006FC6FF /* PlaceDeletedPayload.swift */,
 				7F867AD22E1AB644006FC6FF /* PlacePickedPayload.swift */,
@@ -1654,6 +1657,7 @@
 				04D547912DDB66A9003EEC85 /* RegisterDTO.swift in Sources */,
 				04D547922DDB66A9003EEC85 /* ViewModelError.swift in Sources */,
 				7F867ADD2E1AB983006FC6FF /* ScheduleDeletedPayload.swift in Sources */,
+				7F867AE92E1ABE50006FC6FF /* PayloadType.swift in Sources */,
 				04D547932DDB66A9003EEC85 /* RoundedImageModifier.swift in Sources */,
 				04A9CC702E02E4AE005ADC8B /* FCMRegisterDTO.swift in Sources */,
 				04D547942DDB66A9003EEC85 /* MyMeetingView.swift in Sources */,
