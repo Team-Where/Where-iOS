@@ -11,7 +11,7 @@ struct PlaceAddedPayload {
     
     let meetingID: UInt64
     let placeID: UInt64
-    let placeSharerImage: String
+    let placeSharerImage: String?
     let placeName: String
     let address: String
     let likeCount: UInt64

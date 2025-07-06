@@ -10,5 +10,5 @@ import Foundation
 struct PlaceSimultaneouslyPickedPayload {
     let placeID: UInt64
     let isSimultaneouslyPicked: Bool
-    let placeSharerImage: String
+    let placeSharerImage: String?
 }
