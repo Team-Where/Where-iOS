@@ -63,6 +63,7 @@ struct BasePayload {
 /// userInfo에서 꺼내올 키 값들의 열거형
 /// - rawValue로 접근해서 사용
 enum UserInfoKey: String {
+    /// 장소 삭제 시 장소 식별자
     case id
     /// 모임 식별자 키
     case meetingId
@@ -88,4 +89,22 @@ enum UserInfoKey: String {
     case commentId
     /// 코멘트 내용 키
     case description
+    /// 모임 수락 유저 식별자 키
+    case userId
+    /// 모임 수락 유저 닉네임 키
+    case userName
+    /// 모임 수락 유저 이미지 키
+    case userImage
+    /// 초대 고유 식별자 키
+    case inviteId
+    /// 초대자 닉네임 키
+    case fromNickName
+    /// 모임 제목 키
+    case meetingTitle
+    /// 모임 이미지 키
+    case meetingImage
+    /// 모임 일정 날짜 키
+    case scheduleDate
+    /// 모임 일정 시간 키
+    case scheduleTime
 }
