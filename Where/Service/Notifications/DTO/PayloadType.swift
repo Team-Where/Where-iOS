@@ -80,4 +80,12 @@ enum UserInfoKey: String {
     case placeStatus
     /// 같이 찾은 장소 여부 키
     case together
+    /// 일정 날짜 키
+    case date
+    /// 일정 시간 키
+    case time
+    /// 코멘트 식별자 키
+    case commentId
+    /// 코멘트 내용 키
+    case description
 }
