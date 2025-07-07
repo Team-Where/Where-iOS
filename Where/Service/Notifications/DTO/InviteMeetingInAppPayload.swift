@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct InviteMeetingInAppPayload {
+struct InviteMeetingInAppPayload: PayloadType {
     let inviteID: UInt64
     let meetingID: UInt64
     let meetingImage: String?
@@ -16,7 +16,7 @@ struct InviteMeetingInAppPayload {
     let scheduleDate: String?
     let scheduleTime: String?
     
-    private let basePayload: BasePayload
+    let _base: BasePayload
     
     init?(userInfo: [AnyHashable : Any]) {
         guard let basePayload = BasePayload(userInfo: userInfo)
@@ -34,7 +34,7 @@ struct InviteMeetingInAppPayload {
         else {
             return nil
         }
-        self.basePayload = basePayload
+        self._base = basePayload
         
         self.inviteID = inviteID
         self.meetingID = meetingID
@@ -43,23 +43,5 @@ struct InviteMeetingInAppPayload {
         self.meetingTitle = meetingTitle
         self.scheduleDate = userInfo["scheduleDate"] as? String
         self.scheduleTime = userInfo["scheduleTime"] as? String
-    }
-}
-
-extension InviteMeetingInAppPayload: PayloadType  {
-    var id: UInt64 {
-        basePayload.id
-    }
-    
-    var title: String {
-        basePayload.title
-    }
-    
-    var content: String {
-        basePayload.content
-    }
-    
-    var type: NotificationType {
-        basePayload.type
     }
 }
