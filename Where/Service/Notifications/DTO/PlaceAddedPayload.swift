@@ -29,12 +29,12 @@ struct PlaceAddedPayload: PayloadType {
             return nil
         }
         
-        guard let meetingID = userInfo["meetingId"] as? UInt64,
-              let placeID = userInfo["placeId"] as? UInt64,
-              let placeName = userInfo["placeName"] as? String,
-              let address = userInfo["address"] as? String,
-              let likeCount = userInfo["likes"] as? UInt64,
-              let isPicked = userInfo["placeStatus"] as? String,
+        guard let meetingID = userInfo[UserInfoKey.meetingId.rawValue] as? UInt64,
+              let placeID = userInfo[UserInfoKey.placeId.rawValue] as? UInt64,
+              let placeName = userInfo[UserInfoKey.placeName.rawValue] as? String,
+              let address = userInfo[UserInfoKey.address.rawValue] as? String,
+              let likeCount = userInfo[UserInfoKey.likes.rawValue] as? UInt64,
+              let isPicked = userInfo[UserInfoKey.placeStatus.rawValue] as? String,
               let naverLink = userInfo["naverLink"] as? String,
               let kakaoLink = userInfo["kakaoLink"] as? String
         else {
@@ -48,7 +48,7 @@ struct PlaceAddedPayload: PayloadType {
         
         self.meetingID = meetingID
         self.placeID = placeID
-        self.placeSharerImage = userInfo["user"] as? String
+        self.placeSharerImage = userInfo[UserInfoKey.user.rawValue] as? String
         self.placeName = placeName
         self.address = address
         self.likeCount = likeCount

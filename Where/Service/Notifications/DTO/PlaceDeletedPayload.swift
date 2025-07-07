@@ -20,7 +20,7 @@ struct PlaceDeletedPayload: PayloadType {
         else {
             return nil
         }
-        guard let placeID = userInfo["id"] as? UInt64 else { return nil }
+        guard let placeID = userInfo[UserInfoKey.id.rawValue] as? UInt64 else { return nil }
         
         self.id = basicPayload.id
         self.title = basicPayload.title
