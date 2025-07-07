@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PlaceAddedPayload {
+struct PlaceAddedPayload: PayloadType {
     let meetingID: UInt64
     let placeID: UInt64
     let placeSharerImage: String?
@@ -18,7 +18,7 @@ struct PlaceAddedPayload {
     let naverLink: String
     let kakaoLink: String
     
-    private let basePayload: BasePayload
+    let _base: BasePayload
     
     init?(userInfo: [AnyHashable : Any]) {
         guard let basePayload = BasePayload(userInfo: userInfo)
@@ -38,7 +38,7 @@ struct PlaceAddedPayload {
             return nil
         }
         
-        self.basePayload = basePayload
+        self._base = basePayload
         
         self.meetingID = meetingID
         self.placeID = placeID
@@ -49,23 +49,5 @@ struct PlaceAddedPayload {
         self.isPicked = isPicked == "Picked"
         self.naverLink = naverLink
         self.kakaoLink = kakaoLink
-    }
-}
-
-extension PlaceAddedPayload: PayloadType  {
-    var id: UInt64 {
-        basePayload.id
-    }
-    
-    var title: String {
-        basePayload.title
-    }
-    
-    var content: String {
-        basePayload.content
-    }
-    
-    var type: NotificationType {
-        basePayload.type
     }
 }

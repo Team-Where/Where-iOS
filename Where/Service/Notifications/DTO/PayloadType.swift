@@ -8,16 +8,29 @@
 import Foundation
 
 protocol PayloadType {
-    var id: UInt64 { get }
-    var title: String { get }
-    var content: String { get }
-    var type: NotificationType { get }
+    var _base: BasePayload { get }
     
     init?(userInfo: [AnyHashable : Any])
 }
 
+extension PayloadType {
+    var id: UInt64 {
+        _base.id
+    }
+    var title: String {
+        _base.title
+    }
+    
+    var content: String {
+        _base.content
+    }
+    
+    var type: NotificationType {
+        _base.type
+    }
+}
 
-struct BasePayload: PayloadType {
+struct BasePayload {
     let id: UInt64
     let title: String
     let content: String
@@ -65,5 +78,6 @@ enum UserInfoKey: String {
     case likes
     /// 장소 선택 여부 키
     case placeStatus
-    
+    /// 같이 찾은 장소 여부 키
+    case together
 }

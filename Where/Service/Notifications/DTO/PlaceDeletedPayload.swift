@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct PlaceDeletedPayload{
+struct PlaceDeletedPayload: PayloadType {
     let placeID: UInt64
     
-    private let basePayload: BasePayload
+    let _base: BasePayload
     
     init?(userInfo: [AnyHashable : Any]) {
         guard let basePayload = BasePayload(userInfo: userInfo)
@@ -19,25 +19,7 @@ struct PlaceDeletedPayload{
         }
         guard let placeID = userInfo[UserInfoKey.id.rawValue] as? UInt64 else { return nil }
         
-        self.basePayload = basePayload
+        self._base = basePayload
         self.placeID = placeID
-    }
-}
-
-extension PlaceDeletedPayload: PayloadType {
-    var id: UInt64 {
-        basePayload.id
-    }
-    
-    var title: String {
-        basePayload.title
-    }
-    
-    var content: String {
-        basePayload.content
-    }
-    
-    var type: NotificationType {
-        basePayload.type
     }
 }
