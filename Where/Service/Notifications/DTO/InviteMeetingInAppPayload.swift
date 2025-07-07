@@ -37,6 +37,7 @@ struct InviteMeetingInAppPayload: PayloadType {
         else {
             return nil
         }
+        
         self.id = basicPayload.id
         self.title = basicPayload.title
         self.content = basicPayload.content
