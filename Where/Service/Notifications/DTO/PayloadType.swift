@@ -46,3 +46,24 @@ struct BasicPayload: PayloadType {
         self.type = type
     }
 }
+
+/// userInfo에서 꺼내올 키 값들의 열거형
+/// - rawValue로 접근해서 사용
+enum UserInfoKey: String {
+    case id
+    /// 모임 식별자 키
+    case meetingId
+    /// 장소 식별자 키
+    case placeId
+    /// 장소 공유한 유저 프로필 이미지 링크 키
+    case user
+    /// 장소 이름 키
+    case placeName
+    /// 장소 주소 키
+    case address
+    /// 좋아요 수 키
+    case likes
+    /// 장소 선택 여부 키
+    case placeStatus
+    
+}
