@@ -17,7 +17,7 @@ protocol PayloadType {
 }
 
 
-struct BasicPayload: PayloadType {
+struct BasePayload: PayloadType {
     let id: UInt64
     let title: String
     let content: String

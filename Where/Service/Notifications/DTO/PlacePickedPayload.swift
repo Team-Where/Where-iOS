@@ -7,30 +7,40 @@
 
 import Foundation
 
-struct PlacePickedPayload: PayloadType {
-    let id: UInt64
-    let title: String
-    let content: String
-    let type: NotificationType
-    
+struct PlacePickedPayload {
     let placeID: UInt64
     let isPicked: Bool
     
+    private let basePayload: BasePayload
+    
     init?(userInfo: [AnyHashable : Any]) {
-        guard let basicPayload = BasicPayload(userInfo: userInfo) else { return nil }
+        guard let basePayload = BasePayload(userInfo: userInfo) else { return nil }
         
         guard let placeID = userInfo[UserInfoKey.placeId.rawValue] as? UInt64,
               let isPicked = userInfo[UserInfoKey.placeStatus.rawValue] as? String
         else {
             return nil
         }
-        
-        self.id = basicPayload.id
-        self.title = basicPayload.title
-        self.content = basicPayload.content
-        self.type = basicPayload.type
-        
+        self.basePayload = basePayload
         self.placeID = placeID
         self.isPicked = isPicked == "Picked"
+    }
+}
+
+extension PlacePickedPayload:  PayloadType {
+    var id: UInt64 {
+        basePayload.id
+    }
+    
+    var title: String {
+        basePayload.title
+    }
+    
+    var content: String {
+        basePayload.content
+    }
+    
+    var type: NotificationType {
+        basePayload.type
     }
 }
