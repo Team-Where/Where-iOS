@@ -23,18 +23,27 @@ enum MapAppScheme {
         }
     }
     
-    func isAppInstalled() -> Bool {
-        guard let url = URL(string: baseURLString) else { return false }
+    private func isAppInstalled(_ url: URL) -> Bool {
         return UIApplication.shared.canOpenURL(url)
     }
     
     func openURL() -> URL? {
         switch self {
         case .kakaomap:
-            return URL(string: "\(baseURLString)open?page=placeSearch")
+            guard let deeplink = URL(string: "\(baseURLString)open?page=placeSearch"),
+                  let appstoreLink = URL(string: "https://apps.apple.com/app/id304608425")
+            else { return nil }
+            
+            guard isAppInstalled(deeplink) else { return appstoreLink }
+            return deeplink
         case .navermap:
-            guard let identifier = identifier else { return nil }
-            return URL(string: "\(baseURLString)map?&appname=\(identifier)")
+            guard let identifier = identifier,
+                  let deeplink = URL(string: "\(baseURLString)map?&appname=\(identifier)"),
+                  let appstoreLink = URL(string: "https://apps.apple.com/app/id311867728")
+            else { return nil }
+            
+            guard isAppInstalled(deeplink) else { return appstoreLink }
+            return deeplink
         }
     }
 }
