@@ -215,10 +215,8 @@ struct PlaceDetailView: View {
     private var mapButtonsArea: some View {
         HStack(spacing: 8) {
             Button {
-                if MapAppScheme.navermap.isAppInstalled(),
-                   let url = MapAppScheme.navermap.openURL() {
-                    openURL(url)
-                }
+                guard let url = MapAppScheme.navermap.openURL() else { return }
+                openURL(url)
             } label: {
                 HStack(spacing: 8) {
                     Spacer()
@@ -243,10 +241,8 @@ struct PlaceDetailView: View {
             }
             
             Button {
-                if MapAppScheme.kakaomap.isAppInstalled(),
-                   let url = MapAppScheme.kakaomap.openURL() {
-                    openURL(url)
-                }
+                guard let url = MapAppScheme.kakaomap.openURL() else { return }
+                openURL(url)
             } label: {
                 HStack(spacing: 8) {
                     Spacer()

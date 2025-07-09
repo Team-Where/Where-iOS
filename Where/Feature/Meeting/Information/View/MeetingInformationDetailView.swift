@@ -402,10 +402,8 @@ extension MeetingInformationDetailView {
                 .padding(.top)
                 
                 Button {
-                    if MapAppScheme.navermap.isAppInstalled(),
-                       let url = MapAppScheme.navermap.openURL() {
-                        openURL(url)
-                    }
+                    guard let url = MapAppScheme.navermap.openURL() else { return }
+                    openURL(url)
                 } label: {
                     HStack(spacing: 16) {
                         Image(.colorNaverMapLogo)
@@ -418,10 +416,8 @@ extension MeetingInformationDetailView {
                 .padding(.horizontal)
                 
                 Button {
-                    if MapAppScheme.kakaomap.isAppInstalled(),
-                       let url = MapAppScheme.kakaomap.openURL() {
-                        openURL(url)
-                    }
+                    guard let url = MapAppScheme.kakaomap.openURL() else { return }
+                    openURL(url)
                 } label: {
                     HStack(spacing: 16) {
                         Image(.colorKakaoMapLogo)
