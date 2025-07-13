@@ -27,7 +27,7 @@ enum CreateUserInquiryDTO {
         let imageURLStrings: [String]?
         let isAnswered: Bool
         let answerContent: String?
-        let modifiedAt: Date
+        let modifiedAt: String
         
         enum CodingKeys: String, CodingKey {
             case inquiryID = "id"
@@ -40,7 +40,7 @@ enum CreateUserInquiryDTO {
         func toEntity() -> Inquiry {
             .init(
                 id: inquiryID,
-                modifiedAt: modifiedAt,
+                modifiedAt: modifiedAt.toDate(by: .yyyyMMddHyphen) ?? .now,
                 title: title,
                 content: content,
                 imageURLs: (imageURLStrings ?? []).compactMap { URL(string: $0) },
