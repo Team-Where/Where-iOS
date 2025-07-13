@@ -27,12 +27,12 @@ extension ReadUserInquiriesDTO {
         let imageURLStrings: [String]?
         let isAnswered: Bool
         let answerContent: String?
-        let modifiedAt: Date
-        let answeredAt: Date?
+        let modifiedAt: String
+        let answeredAt: String?
         
         enum CodingKeys: String, CodingKey {
             case inquiryID = "id"
-            case isAnswered = "answerd"
+            case isAnswered = "answered"
             case imageURLStrings = "images"
             case modifiedAt = "inquiryDate"
             case answeredAt = "answerDate"
@@ -42,7 +42,7 @@ extension ReadUserInquiriesDTO {
         func toEntity() -> Inquiry {
             .init(
                 id: inquiryID,
-                modifiedAt: .now,
+                modifiedAt: modifiedAt.toDate(by: .yyyyMMddHyphen) ?? .now,
                 title: title,
                 content: content,
                 imageURLs: (imageURLStrings ?? []).compactMap { URL(string: $0) },
