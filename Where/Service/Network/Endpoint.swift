@@ -328,12 +328,12 @@ extension Endpoint: TargetType {
         case .createMeeting(let encodedMeetingData, let imageData):
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(encodedMeetingData), name: "data", mimeType: "application/json"))
-            formData.append(.init(provider: .data(imageData ?? Data()), name: "image",fileName: UUID().uuidString))
+            formData.append(.init(provider: .data(imageData ?? Data()), name: "image", fileName: "image.jpeg", mimeType: "image/*"))
             return .uploadMultipart(formData)
         case .updateMeeting(let encodedMeetingData, let imageData):
             var formData = [MultipartFormData]()
             formData.append(.init(provider: .data(encodedMeetingData), name: "data", mimeType: "application/json"))
-            formData.append(.init(provider: .data(imageData ?? Data()), name: "image", fileName: UUID().uuidString))
+            formData.append(.init(provider: .data(imageData ?? Data()), name: "image", fileName: "image.jpeg", mimeType: "image/*"))
             return .uploadMultipart(formData)
         case .endMeeting(let dto):
             return .requestJSONEncodable(dto)
@@ -386,7 +386,9 @@ extension Endpoint: TargetType {
             formData.append(.init(provider: .data(inquiryData), name: "data", mimeType: "application/json"))
             
             guard imageDatas.isEmpty == false else { return .uploadMultipart(formData) }
-            imageDatas.compactMap { $0 }.enumerated().forEach { formData.append(.init(provider: .data($0.element), name: "image\($0.offset)")) }
+            imageDatas.compactMap { $0 }.enumerated().forEach {
+                formData.append(.init(provider: .data($0.element), name: "image[]", fileName: "image\($0.offset).jpeg", mimeType: "image/*"))
+            }
             return .uploadMultipart(formData)
         case .readAdminInquiries:
             return .requestPlain
