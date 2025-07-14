@@ -14,6 +14,7 @@ struct EditInquiryView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isContentFieldFocused
     @State private var isFloaterPresented: Bool = false
+    @State private var floaterMessage = String()
     @State private var isPopupPresented: Bool = false
     @State private var titleFieldText = String()
     @State private var contentFieldText = String()
@@ -61,7 +62,7 @@ struct EditInquiryView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
-        .floater($isFloaterPresented, title: "잠시 후에 다시 시도해주세요.")
+        .floater($isFloaterPresented, title: floaterMessage)
         .padding()
         .onTapGesture {
             isContentFieldFocused = false
@@ -75,9 +76,14 @@ struct EditInquiryView: View {
         }
         .onReceive(viewModel.editInquiryCompletionPublisher) { isSuccess in
             guard isSuccess else {
+                floaterMessage = "잠시 후에 다시 시도해주세요."
                 return isFloaterPresented = true
             }
             dismiss()
+        }
+        .onReceive(viewModel.imageSizeExceedsLimitPublisher) { _ in
+            floaterMessage = "크기가 10MB 이하인 사진만 첨부할 수 있어요"
+            isFloaterPresented = true
         }
     }
     
@@ -127,6 +133,8 @@ extension EditInquiryView {
         static let legalProcessingGuideForAttachedFiles: String = "문의와 무관한 내용이거나 음란/불법적인 내용은 통보없이 삭제될 수 있습니다."
         /// 최대 첨부사진 개수
         static let maxAttachmentImageCount: Int = 5
+        /// 첨부 이미지 크기 제한 (MB)
+        static let maxImageSizeLimit: Int = 10 * 1024 * 1024
     }
 }
 

@@ -18,10 +18,12 @@ final class EditInquiryViewModel {
     var currentImageData: Data? { imageDatas[selectedIndex] }
     
     var editInquiryCompletionPublisher: AnyPublisher<Bool, Never> { editInquiryCompletionSubject.eraseToAnyPublisher() }
+    var imageSizeExceedsLimitPublisher: AnyPublisher<Void, Never> { imageSizeExceedsLimitSubject.eraseToAnyPublisher() }
     
     private(set) var isProcessing: Bool = false
     
     private let editInquiryCompletionSubject = PassthroughSubject<Bool, Never>()
+    private let imageSizeExceedsLimitSubject = PassthroughSubject<Void, Never>()
     
     private let supportCore: SupportCoreProtocol
     private let cancellableBag = CancellableBag()
@@ -38,6 +40,9 @@ extension EditInquiryViewModel {
     }
     
     func importImageData(_ data: Data) {
+        // 크기 검사
+        let maxImageSize = EditInquiryView.Constants.maxImageSizeLimit
+        guard data.count <= maxImageSize else { return imageSizeExceedsLimitSubject.send(()) }
         imageDatas[selectedIndex] = data
     }
 //    
