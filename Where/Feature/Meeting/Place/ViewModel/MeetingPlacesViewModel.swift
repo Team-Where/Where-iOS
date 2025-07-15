@@ -109,6 +109,8 @@ extension MeetingPlacesViewModel {
 // MARK: - Interfaces
 extension MeetingPlacesViewModel {
     func onAppear(meetingID: UInt64) {
+        placeCore.readPlaces(meetingID: meetingID)
+        
         placeCore.places
             .receive(on: DispatchQueue.main)
             .sink { completion in

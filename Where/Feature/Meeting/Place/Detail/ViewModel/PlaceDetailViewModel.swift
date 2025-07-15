@@ -61,7 +61,7 @@ extension PlaceDetailViewModel {
     
     func readComments(_ placeID: UInt64) {
         self.placeID = placeID
-        placeCore.readSpecificPlace(id: placeID)
+        placeCore.readComments(placeID: placeID)
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 guard case .failure(let error) = completion else { return }
