@@ -506,6 +506,21 @@ extension MeetingCore: MeetingCoreProtocol {
                 self?.invitedMeetingSubject.send((inviterName, $0))
             }
     }
+    
+    func readPendingMeetingInvitation() -> AnyPublisher<[PendingMeeting], MeetingCoreError>{
+        guard let user = currentUser
+        else {
+            return Fail(error: .userIDNotSet).eraseToAnyPublisher()
+        }
+        return apiService.requestPublisher(Endpoint.pendingMeetingInvites(userID: user.id), PendingMeetingInvitesDTO.Response.self)
+            .mapError {
+                MeetingCoreError.networkingError($0)
+            }
+            .map {
+                $0.map { $0.toEntity() }
+            }
+            .eraseToAnyPublisher()
+    }
 }
 
 // MARK: - MeetingMediationProtocol Conformation
