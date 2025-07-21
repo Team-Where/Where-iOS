@@ -9,7 +9,7 @@ import Foundation
 import Moya
 
 enum Endpoint {
-    // MARK: User Related
+    // MARK: - User Related
     /// 회원가입
     case register(dto: RegisterDTO.Request)
     /// 회원탈퇴
@@ -50,7 +50,7 @@ enum Endpoint {
     /// 친구 북마크
     case bookmarkFriend(dto: BookmarkFriendDTO.Request)
     
-    // MARK: Meeting Related
+    // MARK: - Meeting Related
     /// 모임 생성
     case createMeeting(encodedMeetingData: Data, imageData: Data?)
     /// 모임 수정
@@ -71,8 +71,10 @@ enum Endpoint {
     case acceptMeetingInvitationByLink(dto: AcceptMeetingInvitationByLinkDTO.Request)
     /// 초대장 링크로 모임 정보 조회
     case readMeetingDetailForInvitationLink(inviteCode: String)
+    /// 미수락 모임 목록 조회
+    case pendingMeetingInvites(userID: UInt64)
     
-    // MARK: Schedule Related
+    // MARK: - Schedule Related
     /// 모임 일정 등록
     /// - Note:
     ///     - date: yyyy-MM-dd 형식
@@ -88,7 +90,7 @@ enum Endpoint {
     /// 모임 일정 삭제
     case deleteSchedule(dto: DeleteScheduleDTO.Request)
     
-    // MARK: Place Related
+    // MARK: - Place Related
     /// 카카오맵을 사용해 장소 생성
     case createPlaceByKakaomap(dto: CreatePlaceDTO.RequestForKakaomap)
     /// 네이버지도를 사용해 장소 생성
@@ -110,7 +112,7 @@ enum Endpoint {
     /// 장소 코멘트 조회
     case readComments(placeID: UInt64, userID: UInt64)
     
-    // MARK: Document Related
+    // MARK: - Document Related
     /// 1:1문의 조회 - 일반 사용자
     case readUserInquiries(userID: UInt64)
     /// 1:1문의 작성 - 일반 사용자
@@ -224,7 +226,8 @@ extension Endpoint: TargetType {
             return "\(basePath)/invite/ok/link"
         case .readMeetingDetailForInvitationLink(let inviteCode):
             return "\(basePath)/invite/\(inviteCode)"
-            
+        case .pendingMeetingInvites(let userID):
+            return "/participant/\(userID)"
             // MARK: - Schedule Related
         case .createSchedule, .updateSchedule, .deleteSchedule:
             return "\(basePath)"
@@ -274,7 +277,8 @@ extension Endpoint: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink, .requestAuthCode, .checkLatestVersion: .get
+        case .readUserInquiries, .readAdminInquiries, .readFAQs, .readAnnouncements, .readUserInfo, .readMeetingDetail, .readInvitationStatus, .readSchedule, .readPlaceDetail, .readComments, .readFriends, .readMeetingDetailForInvitationLink, .requestAuthCode, .checkLatestVersion, .pendingMeetingInvites
+            : .get
         case .createAdminInquiryReply, .createUserInquiry, .createFAQ, .updateFAQ, .createAnnouncement, .login, .createMeeting, .inviteFriends, .acceptMeeetingInvitation, .acceptMeetingInvitationByLink, .checkEmailDuplication, .createSchedule, .createPlaceByKakaomap, .createPlaceByNavermap, .pickPlace, .togglePlaceLike, .createComment, .uploadProfile, .register, .reissueAccessToken, .loginWithKakao, .loginWithNaver, .loginWithApple, .verifyAuthCode, .registerFCMToken: .post
         case .updateAnnouncement, .endMeeting, .updateMeeting, .updateSchedule, .updateComment, .bookmarkFriend, .updateProfile, .updateNickname: .put
         case .deleteFAQ, .deleteAnnouncement, .leaveMeeting, .deleteSchedule, .deletePlace, .deleteComment, .deleteFriend, .unregister, .deleteProfile: .delete
@@ -348,6 +352,8 @@ extension Endpoint: TargetType {
         case .acceptMeetingInvitationByLink(let dto):
             return .requestJSONEncodable(dto)
         case .readMeetingDetailForInvitationLink:
+            return .requestPlain
+        case .pendingMeetingInvites:
             return .requestPlain
         case .createSchedule(let dto):
             return .requestJSONEncodable(dto)
@@ -452,7 +458,7 @@ private extension Endpoint {
             return "/token"
         case .requestAuthCode, .verifyAuthCode:
             return "/email"
-        case .readAnnouncements, .readFAQs, .checkLatestVersion:
+        case .readAnnouncements, .readFAQs, .checkLatestVersion, .pendingMeetingInvites:
             return ""
         @unknown default:
             return ""
