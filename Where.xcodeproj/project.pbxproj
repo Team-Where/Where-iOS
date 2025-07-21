@@ -217,6 +217,7 @@
 		04DEC6AB2DDB73DD0091DEF9 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */; };
 		7F2A11302E005E82004BA657 /* SharePlaceMeetingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */; };
 		7F2E93D02E2E82AB0098CD56 /* PendingMeetingInvitesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2E93CF2E2E82AB0098CD56 /* PendingMeetingInvitesDTO.swift */; };
+		7F2E93D22E2E8E580098CD56 /* PendingMeeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2E93D12E2E8E580098CD56 /* PendingMeeting.swift */; };
 		7F6D266D2DE4A00E001F47B9 /* AppSecret.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */; };
 		7F867ACF2E1AB3F4006FC6FF /* PlaceAddedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867ACE2E1AB3F4006FC6FF /* PlaceAddedPayload.swift */; };
 		7F867AD12E1AB60E006FC6FF /* PlaceDeletedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F867AD02E1AB60E006FC6FF /* PlaceDeletedPayload.swift */; };
@@ -465,6 +466,7 @@
 		04DEC6AA2DDB73DD0091DEF9 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		7F2A112F2E005E82004BA657 /* SharePlaceMeetingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePlaceMeetingListView.swift; sourceTree = "<group>"; };
 		7F2E93CF2E2E82AB0098CD56 /* PendingMeetingInvitesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingMeetingInvitesDTO.swift; sourceTree = "<group>"; };
+		7F2E93D12E2E8E580098CD56 /* PendingMeeting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingMeeting.swift; sourceTree = "<group>"; };
 		7F6D266C2DE4A00E001F47B9 /* AppSecret.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppSecret.xcconfig; sourceTree = "<group>"; };
 		7F867ACE2E1AB3F4006FC6FF /* PlaceAddedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceAddedPayload.swift; sourceTree = "<group>"; };
 		7F867AD02E1AB60E006FC6FF /* PlaceDeletedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceDeletedPayload.swift; sourceTree = "<group>"; };
@@ -563,6 +565,7 @@
 				04D5465C2DDB66A9003EEC85 /* User.swift */,
 				04D5465D2DDB66A9003EEC85 /* UserCredential.swift */,
 				04A9CC712E043D25005ADC8B /* SharedPlaceDataSource.swift */,
+				7F2E93D12E2E8E580098CD56 /* PendingMeeting.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1743,6 +1746,7 @@
 				04D547DE2DDB66A9003EEC85 /* SelectionTab.swift in Sources */,
 				04D547DF2DDB66A9003EEC85 /* NotificationListView.swift in Sources */,
 				04D547E02DDB66A9003EEC85 /* TokenPlugin.swift in Sources */,
+				7F2E93D22E2E8E580098CD56 /* PendingMeeting.swift in Sources */,
 				04D547E12DDB66A9003EEC85 /* FAQViewModel.swift in Sources */,
 				04D547E22DDB66A9003EEC85 /* AnnouncementViewModel.swift in Sources */,
 				04D547E32DDB66A9003EEC85 /* UpdateAnnouncementDTO.swift in Sources */,
