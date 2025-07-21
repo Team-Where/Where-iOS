@@ -8,11 +8,11 @@
 import Foundation
 
 enum PendingMeetingInvitesDTO {
-    typealias Response = [PendingMeeting]
+    typealias Response = [PendingMeetingDTO]
 }
 
 extension PendingMeetingInvitesDTO {
-    struct PendingMeeting {
+    struct PendingMeetingDTO: Decodable {
         let inviteID: UInt64
         let meetingID: UInt64
         let meetingImageURL: String?
