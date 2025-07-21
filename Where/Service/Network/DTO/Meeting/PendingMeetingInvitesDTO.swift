@@ -29,8 +29,15 @@ extension PendingMeetingInvitesDTO {
             case meetingTitle, scheduleDate, scheduleTime
         }
         
-        func toEntity() -> Meeting {
-            return .init(id: <#T##UInt64#>, title: <#T##String#>, description: <#T##String#>, createdAt: <#T##Date#>, isFinished: <#T##Bool#>)
+        
+        func toEntity() -> PendingMeeting {
+            return .init(inviteID: inviteID,
+                         meetingID: meetingID,
+                         meetingImageURL: URL(string: meetingImageURL ?? ""),
+                         hostNickname: hostNickname,
+                         meetingTitle: meetingTitle,
+                         scheduleDate: scheduleDate?.toDate(by: .yyyyMMddHyphen),
+                         scheduleTime: scheduleTime?.toDate(by: .HHmmss))
         }
     }
 }
