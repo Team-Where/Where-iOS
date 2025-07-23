@@ -15,4 +15,8 @@ struct PendingMeeting {
     let meetingTitle: String
     let scheduleDate: Date?
     let scheduleTime: Date?
+    
+    func asMeeting() -> Meeting {
+        return .init(id: meetingID, title: meetingTitle, description: "", imageURL: meetingImageURL, createdAt: .now, isFinished: false)
+    }
 }
