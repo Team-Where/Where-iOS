@@ -81,6 +81,8 @@ protocol MeetingCoreProtocol: CoreProtocol {
     ///     - inviterName: 초대한 사용자의 닉네임
     ///     - invitedCode: 초대 고유 코드
     func readMeetingDetailForInvitationLink(inviterName: String, inviteCode: String)
+    /// 미수락 모임 초대 목록 조회
+    func readPendingMeetingInvitation() -> AnyPublisher<[PendingMeeting], MeetingCoreError>
 }
 
 protocol MeetingMediationProtocol {
@@ -507,7 +509,7 @@ extension MeetingCore: MeetingCoreProtocol {
             }
     }
     
-    func readPendingMeetingInvitation() -> AnyPublisher<[PendingMeeting], MeetingCoreError>{
+    func readPendingMeetingInvitation() -> AnyPublisher<[PendingMeeting], MeetingCoreError> {
         guard let user = currentUser
         else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
