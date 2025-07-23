@@ -11,7 +11,9 @@ import Swinject
 struct NotificationListView: View {
     @State private var viewModel: NotificationListViewModel
     
+    private let resolver: Resolver
     init(resolver: Resolver) {
+        self.resolver = resolver
         self.viewModel = resolver.resolve(NotificationListViewModel.self)!
     }
     
@@ -56,8 +58,12 @@ struct NotificationListView: View {
     @ViewBuilder private func notificationsSection() -> some View {
         List {
             ForEach(viewModel.pendingMeetings, id: \.inviteID) { pendingMeeting in
-                notificationCell(pendingMeeting)
-                    .listRowSeparator(.hidden)
+                NavigationLink {
+                    AcceptInvitationView(inviterName: pendingMeeting.hostNickname, meeting: pendingMeeting.asMeeting(), resolver: resolver)
+                } label: {
+                    notificationCell(pendingMeeting)
+                        .listRowSeparator(.hidden)
+                }
             }
         }
         .listStyle(.plain)
