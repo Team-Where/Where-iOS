@@ -17,7 +17,7 @@ struct NotificationListView: View {
     
     var body: some View {
         VStack {
-            if viewModel.notifications.isEmpty {
+            if viewModel.pendingMeetings.isEmpty {
                 unavailableView()
             } else {
                 notificationsSection()
@@ -37,6 +37,9 @@ struct NotificationListView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
     }
     
     @ViewBuilder private func unavailableView() -> some View {
@@ -52,8 +55,8 @@ struct NotificationListView: View {
     
     @ViewBuilder private func notificationsSection() -> some View {
         List {
-            ForEach(viewModel.notifications) { notification in
-                notificationCell(notification)
+            ForEach(viewModel.pendingMeetings, id: \.inviteID) { pendingMeeting in
+                notificationCell(pendingMeeting)
                     .listRowSeparator(.hidden)
             }
         }
@@ -61,18 +64,27 @@ struct NotificationListView: View {
         .padding(.top)
     }
     
-    @ViewBuilder private func notificationCell(_ notification: Notification) -> some View {
+    @ViewBuilder private func notificationCell(_ pendingMeeting: PendingMeeting) -> some View {
         HStack(alignment: .top) {
-            ZStack {
-                Circle()
-                    .foregroundStyle(.accent.opacity(0.1))
+            AsyncImage(url: pendingMeeting.meetingImageURL) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
                     .frame(width: 50, height: 50)
-                
-                Image(.logoColorShort)
+                    .clipShape(Circle())
+                    
+            } placeholder: {
+                ZStack {
+                    Circle()
+                        .foregroundStyle(.accent.opacity(0.1))
+                        .frame(width: 50, height: 50)
+                    
+                    Image(.logoColorShort)
+                }
             }
-            
+
             VStack(alignment: .leading, spacing: 3) {
-                Text(notification.title)
+                Text("모임 초대")
                     .whereFont(.body16medium)
                     .foregroundStyle(.where(.gray800))
                     .overlay(alignment: .topTrailing) {
@@ -85,16 +97,12 @@ struct NotificationListView: View {
                             }
                     }
                 
-                Text(notification.content)
+                Text("\(pendingMeeting.hostNickname)님이 \(pendingMeeting.meetingTitle) 모임에 초대했어요.")
                     .whereFont(.body14regular)
                     .foregroundStyle(.where(.gray600))
             }
             
             Spacer()
-            
-            Text(notification.date.relativeTimeDisplay())
-                .whereFont(.caption12regular)
-                .foregroundStyle(.where(.gray600))
         }
         .padding(.top)
     }
