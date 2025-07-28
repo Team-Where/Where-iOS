@@ -10,8 +10,7 @@ import Combine
 import Swinject
 
 final class MeetingInformationDetailViewModel: ObservableObject {
-    @Published var invitedFriends = [MeetingInvitationState]()
-    @Published var watingFriends = [MeetingInvitationState]()
+    @Published var friends = [MeetingInvitationState]()
     @Published var places = [Place]()
     @Published var meeting: Meeting = Meeting(id: 0, title: "", description: "", createdAt: .now, isFinished: false)
     @Published private(set) var processingState: ProcessingState = .waiting
@@ -40,8 +39,7 @@ final class MeetingInformationDetailViewModel: ObservableObject {
             .sink { completion in
                 
             } receiveValue: { [weak self] status in
-                self?.invitedFriends = status.filter { $0.isInvited }
-                self?.watingFriends = status.filter { $0.isInvited == false }
+                self?.friends = status
             }
             .store(in: cancellableBag, key: "InvitationStatus")
         
