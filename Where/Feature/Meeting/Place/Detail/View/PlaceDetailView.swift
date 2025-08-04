@@ -126,9 +126,9 @@ struct PlaceDetailView: View {
                     .overlay(alignment: .topLeading) {
                         if place.isSimulaneouslyShared {
                             Text("같이 찾은 장소")
-                                .whereFont(.caption11regular)
+                                .whereFont(.caption12regular)
                                 .foregroundStyle(.white)
-                                .padding(.horizontal, 5)
+                                .padding(.horizontal, 7)
                                 .padding(.vertical, 2)
                                 .background(
                                     RoundedRectangle(cornerRadius: 17)

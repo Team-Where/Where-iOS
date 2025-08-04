@@ -24,9 +24,12 @@ protocol PlaceCoreProtocol: CoreProtocol {
     ///     - name: 장소명
     ///     - address: 장소 주소
     func createPlaceByNavermap(meetingID: UInt64, name: String, address: String) -> AnyPublisher<Void, PlaceCoreError>
-    /// 특정 장소의 상세 정보 조회
-    /// 현재는 코멘트 불러오는 용도
-    func readSpecificPlace(id: UInt64) -> AnyPublisher<[UInt64: Comment], PlaceCoreError>
+    /// 모임별 장소 목록 조회
+    func readPlaces(meetingID: UInt64)
+    /// 특정 장소의 코멘트 목록 조회
+    /// - Parameters:
+    ///     - placeID: 장소 식별자
+    func readComments(placeID: UInt64) -> AnyPublisher<[UInt64: Comment], PlaceCoreError>
     /// 장소 삭제
     func deletePlace(id: UInt64) -> AnyPublisher<Void, PlaceCoreError>
     /// 장소 선택
@@ -45,8 +48,6 @@ protocol PlaceCoreProtocol: CoreProtocol {
 }
 
 protocol PlaceMediationProtocol {
-    /// 모임별 장소 목록 로드를 지시, 중재자에 의해 호출됨
-    func loadPlaces(meetings: [UInt64: Meeting])
     /// 현재 사용자 식별자를 설정, 중재자에 의해 호출됨
     func setCurrentUserID(_ id: UInt64?)
     /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
@@ -122,12 +123,27 @@ extension PlaceCore: PlaceCoreProtocol {
             .eraseToAnyPublisher()
     }
     
-    func readSpecificPlace(id: UInt64) -> AnyPublisher<[UInt64: Comment], PlaceCoreError> {
+    func readPlaces(meetingID: UInt64) {
+        guard let userId = currentUserID else { return }
+        
+        apiService.requestPublisher(Endpoint.readPlaceDetail(userID: userId, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
+            .sink { [weak self] completion in
+                guard case .failure(let error) = completion else { return }
+                print("장소 목록 조회 실패: \(error.localizedDescription)")
+                self?.placesSubject.send([:])
+            } receiveValue: { [weak self] response in
+                let placesDict = response.map { $0.toEntity(meetingID: meetingID) }.reduce(into: [:]) { $0[$1.id] = $1 }
+                self?.placesSubject.send(placesDict)
+            }
+            .store(in: cancellableBag, key: #function)
+    }
+    
+    func readComments(placeID: UInt64) -> AnyPublisher<[UInt64: Comment], PlaceCoreError> {
         guard let userID = currentUserID else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         return apiService
-            .requestPublisher(Endpoint.readComments(placeID: id, userID: userID), ReadCommentsDTO.Response.self)
+            .requestPublisher(Endpoint.readComments(placeID: placeID, userID: userID), ReadCommentsDTO.Response.self)
             .mapError { PlaceCoreError.networkingError($0)}
             .map { response in
                 return response
@@ -268,36 +284,6 @@ extension PlaceCore: PlaceCoreProtocol {
 
 // MARK: - PlaceMediationProtocol Conformation
 extension PlaceCore: PlaceMediationProtocol {
-    func loadPlaces(meetings: [UInt64: Meeting]) {
-        guard let userID = currentUserID else { return }
-        
-        let publishers = meetings.keys.map { meetingID in
-            apiService.requestPublisher(Endpoint.readPlaceDetail(userID: userID, meetingID: meetingID), ReadPlaceDetailDTO.Response.self)
-                .map { response in
-                    response.map { $0.toEntity(meetingID: meetingID) }
-                }
-                .catch { error in
-                    Just([])
-                }
-        }
-        
-        Publishers.MergeMany(publishers)
-            .collect()
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                case .failure(let error):
-                    print(error)
-                }
-            } receiveValue: { [weak self] responses in
-                guard var places = self?.placesSubject.value else { return }
-                let newPlaces = responses.flatMap { $0 }
-                newPlaces.forEach { places[$0.id] = $0 }
-                self?.placesSubject.send(places)
-            }
-            .store(in: cancellableBag, key: #function)
-    }
-    
     func setCurrentUserID(_ id: UInt64?) {
         currentUserID = id
     }

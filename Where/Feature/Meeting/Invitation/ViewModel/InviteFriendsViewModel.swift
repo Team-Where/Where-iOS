@@ -149,8 +149,14 @@ extension InviteFriendsViewModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
-                case .finished: self?.floaterType = .invited
-                case .failure: self?.floaterType = .errorOccured(message: "친구 초대가 이루어지지 않았어요.")
+                case .finished:
+                    self?.floaterType = .invited
+                    guard let index = self?.friendsDataSource.firstIndex(where: { $0.friend.id == friend.id }) else { return }
+                    self?.friendsDataSource[index].isInvited.toggle()
+                    
+                case .failure:
+                    self?.floaterType = .errorOccured(message: "친구 초대가 이루어지지 않았어요.")
+                    
                 }
             } receiveValue: { _ in }
     }

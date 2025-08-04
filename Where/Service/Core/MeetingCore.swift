@@ -146,7 +146,6 @@ final class MeetingCore {
         meetingsSubject
             .sink { [weak self] dict in
                 self?._meetings = dict
-                self?.mediator?.notify(event: .meetingsLoaded(dict))
             }
             .store(in: cancellableBag, key: "MeetingsSubject")
     }

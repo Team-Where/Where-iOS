@@ -49,11 +49,11 @@ struct MeetingInformationDetailView: View {
                     .padding(.bottom)
                     .padding(.horizontal)
                 
-                friendsList(viewModel.invitedFriends, isInvited: true)
+                friendsList(viewModel.friends)
                     .padding(.bottom)
                     .padding(.horizontal)
                 
-                friendsList(viewModel.watingFriends, isInvited: false)
+                friendsListWithKakao(.zero)
                     .padding(.bottom)
                     .padding(.horizontal)
             }
@@ -149,10 +149,6 @@ struct MeetingInformationDetailView: View {
             summaryCell(.sharedPlace(count: viewModel.places.count)) {
                 sheetType = .sharePlace
             }
-            
-            summaryCell(.invitedFriends(count: viewModel.invitedFriends.count)) {
-                navigationType = .inviteFriends
-            }
         }
         .padding()
         .background(
@@ -173,16 +169,6 @@ struct MeetingInformationDetailView: View {
             case .sharedPlace(let count):
                 HStack {
                     Text("공유된 장소")
-                        .whereFont(.body14regular)
-                        .foregroundStyle(Color(hex: 0x212529))
-                    
-                    Text("\(count)")
-                        .whereFont(.body14semibold)
-                        .foregroundStyle(.accent)
-                }
-            case .invitedFriends(let count):
-                HStack {
-                    Text("초대된 친구")
                         .whereFont(.body14regular)
                         .foregroundStyle(Color(hex: 0x212529))
                     
@@ -214,14 +200,26 @@ struct MeetingInformationDetailView: View {
         }
     }
     
-    @ViewBuilder private func friendsList(_ states: [MeetingInvitationState], isInvited: Bool) -> some View {
+    @ViewBuilder private func friendsList(_ states: [MeetingInvitationState]) -> some View {
         VStack(spacing: 16) {
-            HStack {
-                Text(isInvited ? "초대된 친구" : "수락을 기다리는 친구")
+            HStack(spacing: 4) {
+                Text("초대된 친구")
                     .whereFont(.body16semibold)
                     .foregroundStyle(Color(hex: 0x1F2937))
                 
+                Text("\(states.filter({$0.isInvited == true}).count)")
+                    .whereFont(.body14semibold)
+                    .foregroundStyle(.where(hex: 0x4F46E5))
+                
                 Spacer()
+                
+                Button {
+                    navigationType = .inviteFriends
+                } label: {
+                    Label("친구 초대", systemImage: "plus.circle.fill")
+                        .whereFont(.body14medium)
+                        .foregroundStyle(.where(hex: 0x4F46E5))
+                }
             }
             
             Divider()
@@ -238,7 +236,7 @@ struct MeetingInformationDetailView: View {
                     
                     Spacer()
                     
-                    if isInvited == false {
+                    if state.isInvited == false {
                         Text("대기중")
                             .whereFont(.caption12regular)
                             .foregroundStyle(Color(hex: 0x6B7280))
@@ -282,6 +280,30 @@ struct MeetingInformationDetailView: View {
                 .shadow(color: Color(hex: 0x566271).opacity(0.1), radius: 1, y: 4)
         )
     }
+    
+    @ViewBuilder private func friendsListWithKakao(_ count: Int) -> some View {
+        HStack(spacing: 28) {
+            Image(.kakaotalkIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 30, height: 30)
+            
+            Text("카카오톡 수락을 기다리는 친구")
+                .whereFont(.body14semibold)
+                .foregroundStyle(.where(.gray900))
+            
+            Spacer()
+            
+            Text("\(count)명")
+                .whereFont(.body14semibold)
+                .foregroundStyle(.where(.gray900))
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.where(.gray100))
+        )
+    }
 }
 
 // MARK: Nested Types
@@ -291,7 +313,6 @@ extension MeetingInformationDetailView {
         
         case date(date: Date?)
         case sharedPlace(count: Int)
-        case invitedFriends(count: Int)
         
         var id: String { String(describing: self) }
         
@@ -308,12 +329,6 @@ extension MeetingInformationDetailView {
                     Image(.colorSharedPlaceMarkerIcon),
                     Image(.addPlusCircleIcon),
                     "장소 공유"
-                )
-            case .invitedFriends:
-                (
-                    Image(.colorInvitedFriendsIcon),
-                    Image(.addUserIcon),
-                    "친구 초대"
                 )
             }
         }
@@ -785,4 +800,8 @@ extension MeetingInformationDetailView {
         /// 친구 초대
         case inviteFriends
     }
+}
+
+#Preview {
+    MeetingInformationView(resolver: PreviewHelper.shared.resolver, meetingID: 32)
 }

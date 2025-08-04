@@ -19,7 +19,6 @@ enum CoreEvent {
     case removeNotification(id: UInt64)
     
     // MARK: - Place Related
-    case meetingsLoaded([UInt64: Meeting])
     
     // MARK: - Support Related
     
