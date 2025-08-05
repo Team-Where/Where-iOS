@@ -77,7 +77,7 @@ extension MeetingInformationDetailViewModel {
     }
     
     func onAppear(meetingID: UInt64) {
-        meetingCore.readInvitaionStatus(id: meeting.id)
+        meetingCore.readInvitationStatus(id: meeting.id)
         
         placeCore.places
             .sink { [weak self] dict in
