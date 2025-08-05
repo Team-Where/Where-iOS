@@ -16,7 +16,7 @@ extension ReadInvitationStatusDTO {
         let hostName: String
         let guestID: UInt64
         let guestName: String
-        let isInvited: Bool
+        let isAccepted: Bool
         let guestImageURLString: String?
         
         enum CodingKeys: String, CodingKey {
@@ -24,7 +24,7 @@ extension ReadInvitationStatusDTO {
             case hostName = "fromName"
             case guestID = "toId"
             case guestName = "toName"
-            case isInvited = "status"
+            case isAccepted = "status"
             case guestImageURLString = "toImage"
         }
         
@@ -34,7 +34,8 @@ extension ReadInvitationStatusDTO {
                 hostName: hostName,
                 guestID: guestID,
                 guestName: guestName,
-                isInvited: isInvited,
+                isInvited: true,
+                isAccepted: isAccepted,
                 guestImageURLString: guestImageURLString
             )
         }

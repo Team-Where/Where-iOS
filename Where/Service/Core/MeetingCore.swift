@@ -59,7 +59,7 @@ protocol MeetingCoreProtocol: CoreProtocol {
     /// 모임 초대 현황 조회
     ///  - Parameters:
     ///     - id: 모임의 고유 식별자
-    func readInvitaionStatus(id: UInt64)
+    func readInvitationStatus(id: UInt64)
     /// 모임 초대
     /// - Parameters:
     ///     - id: 모임의 고유 식별자
@@ -391,7 +391,7 @@ extension MeetingCore: MeetingCoreProtocol {
     
     // MARK: - Invitation Related
 
-    func readInvitaionStatus(id: UInt64) {
+    func readInvitationStatus(id: UInt64) {
         guard let _ = currentUser else { return }
         
         cancellableBag[#function] = apiService.requestPublisher(Endpoint.readInvitationStatus(meetingID: id), ReadInvitationStatusDTO.Response.self)
@@ -428,7 +428,8 @@ extension MeetingCore: MeetingCoreProtocol {
                     hostName: nickname,
                     guestID: guest.id,
                     guestName: guest.nickname,
-                    isInvited: false,
+                    isInvited: true,
+                    isAccepted: false,
                     guestImageURLString: guest.imageURL?.absoluteString
                 )
                 
