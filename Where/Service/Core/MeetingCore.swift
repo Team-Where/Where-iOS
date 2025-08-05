@@ -426,7 +426,8 @@ extension MeetingCore: MeetingCoreProtocol {
                     hostName: nickname,
                     guestID: guest.id,
                     guestName: guest.nickname,
-                    isInvited: false,
+                    isInvited: true,
+                    isAccepted: false,
                     guestImageURLString: guest.imageURL?.absoluteString
                 )
                 

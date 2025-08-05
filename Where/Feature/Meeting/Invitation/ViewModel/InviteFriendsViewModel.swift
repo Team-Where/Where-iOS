@@ -48,14 +48,29 @@ final class InviteFriendsViewModel: ObservableObject {
             }
             .store(in: cancellableBag, key: "SearchingText")
         
+        let invitationStatesPublisher = meetingCore.invitationStatus
+            .combineLatest($_meetingID)
+            .compactMap { (dict, id) -> [MeetingInvitationState]? in
+                guard let id else { return nil }
+                return dict[id]
+            }
+            .share()
+        
+        invitationStatesPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] status in
+                self?.invitationStatesDict = status.reduce(into: [:]) { $0[$1.guestID] = $1 }
+                self?.invitationStates = status
+            }
+            .store(in: cancellableBag, key: "InvitationStatus")
+        
         communityCore.friends
             .combineLatest(
+                invitationStatesPublisher.map { $0.reduce(into: [:]) { $0[$1.guestID] = $1 } },
                 meetingCore.relatedMeetingIDs,
                 meetingCore.meetingSummaries
             )
-            .map { [weak self] friends, relatedMeetings, summaries in
-                guard let self else { return [] }
-                
+            .map { friends, invitationDict, relatedMeetings, summaries in
                 var dataSource = [FriendCellDataSource]()
                 let now = Date.now
                 
@@ -63,11 +78,14 @@ final class InviteFriendsViewModel: ObservableObject {
                     let friendID = friend.id
                     let sharedMeetingIDs = relatedMeetings[friendID] ?? []
                     let count = sharedMeetingIDs.count
-                    let isInvited = self.invitationStatesDict[friendID]?.isInvited ?? false
+                    
+                    let isInvited = invitationDict[friendID] != nil
+                    
                     let isRecent = sharedMeetingIDs.contains {
                         guard let summary = summaries[$0] else { return false }
                         return summary.finishedAt.isRecent(compareTo: now)
                     }
+                    
                     let item = FriendCellDataSource(
                         id: friendID,
                         friend: friend,
@@ -110,7 +128,7 @@ final class InviteFriendsViewModel: ObservableObject {
                 self?.invitationStatesDict = status.reduce(into: [:]) { $0[$1.guestID] = $1 }
                 self?.invitationStates = status
             }
-            .store(in: cancellableBag, key: "InvitationStatus")
+            .store(in: cancellableBag, key: "FriendsDataSource")
     }
 }
 
@@ -151,12 +169,8 @@ extension InviteFriendsViewModel {
                 switch completion {
                 case .finished:
                     self?.floaterType = .invited
-                    guard let index = self?.friendsDataSource.firstIndex(where: { $0.friend.id == friend.id }) else { return }
-                    self?.friendsDataSource[index].isInvited.toggle()
-                    
                 case .failure:
                     self?.floaterType = .errorOccured(message: "친구 초대가 이루어지지 않았어요.")
-                    
                 }
             } receiveValue: { _ in }
     }
@@ -176,5 +190,6 @@ extension InviteFriendsViewModel {
     
     func setMeeting(id: UInt64) {
         self._meetingID = id
+        meetingCore.readInvitationStatus(id: id)
     }
 }

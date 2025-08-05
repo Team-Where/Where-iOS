@@ -13,6 +13,7 @@ struct MeetingInvitationState {
     let guestID: UInt64
     let guestName: String
     var isInvited: Bool
+    var isAccepted: Bool
     let guestImageURL: URL?
     
     init(
@@ -21,6 +22,7 @@ struct MeetingInvitationState {
         guestID: UInt64,
         guestName: String,
         isInvited: Bool,
+        isAccepted: Bool,
         guestImageURLString: String?
     ) {
         self.hostID = hostID
@@ -28,6 +30,7 @@ struct MeetingInvitationState {
         self.guestID = guestID
         self.guestName = guestName
         self.isInvited = isInvited
+        self.isAccepted = isAccepted
         self.guestImageURL = URL(string: guestImageURLString ?? "")
     }
 }
