@@ -45,7 +45,7 @@ struct CreateMeetingView: View {
             
             Spacer()
         }
-        .padding()
+        .contentMargins(.all, 16)
         .popup($viewModel.isPopupPresented) {
             ImageSelectionPopupView(isPopupPresented: $viewModel.isPopupPresented) { imageData in
                 viewModel.selectedImage = imageData
@@ -72,7 +72,7 @@ struct CreateMeetingView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
-        .padding(.top)
+        .padding([.top, .trailing])
     }
     
     private var header: some View {
@@ -88,6 +88,7 @@ struct CreateMeetingView: View {
             
             Spacer()
         }
+        .padding([.top, .horizontal])
     }
     
     @ViewBuilder private func content(_ step: MeetingCreationStep) -> some View {
@@ -138,6 +139,7 @@ extension CreateMeetingView {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.whereRoundedProminent(disabled: viewModel.disabled))
+                .padding([.horizontal, .bottom])
             }
             .clipShape(.rect)
             .onTapGesture {
@@ -276,6 +278,7 @@ extension CreateMeetingView {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.whereRoundedProminent())
+                .padding([.horizontal, .bottom])
             }
         }
         
@@ -397,8 +400,8 @@ extension CreateMeetingView.InvitationView {
     }
 }
 
-//#Preview {
-//    NavigationStack {
-//        CreateMeetingView(resolver: PreviewHelper.shared.resolver)
-//    }
-//}
+#Preview {
+    NavigationStack {
+        CreateMeetingView(resolver: PreviewHelper.shared.resolver, sheetType: .constant(.createMeeting), fullScreenCoverType: .constant(.none))
+    }
+}
