@@ -96,6 +96,8 @@ protocol MeetingMediationProtocol {
     func loadAllMeetings()
     /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
     func userDidLogout()
+    /// 인앱 모임 초대 처리를 지시, 중재자에 의해 호출됨
+    func performInAppMeetingInvitation(title: String, imageURL: String?, inviterName: String, scheduledTime: String?, scheduledDate: String?, meetingID: UInt64)
 }
 
 enum MeetingCoreError: Error {
@@ -569,5 +571,20 @@ extension MeetingCore: MeetingMediationProtocol {
         relatedMeetingIDsSubject.send([:])
         meetingSummariesSubject.send([:])
         invitationStatusSubject.send([:])
+    }
+    
+    func performInAppMeetingInvitation(title: String, imageURL: String?, inviterName: String, scheduledTime: String?, scheduledDate: String?, meetingID: UInt64) {
+        let meeting = Meeting(
+            id: meetingID,
+            title: title,
+            description: "",
+            imageURL: URL(string: imageURL ?? ""),
+            createdAt: .now,
+            scheduleDate: scheduledDate?.toDate(by: .yyyyMMddHyphen),
+            scheduleTime: scheduledTime?.toDate(by: .serverDateTime2),
+            isFinished: false
+        )
+        
+        invitedMeetingSubject.send((name: inviterName, meeting: meeting))
     }
 }

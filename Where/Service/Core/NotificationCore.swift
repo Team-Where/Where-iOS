@@ -125,10 +125,22 @@ extension NotificationCore: NotificationCoreProtocol {
     }
     
     func handleReceivedNotificationPayload(_ payload: [AnyHashable: Any]) {
-        guard let payload = payload as? [String: String] else {
+        guard let payload = payload as? [String: Any] else {
             return print("알림 캐스팅 실패")
         }
-        print("알림 수신됨! / payload\n: \(payload)")
+        print("알림 수신됨! / payload:\n \(payload)")
+        
+        guard let title = payload["meetingTitle"] as? String,
+              let imageURL = payload["meetingImage"] as? String?,
+              let inviterName = payload["fromNickName"] as? String,
+              let scheduledTime = payload["scheduleTime"] as? String?,
+              let scheduledDate = payload["scheduleDate"] as? String?
+        else { return print("알림 파싱 실패") }
+        
+        let meetingIDRaw = payload["meetingId"]
+        guard let meetingID = (meetingIDRaw as? Int).flatMap({ UInt64($0) }) ?? (meetingIDRaw as? String).flatMap({ UInt64($0) }) else { return print("알림 파싱 실패: meetingID") }
+        
+        mediator?.notify(event: .inAppMeetingInvited(title: title, imageURL: imageURL, inviterName: inviterName, scheduledTime: scheduledTime, scheduledDate: scheduledDate, meetingID: meetingID))
     }
     
     func setFCMToken(_ fcmToken: String) {

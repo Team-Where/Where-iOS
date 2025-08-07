@@ -99,6 +99,9 @@ extension CoreMediator: Notifiable {
         case .removeNotification(let id):
             notificationCore.removeNotifications(for: id)
             
+        case .inAppMeetingInvited(let title, let imageURL, let inviterName, let scheduledTime, let scheduledDate, let meetingID):
+            meetingCore.performInAppMeetingInvitation(title: title, imageURL: imageURL, inviterName: inviterName, scheduledTime: scheduledTime, scheduledDate: scheduledDate, meetingID: meetingID)
+            
         case .applicationDidLaunch:
             authentificationCore.loadCurrentUser()
             supportCore.loadAnnouncements()
