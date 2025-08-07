@@ -51,7 +51,6 @@ struct AcceptInvitationView: View {
                     .foregroundStyle(.where(.gray800))
             }
         }
-        .padding()
         .fullScreenCover(isPresented: $isLoginViewPresented) {
             LoginView(resolver: resolver)
         }
@@ -157,5 +156,11 @@ struct AcceptInvitationView: View {
 extension AcceptInvitationView {
     enum NavigationType: Hashable {
         case meetingInfo(Meeting)
+    }
+}
+
+#Preview {
+    NavigationStack {
+        AcceptInvitationView(inviterName: nil, meeting: nil, resolver: PreviewHelper.shared.resolver)
     }
 }
