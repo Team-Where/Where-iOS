@@ -108,3 +108,53 @@ enum UserInfoKey: String {
     /// 모임 일정 시간 키
     case scheduleTime
 }
+
+// MARK: - FCMPayload
+
+protocol FCMPayload: Decodable {
+    var aps: APS { get }
+    var code: String { get }
+    var googleCAE: String { get }
+    var googleCSenderID: String { get }
+    var gcmMessageID: String { get }
+    var googleCFid: String { get }
+}
+
+struct APS: Decodable {
+    let alert: Alert
+}
+
+extension APS {
+    struct Alert: Decodable {
+        let title: String
+        let body: String
+    }
+}
+
+struct InvitationPayload: FCMPayload {
+    let aps: APS
+    let code: String
+    let googleCAE: String
+    let googleCSenderID: String
+    let gcmMessageID: String
+    let googleCFid: String
+    
+    let inviteID: String
+    let hostNickname: String
+    let meetingID: String
+    let meetingImage: String?
+    let meetingTitle: String
+    let scheduleDate: String?
+    let scheduleTime: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case aps, code, meetingTitle, meetingImage, scheduleDate, scheduleTime
+        case googleCAE = "google.c.a.e"
+        case googleCSenderID = "google.c.sender.id"
+        case gcmMessageID = "gcm.message_id"
+        case googleCFid = "google.c.fid"
+        case hostNickname = "fromNickName"
+        case inviteID = "inviteId"
+        case meetingID = "meetingId"
+    }
+}
