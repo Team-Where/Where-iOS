@@ -137,6 +137,23 @@ extension NotificationCore: NotificationCoreProtocol {
         guard currentUserID != nil else { return }
         registerFCMToken(fcmToken)
     }
+    
+    private func decodePayload(_ data: Data, notificationType: NotificationType) -> FCMPayload? {
+        switch notificationType {
+        case .inviteMeetingInApp:
+            return try? decoder.decode(InvitationPayload.self, from: data)
+        default:
+            return nil
+        }
+    }
+    
+    private func payloadSerialization(_ payload: [String: Any]) -> Data? {
+        guard JSONSerialization.isValidJSONObject(payload)
+        else {
+            return nil
+        }
+        return try? JSONSerialization.data(withJSONObject: payload, options: [])
+    }
 }
 
 // MARK: - NotificationMediationProtocol Conformation
