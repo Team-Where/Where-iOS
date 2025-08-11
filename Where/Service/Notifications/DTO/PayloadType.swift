@@ -157,4 +157,16 @@ struct InvitationPayload: FCMPayload {
         case inviteID = "inviteId"
         case meetingID = "meetingId"
     }
+    
+    func asMeeting() -> Meeting {
+        return .init(
+            id: UInt64(meetingID) ?? 1,
+            title: meetingTitle,
+            description: "",
+            imageURL: URL(string: meetingImage ?? ""),
+            createdAt: .now,
+            scheduleDate: scheduleDate?.toDate(by: .yyyyMMddHyphen),
+            scheduleTime: scheduleTime?.toDate(by: .serverDateTime2),
+            isFinished: false)
+    }
 }

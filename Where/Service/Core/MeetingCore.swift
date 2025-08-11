@@ -97,7 +97,7 @@ protocol MeetingMediationProtocol {
     /// 사용자 로그아웃 시 작업 수행을 지시, 중재자에 의해 호출됨
     func userDidLogout()
     /// 모임 초대 알림 터치시 발생할 이벤트, 중재자에 의해 호출 됨.
-    func perfomInAppMeetingInvitation(id: String, title: String, imageURL: String?, inviterName: String, scheduleTime: String?, scheduleDate: String?)
+    func perfomInAppMeetingInvitation(inviterName: String, meeting: Meeting)
 }
 
 enum MeetingCoreError: Error {
@@ -573,17 +573,7 @@ extension MeetingCore: MeetingMediationProtocol {
         invitationStatusSubject.send([:])
     }
     
-    func perfomInAppMeetingInvitation(id: String, title: String, imageURL: String?, inviterName: String, scheduleTime: String?, scheduleDate: String?) {
-        let meeting = Meeting(
-            id: UInt64(id) ?? 1,
-            title: title,
-            description: "",
-            imageURL: URL(string: imageURL ?? ""),
-            createdAt: .now,
-            scheduleDate: scheduleDate?.toDate(by: .yyyyMMddHyphen),
-            scheduleTime: scheduleTime?.toDate(by: .serverDateTime2),
-            isFinished: false)
-        
+    func perfomInAppMeetingInvitation(inviterName: String, meeting: Meeting) {
         invitedMeetingSubject.send((inviterName, meeting))
     }
 }

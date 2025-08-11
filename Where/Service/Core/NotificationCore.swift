@@ -149,7 +149,7 @@ extension NotificationCore: NotificationCoreProtocol {
         
         switch notification {
         case let invitaion as InvitationPayload:
-            mediator?.notify(event: .inAppMeetingInvitation(id: invitaion.meetingID, title: invitaion.meetingTitle, imageURL: invitaion.meetingImage, inviterName: invitaion.hostNickname, scheduleDate: invitaion.scheduleDate,scheduleTime: invitaion.scheduleTime))
+            mediator?.notify(event: .inAppMeetingInvitation(inviterName: invitaion.hostNickname, meeting: invitaion.asMeeting()))
         default: return
         }
         
