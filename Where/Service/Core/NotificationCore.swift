@@ -50,13 +50,16 @@ final class NotificationCore {
     
     private let apiService: APIServable
     private let localNotificationService: LocalNotificationService
+    private let decoder: JSONDecoder
     
     init(
         apiService: APIServable,
+        decoder: JSONDecoder,
         _ localNotificationService: LocalNotificationService
     ) {
         self.apiService = apiService
         self.localNotificationService = localNotificationService
+        self.decoder = decoder
         subscribe()
     }
     
@@ -125,10 +128,31 @@ extension NotificationCore: NotificationCoreProtocol {
     }
     
     func handleReceivedNotificationPayload(_ payload: [AnyHashable: Any]) {
-        guard let payload = payload as? [String: String] else {
+        guard let payload = payload as? [String: Any] else {
             return print("알림 캐스팅 실패")
         }
-        print("알림 수신됨! / payload\n: \(payload)")
+        guard let codeString = payload["code"] as? String,
+              let code = Int(codeString),
+              let type = NotificationType(rawValue: code)
+        else {
+            return
+        }
+        
+        var notification: FCMPayload?
+        
+        guard let data = payloadSerialization(payload)
+        else {
+            return
+        }
+        
+        notification = decodePayload(data, notificationType: type)
+        
+        switch notification {
+        case let invitaion as InvitationPayload:
+            mediator?.notify(event: .inAppMeetingInvitation(id: invitaion.meetingID, title: invitaion.meetingTitle, imageURL: invitaion.meetingImage, inviterName: invitaion.hostNickname, scheduleDate: invitaion.scheduleDate,scheduleTime: invitaion.scheduleTime))
+        default: return
+        }
+        
     }
     
     func setFCMToken(_ fcmToken: String) {
