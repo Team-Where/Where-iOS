@@ -72,7 +72,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         let userInfo = notification.request.content.userInfo
         let shouldDisplayNotifications = UserDefaults.standard.bool(forKey: AppStorageKey.shouldDisplayNotifications)
-        notificationCore.handleReceivedNotificationPayload(userInfo)
         return shouldDisplayNotifications ? [.banner, .badge, .sound] : []
     }
     
