@@ -59,7 +59,7 @@ struct NotificationListView: View {
         List {
             ForEach(viewModel.pendingMeetings, id: \.inviteID) { pendingMeeting in
                 NavigationLink {
-                    AcceptInvitationView(inviterName: pendingMeeting.hostNickname, meeting: pendingMeeting.asMeeting(), resolver: resolver)
+                    AcceptInvitationView(pendingMeeting: pendingMeeting, resolver: resolver)
                 } label: {
                     notificationCell(pendingMeeting)
                         .listRowSeparator(.hidden)

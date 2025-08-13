@@ -14,18 +14,29 @@ struct AcceptInvitationView: View {
     @State private var navigationType: NavigationType?
     @State private var viewModel: AcceptInvitationViewModel
     
+    private let invitationID: UInt64?
     private let inviterName: String?
     private let meeting: Meeting?
     
     private let resolver: Resolver
     
     init(
+        invitationID: UInt64? = nil,
         inviterName: String?,
         meeting: Meeting?,
         resolver: Resolver
     ) {
+        self.invitationID = invitationID
         self.inviterName = inviterName
         self.meeting = meeting
+        self.viewModel = resolver.resolve(AcceptInvitationViewModel.self)!
+        self.resolver = resolver
+    }
+    
+    init(pendingMeeting: PendingMeeting, resolver: Resolver) {
+        self.invitationID = pendingMeeting.inviteID
+        self.inviterName = pendingMeeting.hostNickname
+        self.meeting = pendingMeeting.asMeeting()
         self.viewModel = resolver.resolve(AcceptInvitationViewModel.self)!
         self.resolver = resolver
     }
@@ -145,7 +156,7 @@ struct AcceptInvitationView: View {
             return isLoginViewPresented = true
         }
         
-        viewModel.acceptInvitation(meetingID: meeting.id) { isSuccess in
+        viewModel.acceptInvitation(id: invitationID) { isSuccess in
             guard isSuccess else { return isFloaterPresented = true }
             navigationType = .meetingInfo(meeting)
         }
@@ -156,11 +167,5 @@ struct AcceptInvitationView: View {
 extension AcceptInvitationView {
     enum NavigationType: Hashable {
         case meetingInfo(Meeting)
-    }
-}
-
-#Preview {
-    NavigationStack {
-        AcceptInvitationView(inviterName: nil, meeting: nil, resolver: PreviewHelper.shared.resolver)
     }
 }

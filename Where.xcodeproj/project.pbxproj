@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040121CF2E4CB3C4001614F8 /* InvitationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040121CE2E4CB3C4001614F8 /* InvitationType.swift */; };
 		04A9CC702E02E4AE005ADC8B /* FCMRegisterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A9CC6F2E02E4AE005ADC8B /* FCMRegisterDTO.swift */; };
 		04A9CC722E043D25005ADC8B /* SharedPlaceDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A9CC712E043D25005ADC8B /* SharedPlaceDataSource.swift */; };
 		04D5476C2DDB66A9003EEC85 /* InviteFriendsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5470B2DDB66A9003EEC85 /* InviteFriendsDTO.swift */; };
@@ -263,6 +264,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		040121CE2E4CB3C4001614F8 /* InvitationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationType.swift; sourceTree = "<group>"; };
 		04A9CC6F2E02E4AE005ADC8B /* FCMRegisterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMRegisterDTO.swift; sourceTree = "<group>"; };
 		04A9CC712E043D25005ADC8B /* SharedPlaceDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPlaceDataSource.swift; sourceTree = "<group>"; };
 		04D546352DDB6659003EEC85 /* Where.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Where.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -564,6 +566,7 @@
 				04D5465B2DDB66A9003EEC85 /* TemporaryMeetingInfo.swift */,
 				04D5465C2DDB66A9003EEC85 /* User.swift */,
 				04D5465D2DDB66A9003EEC85 /* UserCredential.swift */,
+				040121CE2E4CB3C4001614F8 /* InvitationType.swift */,
 				04A9CC712E043D25005ADC8B /* SharedPlaceDataSource.swift */,
 				7F2E93D12E2E8E580098CD56 /* PendingMeeting.swift */,
 			);
@@ -1793,6 +1796,7 @@
 				7F867AD92E1AB8DD006FC6FF /* ScheduleAddedPayload.swift in Sources */,
 				04D5480A2DDB66A9003EEC85 /* DayOfWeek+Day+Month.swift in Sources */,
 				04D5480B2DDB66A9003EEC85 /* AnnouncementView.swift in Sources */,
+				040121CF2E4CB3C4001614F8 /* InvitationType.swift in Sources */,
 				04D5480C2DDB66A9003EEC85 /* TextField.swift in Sources */,
 				04D5480D2DDB66A9003EEC85 /* ReadScheduleDTO.swift in Sources */,
 				04D5480E2DDB66A9003EEC85 /* CreatePlace.swift in Sources */,

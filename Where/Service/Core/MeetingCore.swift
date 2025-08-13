@@ -71,11 +71,16 @@ protocol MeetingCoreProtocol: CoreProtocol {
     func inviteParticipantWithKakao(id: UInt64) -> AnyPublisher<URL, MeetingCoreError>
     /// 모임 초대 수락
     /// - Parameters:
-    ///     - id: 초대장 식별자
-    func acceptInvitation(id: UInt64) -> AnyPublisher<Void, MeetingCoreError>
-    /// 모임 초대 수락 링크
+    ///     - type: 초대방식의 구분
+    ///         1. 인앱 내 초대
+    ///         2. 메신저앱을 통한 초대
+    func acceptInvitation(type: InvitationType) -> AnyPublisher<Void, MeetingCoreError>
+    /// 모임 초대 수락
     /// - Parameters:
-    func acceptInvitationByLinkCode() -> AnyPublisher<Void, MeetingCoreError>
+    ///     - id: 초대장 식별자
+    ///
+    /// - Note: 초대장 식별자가 없는 초대(메신저앱을 통한 초대)일 경우 초대코드가 식별자를 대신하니 `nil`을 매개변수로 전달하세요.
+    func acceptInvitation(id: UInt64?) -> AnyPublisher<Void, MeetingCoreError>
     /// 초대장 링크로 모임 정보 조회
     /// - Parameters
     ///     - inviterName: 초대한 사용자의 닉네임
@@ -455,44 +460,55 @@ extension MeetingCore: MeetingCoreProtocol {
         return kakaoShareService.share(inviter: inviter, meeting: meeting)
     }
     
-    func acceptInvitation(id: UInt64) -> AnyPublisher<Void, MeetingCoreError> {
-        guard let _ = currentUser
-        else {
+    func acceptInvitation(type: InvitationType) -> AnyPublisher<Void, MeetingCoreError> {
+        guard let _  = currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
         
-        let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
-        return apiService.requestPublisher(Endpoint.acceptMeeetingInvitation(dto: dto), AcceptMeeetingInvitationDTO.Response.self)
-            .mapError { MeetingCoreError.networkingError($0) }
-            .map { [weak self] response in
-                let newMeeting = response.toEntity()
-                guard var meetings = self?.meetingsSubject.value else { return }
-                meetings[newMeeting.id] = newMeeting
-                self?.meetingsSubject.send(meetings)
-                self?.mediator?.notify(event: .updateMeetingSchedule(meeting: newMeeting))
-            }
-            .eraseToAnyPublisher()
+        switch type {
+        case .inApp(let id):
+            let dto = AcceptMeeetingInvitationDTO.Request(invitationID: id)
+            let endpoint = Endpoint.acceptMeeetingInvitation(dto: dto)
+            return apiService.requestPublisher(endpoint, AcceptMeeetingInvitationDTO.Response.self)
+                .mapError { MeetingCoreError.networkingError($0) }
+                .map { [weak self] response in
+                    let newMeeting = response.toEntity()
+                    guard var meetings = self?.meetingsSubject.value else { return }
+                    meetings[newMeeting.id] = newMeeting
+                    self?.meetingsSubject.send(meetings)
+                    self?.mediator?.notify(event: .updateMeetingSchedule(meeting: newMeeting))
+                }
+                .eraseToAnyPublisher()
+            
+        case .linkCode(let code, let userID):
+            let dto = AcceptMeetingInvitationByLinkDTO.Request(userID: userID, invitationLink: code)
+            let endpoint = Endpoint.acceptMeetingInvitationByLink(dto: dto)
+            return apiService.requestPublisher(endpoint, AcceptMeetingInvitationByLinkDTO.Response.self)
+                .handleEvents(receiveOutput: { [weak self] response in
+                    guard let self else { return }
+                    let newMeeting = response.toEntity()
+                    var meetings = meetingsSubject.value
+                    meetings[newMeeting.id] = newMeeting
+                    meetingsSubject.send(meetings)
+                })
+                .mapError { MeetingCoreError.networkingError($0) }
+                .map { _ in () }
+                .eraseToAnyPublisher()
+        }
     }
     
-    func acceptInvitationByLinkCode() -> AnyPublisher<Void, MeetingCoreError> {
-        guard let user = currentUser,
-              let code = currentInviteCode
-        else {
+    func acceptInvitation(id: UInt64?) -> AnyPublisher<Void, MeetingCoreError> {
+        guard let currentUser else {
             return Fail(error: .userIDNotSet).eraseToAnyPublisher()
         }
-                
-        let dto = AcceptMeetingInvitationByLinkDTO.Request(userID: user.id, invitationLink: code)
-        return apiService.requestPublisher(Endpoint.acceptMeetingInvitationByLink(dto: dto), AcceptMeetingInvitationByLinkDTO.Response.self)
-            .handleEvents(receiveOutput: { [weak self] response in
-                guard let self else { return }
-                let newMeeting = response.toEntity()
-                var meetings = meetingsSubject.value
-                meetings[newMeeting.id] = newMeeting
-                meetingsSubject.send(meetings)
-            })
-            .mapError { MeetingCoreError.networkingError($0) }
-            .map { _ in () }
-            .eraseToAnyPublisher()
+        
+        if let id {
+            return acceptInvitation(type: .inApp(id: id))
+        } else if let code = currentInviteCode {
+            return acceptInvitation(type: .linkCode(code: code, userID: currentUser.id))
+        } else {
+            return Fail(error: .notSupported).eraseToAnyPublisher()
+        }
     }
     
     func readMeetingDetailForInvitationLink(inviterName: String, inviteCode: String) {
