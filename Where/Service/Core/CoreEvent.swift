@@ -24,7 +24,7 @@ enum CoreEvent {
     
     
     // MARK: - Notification Related
-    case inAppMeetingInvited(title: String, imageURL: String?, inviterName: String, scheduledTime: String?, scheduledDate: String?, meetingID: UInt64)
+    case inAppMeetingInvitation(inviterName: String, meeting: Meeting)
     
     // MARK: - Common
     case applicationDidLaunch

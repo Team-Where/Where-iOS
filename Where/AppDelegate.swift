@@ -70,7 +70,9 @@ extension AppDelegate: UIApplicationDelegate {
 extension AppDelegate: UNUserNotificationCenterDelegate {
     /// Foreground에서 푸시 알림을 수신했을 때 호출됨
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        return [.banner, .sound, .list, .badge]
+        let userInfo = notification.request.content.userInfo
+        let shouldDisplayNotifications = UserDefaults.standard.bool(forKey: AppStorageKey.shouldDisplayNotifications)
+        return shouldDisplayNotifications ? [.banner, .badge, .sound] : []
     }
     
     /// Foreground 또는 Background에서 푸시 수신 후, 사용자가 터치하여 앱을 열었을 때 호출됨

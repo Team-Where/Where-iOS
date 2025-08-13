@@ -50,13 +50,16 @@ final class NotificationCore {
     
     private let apiService: APIServable
     private let localNotificationService: LocalNotificationService
+    private let decoder: JSONDecoder
     
     init(
         apiService: APIServable,
+        decoder: JSONDecoder,
         _ localNotificationService: LocalNotificationService
     ) {
         self.apiService = apiService
         self.localNotificationService = localNotificationService
+        self.decoder = decoder
         subscribe()
     }
     
@@ -128,19 +131,28 @@ extension NotificationCore: NotificationCoreProtocol {
         guard let payload = payload as? [String: Any] else {
             return print("알림 캐스팅 실패")
         }
-        print("알림 수신됨! / payload:\n \(payload)")
+        guard let codeString = payload["code"] as? String,
+              let code = Int(codeString),
+              let type = NotificationType(rawValue: code)
+        else {
+            return
+        }
         
-        guard let title = payload["meetingTitle"] as? String,
-              let imageURL = payload["meetingImage"] as? String?,
-              let inviterName = payload["fromNickName"] as? String,
-              let scheduledTime = payload["scheduleTime"] as? String?,
-              let scheduledDate = payload["scheduleDate"] as? String?
-        else { return print("알림 파싱 실패") }
+        var notification: FCMPayload?
         
-        let meetingIDRaw = payload["meetingId"]
-        guard let meetingID = (meetingIDRaw as? Int).flatMap({ UInt64($0) }) ?? (meetingIDRaw as? String).flatMap({ UInt64($0) }) else { return print("알림 파싱 실패: meetingID") }
+        guard let data = payloadSerialization(payload)
+        else {
+            return
+        }
         
-        mediator?.notify(event: .inAppMeetingInvited(title: title, imageURL: imageURL, inviterName: inviterName, scheduledTime: scheduledTime, scheduledDate: scheduledDate, meetingID: meetingID))
+        notification = decodePayload(data, notificationType: type)
+        
+        switch notification {
+        case let invitaion as InvitationPayload:
+            mediator?.notify(event: .inAppMeetingInvitation(inviterName: invitaion.hostNickname, meeting: invitaion.asMeeting()))
+        default: return
+        }
+        
     }
     
     func setFCMToken(_ fcmToken: String) {
@@ -148,6 +160,23 @@ extension NotificationCore: NotificationCoreProtocol {
         
         guard currentUserID != nil else { return }
         registerFCMToken(fcmToken)
+    }
+    
+    private func decodePayload(_ data: Data, notificationType: NotificationType) -> FCMPayload? {
+        switch notificationType {
+        case .inviteMeetingInApp:
+            return try? decoder.decode(InvitationPayload.self, from: data)
+        default:
+            return nil
+        }
+    }
+    
+    private func payloadSerialization(_ payload: [String: Any]) -> Data? {
+        guard JSONSerialization.isValidJSONObject(payload)
+        else {
+            return nil
+        }
+        return try? JSONSerialization.data(withJSONObject: payload, options: [])
     }
 }
 
