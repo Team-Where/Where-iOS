@@ -19,6 +19,9 @@ struct OnboardingView: View {
         TabView(selection: $currentStepIndex) {
             ForEach(steps.indices, id: \.self) { index in
                 steps[index].image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 282)
                     .tag(index)
             }
         }
@@ -27,7 +30,7 @@ struct OnboardingView: View {
         .overlay(alignment: .bottom) {
             PageControl(currentPageIndex: $currentStepIndex, pageCountLimit: steps.count)
                 .alignmentGuide(.bottom) { dimension in
-                    dimension.height * 6
+                    dimension.height * 4
                 }
         }
         .whereForm(navigationTitle) {

@@ -36,6 +36,8 @@ struct LoginView: View {
                 Spacer()
                 
                 Image(.glassfyingCharacter)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 
                 Spacer()
@@ -129,4 +131,8 @@ struct LoginView: View {
                 .foregroundStyle(.black)
         }
     }
+}
+
+#Preview {
+    LoginView(resolver: PreviewHelper.shared.resolver)
 }
