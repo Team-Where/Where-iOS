@@ -155,7 +155,7 @@ struct RegistrationView: View {
     
     @ViewBuilder private func authorizationCodeRequestButton(_ state: EmailValidationState) -> some View {
         switch state {
-        case .beforeValidate, .invalidOnLocal, .emailDuplicated, .checkingDuplication, .awaitingCode:
+        case .beforeValidate, .invalidOnLocal, .emailDuplicated, .awaitingCode:
             Button {
                 viewModel.requestAuthorizationCode()
             } label: {
@@ -167,7 +167,7 @@ struct RegistrationView: View {
                     .clipShape(.capsule)
             }
             .disabled(viewModel.requestAuthorizationCodeDisabled)
-        case .requesting:
+        case .checkingDuplication, .requesting:
             ProgressView()
         case .requested, .checkingAuthorizationCode, .timeout, .invalid, .valid:
             Button {

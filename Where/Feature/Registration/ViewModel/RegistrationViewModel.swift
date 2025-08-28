@@ -236,12 +236,13 @@ final class RegistrationViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 switch completion {
-                case .finished: break
+                case .finished:
+                    self?.emailValidationState = .awaitingCode
                 case .failure:
                     self?.emailValidationState = .emailDuplicated
                 }
-            } receiveValue: { [weak self] _ in
-                self?.emailValidationState = .awaitingCode
+            } receiveValue: { _ in
+                
             }
     }
     

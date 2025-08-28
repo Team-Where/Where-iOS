@@ -143,7 +143,7 @@ extension PlaceDetailViewModel: CommentViewModelType {
                 switch completion {
                 case .finished:
                     self?.sheetTypeSubject.send(.none)
-                case .failure(let error):return
+                case .failure: return
                 }
             } receiveValue: { [weak self] newComment in
                 self?.commentsDict[comment.id] = newComment
@@ -162,7 +162,7 @@ extension PlaceDetailViewModel: CommentViewModelType {
                 switch completion {
                 case .finished:
                     self?.sheetTypeSubject.send(.none)
-                case .failure(let error): return
+                case .failure: return
                 }
             } receiveValue: { [weak self] in
                 self?.commentsDict.removeValue(forKey: $0)
