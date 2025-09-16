@@ -213,6 +213,8 @@ private extension FriendsListView {
                         .foregroundStyle(.where(hex: 0x6B7280))
                 } else {
                     Image(friend.isFavorite ? .starFill : .star)
+                        .resizable()
+                        .frame(width: 24, height: 24)
                 }
             }
             .transition(.move(edge: .trailing))

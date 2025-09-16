@@ -40,7 +40,7 @@ struct ContentView: View {
             // 새 모임 만들기
             Color.clear
                 .tabItem {
-                    Image("BottomPlus")
+                    Image(.bottomPlus)
                 }
                 .tag(TabItem.createMeeting)
             

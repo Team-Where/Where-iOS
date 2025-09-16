@@ -65,6 +65,8 @@ struct SideMenuContentView: View {
                                 } label: {
                                     HStack(spacing: 4) {
                                         Image(.editPencilLine)
+                                            .resizable()
+                                            .frame(width: 16, height: 16)
                                         
                                         Text("프로필 수정")
                                     }
@@ -98,6 +100,8 @@ struct SideMenuContentView: View {
                         HStack {
                             HStack(spacing: 10) {
                                 Image(.calendarIcon)
+                                    .resizable()
+                                    .frame(width: 16, height: 16)
                                 
                                 Text("총 모임 횟수")
                             }
