@@ -39,16 +39,14 @@ struct CompleteCreationView: View {
                         switch phase {
                         case .empty:
                             Image(.defaultCover)
+                                .resizable()
                                 .frame(width: 154, height: 154)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(.where(.gray200))
-                                }
+                                .aspectRatio(contentMode: .fill)
+                                .clipShape(.rect(cornerRadius: 16))
                             
                         case .success(let image):
                             image
                                 .frame(width: 154, height: 154)
-                                .clipShape(.rect(cornerRadius: 16))
                         case .failure(let error):
                             Text(error.localizedDescription)
                                 .frame(width: 154, height: 154)
