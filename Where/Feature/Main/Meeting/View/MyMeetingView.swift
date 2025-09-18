@@ -91,8 +91,7 @@ private extension MyMeetingView {
                             isSideMenuPresented.toggle()
                         }
                     } label: {
-                        Image(systemName: "line.3.horizontal")
-                            .foregroundStyle(.black)
+                        Image(.line3Horizontal)
                     }
                 }
                 
