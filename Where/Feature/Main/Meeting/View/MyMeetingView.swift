@@ -165,7 +165,7 @@ private extension MyMeetingView {
     struct MeetingsView: View {
         let meetings: [Meeting]
         let resolver: Resolver
-        private let columns: [GridItem] = [.init(.adaptive(minimum: 120, maximum: 170))]
+        private let columns: [GridItem] = [.init(), .init()]
         
         init(
             _ meetings: [Meeting],
@@ -205,21 +205,23 @@ private extension MyMeetingView {
                 MeetingInformationView(resolver: resolver, meetingID: meeting.id)
             } label: {
                 VStack(spacing: 12) {
-                    Spacer()
-                    
                     AsyncImage(url: meeting.imageURL) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .aspectRatio(1, contentMode: .fit)
-                            .clipShape(.rect(cornerRadius: 10))
+                        RoundedRectangle(cornerRadius: 10)
+                            .scaledToFill()
+                            .foregroundStyle(.secondary.opacity(0.3))
+                            .overlay {
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                            }
+                            
                     } placeholder: {
                         Image(.defaultCover)
                             .resizable()
                             .scaledToFit()
-                            .aspectRatio(1, contentMode: .fit)
-                            .clipShape(.rect(cornerRadius: 10))
                     }
+                    .aspectRatio(1, contentMode: .fill)
+                    .clipShape(.rect(cornerRadius: 10))
                     .brightness(meeting.isFinished ? -0.5 : 0)
                     .overlay {
                         if meeting.isFinished {
@@ -235,19 +237,17 @@ private extension MyMeetingView {
                         }
                     }
                     
-                    Spacer()
-                    
                     HStack {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(meeting.title)
                                 .whereFont(.body16medium)
-                                .lineLimit(2)
+                                .lineLimit(1)
                                 .fixedSize(horizontal: false, vertical: true)
                             
                             DateView(date: meeting.combinedSchedule, format: .yyyyMMdd, prompt: "등록된 일정이 없어요")
                                 .whereFont(.body14regular)
                                 .foregroundStyle(.where(.gray500))
-                                .lineLimit(2)
+                                .lineLimit(1)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .opacity(meeting.isFinished ? 0.5 : 1)

@@ -64,7 +64,9 @@ struct SideMenuContentView: View {
                                     EditProfileView(resolver: resolver)
                                 } label: {
                                     HStack(spacing: 4) {
-                                        Image(systemName: "pencil.line")
+                                        Image(.editPencilLine)
+                                            .resizable()
+                                            .frame(width: 16, height: 16)
                                         
                                         Text("프로필 수정")
                                     }
@@ -97,7 +99,9 @@ struct SideMenuContentView: View {
                     } else {
                         HStack {
                             HStack(spacing: 10) {
-                                Image(systemName: "calendar")
+                                Image(.calendarIcon)
+                                    .resizable()
+                                    .frame(width: 16, height: 16)
                                 
                                 Text("총 모임 횟수")
                             }

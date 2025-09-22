@@ -160,6 +160,8 @@ struct MeetingInformationDetailView: View {
     @ViewBuilder private func summaryCell(_ type: SummaryType, route: @escaping () -> Void) -> some View {
         HStack {
             type.content.primaryIcon
+                .resizable()
+                .frame(width: 16, height: 16)
             
             switch type {
             case .date(let date):
@@ -185,6 +187,8 @@ struct MeetingInformationDetailView: View {
             } label: {
                 HStack {
                     type.content.secondaryIcon
+                        .resizable()
+                        .frame(width: 16, height: 16)
                     
                     Text(type.content.buttonLabel)
                         .whereFont(.caption12regular)

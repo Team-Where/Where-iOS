@@ -208,8 +208,14 @@ private extension FriendsListView {
             Button {
                 viewModel.isEditing ? viewModel.deleteFriend(by: friend.id) : viewModel.toggleFavorite(by: friend.id)
             } label: {
-                Image(systemName: viewModel.isEditing ? "trash" : friend.isFavorite ? "star.fill" : "star")
-                    .foregroundStyle(viewModel.isEditing ? .where(hex: 0x6B7280) : friend.isFavorite ? .where(hex: 0xFBBF24) : .where(hex: 0xD1D5D8))
+                if viewModel.isEditing {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.where(hex: 0x6B7280))
+                } else {
+                    Image(friend.isFavorite ? .starFill : .star)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                }
             }
             .transition(.move(edge: .trailing))
         }
