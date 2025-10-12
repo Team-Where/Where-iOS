@@ -1,0 +1,22 @@
+//
+//  LoginWithKakaoDTO.swift
+//  Where
+//
+//  Created by Swain Yun on 5/2/25.
+//
+
+import Foundation
+
+enum SocialLoginDTO {
+    struct Response: Decodable {
+        let userID: UInt64
+        let isRegistrationNeeded: Bool
+        let profileImageURL: URL?
+        
+        enum CodingKeys: String, CodingKey {
+            case userID = "userId"
+            case isRegistrationNeeded = "signUp"
+            case profileImageURL = "profileImage"
+        }
+    }
+}

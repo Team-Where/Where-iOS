@@ -1,0 +1,369 @@
+//
+//  MeetingInformationView.swift
+//  Where
+//
+//  Created by Swain Yun on 1/4/25.
+//
+
+import SwiftUI
+import Swinject
+import Combine
+
+struct MeetingInformationView: View {
+    @StateObject private var viewModel: MeetingInformationViewModel
+    @Environment(\.dismiss) private var dismiss
+    
+    private let resolver: Resolver
+    
+    init(resolver: Resolver, meetingID: UInt64) {
+        self.resolver = resolver
+        let viewModel = resolver.resolve(MeetingInformationViewModel.self)!
+        viewModel.setMeeting(id: meetingID)
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
+    var body: some View {
+        SelectionTab<TabViewItem>(selection: [
+            .meetingInfo(resolver: resolver, meeting: viewModel.meeting),
+            .placeInfo(resolver: resolver, meeting: viewModel.meeting)
+        ])
+            .navigationBarBackButtonHidden()
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    BackButton()
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    Text(viewModel.meeting.title)
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.sheetType = .editMeetingInfo
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .rotationEffect(.degrees(90))
+                            .foregroundStyle(Color(hex: 0x1F2937))
+                    }
+                }
+            }
+            .onReceive(viewModel.$isExit){ isExit in
+                if isExit {
+                    dismiss()
+                }
+            }
+            .sheet(item: $viewModel.sheetType) { type in
+                switch type {
+                case .editMeetingInfo:
+                    EditMeetingInfoSheet(viewModel: viewModel)
+                }
+            }
+            .lazyLoading()
+    }
+}
+
+struct LazyLoadingView<Content: View>: View {
+    private var content: () -> Content
+
+    init(content: @escaping () -> Content) {
+        self.content = content
+    }
+
+    var body: Content {
+        content()
+    }
+}
+
+extension View {
+    func lazyLoading() -> some View {
+        LazyLoadingView { self }
+    }
+}
+
+// MARK: Nested Types - CustomTabbar
+extension MeetingInformationView {
+    enum TabViewItem: SelectionTabItem {
+        case meetingInfo(resolver: Resolver, meeting: Meeting)
+        case placeInfo(resolver: Resolver, meeting: Meeting)
+        
+        var id: Int {
+            switch self {
+            case .meetingInfo: 0
+            case .placeInfo: 1
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .meetingInfo: "모임 정보"
+            case .placeInfo: "장소"
+            }
+        }
+        
+        @ViewBuilder func view() -> some View {
+            switch self {
+            case .meetingInfo(let resolver, let meeting):
+                MeetingInformationDetailView(meeting: meeting, resolver: resolver)
+            case .placeInfo(let resolver, let meeting):
+                MeetingPlacesView(resolver: resolver, meetingID: meeting.id, isFinished: meeting.isFinished)
+            }
+        }
+        
+        static func == (lhs: MeetingInformationView.TabViewItem, rhs: MeetingInformationView.TabViewItem) -> Bool {
+            lhs.id == rhs.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(self.id)
+        }
+    }
+}
+
+// MARK: Nested Types - Sheet
+extension MeetingInformationView {
+    
+    struct EditMeetingInfoSheet: View {
+        enum EditMeetingFocusState {
+            case title, memo
+        }
+        
+        @ObservedObject private var viewModel: MeetingInformationViewModel
+
+        @FocusState private var textFieldFocused: EditMeetingFocusState?
+        
+        init(viewModel: MeetingInformationViewModel) {
+            self.viewModel = viewModel
+        }
+        
+        var body: some View {
+            content()
+                .padding()
+                .presentationCornerRadius(16)
+                .presentationDragIndicator(.hidden)
+                .interactiveDismissDisabled()
+        }
+        
+        @ViewBuilder private func content() -> some View {
+            switch viewModel.editStep {
+            case .entry: entry
+            case .title: title
+            case .memo: memo
+            }
+        }
+        
+        var entry: some View {
+            VStack {
+                HStack {
+                    Spacer()
+                    
+                    Button {
+                        viewModel.sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                
+                HStack {
+                    Text(viewModel.meeting.title)
+                        .whereFont(.title20semibold)
+                        .foregroundStyle(Color(hex: 0x111827))
+                    
+                    Button {
+                        viewModel.editStep = .title
+                    } label: {
+                        Image(.pencilIcon)
+                            .frame(width: 16, height: 16)
+                            .foregroundStyle(.black)
+                    }
+                    
+                    Spacer()
+                }
+                
+                HStack {
+                    Text(viewModel.meeting.description)
+                        .whereFont(.body14regular)
+                        .foregroundStyle(Color(hex: 0x6B7280))
+                    Button {
+                        viewModel.editStep = .memo
+                    } label: {
+                        Image(.pencilIcon)
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x6B7280))
+                    }
+                    
+                    Spacer()
+                }
+                
+                Spacer()
+                
+                Button {
+                    // 모임 삭제(또는 나가기)
+                    viewModel.exitMeeting()
+                } label: {
+                    if viewModel.isExitProcessing {
+                        ProgressView()
+                    } else {
+                        Text("모임에서 나가기")
+                            .whereFont(.body16medium)
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(hex: 0xF3F4F6))
+                            .clipShape(.rect(cornerRadius: 16))
+                    }
+                }
+                .disabled(viewModel.exitButtonDisabled)
+            }
+            .presentationDetents([.fraction(0.3)])
+        }
+        
+        var title: some View {
+            VStack {
+                HStack {
+                    Text("모임 이름")
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                    
+                    Spacer()
+                    
+                    Button {
+                        textFieldFocused = .none
+                        viewModel.sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                
+                TextField("모임 이름 입력", text: $viewModel.titleText)
+                    .whereFont(.body16regular)
+                    .foregroundStyle(Color(hex: 0x1F2937))
+                    .focused($textFieldFocused, equals: .title)
+                
+                Spacer()
+                
+                HStack {
+                    Button {
+                        textFieldFocused = .none
+                        viewModel.editStep = .entry
+                    } label: {
+                        Text("취소")
+                            .whereFont(.body16medium)
+                            .foregroundColor(Color(hex: 0x4B5563))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(hex: 0xF3F4F6))
+                            .clipShape(.rect(cornerRadius: 16))
+                    }
+                    
+                    Button {
+                        // 모임명 업데이트 기능
+                        viewModel.updateMeetingTitle()
+                        textFieldFocused = .none
+                    } label: {
+                        if viewModel.isTitleUpdatingProcessing {
+                            ProgressView()
+                        } else {
+                            Text("확인")
+                                .whereFont(.body16medium)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.accent)
+                                .clipShape(.rect(cornerRadius: 16))
+                        }
+                    }
+                    .disabled(viewModel.titleUpdateButtonDisabled)
+                }
+            }
+            .onAppear {
+                textFieldFocused = .title
+            }
+            .presentationDetents(textFieldFocused == nil ? [.medium] : [.fraction(0.2)])
+        }
+        
+        var memo: some View {
+            VStack {
+                HStack {
+                    Text("메모")
+                        .whereFont(.subtitle18semibold)
+                        .foregroundStyle(Color(hex: 0x1F2937))
+                    
+                    Spacer()
+                    
+                    Button {
+                        textFieldFocused = .none
+                        viewModel.sheetType = .none
+                    } label: {
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundStyle(Color(hex: 0x030712))
+                    }
+                }
+                
+                TextField("메모 입력", text: $viewModel.descriptionText)
+                    .whereFont(.body16regular)
+                    .foregroundStyle(Color(hex: 0x1F2937))
+                    .focused($textFieldFocused, equals: .memo)
+                
+                Spacer()
+                
+                HStack {
+                    Button {
+                        textFieldFocused = .none
+                        viewModel.editStep = .entry
+                    } label: {
+                        Text("취소")
+                            .whereFont(.body16medium)
+                            .foregroundColor(Color(hex: 0x4B5563))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(hex: 0xF3F4F6))
+                            .clipShape(.rect(cornerRadius: 16))
+                    }
+                    
+                    Button {
+                        // 메모 업데이트 기능
+                        viewModel.updateMeetingDescription()
+                        textFieldFocused = .none
+                    } label: {
+                        if viewModel.isDescriptionUpdatingProcessing {
+                            ProgressView()
+                        } else {
+                            Text("확인")
+                                .whereFont(.body16medium)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.accent)
+                                .clipShape(.rect(cornerRadius: 16))
+                        }
+                    }
+                    .disabled(viewModel.descriptionUpdateButtonDisabled)
+                }
+            }
+            .onAppear {
+                textFieldFocused = .memo
+            }
+            .presentationDetents(textFieldFocused == nil ? [.medium] : [.fraction(0.2)])
+        }
+    }
+}
+
+//#Preview {
+//    NavigationStack {
+//        MeetingInformationView(resolver: PreviewHelper.shared.resolver)
+//    }
+//}

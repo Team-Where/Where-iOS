@@ -1,0 +1,125 @@
+//
+//  NotificationListView.swift
+//  Where
+//
+//  Created by Swain Yun on 3/21/25.
+//
+
+import SwiftUI
+import Swinject
+
+struct NotificationListView: View {
+    @State private var viewModel: NotificationListViewModel
+    
+    private let resolver: Resolver
+    init(resolver: Resolver) {
+        self.resolver = resolver
+        self.viewModel = resolver.resolve(NotificationListViewModel.self)!
+    }
+    
+    var body: some View {
+        VStack {
+            if viewModel.pendingMeetings.isEmpty {
+                unavailableView()
+            } else {
+                notificationsSection()
+            }
+        }
+        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                BackButton()
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("알림")
+                    .whereFont(.subtitle18semibold)
+                    .foregroundStyle(.where(.gray800))
+            }
+        }
+        .onAppear {
+            viewModel.onAppear()
+        }
+    }
+    
+    @ViewBuilder private func unavailableView() -> some View {
+        VStack(spacing: 10) {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(.where(.gray600))
+            
+            Text("새로운 알림이 없어요!")
+                .whereFont(.body16medium)
+                .foregroundStyle(.where(.gray700))
+        }
+    }
+    
+    @ViewBuilder private func notificationsSection() -> some View {
+        List {
+            ForEach(viewModel.pendingMeetings, id: \.inviteID) { pendingMeeting in
+                NavigationLink {
+                    AcceptInvitationView(pendingMeeting: pendingMeeting, resolver: resolver)
+                } label: {
+                    notificationCell(pendingMeeting)
+                        .listRowSeparator(.hidden)
+                }
+            }
+        }
+        .listStyle(.plain)
+        .padding(.top)
+    }
+    
+    @ViewBuilder private func notificationCell(_ pendingMeeting: PendingMeeting) -> some View {
+        HStack(alignment: .top) {
+            AsyncImage(url: pendingMeeting.meetingImageURL) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 50, height: 50)
+                    .clipShape(Circle())
+                    
+            } placeholder: {
+                ZStack {
+                    Circle()
+                        .foregroundStyle(.accent.opacity(0.1))
+                        .frame(width: 50, height: 50)
+                    
+                    Image(.logoColorShort)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text("모임 초대")
+                    .whereFont(.body16medium)
+                    .foregroundStyle(.where(.gray800))
+                    .overlay(alignment: .topTrailing) {
+                        Badge()
+                            .alignmentGuide(.top) { dimension in
+                                dimension.height / 4
+                            }
+                            .alignmentGuide(.trailing) { dimension in
+                                dimension.width - 10
+                            }
+                    }
+                
+                Text("\(pendingMeeting.hostNickname)님이 \(pendingMeeting.meetingTitle) 모임에 초대했어요.")
+                    .whereFont(.body14regular)
+                    .foregroundStyle(.where(.gray600))
+            }
+            
+            Spacer()
+        }
+        .padding(.top)
+    }
+}
+
+extension NotificationListView {
+    struct Badge: View {
+        var body: some View {
+            Circle()
+                .frame(width: 6, height: 6)
+                .foregroundStyle(.red)
+        }
+    }
+}

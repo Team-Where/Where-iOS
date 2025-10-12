@@ -1,0 +1,57 @@
+//
+//  ReadPlaceDetailDTO.swift
+//  Where
+//
+//  Created by Swain Yun on 4/8/25.
+//
+
+import Foundation
+
+/// 장소 조회
+enum ReadPlaceDetailDTO {
+    typealias Response = [PlaceDetail]
+}
+
+extension ReadPlaceDetailDTO {
+    struct PlaceDetail: Decodable {
+        let id: UInt64
+        let naverLinkString: String
+        let kakaoLinkString: String
+        let name: String
+        let address: String
+        let likesCount: Int
+        let commentsCount: Int
+        let isLikedByMe: Bool
+        let pickedState: String
+        let isSimulaneouslyShared: Bool
+        let pickedUserImageURLStrings: [String?]
+        
+        enum CodingKeys: String, CodingKey {
+            case id, name, address
+            case naverLinkString = "naverLink"
+            case kakaoLinkString = "kakaoLink"
+            case likesCount = "likes"
+            case commentsCount = "comments"
+            case isLikedByMe = "myLike"
+            case pickedState = "placeStatus"
+            case isSimulaneouslyShared = "together"
+            case pickedUserImageURLStrings = "users"
+        }
+        
+        func toEntity(meetingID: UInt64) -> Place {
+            .init(
+                id: id,
+                meetingId: meetingID,
+                name: name,
+                address: address,
+                likesCount: likesCount,
+                commentsCount: commentsCount,
+                isLikedByMe: isLikedByMe,
+                sharedUserImageURLs: pickedUserImageURLStrings.compactMap { URL(string: $0 ?? "") },
+                pickedState: PickedState(pickedState),
+                links: .init(naverLink: URL(string: naverLinkString), kakaoLink: URL(string: kakaoLinkString)),
+                isSimulaneouslyShared: isSimulaneouslyShared
+            )
+        }
+    }
+}

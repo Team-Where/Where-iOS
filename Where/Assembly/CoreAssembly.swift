@@ -1,0 +1,221 @@
+//
+//  AuthAssembly.swift
+//  Where
+//
+//  Created by Swain Yun on 3/30/25.
+//
+
+import Foundation
+import Swinject
+
+struct CoreAssembly: Assembly {
+    func assemble(container: Swinject.Container) {
+        container.register(AuthentificationCore.self) { resolver in
+            guard let apiService = resolver.resolve(APIServable.self),
+                  let encoder = resolver.resolve(JSONEncoder.self)
+            else {
+                fatalError("Failed Initializing AuthentificationCore")
+            }
+            return AuthentificationCore(apiService: apiService, encoder: encoder)
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(AuthentificationCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(AuthentificationCore.self) else {
+                fatalError("AuthentificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(AuthentificationMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(AuthentificationCore.self) else {
+                fatalError("AuthentificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(CommunityCore.self) { resolver in
+            guard let apiService = resolver.resolve(APIServable.self)
+            else {
+                fatalError("Failed Initializing CommunityCore")
+            }
+            return CommunityCore(apiService: apiService)
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(CommunityCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(CommunityCore.self) else {
+                fatalError("CommunityCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(CommunityMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(CommunityCore.self) else {
+                fatalError("CommunityCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(MeetingCore.self) { resolver in
+            guard let encoder = resolver.resolve(JSONEncoder.self),
+                  let apiService = resolver.resolve(APIServable.self),
+                  let kakaoShareService = resolver.resolve(KakaoShareServiceProtocol.self)
+            else {
+                fatalError("Failed Initializing MeetingCore")
+            }
+            return MeetingCore(apiService: apiService, kakaoShareService: kakaoShareService, encoder: encoder)
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(MeetingCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(MeetingCore.self) else {
+                fatalError("MeetingCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(MeetingMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(MeetingCore.self) else {
+                fatalError("MeetingCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(PlaceCore.self) { resolver in
+            guard let apiService = resolver.resolve(APIServable.self)
+            else {
+                fatalError("Failed Initializing PlaceCore")
+            }
+            return PlaceCore(apiService: apiService)
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(PlaceCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(PlaceCore.self) else {
+                fatalError("PlaceCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(PlaceMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(PlaceCore.self) else {
+                fatalError("PlaceCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(SupportCore.self) { resolver in
+            guard let apiService = resolver.resolve(APIServable.self),
+                  let encoder = resolver.resolve(JSONEncoder.self)
+            else {
+                fatalError("TokenStorageProtocol not registered")
+            }
+            return SupportCore(encoder: encoder, apiService: apiService)
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(SupportCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(SupportCore.self) else {
+                fatalError("SupportCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(SupportMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(SupportCore.self) else {
+                fatalError("SupportCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(NotificationCore.self) { resolver in
+            guard let apiService = resolver.resolve(APIServable.self),
+                  let notiService = resolver.resolve(LocalNotificationService.self),
+                  let decoder = resolver.resolve(JSONDecoder.self)
+            else {
+                fatalError("LocalNotificationService not resolvable")
+            }
+            return NotificationCore(apiService: apiService, decoder: decoder, notiService)
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, core in
+            guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else {
+                fatalError("CoreMediatorProtocol not registered")
+            }
+            core.mediator = mediator
+        }
+        
+        container.register(NotificationCoreProtocol.self) { resolver in
+            guard let core = resolver.resolve(NotificationCore.self) else {
+                fatalError("NotificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(NotificationMediationProtocol.self) { resolver in
+            guard let core = resolver.resolve(NotificationCore.self) else {
+                fatalError("NotificationCore concrete type not resolvable")
+            }
+            return core
+        }
+        
+        container.register(CoreMediatorProtocol.self) { _ in
+            return CoreMediator()
+        }
+        .inObjectScope(.container)
+        .initCompleted { resolver, mediator in
+            guard let authentificationCore = resolver.resolve(AuthentificationMediationProtocol.self),
+                  let communityCore = resolver.resolve(CommunityMediationProtocol.self),
+                  let meetingCore = resolver.resolve(MeetingMediationProtocol.self),
+                  let placeCore = resolver.resolve(PlaceMediationProtocol.self),
+                  let supportCore = resolver.resolve(SupportMediationProtocol.self),
+                  let notificationCore = resolver.resolve(NotificationMediationProtocol.self)
+            else {
+                fatalError("Major cores are not registered")
+            }
+            
+            mediator.attachAuthentificationCore(authentificationCore)
+            mediator.attachCommunityCore(communityCore)
+            mediator.attachMeetingCore(meetingCore)
+            mediator.attachPlaceCore(placeCore)
+            mediator.attachSupportCore(supportCore)
+            mediator.attachNotificationCore(notificationCore)
+        }
+    }
+    
+    func loaded(resolver: any Resolver) {
+        guard let mediator = resolver.resolve(CoreMediatorProtocol.self) else { return }
+        mediator.notify(event: .applicationDidLaunch)
+    }
+}
